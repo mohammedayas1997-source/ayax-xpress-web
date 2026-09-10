@@ -7,8 +7,20 @@
       "handle": "filesystem"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1.html"
+      "src": "/about",
+      "dest": "/about.html"
+    },
+    {
+      "src": "/privacy-policy",
+      "dest": "/privacy-policy.html"
+    },
+    {
+      "src": "/terms",
+      "dest": "/terms.html"
+    },
+    {
+      "src": "/home",
+      "dest": "/home.html"
     }
   ]
 }
