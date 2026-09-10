@@ -10,11 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <!-- Favicon & Web App Manifest -->
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0284c7">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a1d37">
 
   <style>
     :root {
@@ -52,7 +53,7 @@
     .top-header {
       background: #ffffff;
       border-bottom: 1px solid var(--border-light);
-      padding: 16px 20px 14px 20px;
+      padding: 14px 18px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -63,26 +64,59 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+    }
+
+    .left-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-trigger-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .menu-trigger-btn:hover {
+      background: #e2e8f0;
     }
 
     .brand-row {
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
     }
 
     .logo-circle {
-      width: 40px;
-      height: 40px;
-      background: #e0f2fe;
-      border-radius: 12px;
+      width: 38px;
+      height: 38px;
+      background: #ffffff;
+      border-radius: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
-      border: 1px solid #bae6fd;
-      color: var(--accent-blue);
-      font-size: 18px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+    }
+
+    .logo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 3px;
     }
 
     .enterprise-badge {
@@ -111,10 +145,16 @@
 
     .brand-title-text {
       color: #0f172a;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 900;
       letter-spacing: 0.5px;
       margin: 0;
+    }
+
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .icon-badge-btn {
@@ -126,19 +166,26 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      color: var(--accent-blue);
+      color: var(--primary-navy);
       cursor: pointer;
       position: relative;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .icon-badge-btn:hover {
+      background: #e2e8f0;
     }
 
     .badge-dot {
       position: absolute;
       top: 8px;
       right: 9px;
-      width: 6px;
-      height: 6px;
-      border-radius: 3px;
+      width: 7px;
+      height: 7px;
+      border-radius: 3.5px;
       background: #ef4444;
+      border: 1.5px solid #ffffff;
     }
 
     .welcome-section {
@@ -155,10 +202,125 @@
 
     .user-name {
       color: #0f172a;
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: -0.5px;
       margin: 2px 0 0 0;
+    }
+
+    /* Side Drawer Menu */
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .drawer-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 290px;
+      height: 100%;
+      background: #ffffff;
+      z-index: 1001;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .drawer-menu.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      background: var(--primary-navy);
+      padding: 24px 18px;
+      color: #ffffff;
+      position: relative;
+    }
+
+    .drawer-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #ffffff;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .drawer-user-name {
+      font-size: 17px;
+      font-weight: 900;
+      margin: 10px 0 2px 0;
+    }
+
+    .drawer-user-phone {
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 10px;
+    }
+
+    .drawer-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #1e293b;
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+    }
+
+    .drawer-item:hover {
+      background: #f1f5f9;
+      color: var(--accent-blue);
+    }
+
+    .drawer-item i {
+      width: 20px;
+      font-size: 16px;
+      color: var(--accent-blue);
+      text-align: center;
+    }
+
+    .drawer-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 10px 8px;
+    }
+
+    .drawer-logout {
+      color: #ef4444 !important;
+    }
+
+    .drawer-logout i {
+      color: #ef4444 !important;
     }
 
     /* Container Body */
@@ -168,7 +330,7 @@
       padding: 16px 16px 110px 16px;
     }
 
-    /* Vibrant Gradient Wallet Card */
+    /* Gradient Wallet Card */
     .wallet-card {
       border-radius: 20px;
       padding: 20px;
@@ -411,11 +573,6 @@
       background: var(--accent-navy);
     }
 
-    .generate-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
     /* Core Platform Services Grid */
     .services-container {
       background: #ffffff;
@@ -465,60 +622,7 @@
       white-space: nowrap;
     }
 
-    /* Footer Trust Branding */
-    .footer-branding {
-      margin-top: 10px;
-      padding-bottom: 10px;
-      text-align: center;
-    }
-
-    .footer-headline {
-      font-size: 10px;
-      font-weight: 900;
-      color: var(--text-muted);
-      margin: 0 0 12px 0;
-      letter-spacing: 1px;
-    }
-
-    .trust-grid {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .trust-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .trust-icon-circle {
-      width: 42px;
-      height: 42px;
-      border-radius: 21px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 6px;
-      font-size: 18px;
-    }
-
-    .trust-title {
-      font-size: 10.5px;
-      font-weight: 800;
-      color: #0f172a;
-      margin: 0;
-    }
-
-    .trust-sub {
-      font-size: 9.5px;
-      color: var(--text-muted);
-      margin: 2px 0 0 0;
-      font-weight: 600;
-    }
-
-    /* Fixed Clean Bottom Navigation */
+    /* Bottom Navigation Bar */
     .bottom-tab {
       position: fixed;
       bottom: 0;
@@ -554,29 +658,92 @@
     .tab-item i {
       font-size: 18px;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Drawer Menu Overlay -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+  <!-- Side Navigation Drawer -->
+  <aside class="drawer-menu" id="sideDrawer">
+    <div class="drawer-header">
+      <button type="button" class="drawer-close-btn" onclick="closeDrawer()">&times;</button>
+      <div class="logo-circle" style="width: 36px; height: 36px; margin-bottom: 6px;">
+        <img src="assets/Logo.png" alt="Ayax Logo" onerror="tryNextHeaderLogo(this)">
+      </div>
+      <h3 class="drawer-user-name" id="drawerUserName">Ayax Terminal</h3>
+      <p class="drawer-user-phone" id="drawerUserPhone">Loading credentials...</p>
+    </div>
+
+    <div class="drawer-body">
+      <a href="home.html" class="drawer-item"><i class="fa-solid fa-house"></i><span>Dashboard Home</span></a>
+      <a href="profile.html" class="drawer-item"><i class="fa-regular fa-user"></i><span>My Profile & KYC</span></a>
+      <a href="fund-wallet.html" class="drawer-item"><i class="fa-solid fa-wallet"></i><span>Add Funds (Wallet)</span></a>
+      <a href="wallet-history.html" class="drawer-item"><i class="fa-solid fa-receipt"></i><span>Transaction History</span></a>
+      
+      <div class="drawer-divider"></div>
+      
+      <a href="buy-data.html" class="drawer-item"><i class="fa-solid fa-wifi"></i><span>Buy Data Bundles</span></a>
+      <a href="buy-airtime.html" class="drawer-item"><i class="fa-solid fa-phone"></i><span>Recharge Airtime</span></a>
+      <a href="electricity.html" class="drawer-item"><i class="fa-solid fa-bolt"></i><span>Electricity Bills</span></a>
+      <a href="cable.html" class="drawer-item"><i class="fa-solid fa-tv"></i><span>Cable Subscriptions</span></a>
+      <a href="nin-verification-service.html" class="drawer-item"><i class="fa-solid fa-id-card"></i><span>NIMC & Identity Desk</span></a>
+
+      <div class="drawer-divider"></div>
+
+      <a href="notifications.html" class="drawer-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+      <a href="update-pin.html" class="drawer-item"><i class="fa-solid fa-key"></i><span>Security PIN</span></a>
+      <a href="javascript:void(0)" onclick="openWhatsApp()" class="drawer-item"><i class="fa-brands fa-whatsapp" style="color: #22c55e;"></i><span>WhatsApp Desk</span></a>
+      
+      <div class="drawer-divider"></div>
+
+      <a href="javascript:void(0)" onclick="handleLogout()" class="drawer-item drawer-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout Account</span></a>
+    </div>
+  </aside>
+
   <!-- Top Header Bar -->
   <header class="top-header">
     <div class="nav-row">
-      <div class="brand-row">
-        <div class="logo-circle">
-          <i class="fa-solid fa-bolt"></i>
-        </div>
-        <div>
-          <div class="enterprise-badge">
-            <div class="live-pulse-dot"></div>
-            <span class="enterprise-badge-text">ACTIVE SECURE</span>
+      <div class="left-nav-group">
+        <!-- Babban Maballin Menu (Hamburger) -->
+        <button type="button" class="menu-trigger-btn" onclick="openDrawer()" title="Open Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <a href="home.html" class="brand-row">
+          <div class="logo-circle">
+            <img
+              id="headerLogoImg"
+              src="assets/Logo.png"
+              alt="Ayax Xpress"
+              onerror="tryNextHeaderLogo(this)"
+            />
+            <i id="headerLogoFallbackIcon" class="fa-solid fa-bolt" style="display: none; color: #0284c7; font-size: 18px;"></i>
           </div>
-          <h2 class="brand-title-text">AYAX DATA XPRESS</h2>
-        </div>
+          <div>
+            <div class="enterprise-badge">
+              <div class="live-pulse-dot"></div>
+              <span class="enterprise-badge-text">ACTIVE SECURE</span>
+            </div>
+            <h2 class="brand-title-text">AYAX DATA XPRESS</h2>
+          </div>
+        </a>
       </div>
 
-      <div class="icon-badge-btn" onclick="alert('Notification Desk Active')">
-        <i class="fa-regular fa-bell"></i>
-        <div class="badge-dot"></div>
+      <div class="right-actions">
+        <a href="notifications.html" class="icon-badge-btn" title="Notifications">
+          <i class="fa-regular fa-bell"></i>
+          <div class="badge-dot"></div>
+        </a>
+        <a href="profile.html" class="icon-badge-btn" title="Profile">
+          <i class="fa-regular fa-user"></i>
+        </a>
       </div>
     </div>
 
@@ -589,7 +756,7 @@
   <!-- Main Container -->
   <main class="container">
 
-    <!-- 1. Vibrant Gradient Wallet Balance Card -->
+    <!-- 1. Gradient Wallet Balance Card -->
     <section class="wallet-card">
       <div class="wallet-top">
         <div class="shield-row">
@@ -632,7 +799,6 @@
     </div>
 
     <section class="dva-card" id="dvaCard">
-      <!-- Active Account View -->
       <div id="activeDvaBox" style="display: none;">
         <div class="dva-top-row">
           <div>
@@ -649,7 +815,6 @@
         <p class="dva-note">Transfer directly to this account to fund your wallet automatically.</p>
       </div>
 
-      <!-- No Account View -->
       <div class="no-account-container" id="noDvaBox">
         <i class="fa-regular fa-credit-card no-acc-icon"></i>
         <p class="no-acc-text">Your personal automated deposit bank account is ready for generation.</p>
@@ -685,40 +850,40 @@
           <span class="grid-label">Electricity</span>
         </a>
 
-        <a href="cable-tv.html" class="grid-item">
+        <a href="cable.html" class="grid-item">
           <div class="icon-box" style="background: #ede9fe; color: #7c3aed;">
             <i class="fa-solid fa-tv"></i>
           </div>
           <span class="grid-label">Cable TV</span>
         </a>
 
-        <div class="grid-item" onclick="alert('NIMC Verification Portal Active')">
+        <a href="nin-verification-service.html" class="grid-item">
           <div class="icon-box" style="background: #e0f2fe; color: #0284c7;">
             <i class="fa-solid fa-id-card"></i>
           </div>
           <span class="grid-label">NIMC Verify</span>
-        </div>
+        </a>
 
-        <div class="grid-item" onclick="alert('NIMC Modification Portal Active')">
+        <a href="nimc-modification.html" class="grid-item">
           <div class="icon-box" style="background: #ffe4e6; color: #e11d48;">
             <i class="fa-solid fa-fingerprint"></i>
           </div>
           <span class="grid-label">NIMC Mod</span>
-        </div>
+        </a>
 
-        <a href="bvn-verification.html" class="grid-item">
+        <a href="bvn-history.html" class="grid-item">
           <div class="icon-box" style="background: #ffedd5; color: #ea580c;">
             <i class="fa-solid fa-shield-halved"></i>
           </div>
           <span class="grid-label">BVN Desk</span>
         </a>
 
-        <div class="grid-item" onclick="alert('NIN Validation Active')">
+        <a href="nin-verification-service.html" class="grid-item">
           <div class="icon-box" style="background: #e0e7ff; color: #4f46e5;">
             <i class="fa-solid fa-user-shield"></i>
           </div>
           <span class="grid-label">NIN Validate</span>
-        </div>
+        </a>
 
         <a href="wallet-history.html" class="grid-item">
           <div class="icon-box" style="background: #e0f2fe; color: #0284c7;">
@@ -728,52 +893,22 @@
         </a>
       </div>
     </section>
-
-    <!-- 4. Footer Trust Branding -->
-    <section class="footer-branding">
-      <h3 class="footer-headline">ENTERPRISE GRADE INFRASTRUCTURE</h3>
-      <div class="trust-grid">
-        <div class="trust-item">
-          <div class="trust-icon-circle" style="background: #dcfce7; color: #16a34a;">
-            <i class="fa-solid fa-shield-check"></i>
-          </div>
-          <h4 class="trust-title">PCI Encrypted</h4>
-          <p class="trust-sub">Secure Tokens</p>
-        </div>
-
-        <div class="trust-item">
-          <div class="trust-icon-circle" style="background: #fef3c7; color: #d97706;">
-            <i class="fa-solid fa-bolt"></i>
-          </div>
-          <h4 class="trust-title">Instant Vending</h4>
-          <p class="trust-sub">99.9% Up-time</p>
-        </div>
-
-        <div class="trust-item">
-          <div class="trust-icon-circle" style="background: #e0f2fe; color: #0284c7;">
-            <i class="fa-solid fa-headset"></i>
-          </div>
-          <h4 class="trust-title">24/7 Support</h4>
-          <p class="trust-sub">Live Dispatch</p>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-tab">
-    <div class="tab-item active">
+    <a href="home.html" class="tab-item active">
       <i class="fa-solid fa-house"></i>
       <span>Home</span>
-    </div>
+    </a>
     <a href="wallet-history.html" class="tab-item">
       <i class="fa-solid fa-receipt"></i>
       <span>History</span>
     </a>
-    <div class="tab-item" onclick="alert('Profile Settings Active')">
+    <a href="profile.html" class="tab-item">
       <i class="fa-solid fa-user"></i>
       <span>Profile</span>
-    </div>
+    </a>
     <div class="tab-item" onclick="openWhatsApp()">
       <i class="fa-brands fa-whatsapp"></i>
       <span>Support</span>
@@ -787,6 +922,42 @@
       ? CONFIG.BASE_URL
       : "https://ayax-data-xpress-server.onrender.com/api/v1";
 
+    function openDrawer() {
+      document.getElementById('sideDrawer').classList.add('open');
+      document.getElementById('drawerOverlay').style.display = 'block';
+    }
+
+    function closeDrawer() {
+      document.getElementById('sideDrawer').classList.remove('open');
+      document.getElementById('drawerOverlay').style.display = 'none';
+    }
+
+    function handleLogout() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        window.location.href = "index.html";
+      }
+    }
+
+    const headerLogoPaths = [
+      "assets/Logo.png",
+      "assets/logo.png",
+      "assets/icon.png",
+      "assets/adaptive-icon.png"
+    ];
+
+    function tryNextHeaderLogo(img) {
+      let idx = Number(img.getAttribute("data-try-idx") || "0") + 1;
+      if (idx < headerLogoPaths.length) {
+        img.setAttribute("data-try-idx", idx);
+        img.src = headerLogoPaths[idx];
+      } else {
+        img.style.display = "none";
+        const fallback = document.getElementById("headerLogoFallbackIcon");
+        if (fallback) fallback.style.display = "block";
+      }
+    }
+
     let state = {
       token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
       userData: null,
@@ -795,7 +966,6 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-      // 1. Load cached storage immediately for zero-latency paint
       const cachedAcc = localStorage.getItem('userVirtualAccount');
       const cachedUser = localStorage.getItem('userData');
 
@@ -822,7 +992,6 @@
         } catch (_) {}
       }
 
-      // 2. Fetch fresh real-time user data
       fetchUserData();
       setInterval(() => fetchUserData(true), 15000);
     });
@@ -857,7 +1026,6 @@
     async function fetchUserData(isBackground = false) {
       if (!state.token) {
         if (!isBackground) {
-          alert("Please login to proceed.");
           window.location.href = "index.html";
         }
         return;
@@ -892,7 +1060,7 @@
           }
         }
       } catch (e) {
-        console.warn("Real-time profile sync notice:", e.message);
+        console.warn("Sync notice:", e.message);
       }
     }
 
@@ -901,7 +1069,11 @@
       if (!user) return;
 
       const name = user.firstName || user.name || user.surname || "Customer";
+      const phone = user.phone || user.email || "";
+
       document.getElementById('userDisplayName').textContent = name;
+      document.getElementById('drawerUserName').textContent = name;
+      document.getElementById('drawerUserPhone').textContent = phone;
 
       updateBalanceDisplay();
     }
@@ -965,7 +1137,6 @@
 
     async function handleGetVirtualAccount() {
       if (!state.token) {
-        alert("Session expired. Please login again.");
         window.location.href = "index.html";
         return;
       }
@@ -1003,7 +1174,7 @@
           throw new Error(data.message || "Could not generate virtual account.");
         }
       } catch (error) {
-        alert("Error: " + (error.message || "Could not generate virtual account. Please try again later."));
+        alert("Error: " + (error.message || "Could not generate virtual account."));
       } finally {
         btn.disabled = false;
         btn.innerHTML = originalText;
@@ -1016,7 +1187,5 @@
       window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
     }
   </script>
-  <script src="js/config.js"></script>
-  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>
