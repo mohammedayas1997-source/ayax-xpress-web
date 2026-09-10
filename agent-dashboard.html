@@ -10,11 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <!-- Favicon & Web App Manifest -->
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0284c7">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a1d37">
 
   <style>
     :root {
@@ -78,6 +79,11 @@
       color: var(--text-dark);
       cursor: pointer;
       font-size: 16px;
+      transition: all 0.2s;
+    }
+
+    .btn-menu:hover {
+      background: #e2e8f0;
     }
 
     .agent-badge {
@@ -113,6 +119,12 @@
       color: var(--accent-blue);
       cursor: pointer;
       position: relative;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .notif-btn:hover {
+      background: #e2e8f0;
     }
 
     .notif-badge {
@@ -474,6 +486,7 @@
       align-items: center;
       cursor: pointer;
       padding: 8px 4px;
+      text-decoration: none;
     }
 
     .service-icon-wrap {
@@ -558,6 +571,7 @@
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
       z-index: 1000;
     }
 
@@ -569,7 +583,8 @@
       padding: 20px 16px;
       display: flex;
       flex-direction: column;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      box-shadow: 2px 0 15px rgba(0,0,0,0.15);
+      overflow-y: auto;
     }
 
     .sidebar-head {
@@ -579,6 +594,25 @@
       padding-bottom: 14px;
       border-bottom: 1px solid var(--border-light);
       margin-bottom: 10px;
+    }
+
+    .sidebar-logo-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .sidebar-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 2px;
     }
 
     .nav-link-item {
@@ -593,10 +627,12 @@
       font-weight: 700;
       margin-bottom: 4px;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
     .nav-link-item:hover {
       background: #f1f5f9;
+      color: var(--accent-blue);
     }
 
     .btn-sidebar-logout {
@@ -659,17 +695,20 @@
   <!-- Top Header -->
   <header class="top-header">
     <div class="nav-row">
-      <button class="btn-menu" onclick="toggleSidebar(true)"><i class="fa-solid fa-bars"></i></button>
+      <button type="button" class="btn-menu" onclick="toggleSidebar(true)" title="Open Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
 
       <div class="agent-badge">
         <span class="live-dot"></span>
         <span id="headerStationBadge">RETAIL AGENT • NIGERIA</span>
       </div>
 
-      <div class="notif-btn" onclick="alert('Notification Center Active')">
+      <!-- Real Notification Link -->
+      <a href="notifications.html" class="notif-btn" title="Notification Center">
         <i class="fa-regular fa-bell"></i>
         <div class="notif-badge" id="unreadNotifCount" style="display: none;">0</div>
-      </div>
+      </a>
     </div>
 
     <div class="welcome-section">
@@ -688,7 +727,7 @@
           <i class="fa-solid fa-shield-halved"></i>
           <span>AVAILABLE WALLET BALANCE</span>
         </div>
-        <a class="history-pill" onclick="alert('Routing to Transaction History')">
+        <a href="wallet-history.html" class="history-pill">
           <span>History</span> <i class="fa-solid fa-chevron-right" style="font-size: 9px;"></i>
         </a>
       </div>
@@ -696,14 +735,16 @@
       <div class="balance-container">
         <span class="currency">₦</span>
         <span class="balance-text" id="walletBalanceVal">0.00</span>
-        <button class="eye-toggle" onclick="toggleBalanceVisibility()"><i class="fa-regular fa-eye" id="eyeIcon"></i></button>
+        <button type="button" class="eye-toggle" onclick="toggleBalanceVisibility()">
+          <i class="fa-regular fa-eye" id="eyeIcon"></i>
+        </button>
       </div>
 
       <div class="wallet-actions">
-        <button class="btn-wallet-action btn-fund" onclick="alert('Wallet Funding Portal Active')">
+        <a href="fund-wallet.html" class="btn-wallet-action btn-fund">
           <i class="fa-solid fa-circle-plus"></i> FUND WALLET
-        </button>
-        <button class="btn-wallet-action btn-support" onclick="openWhatsApp()">
+        </a>
+        <button type="button" class="btn-wallet-action btn-support" onclick="openWhatsApp()">
           <i class="fa-brands fa-whatsapp" style="color: #22c55e;"></i> WHATSAPP
         </button>
       </div>
@@ -758,7 +799,7 @@
         <p style="font-size: 12px; color: #64748b; margin: 0 0 10px 0;">
           Your dedicated automated bank account is ready for activation.
         </p>
-        <button class="btn-generate-acc" onclick="handleCreateVirtualAccount()">
+        <button type="button" class="btn-generate-acc" onclick="handleCreateVirtualAccount()">
           <i class="fa-solid fa-wand-magic-sparkles"></i> Activate Virtual Account
         </button>
       </div>
@@ -769,7 +810,7 @@
             <h3 class="bank-name" id="dvaBankName">Wema Bank</h3>
             <p class="account-name" id="dvaAccountName">Ayax Agent</p>
           </div>
-          <button class="btn-copy-acc" onclick="copyAccountNumber()">
+          <button type="button" class="btn-copy-acc" onclick="copyAccountNumber()">
             <i class="fa-regular fa-copy"></i> COPY
           </button>
         </div>
@@ -778,53 +819,53 @@
       </div>
     </section>
 
-    <!-- 4. Retail Services Grid -->
+    <!-- 4. Retail Services Grid (Real-Life Functional Links) -->
     <span class="section-label">RETAIL SERVICES & DISPENSER</span>
     <section class="services-grid-card">
-      <button class="service-btn" onclick="alert('Dispense Data Bundles Active')">
+      <a href="buy-data.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-wifi"></i></div>
         <span class="service-label">Buy Data</span>
-      </button>
+      </a>
 
-      <button class="service-btn" onclick="alert('Airtime VTU Gateway Active')">
+      <a href="buy-airtime.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-phone"></i></div>
         <span class="service-label">Airtime VTU</span>
-      </button>
+      </a>
 
-      <button class="service-btn" onclick="alert('Electricity Token Portal Active')">
+      <a href="electricity.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #fef3c7; color: #d97706;"><i class="fa-solid fa-bolt"></i></div>
         <span class="service-label">Electricity</span>
-      </button>
+      </a>
 
-      <button class="service-btn" onclick="alert('Cable TV Subscription Active')">
+      <a href="cable.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #ede9fe; color: #7c3aed;"><i class="fa-solid fa-tv"></i></div>
         <span class="service-label">Cable TV</span>
-      </button>
+      </a>
 
-      <button class="service-btn" onclick="alert('NIMC Verification Desk Active')">
+      <a href="nin-verification-service.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-id-card"></i></div>
         <span class="service-label">NIMC Verify</span>
-      </button>
+      </a>
 
-      <button class="service-btn" onclick="alert('NIMC Modification Desk Active')">
+      <a href="nimc-modification.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #ffe4e6; color: #e11d48;"><i class="fa-solid fa-fingerprint"></i></div>
         <span class="service-label">NIMC Mod</span>
-      </button>
+      </a>
 
-      <button class="service-btn" onclick="alert('BVN Verification Desk Active')">
+      <a href="bvn-history.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #ffedd5; color: #ea580c;"><i class="fa-solid fa-shield-halved"></i></div>
         <span class="service-label">BVN Desk</span>
-      </button>
+      </a>
 
-      <button class="service-btn" onclick="alert('NIN Validation Active')">
+      <a href="nin-verification-service.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #e0e7ff; color: #4f46e5;"><i class="fa-solid fa-user-shield"></i></div>
         <span class="service-label">NIN Validate</span>
-      </button>
+      </a>
 
-      <button class="service-btn" onclick="alert('Routing to Transaction History')">
+      <a href="wallet-history.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-clock-rotate-left"></i></div>
         <span class="service-label">History</span>
-      </button>
+      </a>
     </section>
 
     <!-- 5. Assigned Field Supervisor -->
@@ -835,7 +876,7 @@
       </div>
       <div style="flex: 1;">
         <h4 class="sup-name" id="supName">Field Operations Desk</h4>
-        <p class="sup-sub" id="supSub">LGA Coordinator • 09033738409</p>
+        <p class="sup-sub" id="supSub">LGA Coordinator • Support Line</p>
       </div>
       <a href="tel:09033738409" class="sup-call-btn" id="supCallBtn" title="Call Supervisor">
         <i class="fa-solid fa-phone"></i>
@@ -849,25 +890,31 @@
     <div class="sidebar-drawer" onclick="event.stopPropagation()">
       <div class="sidebar-head">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-tower-broadcast" style="font-size: 22px; color: #0284c7;"></i>
+          <div class="sidebar-logo-box">
+            <img src="assets/Logo.png" alt="Ayax Logo" onerror="this.src='assets/logo.png'">
+          </div>
           <div>
-            <h3 style="margin: 0; font-size: 15px; font-weight: 900;">Ayax Retail</h3>
+            <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--primary-navy);">Ayax Retail</h3>
             <span style="font-size: 10px; color: #0284c7; font-weight: 700;">Agent Terminal Node</span>
           </div>
         </div>
-        <button onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 18px; color: #64748b; cursor: pointer;">&times;</button>
+        <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer;">&times;</button>
       </div>
 
       <div style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 0.8px; margin: 12px 0 6px 4px;">SERVICES & UTILITIES</div>
-      <a class="nav-link-item" onclick="alert('Data Bundles')"><i class="fa-solid fa-wifi" style="color: #0284c7;"></i> Dispense Data Bundles</a>
-      <a class="nav-link-item" onclick="alert('Airtime VTU')"><i class="fa-solid fa-phone" style="color: #16a34a;"></i> Recharge Airtime VTU</a>
-      <a class="nav-link-item" onclick="alert('Records')"><i class="fa-solid fa-clock-rotate-left" style="color: #d97706;"></i> Transaction Records</a>
+      <a href="buy-data.html" class="nav-link-item"><i class="fa-solid fa-wifi" style="color: #0284c7;"></i> Dispense Data Bundles</a>
+      <a href="buy-airtime.html" class="nav-link-item"><i class="fa-solid fa-phone" style="color: #16a34a;"></i> Recharge Airtime VTU</a>
+      <a href="electricity.html" class="nav-link-item"><i class="fa-solid fa-bolt" style="color: #d97706;"></i> Electricity Tokens</a>
+      <a href="cable.html" class="nav-link-item"><i class="fa-solid fa-tv" style="color: #7c3aed;"></i> Cable TV Subscription</a>
+      <a href="nin-verification-service.html" class="nav-link-item"><i class="fa-solid fa-id-card" style="color: #0284c7;"></i> NIMC & Identity Desk</a>
+      <a href="wallet-history.html" class="nav-link-item"><i class="fa-solid fa-clock-rotate-left" style="color: #0284c7;"></i> Transaction Records</a>
 
-      <div style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 0.8px; margin: 16px 0 6px 4px;">ACCOUNT</div>
-      <a class="nav-link-item" onclick="alert('Profile')"><i class="fa-solid fa-user" style="color: #0284c7;"></i> Agent Profile</a>
-      <a class="nav-link-item" onclick="openWhatsApp()"><i class="fa-brands fa-whatsapp" style="color: #16a34a;"></i> Supervisor Help Desk</a>
+      <div style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 0.8px; margin: 16px 0 6px 4px;">ACCOUNT & SUPPORT</div>
+      <a href="profile.html" class="nav-link-item"><i class="fa-solid fa-user" style="color: #0284c7;"></i> Agent Profile</a>
+      <a href="notifications.html" class="nav-link-item"><i class="fa-solid fa-bell" style="color: #d97706;"></i> Notifications</a>
+      <a href="javascript:void(0)" onclick="openWhatsApp()" class="nav-link-item"><i class="fa-brands fa-whatsapp" style="color: #16a34a;"></i> Supervisor Help Desk</a>
 
-      <button class="btn-sidebar-logout" onclick="handleLogout()">
+      <button type="button" class="btn-sidebar-logout" onclick="handleLogout()">
         <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout Agent Terminal
       </button>
     </div>
@@ -875,18 +922,18 @@
 
   <!-- Bottom Navigation Tab -->
   <nav class="bottom-tab">
-    <div class="tab-item active">
+    <a href="agent-dashboard.html" class="tab-item active">
       <i class="fa-solid fa-house"></i>
       <span>Home</span>
-    </div>
-    <div class="tab-item" onclick="alert('Routing to Transaction History')">
+    </a>
+    <a href="wallet-history.html" class="tab-item">
       <i class="fa-solid fa-receipt"></i>
       <span>History</span>
-    </div>
-    <div class="tab-item" onclick="alert('Routing to Agent Profile')">
+    </a>
+    <a href="profile.html" class="tab-item">
       <i class="fa-solid fa-user"></i>
       <span>Profile</span>
-    </div>
+    </a>
     <div class="tab-item" onclick="openWhatsApp()">
       <i class="fa-brands fa-whatsapp"></i>
       <span>Support</span>
@@ -910,12 +957,10 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       if (!state.token) {
-        alert('Please login first.');
         window.location.href = 'index.html';
         return;
       }
 
-      // Load cached local user data first for zero latency
       const cached = localStorage.getItem('userData');
       if (cached) {
         try {
@@ -925,10 +970,11 @@
       }
 
       fetchAgentDashboardData();
-      setInterval(fetchAgentDashboardData, 5000);
+      setInterval(fetchAgentDashboardData, 15000);
     });
 
     async function fetchAgentDashboardData() {
+      if (!state.token) return;
       const headers = { 'Authorization': `Bearer ${state.token}`, 'Accept': 'application/json' };
 
       try {
@@ -950,7 +996,7 @@
         if (supRes.status === 'fulfilled' && supRes.value?.data) {
           const sup = supRes.value.data;
           document.getElementById('supName').textContent = sup.name || 'Field Operations Lead';
-          document.getElementById('supSub').textContent = `${state.user?.lga || 'LGA'} Coordinator • ${sup.phone || ''}`;
+          document.getElementById('supSub').textContent = `${state.user?.lga || 'LGA'} Coordinator • ${sup.phone || '09033738409'}`;
           if (sup.phone) {
             document.getElementById('supCallBtn').href = 'tel:' + sup.phone;
           }
@@ -981,10 +1027,9 @@
       const st = u.state ? u.state.toUpperCase() : 'NIGERIA';
       document.getElementById('headerStationBadge').textContent = `${lga} • ${st}`;
 
-      // Balance
       updateBalanceDisplay();
 
-      // Virtual Account
+      // Virtual Account Extraction
       const acc = u.virtualAccount || u.dva || {};
       const accNum = acc.accountNumber || acc.account_number || u.accountNumber;
       if (accNum && String(accNum).trim().length > 6) {
@@ -1027,12 +1072,12 @@
     }
 
     function updateBalanceDisplay() {
-      const bal = Number(state.user?.walletBalance || state.user?.balance || 0);
+      const bal = Number(state.user?.walletBalance !== undefined ? state.user.walletBalance : state.user?.balance || 0);
       const el = document.getElementById('walletBalanceVal');
       const icon = document.getElementById('eyeIcon');
 
       if (state.balanceVisible) {
-        el.textContent = bal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        el.textContent = bal.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         icon.className = 'fa-regular fa-eye';
       } else {
         el.textContent = '••••••••';
@@ -1066,7 +1111,7 @@
     function copyAccountNumber() {
       if (!state.virtualAccount) return;
       navigator.clipboard.writeText(state.virtualAccount.accountNumber).then(() => {
-        alert('Account number copied to clipboard: ' + state.virtualAccount.accountNumber);
+        alert('Account number copied: ' + state.virtualAccount.accountNumber);
       });
     }
 
@@ -1087,8 +1132,5 @@
       }
     }
   </script>
-  <script src="js/config.js"></script>
-  <script src="js/adminApi.js"></script>
-  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>
