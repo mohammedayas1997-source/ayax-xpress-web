@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>NIMC Verification & Slip Portal | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #050811;
+      --card-bg: #0b1120;
+      --border-dark: #1e293b;
+      --accent-blue: #0284c7;
+      --accent-cyan: #00f0ff;
+      --accent-green: #10b981;
+      --accent-red: #dc2626;
+      --accent-amber: #f59e0b;
+      --text-white: #f8fafc;
+      --text-muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Command Header */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 18px 14px 18px;
+      max-width: 680px;
+      margin: 0 auto;
+      position: sticky;
+      top: 0;
+      background: rgba(5, 8, 17, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-white);
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text-white);
+      margin: 0;
+      letter-spacing: 0.3px;
+    }
+
+    /* Container Area */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 14px 16px 80px 16px;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, #0369a1 0%, #0f172a 100%);
+      padding: 18px;
+      border-radius: 18px;
+      margin-bottom: 18px;
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 4px 20px rgba(0, 240, 255, 0.15);
+    }
+
+    .banner-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 26px;
+      background: rgba(0, 240, 255, 0.12);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-cyan);
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .banner-title {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 900;
+      margin: 0 0 3px 0;
+    }
+
+    .banner-sub {
+      color: #cbd5e1;
+      font-size: 11px;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .section-heading {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* Channels Grid */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .service-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .service-box:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+
+    .box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .icon-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      background: #071328;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-cyan);
+      font-size: 18px;
+    }
+
+    .admin-edit-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: var(--accent-amber);
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .box-title {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .box-desc {
+      color: var(--text-muted);
+      font-size: 10px;
+      margin: 4px 0 0 0;
+      line-height: 1.4;
+      min-height: 28px;
+    }
+
+    .price-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .price-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .price-value {
+      color: var(--accent-green);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    /* Modifications Card */
+    .mod-card {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mod-card:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .mod-icon-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: #071328;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .mod-title {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0 0 2px 0;
+    }
+
+    .mod-sub {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 0;
+    }
+
+    /* Form Card */
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .input-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      display: block;
+    }
+
+    .text-input {
+      width: 100%;
+      height: 52px;
+      background: #050811;
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-size: 15px;
+      color: #ffffff;
+      font-weight: 700;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
+    }
+
+    .fee-breakdown-box {
+      background: #070c18;
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 18px 0;
+    }
+
+    .fee-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 4px 0;
+      font-size: 12px;
+    }
+
+    .fee-row-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .fee-row-val {
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .action-btn {
+      width: 100%;
+      height: 52px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(90deg, #0284c7 0%, #2563eb 100%);
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 12.5px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      opacity: 0.94;
+    }
+
+    /* Result Component */
+    .result-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 22px 18px;
+      border: 1px solid var(--border-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .user-photo-box {
+      width: 110px;
+      height: 110px;
+      border-radius: 16px;
+      border: 2px solid var(--accent-cyan);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #071328;
+    }
+
+    .user-photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .status-verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 3px 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+      color: var(--accent-green);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .details-list {
+      width: 100%;
+      margin: 14px 0;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 12px;
+    }
+
+    .result-label {
+      color: var(--text-muted);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .result-val {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .copy-small-btn {
+      background: rgba(0, 240, 255, 0.1);
+      border: none;
+      color: var(--accent-cyan);
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 6px;
+    }
+
+    .download-pdf-btn {
+      width: 100%;
+      height: 50px;
+      background: var(--accent-red);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-weight: 900;
+      font-size: 12.5px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .download-pdf-btn:hover {
+      background: #b91c1c;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 340px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      border: 1px solid var(--border-dark);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-title {
+      color: var(--text-white);
+      font-size: 16px;
+      font-weight: 900;
+      margin: 0 0 6px 0;
+    }
+
+    .modal-subtitle {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 0 0 16px 0;
+      line-height: 1.4;
+    }
+
+    .modal-pin-input {
+      width: 100%;
+      height: 50px;
+      background: #050811;
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 24px;
+      letter-spacing: 8px;
+      color: #ffffff;
+      font-weight: bold;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .modal-pin-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .modal-submit-btn {
+      width: 100%;
+      height: 46px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .modal-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .modal-cancel-btn {
+      background: none;
+      border: none;
+      color: var(--accent-red);
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- VIEW 1: SELECTION MENU -->
+  <div id="viewMain">
+    <header class="header-bar">
+      <a href="javascript:history.back()" class="back-btn" title="Back">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <h1 class="header-title">NIMC Slip Services</h1>
+      <div style="width: 40px;"></div>
+    </header>
+
+    <main class="container">
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="banner-icon-wrap">
+          <i class="fa-solid fa-print"></i>
+        </div>
+        <div style="margin-left: 14px; flex: 1;">
+          <h2 class="banner-title">NIMC Slip Printing</h2>
+          <p class="banner-sub">Instant verified reprint using NIN, Phone number, or Tracking ID.</p>
+        </div>
+      </div>
+
+      <span class="section-heading">SELECT VERIFICATION CHANNEL</span>
+
+      <!-- Channels Grid -->
+      <div class="grid-container" id="channelsGrid">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Data Modification Card -->
+      <a href="nimc-modification.html" class="mod-card">
+        <div class="mod-icon-wrap">
+          <i class="fa-solid fa-user-pen"></i>
+        </div>
+        <div style="flex: 1; margin-left: 14px;">
+          <h3 class="mod-title">NIMC Data Modifications</h3>
+          <p class="mod-sub">Update Date of Birth, Name, or Phone Number</p>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color: #64748b; font-size: 15px;"></i>
+      </a>
+    </main>
+  </div>
+
+  <!-- VIEW 2: VERIFICATION FORM -->
+  <div id="viewForm" style="display: none;">
+    <header class="header-bar">
+      <button type="button" class="back-btn" onclick="switchView('main')">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <h1 class="header-title" id="formHeaderTitle">Channel Verification</h1>
+      <div style="width: 40px;"></div>
+    </header>
+
+    <main class="container">
+      <div class="form-card">
+        <label class="input-label" for="searchValueInput">IDENTIFICATION NUMBER / VALUE</label>
+        <input
+          type="text"
+          id="searchValueInput"
+          class="text-input"
+          placeholder="Enter details..."
+          autocomplete="off"
+        />
+
+        <div class="fee-breakdown-box">
+          <div class="fee-row">
+            <span class="fee-row-label">Service Type</span>
+            <span class="fee-row-val" id="formServiceName">-</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-row-label">Portal Printing Fee</span>
+            <span class="fee-row-val" id="formServicePrice" style="color: var(--accent-green);">₦100</span>
+          </div>
+        </div>
+
+        <button type="button" class="action-btn" onclick="handleInitiateVerification()">
+          <i class="fa-solid fa-print"></i>
+          <span id="btnActionText">VERIFY & PRINT SLIP (₦100)</span>
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- VIEW 3: VERIFIED PROFILE RESULT -->
+  <div id="viewResult" style="display: none;">
+    <header class="header-bar">
+      <button type="button" class="back-btn" onclick="switchView('main')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h1 class="header-title">Verified NIMC Profile</h1>
+      <div style="width: 40px;"></div>
+    </header>
+
+    <main class="container">
+      <div class="result-card">
+        <div class="user-photo-box" id="userPhotoContainer">
+          <i class="fa-solid fa-user" style="font-size: 54px; color: #64748b;"></i>
+        </div>
+
+        <div class="status-verified-badge">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>NIMC VERIFIED</span>
+        </div>
+
+        <div class="details-list" id="resultDetailsList">
+          <!-- Injected via JavaScript -->
+        </div>
+
+        <button type="button" class="download-pdf-btn" onclick="handleDownloadPDF()">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span>DOWNLOAD PRINTABLE SLIP (PDF)</span>
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- PIN Authorization Modal -->
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal-content">
+      <i class="fa-solid fa-shield-halved" style="font-size: 36px; color: var(--accent-cyan); margin-bottom: 10px;"></i>
+      <h2 class="modal-title">Enter Security PIN</h2>
+      <p class="modal-subtitle" id="pinModalSub">Authorize verification fee</p>
+
+      <input
+        type="password"
+        id="pinInput"
+        class="modal-pin-input"
+        placeholder="••••"
+        maxlength="4"
+        inputmode="numeric"
+      />
+
+      <button type="button" class="modal-submit-btn" id="btnConfirmPay" onclick="handleVerification()">
+        Confirm & Authorize
+      </button>
+
+      <button type="button" class="modal-cancel-btn" onclick="closePinModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Price Editor Modal -->
+  <div class="modal-overlay" id="adminPriceModal">
+    <div class="modal-content">
+      <i class="fa-solid fa-tag" style="font-size: 32px; color: var(--accent-amber); margin-bottom: 10px;"></i>
+      <h2 class="modal-title">Update Service Price</h2>
+      <p class="modal-subtitle" id="adminPriceModalSub">Set global retail fee</p>
+
+      <input
+        type="number"
+        id="adminPriceInput"
+        class="modal-pin-input"
+        style="letter-spacing: normal; font-size: 16px;"
+        placeholder="Enter price in Naira"
+      />
+
+      <button type="button" class="modal-submit-btn" id="btnSaveAdminPrice" onclick="handleSaveAdminPrice()">
+        SAVE PRICE
+      </button>
+
+      <button type="button" class="modal-cancel-btn" onclick="closeAdminPriceModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    const searchOptions = [
+      { id: "nin", name: "NIN Number Search", placeholder: "Enter 11-digit NIN (e.g. 12345678901)", icon: "fa-fingerprint", length: 11, desc: "Direct verification using national identity number" },
+      { id: "phone", name: "Phone Number Search", placeholder: "Enter Linked Phone Number (e.g. 08012345678)", icon: "fa-phone", length: 14, desc: "Fetch identity profile linked to SIM number" },
+      { id: "trackingId", name: "Tracking ID Search", placeholder: "Enter NIMC Tracking ID (e.g. TRK12345XYZ)", icon: "fa-barcode", length: 20, desc: "Retrieve slip with NIMC enrollment tracking code" },
+      { id: "standardSlip", name: "Standard NIN Slip", placeholder: "Enter 11-digit NIN or Tracking ID", icon: "fa-file-lines", length: 20, desc: "Official full details identification printable slip" },
+      { id: "premiumCard", name: "Premium ID Card Slip", placeholder: "Enter 11-digit NIN", icon: "fa-id-card", length: 11, desc: "Wallet plastic-sized ready-to-laminate NIN card" },
+      { id: "basicSlip", name: "Basic Identification Slip", placeholder: "Enter 11-digit NIN", icon: "fa-print", length: 11, desc: "Concise confirmation paper format slip" }
+    ];
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      isAdmin: false,
+      selectedSearch: null,
+      searchValue: '',
+      prices: { nin: 100, phone: 150, trackingId: 100, standardSlip: 200, premiumCard: 300, basicSlip: 100 },
+      userData: null,
+      editingService: null
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const stored = localStorage.getItem('userData');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          state.isAdmin = parsed.role === "admin" || parsed.isAdmin === true;
+        } catch (_) {}
+      }
+
+      renderChannelsGrid();
+      fetchLivePrices();
+    });
+
+    function renderChannelsGrid() {
+      const container = document.getElementById('channelsGrid');
+      container.innerHTML = searchOptions.map(opt => {
+        const cost = state.prices[opt.id] || 100;
+        return `
+          <div class="service-box" onclick="selectChannel('${opt.id}')">
+            <div class="box-header">
+              <div class="icon-circle"><i class="fa-solid ${opt.icon}"></i></div>
+              ${state.isAdmin ? `
+                <button type="button" class="admin-edit-pill" onclick="event.stopPropagation(); openAdminPriceModal('${opt.id}')">
+                  <i class="fa-solid fa-pen"></i> Edit
+                </button>
+              ` : ''}
+            </div>
+            <h3 class="box-title">${opt.name}</h3>
+            <p class="box-desc">${opt.desc}</p>
+            <div class="price-container">
+              <span class="price-label">Fee:</span>
+              <span class="price-value">₦${Number(cost).toLocaleString()}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function fetchLivePrices() {
+      try {
+        const res = await fetch(`${BASE_URL}/nimc/prices`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.prices) {
+            if (typeof data.prices === "object" && !Array.isArray(data.prices)) {
+              state.prices = { ...state.prices, ...data.prices };
+            } else if (Array.isArray(data.prices)) {
+              const map = {};
+              data.prices.forEach(p => { if (p.serviceType) map[p.serviceType] = p.amount; });
+              state.prices = { ...state.prices, ...map };
+            }
+            renderChannelsGrid();
+          }
+        }
+      } catch (_) {}
+    }
+
+    function switchView(viewName) {
+      document.getElementById('viewMain').style.display = viewName === 'main' ? 'block' : 'none';
+      document.getElementById('viewForm').style.display = viewName === 'form' ? 'block' : 'none';
+      document.getElementById('viewResult').style.display = viewName === 'result' ? 'block' : 'none';
+      window.scrollTo(0, 0);
+    }
+
+    function selectChannel(id) {
+      const opt = searchOptions.find(o => o.id === id);
+      if (!opt) return;
+
+      state.selectedSearch = opt;
+      const cost = state.prices[opt.id] || 100;
+
+      document.getElementById('formHeaderTitle').textContent = opt.name;
+      document.getElementById('formServiceName').textContent = opt.name;
+      document.getElementById('formServicePrice').textContent = `₦${Number(cost).toLocaleString()}`;
+      document.getElementById('btnActionText').textContent = `VERIFY & PRINT SLIP (₦${Number(cost).toLocaleString()})`;
+
+      const input = document.getElementById('searchValueInput');
+      input.placeholder = opt.placeholder;
+      input.maxLength = opt.length;
+      input.value = '';
+
+      switchView('form');
+    }
+
+    function handleInitiateVerification() {
+      const val = document.getElementById('searchValueInput').value.trim();
+      if (!val || val.length < 6) {
+        alert(`Please enter a valid ${state.selectedSearch?.name || "ID / Number"}.`);
+        return;
+      }
+
+      state.searchValue = val;
+      const cost = state.prices[state.selectedSearch.id] || 100;
+      document.getElementById('pinModalSub').textContent = `Authorize ₦${Number(cost).toLocaleString()} fee for ${state.selectedSearch.name}`;
+
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('pinInput').focus(), 100);
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').style.display = 'none';
+      document.getElementById('pinInput').value = '';
+    }
+
+    async function handleVerification() {
+      const pin = document.getElementById('pinInput').value.trim();
+
+      if (!pin || pin.length < 4) {
+        alert("Security PIN: Please enter your 4-digit Transaction PIN.");
+        return;
+      }
+
+      if (!state.token) {
+        closePinModal();
+        alert("Session Expired: Please login again.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmPay');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        const serviceId = state.selectedSearch?.id || "nin";
+        const cost = state.prices[serviceId] || 100;
+        let cleanInput = state.searchValue.trim();
+
+        let payload = {
+          serviceType: serviceId,
+          searchType: serviceId,
+          amount: cost,
+          pin: pin,
+          transactionPin: pin,
+          format: "pdf",
+          generatePdf: true
+        };
+
+        if (serviceId === "phone") {
+          let phoneDigits = cleanInput.replace(/\D/g, "");
+          if (phoneDigits.startsWith("234") && phoneDigits.length >= 13) {
+            phoneDigits = "0" + phoneDigits.slice(3);
+          } else if (phoneDigits.length === 10 && !phoneDigits.startsWith("0")) {
+            phoneDigits = "0" + phoneDigits;
+          }
+          payload.phone = phoneDigits;
+          payload.phoneNumber = phoneDigits;
+          payload.searchValue = phoneDigits;
+        } else if (serviceId === "trackingId") {
+          payload.trackingId = cleanInput;
+          payload.searchValue = cleanInput;
+        } else {
+          payload.nin = cleanInput;
+          payload.ninNumber = cleanInput;
+          payload.searchValue = cleanInput;
+        }
+
+        const response = await fetch(`${BASE_URL}/nimc/submit-request`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && (result.success || result.status === 'success')) {
+          closePinModal();
+          state.userData = result.data || result;
+          renderProfileResult();
+          switchView('result');
+        } else {
+          throw new Error(result.message || "Verification failed. Check your input.");
+        }
+      } catch (err) {
+        alert("Verification Failed: " + (err.message || "Server communication failure."));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function renderProfileResult() {
+      const u = state.userData;
+      if (!u) return;
+
+      const photoBox = document.getElementById('userPhotoContainer');
+      const photoSrc = u.photo || u.image;
+      if (photoSrc) {
+        const fullUri = String(photoSrc).startsWith("data:image") ? photoSrc : `data:image/jpeg;base64,${photoSrc}`;
+        photoBox.innerHTML = `<img src="${fullUri}" alt="Verified NIMC Photo" />`;
+      } else {
+        photoBox.innerHTML = `<i class="fa-solid fa-user" style="font-size: 54px; color: #64748b;"></i>`;
+      }
+
+      const fullName = u.fullName || u.name || `${u.firstName || u.firstname || ''} ${u.middleName || u.middlename || ''} ${u.surname || ''}`.trim() || "N/A";
+      const resolvedNin = u.nin || u.ninNumber || u.idNumber || u.details?.nin || u.details?.data?.nin || state.searchValue || "N/A";
+      const trackingId = u.trackingId || u.tracking_id || "N/A";
+
+      const details = [
+        { label: "Full Name", val: fullName, copy: false },
+        { label: "National Identity Number (NIN)", val: resolvedNin, copy: true },
+        { label: "Tracking ID", val: trackingId, copy: true },
+        { label: "Phone Number", val: u.telephoneno || u.phone || "N/A", copy: false },
+        { label: "Date of Birth", val: u.birthdate || u.dob || "N/A", copy: false },
+        { label: "Gender", val: u.gender || "N/A", copy: false },
+        { label: "State of Origin", val: u.state || u.stateOfOrigin || "N/A", copy: false },
+        { label: "LGA of Origin", val: u.lga || u.lgaOfOrigin || "N/A", copy: false }
+      ];
+
+      document.getElementById('resultDetailsList').innerHTML = details.map(d => `
+        <div class="result-row">
+          <div>
+            <div class="result-label">${d.label}</div>
+            <div class="result-val">${d.val}</div>
+          </div>
+          ${d.copy && d.val !== "N/A" ? `
+            <button type="button" class="copy-small-btn" onclick="copyValue('${d.val}', '${d.label}')">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function copyValue(val, label) {
+      navigator.clipboard.writeText(val).then(() => {
+        alert(`${label} copied to clipboard.`);
+      });
+    }
+
+    function handleDownloadPDF() {
+      const u = state.userData;
+      if (!u) return;
+
+      const directPdf = u.pdfUrl || u.slipUrl || u.downloadUrl || u.fileUrl || u.url || u.slip;
+      if (directPdf && typeof directPdf === "string" && directPdf.startsWith("http")) {
+        window.open(directPdf, "_blank");
+        return;
+      }
+
+      // Generate Native Printable HTML View
+      const rawFullName = (u.fullName || u.name || `${u.firstName || u.firstname || ""} ${u.middleName || u.middlename || ""} ${u.surname || ""}`).trim();
+      const nameParts = rawFullName.split(/\s+/).filter(Boolean);
+      const surname = (u.surname || nameParts[0] || "MOHAMMED").toUpperCase();
+      const firstName = (u.firstName || u.firstname || nameParts[1] || "ABDULRAHMAN").toUpperCase();
+      const middleName = (u.middleName || u.middlename || nameParts.slice(2).join(" ") || "AYAS").toUpperCase();
+      const givenNames = `${firstName}, ${middleName}`.replace(/,\s*$/, "");
+
+      const rawNin = String(u.nin || u.ninNumber || u.idNumber || state.searchValue || "").replace(/\D/g, "");
+      const nin = rawNin.length === 11 ? rawNin : "68609193060";
+      const formattedNin = `${nin.slice(0, 4)} ${nin.slice(4, 7)} ${nin.slice(7)}`;
+      const trackingId = (u.trackingId || u.tracking_id || "TRK" + nin.slice(-8)).toUpperCase();
+
+      let formattedDob = "02 JUL 1997";
+      try {
+        const d = new Date(u.birthdate || u.dob || "1997-07-02");
+        if (!isNaN(d.getTime())) {
+          const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+          formattedDob = `${String(d.getDate()).padStart(2, "0")} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+      } catch (_) {}
+
+      const gender = (u.gender || "MALE").toUpperCase();
+      const phone = u.telephoneno || u.phone || "09066160989";
+      const residence = (u.residence_address || u.address || "NO 37 BELLO AHMAD ROAD").toUpperCase();
+      const town = (u.residence_town || u.city || "JIMETA").toUpperCase();
+      const lga = (u.residence_lga || u.lga || "YOLA NORTH").toUpperCase();
+      const state = (u.residence_state || u.state || "ADAMAWA").toUpperCase();
+
+      const today = new Date();
+      const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+      const issueDate = `${String(today.getDate()).padStart(2, "0")} ${months[today.getMonth()]} ${today.getFullYear()}`;
+
+      const userPhoto = u.photo || u.image
+        ? (String(u.photo || u.image).startsWith("data:image") ? (u.photo || u.image) : `data:image/jpeg;base64,${u.photo || u.image}`)
+        : "https://via.placeholder.com/150";
+
+      const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(`NIN:${nin}|SURNAME:${surname}|GIVEN:${givenNames}|DOB:${formattedDob}|SEX:${gender}`)}`;
+      const selectedType = state.selectedSearch?.id || "standardSlip";
+
+      let slipHtml = "";
+
+      if (selectedType === "basicSlip") {
+        slipHtml = `
+          <div class="sheet">
+            <div class="regular-card">
+              <div class="regular-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Coat_of_arms_of_Nigeria.svg" style="height: 55px;" />
+                <div style="text-align: center;">
+                  <div style="font-size: 16px; font-weight: bold;">National Identity Management System</div>
+                  <div style="font-size: 13px;">Federal Republic of Nigeria</div>
+                  <div style="font-size: 11px; font-weight: bold; margin-top: 2px;">National Identification Number Slip (NINS)</div>
+                </div>
+                <img src="https://nimc.gov.ng/wp-content/uploads/2020/07/nimc-logo.png" style="height: 46px;" />
+              </div>
+              <table style="width: 100%; border-collapse: collapse; font-size: 10.5px;">
+                <tr>
+                  <td style="border: 1px solid #000; padding: 5px; font-weight: bold; width: 14%;">Tracking ID:</td>
+                  <td style="border: 1px solid #000; padding: 5px; width: 22%;">${trackingId}</td>
+                  <td style="border: 1px solid #000; padding: 5px; font-weight: bold; width: 14%;">Surname:</td>
+                  <td style="border: 1px solid #000; padding: 5px; font-weight: bold; width: 20%;">${surname}</td>
+                  <td style="border: 1px solid #000; padding: 5px; font-weight: bold; width: 14%;">Address:</td>
+                  <td rowspan="5" style="border: 1px solid #000; text-align: center; vertical-align: middle; padding: 4px; width: 16%;">
+                    <img src="${userPhoto}" style="width: 105px; height: 125px; border: 1px solid #000; object-fit: cover;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="border: 1px solid #000; padding: 5px; font-weight: bold;">NIN:</td>
+                  <td style="border: 1px solid #000; padding: 5px; font-weight: bold; font-size: 13px;">${nin}</td>
+                  <td style="border: 1px solid #000; padding: 5px; font-weight: bold;">First Name:</td>
+                  <td style="border: 1px solid #000; padding: 5px; font-weight: bold;">${firstName}</td>
+                  <td rowspan="4" style="border: 1px solid #000; padding: 5px; vertical-align: top; line-height: 15px; font-size: 10px;">
+                    ${residence}<br/>${town}<br/>${lga}<br/>${state}
+                  </td>
+                </tr>
+                <tr><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000; padding: 5px; font-weight: bold;">Middle Name:</td><td style="border: 1px solid #000; padding: 5px;">${middleName}</td></tr>
+                <tr><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000; padding: 5px; font-weight: bold;">Gender:</td><td style="border: 1px solid #000; padding: 5px;">${gender}</td></tr>
+                <tr><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td></tr>
+              </table>
+              <div style="padding: 8px; font-size: 8.5px; border-top: 2px solid #000; line-height: 13px;">
+                <strong>Note:</strong> The National Identification Number (NIN) is your identity. It is confidential and may only be released for legitimate transactions.
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (selectedType === "premiumCard") {
+        slipHtml = `
+          <div class="sheet">
+            <div style="width: 820px; height: 260px; display: flex; border: 1.5px solid #000; background: #fff;">
+              <div style="flex: 1.2; padding: 14px; border-right: 1.5px solid #000; background-color: #f1fbf4; position: relative;">
+                <div style="display: flex; justify-content: space-between;">
+                  <div>
+                    <div style="color: #15803d; font-size: 12px; font-weight: 900;">FEDERAL REPUBLIC OF NIGERIA</div>
+                    <div style="color: #166534; font-size: 9px; font-weight: 800;">DIGITAL NIN SLIP</div>
+                  </div>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Coat_of_arms_of_Nigeria.svg" style="height: 28px;" />
+                </div>
+                <div style="display: flex; margin-top: 6px;">
+                  <img src="${userPhoto}" style="width: 86px; height: 104px; border: 1.5px solid #16a34a; object-fit: cover;" />
+                  <div style="margin-left: 10px; flex: 1;">
+                    <div style="font-size: 7px; color: #64748b; font-weight: bold;">SURNAME/NOM</div>
+                    <div style="font-weight: 900; font-size: 12px;">${surname}</div>
+                    <div style="font-size: 7px; color: #64748b; font-weight: bold; margin-top: 3px;">GIVEN NAMES/PRÉNOMS</div>
+                    <div style="font-weight: 900; font-size: 10.5px;">${givenNames}</div>
+                    <div style="display: flex; gap: 14px; margin-top: 3px;">
+                      <div><span style="font-size: 7px; color: #64748b; font-weight: bold;">DOB: </span><span style="font-size: 9px; font-weight: bold;">${formattedDob}</span></div>
+                      <div><span style="font-size: 7px; color: #64748b; font-weight: bold;">SEX: </span><span style="font-size: 9px; font-weight: bold;">${gender}</span></div>
+                    </div>
+                  </div>
+                  <div style="text-align: center;">
+                    <img src="${qrCodeUrl}" style="width: 78px; height: 78px; border: 1px solid #16a34a;" />
+                    <div style="font-weight: 900; font-size: 13px;">NGA</div>
+                  </div>
+                </div>
+                <div style="margin-top: 6px; text-align: center; border-top: 1.5px solid #86efac; padding-top: 2px;">
+                  <div style="font-size: 22px; font-weight: 900; letter-spacing: 3px; color: #022c22; font-family: monospace;">${formattedNin}</div>
+                </div>
+              </div>
+              <div style="flex: 0.8; padding: 14px; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                <div style="font-weight: 900; font-size: 13px;">DISCLAIMER</div>
+                <div style="font-style: italic; font-size: 9px; margin-bottom: 6px;">Trust, but verify</div>
+                <div style="font-size: 7.2px; line-height: 10px; text-align: justify;">
+                  Kindly ensure each time this ID is presented, that you verify the credentials using a Government APPROVED verification resource.
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        slipHtml = `
+          <div class="sheet">
+            <div style="display: flex; gap: 20px;">
+              <div style="width: 345px; height: 215px; border: 1.5px solid #222; border-radius: 6px; background-color: #fff; padding: 10px;">
+                <div style="text-align: center;">
+                  <div style="color: #15803d; font-size: 9px; font-weight: 900;">FEDERAL REPUBLIC OF NIGERIA</div>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Coat_of_arms_of_Nigeria.svg" style="height: 28px; margin-top: 2px;" />
+                </div>
+                <div style="display: flex; margin-top: 4px;">
+                  <img src="${userPhoto}" style="width: 80px; height: 96px; border: 1px solid #555; object-fit: cover;" />
+                  <div style="margin-left: 8px; flex: 1;">
+                    <div style="font-size: 7px; color: #64748b; font-weight: bold;">Surname/Nom</div>
+                    <div style="font-weight: 900; font-size: 11px;">${surname}</div>
+                    <div style="font-size: 7px; color: #64748b; font-weight: bold; margin-top: 2px;">Given Names</div>
+                    <div style="font-weight: 900; font-size: 10px;">${givenNames}</div>
+                    <div style="font-size: 7px; color: #64748b; font-weight: bold; margin-top: 2px;">Date of Birth</div>
+                    <div style="font-size: 9px; font-weight: bold;">${formattedDob}</div>
+                  </div>
+                  <div style="text-align: center;">
+                    <div style="font-weight: 900; font-size: 11px;">NGA</div>
+                    <img src="${qrCodeUrl}" style="width: 68px; height: 68px; border: 1px solid #ccc; margin-top: 2px;" />
+                  </div>
+                </div>
+                <div style="margin-top: 4px; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2px;">
+                  <div style="font-size: 17px; font-weight: 900; letter-spacing: 2px; font-family: monospace;">${formattedNin}</div>
+                </div>
+              </div>
+              <div style="width: 345px; height: 215px; border: 1.5px solid #222; border-radius: 6px; background-color: #fff; padding: 14px; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                <div style="font-weight: 900; font-size: 12px;">DISCLAIMER</div>
+                <div style="font-style: italic; font-size: 8.5px; margin-bottom: 6px;">Trust, but verify</div>
+                <div style="font-size: 7px; line-height: 10px; text-align: justify;">
+                  Kindly ensure each time this ID is presented, that you verify the credentials using a Government APPROVED verification resource.
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const printWindow = window.open("", "_blank");
+      if (printWindow) {
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>NIMC Official Document - ${nin}</title>
+              <style>
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body { font-family: Arial, Helvetica, sans-serif; background: #cbd5e1; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                .sheet { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+                .regular-card { width: 780px; background: #fff; border: 2px solid #000; }
+                .regular-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; border-bottom: 2px solid #000; }
+                @media print { body { background: #fff; } .sheet { padding: 0; min-height: auto; } @page { size: auto; margin: 6mm; } }
+              </style>
+            </head>
+            <body onload="setTimeout(function(){ window.print(); }, 400);">
+              ${slipHtml}
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      } else {
+        window.print();
+      }
+    }
+
+    /* Admin Price Editor */
+    function openAdminPriceModal(id) {
+      const opt = searchOptions.find(o => o.id === id);
+      if (!opt) return;
+      state.editingService = opt;
+      const cost = state.prices[opt.id] || 100;
+      document.getElementById('adminPriceModalSub').textContent = `Set global retail fee for ${opt.name}`;
+      document.getElementById('adminPriceInput').value = cost;
+      document.getElementById('adminPriceModal').style.display = 'flex';
+    }
+
+    function closeAdminPriceModal() {
+      document.getElementById('adminPriceModal').style.display = 'none';
+      state.editingService = null;
+    }
+
+    async function handleSaveAdminPrice() {
+      const val = Number(document.getElementById('adminPriceInput').value);
+      if (isNaN(val) || val < 0) {
+        alert("Please enter a valid numeric price.");
+        return;
+      }
+
+      const btn = document.getElementById('btnSaveAdminPrice');
+      btn.disabled = true;
+
+      try {
+        await fetch(`${BASE_URL}/nimc/admin/set-price`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            serviceType: state.editingService.id,
+            amount: val,
+            name: state.editingService.name
+          })
+        });
+
+        state.prices[state.editingService.id] = val;
+        renderChannelsGrid();
+        closeAdminPriceModal();
+        alert(`${state.editingService.name} price updated to ₦${val.toLocaleString()}`);
+      } catch (err) {
+        state.prices[state.editingService.id] = val;
+        renderChannelsGrid();
+        closeAdminPriceModal();
+        alert(`${state.editingService.name} price set to ₦${val.toLocaleString()}`);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

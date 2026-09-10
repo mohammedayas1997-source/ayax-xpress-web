@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Login | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Favicon & Web App Manifest -->
+ <link rel="icon" type="image/png" href="assets/favicon.png">
+ <link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+ <link rel="manifest" href="manifest.json">
+ <meta name="theme-color" content="#0284c7"> 
+
+  <style>
+    :root {
+      --bg-slate: #f8fafc;
+      --card-white: #ffffff;
+      --primary-navy: #0a1d37;
+      --primary-navy-hover: #071527;
+      --accent-blue: #0284c7;
+      --accent-sky: #e0f2fe;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+      --error-bg: #fef2f2;
+      --error-border: #fee2e2;
+      --error-text: #991b1b;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-slate);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    .desktop-container {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    .content-wrapper {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-white);
+      border-radius: 24px;
+      padding: 32px 28px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Header Section */
+    .header-section {
+      text-align: center;
+      margin-bottom: 26px;
+    }
+
+    .logo-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 40px;
+      background: #ffffff;
+      margin: 0 auto 12px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+    }
+
+    .logo-circle i {
+      font-size: 36px;
+      color: var(--accent-blue);
+    }
+
+    .app-name {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 4px 0 0 0;
+      font-weight: 600;
+    }
+
+    /* Error Banner */
+    .error-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      color: var(--error-text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Form Fields */
+    .label {
+      color: #475569;
+      font-size: 12.5px;
+      margin-bottom: 6px;
+      font-weight: 700;
+      display: block;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 0 14px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border-light);
+      height: 50px;
+      transition: all 0.2s;
+    }
+
+    .input-container:focus-within {
+      background: #ffffff;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+
+    .input-icon {
+      color: #64748b;
+      font-size: 16px;
+      margin-right: 10px;
+      width: 18px;
+      text-align: center;
+    }
+
+    .input-field {
+      flex: 1;
+      height: 100%;
+      border: none;
+      background: transparent;
+      outline: none;
+      color: var(--text-dark);
+      font-size: 14.5px;
+      font-family: inherit;
+    }
+
+    .input-field::placeholder {
+      color: #94a3b8;
+    }
+
+    .toggle-pass-btn {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Actions Row */
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .biometric-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--primary-navy);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 0;
+    }
+
+    .biometric-btn i {
+      font-size: 20px;
+    }
+
+    .forgot-btn {
+      color: var(--primary-navy);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      margin-left: auto;
+    }
+
+    .forgot-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* Login Action Button */
+    .login-btn {
+      width: 100%;
+      height: 52px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(10, 29, 55, 0.2);
+    }
+
+    .login-btn:hover {
+      background: var(--primary-navy-hover);
+      transform: translateY(-1px);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Footer Links & Signup */
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 22px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .link-text {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .divider {
+      width: 1px;
+      height: 12px;
+      background: var(--border-input);
+    }
+
+    .signup-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      margin-top: 20px;
+      font-size: 13.5px;
+    }
+
+    .no-account-text {
+      color: var(--text-muted);
+    }
+
+    .signup-text {
+      color: var(--primary-navy);
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .signup-text:hover {
+      text-decoration: underline;
+    }
+
+    /* Quick Support Channel */
+    .contact-container {
+      margin-top: 24px;
+      border-top: 1px solid var(--border-light);
+      padding-top: 20px;
+      text-align: center;
+    }
+
+    .contact-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 1px;
+      margin: 0 0 14px 0;
+    }
+
+    .icon-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .contact-icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 22px;
+      background: var(--bg-slate);
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      font-size: 18px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .contact-icon-circle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .phone-number {
+      margin: 14px 0 0 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary-navy);
+    }
+
+    /* Developer APIs Button */
+    .developer-api-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #f0f9ff;
+      border: 1.5px solid #bae6fd;
+      border-radius: 12px;
+      height: 48px;
+      margin-top: 20px;
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .developer-api-btn:hover {
+      background: #e0f2fe;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="desktop-container">
+    <div class="content-wrapper">
+
+      <!-- Header Section -->
+      <section class="header-section">
+        <div class="logo-circle">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <h1 class="app-name">Ayax Xpress</h1>
+        <p class="tagline">Swift & Reliable Utility Payments</p>
+      </section>
+
+      <!-- Form Section -->
+      <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
+        <!-- Error Banner -->
+        <div class="error-banner" id="errorBanner">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span id="errorBannerText">Invalid email or password</span>
+        </div>
+
+        <!-- Identifier -->
+        <label class="label" for="identifierInput">Email Address or Phone Number</label>
+        <div class="input-container">
+          <i class="fa-regular fa-user input-icon"></i>
+          <input
+            type="text"
+            id="identifierInput"
+            class="input-field"
+            placeholder="Email or 08012345678"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <!-- Password -->
+        <label class="label" for="passwordInput">Password</label>
+        <div class="input-container">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input
+            type="password"
+            id="passwordInput"
+            class="input-field"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility()">
+            <i class="fa-regular fa-eye" id="togglePassIcon"></i>
+          </button>
+        </div>
+
+        <!-- Action Row -->
+        <div class="action-row">
+          <button type="button" class="biometric-btn" id="btnBiometric" onclick="handleBiometricPrompt()" style="display: none;">
+            <i class="fa-solid fa-fingerprint"></i>
+            <span>Touch ID</span>
+          </button>
+          <a href="forgot-password.html" class="forgot-btn">Forgot Password?</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="login-btn" id="btnLogin">
+          <span>Login to Account</span>
+        </button>
+
+        <!-- Footer Links -->
+        <div class="footer-links">
+          <span class="link-text" onclick="alert('Ayax Data Xpress Enterprise v2.0')">About Us</span>
+          <div class="divider"></div>
+          <span class="link-text" onclick="alert('All user data is encrypted and protected under NDPR standards.')">Privacy Policy</span>
+          <div class="divider"></div>
+          <span class="link-text" onclick="alert('Terms of Service and Telecommunication Service Delivery Guidelines apply.')">Terms</span>
+        </div>
+
+        <!-- Signup Navigation Link -->
+        <div class="signup-container">
+          <span class="no-account-text">Don't have an account?</span>
+          <a href="signup.html" class="signup-text">Create Account</a>
+        </div>
+      </form>
+
+      <!-- Quick Support Channels -->
+      <section class="contact-container">
+        <h3 class="contact-title">QUICK SUPPORT</h3>
+        <div class="icon-row">
+          <a href="https://wa.me/2349061244444?text=Hello%20Ayax%20Xpress%20Support" target="_blank" class="contact-iconCircle" title="WhatsApp Support" style="color: #25D366;">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+          <a href="tel:+2349061244444" class="contact-iconCircle" title="Phone Call Support" style="color: #0a1d37;">
+            <i class="fa-solid fa-phone"></i>
+          </a>
+          <a href="mailto:support@ayaxdata.online" class="contact-iconCircle" title="Email Desk" style="color: #EA4335;">
+            <i class="fa-regular fa-envelope"></i>
+          </a>
+        </div>
+        <p class="phone-number">+234 906 124 4444</p>
+
+        <!-- Developer APIs Portal Link -->
+        <a href="https://www.ayaxapis.com" target="_blank" rel="noopener noreferrer" class="developer-api-btn">
+          <i class="fa-solid fa-code"></i>
+          <span>Developer APIs</span>
+          <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Check for previously saved identifier
+      const savedId = localStorage.getItem('savedIdentifier');
+      if (savedId) {
+        document.getElementById('identifierInput').value = savedId;
+      }
+
+      // Check browser WebAuthn / Biometric capability
+      if (window.PublicKeyCredential) {
+        PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable?.()
+          .then(available => {
+            if (available && localStorage.getItem('savedPassword')) {
+              document.getElementById('btnBiometric').style.display = 'inline-flex';
+            }
+          }).catch(() => {});
+      }
+    });
+
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('passwordInput');
+      const icon = document.getElementById('togglePassIcon');
+
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+      } else {
+        passInput.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+      }
+    }
+
+    function showError(message) {
+      const banner = document.getElementById('errorBanner');
+      const text = document.getElementById('errorBannerText');
+      text.textContent = message;
+      banner.style.display = 'flex';
+    }
+
+    function hideError() {
+      const banner = document.getElementById('errorBanner');
+      banner.style.display = 'none';
+    }
+
+    document.getElementById('identifierInput').addEventListener('input', hideError);
+    document.getElementById('passwordInput').addEventListener('input', hideError);
+
+    // Safe Role-based Routing Table
+    function routeUserByRole(rawRole, rawIdentifier = "") {
+      const role = String(rawRole || "").trim().toLowerCase();
+      const identifier = String(rawIdentifier).trim().toLowerCase();
+
+      // 1. SuperAdmin
+      if (
+        role === "superadmin" ||
+        identifier === "mohammed.ayas@ayaxdata.online" ||
+        identifier === "09033738409"
+      ) {
+        window.location.href = "admin-dashboard.html";
+        return;
+      }
+
+      // 2. Operations Admin
+      if (
+        role === "admin" ||
+        identifier === "mohammed@ayaxdata.online" ||
+        identifier === "admin@ayaxdata.online" ||
+        identifier === "08011112222"
+      ) {
+        window.location.href = "admin-dashboard.html";
+        return;
+      }
+
+      // 3. National Sales Director
+      if (
+        role === "national_sales_director" ||
+        role === "super_leader" ||
+        identifier === "nsd@ayaxdata.online" ||
+        identifier === "08099990000"
+      ) {
+        window.location.href = "leader-dashboard.html";
+        return;
+      }
+
+      // 4. State Manager
+      if (role === "state_manager" || role === "leader") {
+        window.location.href = "leader-dashboard.html";
+        return;
+      }
+
+      // 5. Field Supervisor
+      if (role === "supervisor" || role === "field_supervisor") {
+        window.location.href = "admin-control.html";
+        return;
+      }
+
+      // 6. Retail Agent
+      if (role === "agent") {
+        window.location.href = "agent-dashboard.html";
+        return;
+      }
+
+      // 7. Support Desk
+      if (
+        role === "support" ||
+        role === "customer_service" ||
+        identifier === "support@ayaxdata.online" ||
+        identifier === "08077778888" ||
+        identifier === "09033738400"
+      ) {
+        window.location.href = "issue-resolution.html";
+        return;
+      }
+
+      // 8. Normal Customer
+      window.location.href = "customer-dashboard.html";
+    }
+
+    async function handleLogin() {
+      hideError();
+      const identifier = document.getElementById('identifierInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+
+      if (!identifier || !password) {
+        showError("Please enter your email/phone and password.");
+        return;
+      }
+
+      const btn = document.getElementById('btnLogin');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+        const payload = {
+          identifier: identifier,
+          email: identifier,
+          phone: identifier,
+          username: identifier,
+          password: password
+        };
+
+        const response = await fetch(`${BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const resData = await response.json();
+
+        if (response.ok && (resData.success || resData.token || resData.accessToken)) {
+          const token = resData.token || resData.accessToken || resData.data?.token || "";
+          const userPayload = resData.user || resData.data?.user || resData.data || {};
+
+          let userRole = (
+            userPayload?.role ||
+            resData.role ||
+            resData.data?.role ||
+            "user"
+          ).trim().toLowerCase();
+
+          // Hardcoded role elevation matching server rules
+          const lowId = identifier.toLowerCase();
+          if (lowId === "mohammed.ayas@ayaxdata.online" || lowId === "09033738409") {
+            userRole = "superadmin";
+          } else if (
+            lowId === "mohammed@ayaxdata.online" ||
+            lowId === "admin@ayaxdata.online" ||
+            lowId === "08011112222"
+          ) {
+            userRole = "admin";
+          } else if (lowId === "support@ayaxdata.online" || lowId === "08077778888") {
+            userRole = "support";
+          }
+
+          if (!token) {
+            showError("Authentication token missing from server response.");
+            return;
+          }
+
+          // Secure persistence in localStorage
+          localStorage.setItem('userToken', token);
+          localStorage.setItem('userData', JSON.stringify({ ...userPayload, role: userRole }));
+          localStorage.setItem('savedIdentifier', identifier);
+          localStorage.setItem('savedPassword', password);
+
+          routeUserByRole(userRole, identifier);
+        } else {
+          showError(resData.message || (response.status === 401 ? "Invalid email/phone or password." : "Authentication failed."));
+        }
+      } catch (err) {
+        showError("Network error. Please check your internet connection.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function handleBiometricPrompt() {
+      const savedIdentifier = localStorage.getItem('savedIdentifier');
+      const savedPassword = localStorage.getItem('savedPassword');
+
+      if (savedIdentifier && savedPassword) {
+        document.getElementById('identifierInput').value = savedIdentifier;
+        document.getElementById('passwordInput').value = savedPassword;
+        handleLogin();
+      } else {
+        showError("Please login with password once first.");
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+</body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Airtime Recharge Portal | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-navy: #0a1d37;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #16a34a;
+      --accent-red: #dc2626;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #ffffff;
+      --input-bg: #f8fafc;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Navigation Bar */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 24px 20px 14px 20px;
+      max-width: 580px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .btn-back {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #e2e8f0;
+    }
+
+    .header-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin: 0;
+    }
+
+    /* Container */
+    .container {
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 16px 20px 80px 20px;
+    }
+
+    .label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #475569;
+      margin: 18px 0 8px 0;
+      display: block;
+    }
+
+    /* Network Selector Grid */
+    .net-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .net-box {
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 800;
+      font-size: 13px;
+      border: 1px solid var(--border-light);
+      background: var(--input-bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .net-box.active {
+      border: 2px solid var(--primary-navy);
+      color: #000000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .net-box[data-id="01"].active { background: #FFCC00; }
+    .net-box[data-id="02"].active { background: #2ecc71; color: #ffffff; }
+    .net-box[data-id="04"].active { background: #e74c3c; color: #ffffff; }
+    .net-box[data-id="03"].active { background: #006600; color: #ffffff; }
+
+    /* Inputs */
+    .input-field {
+      width: 100%;
+      height: 50px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 0 16px;
+      font-size: 15px;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+
+    .input-field::placeholder {
+      color: #94a3b8;
+    }
+
+    /* Quick Amount Pills */
+    .quick-amount-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .quick-btn {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      padding: 10px 0;
+      border-radius: 10px;
+      text-align: center;
+      color: #0369a1;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-btn:hover {
+      background: #e0f2fe;
+    }
+
+    .quick-btn.selected {
+      background: var(--primary-navy);
+      border-color: var(--primary-navy);
+      color: #ffffff;
+    }
+
+    /* Submit Button */
+    .buy-btn {
+      width: 100%;
+      height: 52px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 15px;
+      font-size: 14.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 26px;
+      box-shadow: 0 4px 14px rgba(10, 29, 55, 0.25);
+      transition: all 0.2s;
+    }
+
+    .buy-btn:hover {
+      background: #061325;
+      transform: translateY(-1px);
+    }
+
+    /* Feedback Banner */
+    .status-banner {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 16px;
+      text-align: center;
+    }
+    .status-success {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+    .status-error {
+      background: #fee2e2;
+      border: 1px solid #fecdd3;
+      color: #991b1b;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 360px;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 26px 22px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      background: #e0e7ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 12px auto;
+      color: #1e40af;
+      font-size: 26px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 6px 0;
+    }
+
+    .modal-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0 0 20px 0;
+      line-height: 1.5;
+    }
+
+    .pin-input {
+      width: 100%;
+      height: 56px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--border-input);
+      border-radius: 14px;
+      text-align: center;
+      font-size: 26px;
+      letter-spacing: 12px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+      outline: none;
+    }
+
+    .pin-input:focus {
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 3px rgba(10, 29, 55, 0.12);
+    }
+
+    .verify-modal-btn {
+      width: 100%;
+      height: 50px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 14.5px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .verify-modal-btn:hover {
+      background: #061325;
+    }
+
+    .verify-modal-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .cancel-modal-btn {
+      background: none;
+      border: none;
+      color: var(--accent-red);
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      padding: 6px 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="nav-bar">
+    <a href="javascript:history.back()" class="btn-back" title="Go Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="header-text">Airtime Recharge Portal</h1>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- 1. Network Selection -->
+    <label class="label">Select Network</label>
+    <div class="net-grid">
+      <div class="net-box active" data-id="01" onclick="selectNetwork('01', this)">MTN</div>
+      <div class="net-box" data-id="02" onclick="selectNetwork('02', this)">GLO</div>
+      <div class="net-box" data-id="04" onclick="selectNetwork('04', this)">Airtel</div>
+      <div class="net-box" data-id="03" onclick="selectNetwork('03', this)">9Mobile</div>
+    </div>
+
+    <!-- 2. Phone Number -->
+    <label class="label" for="phoneInput">Recipient Phone Number</label>
+    <input
+      type="tel"
+      id="phoneInput"
+      class="input-field"
+      placeholder="08012345678"
+      maxlength="11"
+      autocomplete="tel"
+    />
+
+    <!-- 3. Amount Input -->
+    <label class="label" for="amountInput">Amount (₦)</label>
+    <input
+      type="number"
+      id="amountInput"
+      class="input-field"
+      placeholder="e.g. 500"
+      min="50"
+      step="any"
+    />
+
+    <!-- Quick Selection Pills -->
+    <div class="quick-amount-row">
+      <div class="quick-btn" onclick="setQuickAmount('100', this)">₦100</div>
+      <div class="quick-btn" onclick="setQuickAmount('200', this)">₦200</div>
+      <div class="quick-btn" onclick="setQuickAmount('500', this)">₦500</div>
+      <div class="quick-btn" onclick="setQuickAmount('1000', this)">₦1000</div>
+      <div class="quick-btn" onclick="setQuickAmount('2000', this)">₦2000</div>
+    </div>
+
+    <!-- Submit Button -->
+    <button class="buy-btn" onclick="handleInitiatePurchase()">
+      PROCEED & BUY AIRTIME
+    </button>
+
+    <!-- Feedback Banner -->
+    <div id="statusBanner" class="status-banner"></div>
+
+  </main>
+
+  <!-- PIN Verification Modal -->
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal-content">
+      <div class="modal-header-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h2 class="modal-title">Enter Transaction PIN</h2>
+      <p class="modal-subtitle">Please input your 4-digit PIN to authorize this airtime recharge</p>
+
+      <input
+        type="password"
+        id="pinInput"
+        class="pin-input"
+        placeholder="••••"
+        maxlength="4"
+        inputmode="numeric"
+      />
+
+      <button class="verify-modal-btn" id="btnConfirmPay" onclick="handleAirtimePurchase()">
+        Confirm & Pay
+      </button>
+
+      <button class="cancel-modal-btn" onclick="closePinModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let selectedNetworkId = "01";
+
+    function selectNetwork(id, el) {
+      selectedNetworkId = id;
+      document.querySelectorAll('.net-box').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function setQuickAmount(val, el) {
+      document.getElementById('amountInput').value = val;
+      document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    document.getElementById('amountInput').addEventListener('input', () => {
+      document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('selected'));
+    });
+
+    function showFeedback(message, isSuccess = true) {
+      const banner = document.getElementById('statusBanner');
+      banner.textContent = message;
+      banner.className = `status-banner ${isSuccess ? 'status-success' : 'status-error'}`;
+      banner.style.display = 'block';
+
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 6000);
+    }
+
+    function handleInitiatePurchase() {
+      const phone = document.getElementById('phoneInput').value.trim();
+      const amount = document.getElementById('amountInput').value.trim();
+      const numericAmount = parseFloat(amount);
+
+      if (!phone || !amount) {
+        alert("Please fill in recipient phone number and amount.");
+        return;
+      }
+
+      if (phone.length < 11) {
+        alert("Enter a valid 11-digit phone number.");
+        return;
+      }
+
+      if (isNaN(numericAmount) || numericAmount < 50) {
+        alert("Minimum airtime purchase is ₦50.");
+        return;
+      }
+
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinModal').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('pinInput').focus();
+      }, 100);
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').style.display = 'none';
+      document.getElementById('pinInput').value = '';
+    }
+
+    async function handleAirtimePurchase() {
+      const pin = document.getElementById('pinInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+      const amount = document.getElementById('amountInput').value.trim();
+      const numericAmount = parseFloat(amount);
+      const token = localStorage.getItem('userToken') || localStorage.getItem('token') || '';
+
+      if (!pin || pin.length < 4) {
+        alert("Enter your valid 4-digit Transaction PIN.");
+        return;
+      }
+
+      if (!token) {
+        closePinModal();
+        alert("Session Expired. Please login again.");
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmPay');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        const response = await fetch(`${BASE_URL}/vtu/buy-airtime`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            network: selectedNetworkId,
+            phoneNumber: phone,
+            amount: numericAmount,
+            transactionPin: pin,
+            pin: pin
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && (result.success || result.status === 'success')) {
+          closePinModal();
+          document.getElementById('phoneInput').value = '';
+          document.getElementById('amountInput').value = '';
+          document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('selected'));
+          alert(`Success 🎉: ₦${numericAmount} airtime successfully sent to ${phone}`);
+          showFeedback(`₦${numericAmount} airtime sent to ${phone}`, true);
+        } else {
+          throw new Error(result.message || "Transaction Error");
+        }
+      } catch (error) {
+        alert(`Transaction Failed: ${error.message || "Server communication failure."}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

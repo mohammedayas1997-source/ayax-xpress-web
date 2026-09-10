@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Register Supervisor | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --primary-navy: #1e3a8a;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-gold: #d4af37;
+      --text-white: #ffffff;
+      --text-dark: #1e293b;
+      --text-muted: #94a3b8;
+      --bg-light: #f8fafc;
+      --border-light: #e2e8f0;
+      --border-focus: #1e3a8a;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Header Panel */
+    .header-panel {
+      background: var(--bg-dark);
+      padding: 40px 20px 30px 20px;
+      text-align: center;
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 18px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-white);
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .header-icon {
+      font-size: 40px;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+
+    .title {
+      color: var(--text-white);
+      font-size: 22px;
+      font-weight: 800;
+      margin: 0 0 4px 0;
+    }
+
+    .subtitle {
+      color: var(--accent-cyan);
+      font-size: 14px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    /* Container Form */
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 18px 80px 18px;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      padding: 0 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-light);
+      height: 55px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+
+    .input-group:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
+    }
+
+    .input-group i {
+      font-size: 18px;
+      color: var(--primary-navy);
+      width: 24px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .input-field {
+      flex: 1;
+      height: 100%;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 15px;
+      color: var(--text-dark);
+      padding-left: 10px;
+      font-family: inherit;
+    }
+
+    .input-field::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      background: var(--primary-navy);
+      height: 55px;
+      border-radius: 12px;
+      border: none;
+      color: var(--text-white);
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: #172554;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Feedback Banner */
+    .status-banner {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .status-success {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+    .status-error {
+      background: #fee2e2;
+      border: 1px solid #fecdd3;
+      color: #991b1b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Panel -->
+  <header class="header-panel">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <i class="fa-solid fa-user-plus header-icon"></i>
+    <h1 class="title">Register Supervisor</h1>
+    <p class="subtitle">Enter professional details below</p>
+  </header>
+
+  <!-- Form Body -->
+  <main class="container">
+    <div id="statusBanner" class="status-banner"></div>
+
+    <form id="supervisorForm" onsubmit="event.preventDefault(); handleCreateSupervisor();">
+      <!-- Full Name -->
+      <div class="input-group">
+        <i class="fa-solid fa-user"></i>
+        <input
+          type="text"
+          id="nameInput"
+          class="input-field"
+          placeholder="Full Name"
+          autocomplete="name"
+          required
+        />
+      </div>
+
+      <!-- Email Address -->
+      <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input
+          type="email"
+          id="emailInput"
+          class="input-field"
+          placeholder="Email Address"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <!-- Phone Number -->
+      <div class="input-group">
+        <i class="fa-solid fa-phone"></i>
+        <input
+          type="tel"
+          id="phoneInput"
+          class="input-field"
+          placeholder="Phone Number"
+          autocomplete="tel"
+          required
+        />
+      </div>
+
+      <!-- Address -->
+      <div class="input-group">
+        <i class="fa-solid fa-location-dot"></i>
+        <input
+          type="text"
+          id="addressInput"
+          class="input-field"
+          placeholder="Office/Home Address"
+          autocomplete="street-address"
+          required
+        />
+      </div>
+
+      <!-- Secure Password -->
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input
+          type="password"
+          id="passwordInput"
+          class="input-field"
+          placeholder="Secure Password"
+          autocomplete="new-password"
+          required
+        />
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn" class="submit-btn">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>CREATE ACCOUNT</span>
+      </button>
+    </form>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    function showFeedback(message, isSuccess = true) {
+      const banner = document.getElementById('statusBanner');
+      banner.textContent = message;
+      banner.className = `status-banner ${isSuccess ? 'status-success' : 'status-error'}`;
+      banner.style.display = 'block';
+
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 5000);
+    }
+
+    async function handleCreateSupervisor() {
+      const token = localStorage.getItem('userToken') || localStorage.getItem('token') || '';
+
+      if (!token) {
+        alert('Session expired. Please login again.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const name = document.getElementById('nameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+      const address = document.getElementById('addressInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+
+      if (!name || !email || !phone || !password || !address) {
+        alert('Validation Error: Please fill all fields.');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        const response = await fetch(`${BASE_URL}/leader/create-supervisor`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            phone,
+            address,
+            password
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && (data.success || response.status === 200 || response.status === 201)) {
+          alert('Success: New Supervisor added successfully!');
+          window.history.back();
+        } else {
+          throw new Error(data.message || 'Something went wrong');
+        }
+      } catch (error) {
+        showFeedback(error.message || 'Failed to create supervisor.', false);
+        alert('Failed: ' + (error.message || 'Something went wrong'));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

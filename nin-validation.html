@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>NIN Validation Portal | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-navy: #1e3a8a;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-red: #dc2626;
+      --accent-amber: #f59e0b;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Header */
+    .top-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 18px 14px 18px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #f1f5f9;
+    }
+
+    .screen-main-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--primary-navy);
+      margin: 0;
+    }
+
+    /* Container Area */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 16px 80px 16px;
+    }
+
+    /* Notice Banner */
+    .red-notice-card {
+      background: #fef2f2;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border: 1.5px solid #ef4444;
+    }
+
+    .red-notice-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: #b91c1c;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+    }
+
+    .red-notice-text {
+      color: #991b1b;
+      font-size: 12px;
+      line-height: 1.6;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* Card Standard */
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .price-badge {
+      background: #eff6ff;
+      padding: 4px 10px;
+      border-radius: 10px;
+      border: 1px solid #bae6fd;
+      color: #0369a1;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* Chip Grid */
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-wrapper {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .chip {
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: all 0.2s;
+    }
+
+    .chip.selected {
+      background: var(--primary-navy);
+      border-color: var(--primary-navy);
+    }
+
+    .chip-text {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .chip.selected .chip-text {
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .chip-price-tag {
+      font-size: 9.5px;
+      color: #94a3b8;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .chip.selected .chip-price-tag {
+      color: var(--accent-cyan);
+    }
+
+    .admin-edit-btn {
+      background: rgba(245, 158, 11, 0.15);
+      border: none;
+      padding: 6px 8px;
+      border-radius: 8px;
+      margin-left: 4px;
+      color: var(--accent-amber);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    /* Input Field */
+    .field-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+      display: block;
+    }
+
+    .text-input {
+      width: 100%;
+      height: 50px;
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: var(--primary-navy);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    /* Checkboxes */
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-icon {
+      font-size: 20px;
+      color: #cbd5e1;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .checkbox-row.checked .checkbox-icon {
+      color: var(--primary-navy);
+    }
+
+    .auth-text {
+      font-size: 11.5px;
+      color: #475569;
+      line-height: 1.5;
+      margin: 0;
+      flex: 1;
+    }
+
+    .red-checkbox-row {
+      background: #fff5f5;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #fecaca;
+    }
+
+    .red-checkbox-row.checked .checkbox-icon {
+      color: var(--accent-red);
+    }
+
+    .red-agreement-text {
+      font-size: 11.5px;
+      color: #991b1b;
+      line-height: 1.5;
+      font-weight: 700;
+      margin: 0;
+      flex: 1;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      font-size: 12.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
+    }
+
+    .submit-btn:hover {
+      background: #172554;
+    }
+
+    .submit-btn:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 320px;
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 22px;
+      text-align: center;
+      border: 1px solid var(--border-light);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--primary-navy);
+      margin: 0 0 4px 0;
+    }
+
+    .modal-subtitle {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin: 0 0 10px 0;
+      line-height: 1.4;
+    }
+
+    .modal-warning-box {
+      background: #fef2f2;
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .modal-pin-input {
+      width: 100%;
+      height: 50px;
+      background: #f8fafc;
+      border: 1px solid var(--border-input);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 22px;
+      letter-spacing: 8px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .modal-pin-input:focus {
+      border-color: var(--primary-navy);
+    }
+
+    .modal-submit-btn {
+      width: 100%;
+      height: 46px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .modal-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .modal-cancel-btn {
+      background: none;
+      border: none;
+      color: var(--accent-red);
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="top-header-row">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="screen-main-title">NIN Validation Portal</h1>
+    <div style="width: 40px;"></div>
+  </header>
+
+  <!-- Container Area -->
+  <main class="container">
+
+    <!-- 48-Hour Processing Window Notice -->
+    <div class="red-notice-card">
+      <div class="red-notice-header">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>IMPORTANT NOTICE: PROCESSING TIMEFRAME (48 WORKING HOURS)</span>
+      </div>
+      <p class="red-notice-text">
+        This identity validation query takes approximately <strong>48 working hours</strong> to complete on the official NIMC database servers. Weekends and official public holidays are excluded from this processing window.
+      </p>
+    </div>
+
+    <!-- Service Selection Card -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Select Validation Service</span>
+        </h2>
+        <div class="price-badge">
+          <span id="priceBadgeText">Fee: ₦1,300</span>
+        </div>
+      </div>
+
+      <div class="chip-container" id="chipsContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- NIN Input Card -->
+    <section class="card">
+      <label class="field-label" for="ninInput">NIN Number (11 Digits)</label>
+      <input
+        type="text"
+        id="ninInput"
+        class="text-input"
+        placeholder="Enter 11-digit NIN"
+        maxlength="11"
+        inputmode="numeric"
+        spellcheck="false"
+        autocorrect="off"
+        autocapitalize="off"
+        oninput="handleFormValidation()"
+      />
+    </section>
+
+    <!-- Consent & Agreement Card -->
+    <section class="card">
+      <h2 class="card-title" style="margin-bottom: 12px;">
+        <i class="fa-solid fa-lock"></i>
+        <span>Consent & Terms of Service</span>
+      </h2>
+
+      <!-- Checkbox 1: Consent -->
+      <div class="checkbox-row" id="consentRow" onclick="toggleConsent()">
+        <i class="fa-regular fa-square checkbox-icon" id="consentIcon"></i>
+        <p class="auth-text">
+          I confirm that I have obtained proper authorization from the NIN owner to perform this check.
+        </p>
+      </div>
+
+      <!-- Checkbox 2: 48-Hour Agreement -->
+      <div class="checkbox-row red-checkbox-row" id="timeRow" onclick="toggleTimeAgreement()">
+        <i class="fa-regular fa-square checkbox-icon" id="timeIcon"></i>
+        <p class="red-agreement-text">
+          I acknowledge and accept that this service takes up to <strong>48 working hours</strong> to process and settle before payment is finalized.
+        </p>
+      </div>
+
+      <!-- Submit Action Button -->
+      <button type="button" class="submit-btn" id="btnSubmit" onclick="handleInitiateSubmit()" disabled>
+        <span id="btnSubmitLabel">SUBMIT VALIDATION REQUEST (₦1,300)</span>
+      </button>
+    </section>
+
+  </main>
+
+  <!-- PIN Authorization Modal -->
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal-content">
+      <i class="fa-solid fa-shield-halved" style="font-size: 32px; color: var(--primary-navy); margin-bottom: 8px;"></i>
+      <h2 class="modal-title">Enter Security PIN</h2>
+      <p class="modal-subtitle" id="pinModalSubtitle">Authorize fee for validation</p>
+
+      <div class="modal-warning-box">
+        ⚠️ Processing timeframe: 48 Working Hours
+      </div>
+
+      <input
+        type="password"
+        id="pinInput"
+        class="modal-pin-input"
+        placeholder="••••"
+        maxlength="4"
+        inputmode="numeric"
+      />
+
+      <button type="button" class="modal-submit-btn" id="btnConfirmPay" onclick="handleSubmit()">
+        Confirm & Authorize
+      </button>
+
+      <button type="button" class="modal-cancel-btn" onclick="closePinModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Price Modal -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal-content">
+      <i class="fa-solid fa-tag" style="font-size: 32px; color: var(--accent-amber); margin-bottom: 8px;"></i>
+      <h2 class="modal-title">Update Service Price</h2>
+      <p class="modal-subtitle" id="adminModalSubtitle">Set new fee for service</p>
+
+      <input
+        type="number"
+        id="adminPriceInput"
+        class="modal-pin-input"
+        style="letter-spacing: normal; font-size: 16px;"
+        placeholder="Enter price in Naira"
+      />
+
+      <button type="button" class="modal-submit-btn" id="btnSaveAdminPrice" onclick="handleSaveAdminPrice()">
+        SAVE PRICE
+      </button>
+
+      <button type="button" class="modal-cancel-btn" onclick="closeAdminModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    const initialValidationTypes = [
+      { id: "no_record", name: "No Record Found", cost: 1300 },
+      { id: "sim_val", name: "SIM Validation", cost: 1300 },
+      { id: "vnin_val", name: "vNIN Validation", cost: 1300 },
+      { id: "update_record", name: "Update Records Validation", cost: 1300 },
+      { id: "bank_val", name: "Bank Validation", cost: 1300 },
+      { id: "mod_val", name: "Modification Validation", cost: 1700 },
+      { id: "photo_error", name: "Photographic Error", cost: 1400 },
+    ];
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      validationTypes: initialValidationTypes,
+      selectedType: "No Record Found",
+      isAuthorized: false,
+      isTimeAgreed: false,
+      isAdmin: false,
+      editingItem: null
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const stored = localStorage.getItem('userData');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          state.isAdmin = parsed.role === "admin" || parsed.isAdmin === true;
+        } catch (_) {}
+      }
+
+      renderChips();
+      fetchLivePrices();
+    });
+
+    function renderChips() {
+      const container = document.getElementById('chipsContainer');
+      container.innerHTML = state.validationTypes.map(item => {
+        const isSelected = state.selectedType === item.name;
+        return `
+          <div class="chip-wrapper">
+            <div class="chip ${isSelected ? 'selected' : ''}" onclick="selectValidationType('${item.name}')">
+              <span class="chip-text">${item.name}</span>
+              <span class="chip-price-tag">₦${Number(item.cost).toLocaleString()}</span>
+            </div>
+            ${state.isAdmin ? `
+              <button type="button" class="admin-edit-btn" onclick="openAdminPriceModal('${item.id}')">
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
+      const activeCost = activeItem ? activeItem.cost : 1300;
+
+      document.getElementById('priceBadgeText').textContent = `Fee: ₦${Number(activeCost).toLocaleString()}`;
+      document.getElementById('btnSubmitLabel').textContent = `SUBMIT VALIDATION REQUEST (₦${Number(activeCost).toLocaleString()})`;
+    }
+
+    function selectValidationType(name) {
+      state.selectedType = name;
+      renderChips();
+      handleFormValidation();
+    }
+
+    async function fetchLivePrices() {
+      try {
+        const res = await fetch(`${BASE_URL}/nin/prices`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.prices) {
+            const serverPrices = data.prices;
+            state.validationTypes = state.validationTypes.map(item => ({
+              ...item,
+              cost: serverPrices[item.id] !== undefined ? serverPrices[item.id] : item.cost
+            }));
+            renderChips();
+          }
+        }
+      } catch (_) {}
+    }
+
+    function toggleConsent() {
+      state.isAuthorized = !state.isAuthorized;
+      const row = document.getElementById('consentRow');
+      const icon = document.getElementById('consentIcon');
+
+      row.classList.toggle('checked', state.isAuthorized);
+      icon.className = state.isAuthorized ? 'fa-solid fa-square-check checkbox-icon' : 'fa-regular fa-square checkbox-icon';
+      handleFormValidation();
+    }
+
+    function toggleTimeAgreement() {
+      state.isTimeAgreed = !state.isTimeAgreed;
+      const row = document.getElementById('timeRow');
+      const icon = document.getElementById('timeIcon');
+
+      row.classList.toggle('checked', state.isTimeAgreed);
+      icon.className = state.isTimeAgreed ? 'fa-solid fa-square-check checkbox-icon' : 'fa-regular fa-square checkbox-icon';
+      handleFormValidation();
+    }
+
+    function handleFormValidation() {
+      const nin = document.getElementById('ninInput').value.trim();
+      const ready = state.isAuthorized && state.isTimeAgreed && nin.length === 11;
+      document.getElementById('btnSubmit').disabled = !ready;
+    }
+
+    function handleInitiateSubmit() {
+      const nin = document.getElementById('ninInput').value.trim();
+
+      if (!nin) {
+        alert("Please enter your 11-digit NIN.");
+        return;
+      }
+
+      if (nin.length !== 11) {
+        alert("NIN must be exactly 11 digits.");
+        return;
+      }
+
+      if (!state.isAuthorized) {
+        alert("Please accept the authorization consent checkbox.");
+        return;
+      }
+
+      if (!state.isTimeAgreed) {
+        alert("Please acknowledge and agree to the 48-working-hours processing period before payment.");
+        return;
+      }
+
+      const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
+      const activeCost = activeItem ? activeItem.cost : 1300;
+
+      document.getElementById('pinModalSubtitle').textContent =
+        `Authorize ₦${Number(activeCost).toLocaleString()} fee for ${state.selectedType}`;
+
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('pinInput').focus(), 100);
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').style.display = 'none';
+      document.getElementById('pinInput').value = '';
+    }
+
+    async function handleSubmit() {
+      const pin = document.getElementById('pinInput').value.trim();
+      const nin = document.getElementById('ninInput').value.trim();
+
+      if (!pin || pin.length !== 4) {
+        alert("Transaction PIN must be exactly 4 digits.");
+        return;
+      }
+
+      if (!state.token) {
+        closePinModal();
+        alert("Session Expired: Please login again.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmPay');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
+        const activeCost = activeItem ? activeItem.cost : 1300;
+
+        const response = await fetch(`${BASE_URL}/nin/validate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${state.token}`
+          },
+          body: JSON.stringify({
+            type: state.selectedType,
+            serviceId: activeItem?.id,
+            nin: nin,
+            pin: pin,
+            transactionPin: pin,
+            amount: activeCost,
+            timestamp: new Date().toISOString(),
+            processingWindow: "48_WORKING_HOURS"
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && (result.success || result.status === 'success')) {
+          closePinModal();
+          alert("Request Submitted 🎉: Your NIN validation request has been queued. Verification will be finalized within 48 working hours.");
+          document.getElementById('ninInput').value = '';
+          if (state.isAuthorized) toggleConsent();
+          if (state.isTimeAgreed) toggleTimeAgreement();
+        } else {
+          throw new Error(result.message || "Failed to process validation request.");
+        }
+      } catch (error) {
+        alert("Validation Failed: " + (error.message || "Server communication failure."));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    /* Admin Price Editor */
+    function openAdminPriceModal(id) {
+      const item = state.validationTypes.find(t => t.id === id);
+      if (!item) return;
+
+      state.editingItem = item;
+      document.getElementById('adminModalSubtitle').textContent = `Set new fee for ${item.name}`;
+      document.getElementById('adminPriceInput').value = item.cost;
+      document.getElementById('adminModal').style.display = 'flex';
+    }
+
+    function closeAdminModal() {
+      document.getElementById('adminModal').style.display = 'none';
+      state.editingItem = null;
+    }
+
+    async function handleSaveAdminPrice() {
+      const val = Number(document.getElementById('adminPriceInput').value);
+
+      if (isNaN(val) || val < 0) {
+        alert("Please enter a valid numeric price.");
+        return;
+      }
+
+      const btn = document.getElementById('btnSaveAdminPrice');
+      btn.disabled = true;
+
+      try {
+        await fetch(`${BASE_URL}/admin/nin/update-price`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            serviceId: state.editingItem.id,
+            serviceName: state.editingItem.name,
+            price: val
+          })
+        });
+
+        state.validationTypes = state.validationTypes.map(item =>
+          item.id === state.editingItem.id ? { ...item, cost: val } : item
+        );
+        renderChips();
+        closeAdminModal();
+        alert(`${state.editingItem.name} price updated to ₦${val.toLocaleString()}`);
+      } catch (err) {
+        state.validationTypes = state.validationTypes.map(item =>
+          item.id === state.editingItem.id ? { ...item, cost: val } : item
+        );
+        renderChips();
+        closeAdminModal();
+        alert(`${state.editingItem.name} price set to ₦${val.toLocaleString()}`);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

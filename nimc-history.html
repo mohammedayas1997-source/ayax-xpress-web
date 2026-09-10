@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Verification History | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-slate: #f8fafc;
+      --card-white: #ffffff;
+      --primary-navy: #0f172a;
+      --accent-blue: #0284c7;
+      --accent-blue-hover: #0369a1;
+      --accent-green: #10b981;
+      --accent-amber: #eab308;
+      --accent-red: #ef4444;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-slate);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Command Header */
+    .top-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 18px;
+      background: rgba(100, 116, 139, 0.1);
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: rgba(100, 116, 139, 0.2);
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--primary-navy);
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+
+    /* Container Area */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px 16px 60px 16px;
+    }
+
+    /* History Cards */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-card {
+      background: var(--card-white);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s;
+    }
+
+    .history-card:hover {
+      border-color: #cbd5e1;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .icon-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(2, 132, 199, 0.12);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .card-meta {
+      flex: 1;
+      margin-left: 12px;
+      overflow: hidden;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .service-type {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .identifier-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 3px 0 0 0;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(100, 116, 139, 0.12);
+      margin: 10px 0;
+    }
+
+    .card-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .meta-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .date-text {
+      font-size: 11.5px;
+      color: var(--text-light);
+      margin: 2px 0 0 0;
+      font-weight: 600;
+    }
+
+    .amount-text {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--accent-blue);
+      margin: 2px 0 0 0;
+      text-align: right;
+    }
+
+    .download-btn {
+      width: 100%;
+      height: 42px;
+      background: var(--accent-blue);
+      border: none;
+      border-radius: 12px;
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .download-btn:hover {
+      background: var(--accent-blue-hover);
+    }
+
+    /* Empty & Loading States */
+    .center-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    .empty-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 6px 0;
+      letter-spacing: -0.2px;
+    }
+
+    .empty-text {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin: 0 auto;
+      max-width: 360px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Header -->
+  <header class="top-header">
+    <a href="javascript:history.back()" class="icon-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="header-title">Verification History</h1>
+    <button type="button" class="icon-btn" onclick="fetchMyHistory(true)" title="Reload">
+      <i class="fa-solid fa-rotate" id="reloadIcon"></i>
+    </button>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Loading Indicator -->
+    <div class="center-state" id="loaderState">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; color: var(--accent-blue); margin-bottom: 10px;"></i>
+      <p style="margin: 0; font-size: 12px; font-weight: 600;">Loading verification history...</p>
+    </div>
+
+    <!-- History Dynamic List -->
+    <div class="history-list" id="historyListContainer" style="display: none;">
+      <!-- Injected via JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.vercel.app/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      myRequests: []
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session expired. Please login again.");
+        window.location.href = "index.html";
+        return;
+      }
+      fetchMyHistory();
+    });
+
+    async function fetchMyHistory(isBackground = false) {
+      const loader = document.getElementById('loaderState');
+      const container = document.getElementById('historyListContainer');
+      const reloadIcon = document.getElementById('reloadIcon');
+
+      if (!isBackground) {
+        loader.style.display = 'block';
+        container.style.display = 'none';
+      }
+      if (reloadIcon) reloadIcon.classList.add('fa-spin');
+
+      try {
+        const response = await fetch(`${BASE_URL}/nimc/my-requests`, {
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = "index.html";
+          return;
+        }
+
+        const resData = await response.json();
+        const list = resData.data || resData.requests || (Array.isArray(resData) ? resData : []);
+        state.myRequests = Array.isArray(list) ? list : [];
+
+        renderHistory();
+      } catch (err) {
+        console.warn("History fetch warning:", err);
+      } finally {
+        loader.style.display = 'none';
+        container.style.display = 'flex';
+        if (reloadIcon) reloadIcon.classList.remove('fa-spin');
+      }
+    }
+
+    function getStatusBadge(status = "") {
+      const s = String(status).toLowerCase();
+      if (s === "completed" || s === "success" || s === "approved") {
+        return {
+          label: "COMPLETED",
+          color: "#10b981",
+          bg: "rgba(16, 185, 129, 0.12)",
+          icon: "fa-circle-check"
+        };
+      }
+      if (s === "processing" || s === "in_progress") {
+        return {
+          label: "PROCESSING",
+          color: "#eab308",
+          bg: "rgba(234, 179, 8, 0.12)",
+          icon: "fa-rotate"
+        };
+      }
+      if (s === "rejected" || s === "failed" || s === "declined") {
+        return {
+          label: "REJECTED",
+          color: "#ef4444",
+          bg: "rgba(239, 68, 68, 0.12)",
+          icon: "fa-circle-xmark"
+        };
+      }
+      return {
+        label: "PENDING REVIEW",
+        color: "#64748b",
+        bg: "rgba(100, 116, 139, 0.12)",
+        icon: "fa-clock"
+      };
+    }
+
+    function downloadFile(url) {
+      if (!url) {
+        alert("Notice: Your result slip is currently being processed by the system.");
+        return;
+      }
+      window.open(url, "_blank");
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('historyListContainer');
+
+      if (state.myRequests.length === 0) {
+        container.innerHTML = `
+          <div class="center-state">
+            <i class="fa-regular fa-folder-open empty-icon"></i>
+            <h3 class="empty-title">No Verification Logs Found</h3>
+            <p class="empty-text">All submitted NIMC and BVN slip requests will appear here with live tracking updates.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = state.myRequests.map(item => {
+        const badge = getStatusBadge(item.status);
+        const dateFormatted = item.createdAt
+          ? new Date(item.createdAt).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit"
+            })
+          : "Recent";
+
+        const serviceTitle = item.serviceType || item.validationType || item.service || item.title || "NIN Verification";
+        const idNumber = item.nin || item.trackingId || item.searchValue || item.reference || "N/A";
+        const amount = Number(item.amount || item.cost || 0);
+        const slip = item.slipUrl || item.pdfUrl;
+        const canDownload = slip || String(item.status).toLowerCase() === "completed";
+
+        return `
+          <div class="history-card">
+            <div class="card-top">
+              <div class="icon-circle">
+                <i class="fa-solid fa-id-card"></i>
+              </div>
+
+              <div class="card-meta">
+                <div class="title-row">
+                  <h4 class="service-type">${serviceTitle}</h4>
+                  <span class="status-tag" style="background: ${badge.bg}; color: ${badge.color};">
+                    <i class="fa-solid ${badge.icon}" style="font-size: 11px;"></i>
+                    <span>${badge.label}</span>
+                  </span>
+                </div>
+                <p class="identifier-text">ID: ${idNumber}</p>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="card-bottom-row">
+              <div>
+                <p class="meta-label">Submission Date</p>
+                <p class="date-text">${dateFormatted}</p>
+              </div>
+              <div>
+                <p class="meta-label" style="text-align: right;">Fee Charged</p>
+                <p class="amount-text">₦${amount.toLocaleString()}</p>
+              </div>
+            </div>
+
+            ${canDownload ? `
+              <button type="button" class="download-btn" onclick="downloadFile('${slip || ''}')">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                <span>Download Result Slip</span>
+              </button>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

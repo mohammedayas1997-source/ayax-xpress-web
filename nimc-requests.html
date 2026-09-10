@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>NIMC Requests Management | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-slate: #f8fafc;
+      --card-white: #ffffff;
+      --primary-navy: #0f172a;
+      --navy-subtle: #1e293b;
+      --accent-blue: #1e3a8a;
+      --accent-cyan: #0284c7;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --text-dark: #0f172a;
+      --text-sub: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+      --border-subtle: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-slate);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .top-header {
+      background-color: var(--primary-navy);
+      border-bottom: 1px solid var(--navy-subtle);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+    }
+
+    .header-action-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .header-action-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .header-center-box {
+      text-align: center;
+      flex: 1;
+      padding: 0 10px;
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+
+    .header-subtitle {
+      font-size: 11px;
+      color: #38bdf8;
+      margin: 2px 0 0 0;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 18px 16px 80px 16px;
+    }
+
+    .summary-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-white);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 12px 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+    }
+
+    .summary-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .count-pill {
+      background: rgba(2, 132, 199, 0.1);
+      color: var(--accent-cyan);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+    }
+
+    .requests-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .request-card {
+      background: var(--card-white);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03);
+      transition: all 0.2s ease;
+    }
+
+    .request-card:hover {
+      border-color: var(--border-subtle);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    .card-info {
+      flex: 1;
+      padding-right: 12px;
+      overflow: hidden;
+    }
+
+    .user-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-sub);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .service-type {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin: 3px 0 0 0;
+      letter-spacing: 0.3px;
+    }
+
+    .date-text {
+      font-size: 11px;
+      color: var(--text-light);
+      margin: 4px 0 0 0;
+      font-weight: 600;
+    }
+
+    .status-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .status-text {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .chevron-icon {
+      color: var(--text-light);
+      font-size: 13px;
+      transition: transform 0.2s ease;
+    }
+
+    .request-card:hover .chevron-icon {
+      transform: translateX(2px);
+      color: var(--accent-blue);
+    }
+
+    .center-state {
+      text-align: center;
+      padding: 70px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 58px;
+      color: var(--border-subtle);
+      margin-bottom: 14px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 6px 0;
+    }
+
+    .empty-text {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin: 0 auto;
+      max-width: 360px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.65);
+      z-index: 1000;
+      justify-content: center;
+      align-items: flex-end;
+      backdrop-filter: blur(4px);
+    }
+
+    @media (min-width: 640px) {
+      .modal-overlay {
+        align-items: center;
+        padding: 16px;
+      }
+    }
+
+    .modal-content {
+      background: var(--card-white);
+      width: 100%;
+      max-width: 540px;
+      border-top-left-radius: 26px;
+      border-top-right-radius: 26px;
+      padding: 24px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+      animation: sheetSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (min-width: 640px) {
+      .modal-content {
+        border-radius: 22px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        animation: modalScale 0.2s ease-out;
+      }
+    }
+
+    @keyframes sheetSlideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes modalScale {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 12px;
+    }
+
+    .modal-header-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--primary-navy);
+      margin: 0;
+      letter-spacing: -0.2px;
+    }
+
+    .btn-close-modal {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+    }
+
+    .btn-close-modal:hover {
+      color: var(--text-dark);
+    }
+
+    .modal-scroll-area {
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 4px;
+      margin-bottom: 18px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      gap: 12px;
+    }
+
+    .detail-label {
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: capitalize;
+      flex: 1;
+    }
+
+    .detail-value {
+      font-weight: 800;
+      color: var(--text-sub);
+      text-align: right;
+      flex: 1.2;
+      word-break: break-all;
+    }
+
+    .btn-action-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .action-btn {
+      flex: 1;
+      height: 46px;
+      border: none;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .btn-reject { background-color: var(--accent-red); }
+    .btn-process { background-color: var(--accent-amber); }
+    .btn-approve { background-color: var(--accent-green); }
+
+    .action-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .action-loader-box {
+      margin: 16px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-header">
+    <a href="javascript:history.back()" class="header-action-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+
+    <div class="header-center-box">
+      <h1 class="header-title">NIMC Requests Management</h1>
+      <p class="header-subtitle">Administrative Queue & Status Terminal</p>
+    </div>
+
+    <button type="button" class="header-action-btn" onclick="fetchRequests(true)" title="Reload Requests">
+      <i class="fa-solid fa-rotate" id="reloadIcon"></i>
+    </button>
+  </header>
+
+  <main class="container">
+
+    <!-- Summary Count Bar -->
+    <section class="summary-bar">
+      <span class="summary-label">Requests Queue</span>
+      <span class="count-pill" id="totalRecordsPill">0 RECORDS</span>
+    </section>
+
+    <!-- Loading Indicator -->
+    <div class="center-state" id="loaderState">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size: 26px; color: var(--accent-blue); margin-bottom: 12px;"></i>
+      <p style="margin: 0; font-size: 13px; font-weight: 700;">Loading requests queue...</p>
+    </div>
+
+    <!-- Dynamic Requests List -->
+    <div class="requests-list" id="requestsListContainer" style="display: none;">
+      <!-- Populated via JavaScript -->
+    </div>
+
+  </main>
+
+  <div class="modal-overlay" id="detailModal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header-row">
+        <h2 class="modal-header-title" id="modalServiceTitle">REQUEST DETAILS</h2>
+        <button type="button" class="btn-close-modal" onclick="closeModal()" title="Close">&times;</button>
+      </div>
+
+      <div class="modal-scroll-area" id="modalDetailsContainer">
+        <!-- Dynamically injected detail rows -->
+      </div>
+
+      <div id="actionLoadingBox" class="action-loader-box" style="display: none;">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 18px; color: var(--accent-blue); margin-bottom: 6px;"></i>
+        <div>Processing status update...</div>
+      </div>
+
+      <div class="btn-action-row" id="btnActionRow">
+        <button type="button" class="action-btn btn-reject" onclick="updateStatus('rejected')">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>Reject</span>
+        </button>
+        <button type="button" class="action-btn btn-process" onclick="updateStatus('processing')">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>Process</span>
+        </button>
+        <button type="button" class="action-btn btn-approve" onclick="updateStatus('completed')">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Approve</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && (CONFIG.API_URL || CONFIG.BASE_URL))
+      ? (CONFIG.API_URL || CONFIG.BASE_URL)
+      : "https://ayax-data-xpress-server.vercel.app/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      requests: [],
+      selectedReq: null,
+      actionLoading: false
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session Expired. Please log in again.");
+        window.location.href = "index.html";
+        return;
+      }
+      fetchRequests();
+    });
+
+    async function fetchRequests(isBackground = false) {
+      const loader = document.getElementById('loaderState');
+      const container = document.getElementById('requestsListContainer');
+      const reloadIcon = document.getElementById('reloadIcon');
+
+      if (!isBackground) {
+        loader.style.display = 'block';
+        container.style.display = 'none';
+      }
+      if (reloadIcon) reloadIcon.classList.add('fa-spin');
+
+      try {
+        const response = await fetch(`${BASE_URL}/admin/nimc-requests`, {
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = "index.html";
+          return;
+        }
+
+        const data = await response.json();
+        const list = data.data || data.requests || (Array.isArray(data) ? data : []);
+        state.requests = Array.isArray(list) ? list : [];
+
+        renderRequests();
+      } catch (err) {
+        console.warn("Requests queue notice:", err);
+      } finally {
+        loader.style.display = 'none';
+        container.style.display = 'flex';
+        if (reloadIcon) reloadIcon.classList.remove('fa-spin');
+      }
+    }
+
+    function getStatusColor(status = "") {
+      switch (String(status).toLowerCase()) {
+        case "pending":
+          return "#64748b";
+        case "processing":
+          return "#f59e0b";
+        case "completed":
+        case "approved":
+        case "success":
+          return "#10b981";
+        case "rejected":
+        case "failed":
+        case "declined":
+          return "#ef4444";
+        default:
+          return "#94a3b8";
+      }
+    }
+
+    function renderRequests() {
+      const container = document.getElementById('requestsListContainer');
+      const totalPill = document.getElementById('totalRecordsPill');
+
+      totalPill.textContent = `${state.requests.length} ${state.requests.length === 1 ? 'RECORD' : 'RECORDS'}`;
+
+      if (state.requests.length === 0) {
+        container.innerHTML = `
+          <div class="center-state">
+            <i class="fa-regular fa-folder-open empty-icon"></i>
+            <h3 class="empty-title">No requests found at this time.</h3>
+            <p class="empty-text">All incoming NIN and identity verification requests from users and agents will be queued here for review.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = state.requests.map((item, index) => {
+        const userName = item.user?.name || item.userName || item.applicantName || "User";
+        const serviceType = item.serviceType
+          ? item.serviceType.replace(/_/g, " ").toUpperCase()
+          : (item.service || "NIMC SERVICE");
+        const dateFormatted = item.createdAt ? new Date(item.createdAt).toDateString() : "Recent";
+        const status = (item.status || "PENDING").toUpperCase();
+        const statusColor = getStatusColor(status);
+
+        return `
+          <div class="request-card" onclick="openDetailsModal(${index})">
+            <div class="card-info">
+              <h4 class="user-name">${userName}</h4>
+              <p class="service-type">${serviceType}</p>
+              <p class="date-text">${dateFormatted}</p>
+            </div>
+            <div class="status-box">
+              <span class="status-text" style="color: ${statusColor};">${status}</span>
+              <i class="fa-solid fa-chevron-right chevron-icon"></i>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openDetailsModal(index) {
+      const req = state.requests[index];
+      if (!req) return;
+
+      state.selectedReq = req;
+
+      const serviceTitle = req.serviceType
+        ? req.serviceType.replace(/_/g, " ").toUpperCase()
+        : (req.service || "REQUEST DETAILS");
+      document.getElementById('modalServiceTitle').textContent = serviceTitle;
+
+      const detailsContainer = document.getElementById('modalDetailsContainer');
+
+      let html = `
+        <div class="detail-row">
+          <span class="detail-label">User Name:</span>
+          <span class="detail-value">${req.user?.name || req.userName || req.applicantName || "N/A"}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">User Email:</span>
+          <span class="detail-value">${req.user?.email || req.email || "N/A"}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">NIN Number:</span>
+          <span class="detail-value">${req.ninNumber || req.nin || req.formData?.ninNumber || "N/A"}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value" style="color: ${getStatusColor(req.status)}">${String(req.status || "PENDING").toUpperCase()}</span>
+        </div>
+      `;
+
+      if (req.formData && typeof req.formData === 'object') {
+        Object.entries(req.formData).forEach(([key, value]) => {
+          const formattedLabel = key.replace(/([A-Z])/g, " $1");
+          html += `
+            <div class="detail-row">
+              <span class="detail-label">${formattedLabel}:</span>
+              <span class="detail-value">${String(value)}</span>
+            </div>
+          `;
+        });
+      }
+
+      detailsContainer.innerHTML = html;
+      document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      if (state.actionLoading) return;
+      document.getElementById('detailModal').style.display = 'none';
+      state.selectedReq = null;
+    }
+
+    async function updateStatus(newStatus) {
+      if (!state.selectedReq || !state.selectedReq._id) return;
+
+      const id = state.selectedReq._id;
+      const loaderBox = document.getElementById('actionLoadingBox');
+      const actionRow = document.getElementById('btnActionRow');
+
+      state.actionLoading = true;
+      loaderBox.style.display = 'block';
+      actionRow.style.display = 'none';
+
+      try {
+        const response = await fetch(`${BASE_URL}/admin/update-nimc/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && (data.success || response.status === 200)) {
+          alert(`Success: Request marked as ${newStatus}`);
+          closeModal();
+          fetchRequests(true);
+        } else {
+          throw new Error(data.message || "Action failed");
+        }
+      } catch (err) {
+        alert(err.message || "Could not complete status update.");
+      } finally {
+        state.actionLoading = false;
+        loaderBox.style.display = 'none';
+        actionRow.style.display = 'flex';
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

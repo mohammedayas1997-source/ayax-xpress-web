@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Transaction Ledger | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #050811;
+      --card-bg: #0b1120;
+      --border-dark: #1e293b;
+      --accent-blue: #0284c7;
+      --accent-cyan: #00f0ff;
+      --accent-green: #10b981;
+      --accent-amber: #eab308;
+      --accent-purple: #8b5cf6;
+      --accent-red: #ef4444;
+      --text-white: #f8fafc;
+      --text-muted: #64748b;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Command Header */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 18px 14px 18px;
+      max-width: 680px;
+      margin: 0 auto;
+      position: sticky;
+      top: 0;
+      background: rgba(5, 8, 17, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .back-btn {
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-white);
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text-white);
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 14px 16px 80px 16px;
+    }
+
+    /* Search Bar */
+    .search-bar-container {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 0 14px;
+      height: 46px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .search-bar-container:focus-within {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
+    }
+
+    .search-icon {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-right: 10px;
+    }
+
+    .search-input {
+      flex: 1;
+      height: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .clear-search-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Filter Chips Horizontal Scroll */
+    .filter-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+      white-space: nowrap;
+    }
+    .filter-scroll::-webkit-scrollbar { height: 4px; }
+    .filter-scroll::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
+
+    .filter-chip {
+      padding: 7px 14px;
+      border-radius: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-chip.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
+    }
+
+    /* Transactions List */
+    .ledger-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tx-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tx-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-1px);
+    }
+
+    .tx-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .service-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .service-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .service-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-white);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reference-text {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin: 2px 0 0 0;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-pill {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(100, 116, 139, 0.12);
+      margin: 10px 0;
+    }
+
+    .tx-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .detail-val {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+
+    .date-text {
+      font-size: 10.5px;
+      color: #94a3b8;
+      margin: 2px 0 0 0;
+      font-weight: 500;
+    }
+
+    .amount-text {
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+    }
+
+    /* Empty State */
+    .empty-container {
+      text-align: center;
+      padding: 70px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 50px;
+      margin-bottom: 12px;
+      color: #64748b;
+    }
+
+    .empty-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-white);
+      margin: 0 0 6px 0;
+    }
+
+    .empty-sub {
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 0;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    /* Loading Box */
+    .loading-box {
+      text-align: center;
+      padding: 50px 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Receipt Details Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--text-white);
+      margin: 0;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .receipt-amount-row {
+      text-align: center;
+      margin: 12px 0;
+    }
+
+    .receipt-amount-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .receipt-amount-val {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 2px 0 0 0;
+    }
+
+    .receipt-details-box {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(100, 116, 139, 0.1);
+      font-size: 12px;
+    }
+
+    .receipt-row:last-child {
+      border-bottom: none;
+    }
+
+    .receipt-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .receipt-val {
+      color: var(--text-white);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .copy-ref-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-blue);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .close-btn {
+      width: 100%;
+      height: 46px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover {
+      background: #0369a1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Bar -->
+  <header class="header-bar">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="header-title">Transaction Ledger</h1>
+    <button type="button" class="back-btn" onclick="fetchHistory(true)" title="Refresh Ledger">
+      <i class="fa-solid fa-rotate"></i>
+    </button>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Search Input -->
+    <div class="search-bar-container">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="Search by phone, meter, NIN, amount, or Ref..."
+        oninput="handleSearch()"
+      />
+      <button type="button" class="clear-search-btn" id="btnClearSearch" onclick="clearSearch()" style="display: none;">
+        <i class="fa-solid fa-circle-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Category Filter Chips -->
+    <div class="filter-scroll" id="filterChipsContainer">
+      <!-- Injected via JavaScript -->
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading-box" id="loadingIndicator">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size: 20px; color: var(--accent-blue); margin-bottom: 8px;"></i>
+      <div>Loading transaction ledger...</div>
+    </div>
+
+    <!-- Ledger Transaction Cards -->
+    <div class="ledger-list" id="ledgerListContainer">
+      <!-- Injected via JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- Transaction Receipt Modal -->
+  <div class="modal-overlay" id="receiptModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Transaction Receipt</h2>
+        <button type="button" class="btn-modal-close" onclick="closeReceiptModal()">&times;</button>
+      </div>
+
+      <div class="receipt-amount-row">
+        <p class="receipt-amount-label">Amount</p>
+        <h3 class="receipt-amount-val" id="modalAmountVal">₦0.00</h3>
+      </div>
+
+      <div class="receipt-details-box">
+        <div class="receipt-row">
+          <span class="receipt-label">Service</span>
+          <span class="receipt-val" id="modalServiceVal">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Status</span>
+          <span class="receipt-val" id="modalStatusVal" style="font-weight: 800;">-</span>
+        </div>
+        <div class="receipt-row" id="modalBeneficiaryRow">
+          <span class="receipt-label">Beneficiary</span>
+          <span class="receipt-val" id="modalBeneficiaryVal">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Date & Time</span>
+          <span class="receipt-val" id="modalDateVal">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Reference</span>
+          <span class="receipt-val">
+            <span class="copy-ref-btn" onclick="copyModalRef()">
+              <span id="modalRefShort">-</span>
+              <i class="fa-regular fa-copy"></i>
+            </span>
+          </span>
+        </div>
+        <div class="receipt-row" id="modalDescRow" style="border-bottom: none;">
+          <span class="receipt-label">Description</span>
+          <span class="receipt-val" id="modalDescVal" style="max-width: 60%; word-break: break-word;">-</span>
+        </div>
+      </div>
+
+      <button type="button" class="close-btn" onclick="closeReceiptModal()">
+        Close Receipt
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    const filterCategories = [
+      "ALL",
+      "DATA",
+      "AIRTIME",
+      "ELECTRICITY",
+      "CABLE",
+      "NIN",
+      "BVN",
+      "FUNDING",
+      "REFUND"
+    ];
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      history: [],
+      activeFilter: 'ALL',
+      searchQuery: '',
+      selectedTx: null
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderFilterChips();
+      fetchHistory();
+    });
+
+    function renderFilterChips() {
+      const container = document.getElementById('filterChipsContainer');
+      container.innerHTML = filterCategories.map(cat => `
+        <div class="filter-chip ${state.activeFilter === cat ? 'active' : ''}" onclick="setFilterCategory('${cat}', this)">
+          ${cat}
+        </div>
+      `).join('');
+    }
+
+    function setFilterCategory(cat, el) {
+      state.activeFilter = cat;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      renderLedger();
+    }
+
+    function handleSearch() {
+      const val = document.getElementById('searchInput').value;
+      state.searchQuery = val;
+      document.getElementById('btnClearSearch').style.display = val.length > 0 ? 'block' : 'none';
+      renderLedger();
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      state.searchQuery = '';
+      document.getElementById('btnClearSearch').style.display = 'none';
+      renderLedger();
+    }
+
+    async function fetchHistory(isBackground = false) {
+      const loadingEl = document.getElementById('loadingIndicator');
+      if (!isBackground) loadingEl.style.display = 'block';
+
+      if (!state.token) {
+        alert("Session Expired. Please login again.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const headers = {
+        'Authorization': `Bearer ${state.token}`,
+        'Accept': 'application/json'
+      };
+
+      try {
+        let response;
+        try {
+          response = await fetch(`${BASE_URL}/transactions/my-history`, { headers });
+          if (!response.ok) throw new Error();
+        } catch (_) {
+          try {
+            response = await fetch(`${BASE_URL}/transactions/history`, { headers });
+            if (!response.ok) throw new Error();
+          } catch (__) {
+            try {
+              response = await fetch(`${BASE_URL}/vtu/history`, { headers });
+              if (!response.ok) throw new Error();
+            } catch (___) {
+              response = await fetch(`${BASE_URL}/transactions`, { headers });
+            }
+          }
+        }
+
+        const result = await response.json();
+        if (response.ok && (result.success || result.status === 'success')) {
+          const rawList = result.data || result.history || result.transactions || [];
+          state.history = Array.isArray(rawList) ? rawList : [];
+        } else {
+          state.history = [];
+        }
+      } catch (e) {
+        console.warn("Transaction sync note:", e.message);
+      } finally {
+        loadingEl.style.display = 'none';
+        renderLedger();
+      }
+    }
+
+    function getServiceMetadata(item) {
+      const rawType = String(item.type || item.service || item.category || '').toUpperCase();
+
+      if (rawType.includes('DATA')) {
+        return { icon: 'fa-wifi', color: '#0284c7', label: 'Data Bundle', bg: 'rgba(2, 132, 199, 0.12)', isInflow: false };
+      }
+      if (rawType.includes('AIRTIME') || rawType.includes('VTU')) {
+        return { icon: 'fa-phone', color: '#16a34a', label: 'Airtime Top-up', bg: 'rgba(22, 163, 74, 0.12)', isInflow: false };
+      }
+      if (rawType.includes('ELECTRIC') || rawType.includes('POWER') || rawType.includes('TOKEN')) {
+        return { icon: 'fa-bolt', color: '#eab308', label: 'Electricity Token', bg: 'rgba(234, 179, 8, 0.12)', isInflow: false };
+      }
+      if (rawType.includes('CABLE') || rawType.includes('TV') || rawType.includes('GOTV') || rawType.includes('DSTV')) {
+        return { icon: 'fa-tv', color: '#8b5cf6', label: 'Cable Subscription', bg: 'rgba(139, 92, 246, 0.12)', isInflow: false };
+      }
+      if (rawType.includes('NIN') || rawType.includes('NIMC')) {
+        return { icon: 'fa-fingerprint', color: '#2563eb', label: 'NIN Verification', bg: 'rgba(37, 99, 235, 0.12)', isInflow: false };
+      }
+      if (rawType.includes('BVN')) {
+        return { icon: 'fa-id-card', color: '#06b6d4', label: 'BVN Service', bg: 'rgba(6, 182, 212, 0.12)', isInflow: false };
+      }
+      if (rawType.includes('REFUND')) {
+        return { icon: 'fa-rotate-left', color: '#10b981', label: 'Wallet Refund', bg: 'rgba(16, 185, 129, 0.15)', isInflow: true };
+      }
+      if (rawType.includes('FUND') || rawType.includes('DEPOSIT') || rawType.includes('CREDIT') || rawType.includes('WALLET')) {
+        return { icon: 'fa-wallet', color: '#10b981', label: 'Wallet Deposit', bg: 'rgba(16, 185, 129, 0.12)', isInflow: true };
+      }
+      return { icon: 'fa-receipt', color: '#64748b', label: item.service || 'Utility Service', bg: 'rgba(100, 116, 139, 0.12)', isInflow: false };
+    }
+
+    function renderLedger() {
+      const container = document.getElementById('ledgerListContainer');
+      const rawQuery = state.searchQuery.toUpperCase().trim();
+
+      const filtered = state.history.filter(item => {
+        const rawType = String(item.type || item.service || item.category || '').toUpperCase();
+        const rawRef = String(item.reference || item.transactionId || item._id || '').toUpperCase();
+        const rawPhone = String(item.phoneNumber || item.phone || item.recipient || item.meterNumber || item.nin || item.bvn || '').toUpperCase();
+        const rawDesc = String(item.description || item.details || '').toUpperCase();
+        const rawAmount = String(item.amount || '');
+
+        let matchesCategory = true;
+        if (state.activeFilter === "DATA") matchesCategory = rawType.includes("DATA");
+        else if (state.activeFilter === "AIRTIME") matchesCategory = rawType.includes("AIRTIME") || rawType.includes("VTU");
+        else if (state.activeFilter === "ELECTRICITY") matchesCategory = rawType.includes("ELECTRIC") || rawType.includes("POWER");
+        else if (state.activeFilter === "CABLE") matchesCategory = rawType.includes("CABLE") || rawType.includes("TV");
+        else if (state.activeFilter === "NIN") matchesCategory = rawType.includes("NIN") || rawType.includes("NIMC");
+        else if (state.activeFilter === "BVN") matchesCategory = rawType.includes("BVN");
+        else if (state.activeFilter === "REFUND") matchesCategory = rawType.includes("REFUND");
+        else if (state.activeFilter === "FUNDING") matchesCategory = rawType.includes("FUND") || rawType.includes("DEPOSIT") || rawType.includes("CREDIT") || rawType.includes("WALLET");
+
+        const matchesSearch =
+          !rawQuery ||
+          rawRef.includes(rawQuery) ||
+          rawPhone.includes(rawQuery) ||
+          rawType.includes(rawQuery) ||
+          rawDesc.includes(rawQuery) ||
+          rawAmount.includes(rawQuery);
+
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-container">
+            <i class="fa-solid fa-receipt empty-icon"></i>
+            <h3 class="empty-title">No Records Found</h3>
+            <p class="empty-sub">
+              All airtime, data, electricity, cable, identity queries, and funding records will be securely preserved here.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map((item, idx) => {
+        const meta = getServiceMetadata(item);
+        const status = String(item.status || "COMPLETED").toUpperCase();
+        const isSuccess = status === "SUCCESS" || status === "SUCCESSFUL" || status === "DELIVERED" || status === "COMPLETED";
+        const isPending = status === "PENDING" || status === "PROCESSING" || status === "QUEUED" || status === "PENDING-REFUND";
+        const isRefunded = status === "REFUNDED";
+
+        let statusBg = "rgba(239, 68, 68, 0.12)";
+        let statusColor = "#ef4444";
+
+        if (isRefunded) {
+          statusBg = "rgba(139, 92, 246, 0.12)";
+          statusColor = "#8b5cf6";
+        } else if (isSuccess) {
+          statusBg = "rgba(16, 185, 129, 0.12)";
+          statusColor = "#10b981";
+        } else if (isPending) {
+          statusBg = "rgba(234, 179, 8, 0.12)";
+          statusColor = "#eab308";
+        }
+
+        const displayAmount = Number(item.amount || item.totalAmount || 0);
+        const dateFormatted = item.createdAt
+          ? new Date(item.createdAt).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit"
+            })
+          : "Recent";
+
+        const detailText =
+          item.recipient ||
+          item.phoneNumber ||
+          item.phone ||
+          item.meterNumber ||
+          item.nin ||
+          item.bvn ||
+          item.description ||
+          item.reference ||
+          "Platform Node";
+
+        const amountColor = meta.isInflow ? "#10b981" : "#00f0ff";
+        const txId = item._id || item.id || item.reference || idx;
+
+        return `
+          <div class="tx-card" onclick="openReceiptModal('${txId}')">
+            <div class="tx-card-header">
+              <div class="service-meta">
+                <div class="service-icon-wrap" style="background: ${meta.bg};">
+                  <i class="fa-solid ${meta.icon}" style="color: ${meta.color};"></i>
+                </div>
+                <div style="flex: 1; overflow: hidden;">
+                  <h4 class="service-title">${meta.label}</h4>
+                  <p class="reference-text">Ref: ${item.reference || item.transactionId || 'N/A'}</p>
+                </div>
+              </div>
+              <div class="status-pill" style="background: ${statusBg}; color: ${statusColor};">
+                ${status}
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="tx-card-footer">
+              <div style="flex: 1; padding-right: 8px;">
+                <p class="detail-val">${detailText}</p>
+                <p class="date-text">${dateFormatted}</p>
+              </div>
+              <span class="amount-text" style="color: ${amountColor};">
+                ${meta.isInflow ? '+' : '-'}₦${displayAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openReceiptModal(txId) {
+      const tx = state.history.find((item, idx) => (item._id || item.id || item.reference || idx) == txId);
+      if (!tx) return;
+
+      state.selectedTx = tx;
+      const meta = getServiceMetadata(tx);
+      const amount = Number(tx.amount || 0);
+
+      document.getElementById('modalAmountVal').textContent = `${meta.isInflow ? '+' : '-'}₦${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('modalAmountVal').style.color = meta.isInflow ? '#10b981' : '#00f0ff';
+      document.getElementById('modalServiceVal').textContent = meta.label;
+
+      const status = String(tx.status || 'COMPLETED').toUpperCase();
+      const statusEl = document.getElementById('modalStatusVal');
+      statusEl.textContent = status;
+
+      if (status === 'REFUNDED') statusEl.style.color = '#8b5cf6';
+      else if (status === 'SUCCESS' || status === 'COMPLETED') statusEl.style.color = '#10b981';
+      else statusEl.style.color = '#ef4444';
+
+      const beneficiary = tx.recipient || tx.phoneNumber || tx.phone || tx.meterNumber || tx.nin || tx.bvn;
+      const benRow = document.getElementById('modalBeneficiaryRow');
+      if (beneficiary) {
+        benRow.style.display = 'flex';
+        document.getElementById('modalBeneficiaryVal').textContent = beneficiary;
+      } else {
+        benRow.style.display = 'none';
+      }
+
+      document.getElementById('modalDateVal').textContent = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : 'Recent';
+
+      const fullRef = String(tx.reference || tx._id || 'N/A');
+      document.getElementById('modalRefShort').textContent = fullRef.length > 16 ? `${fullRef.slice(0, 16)}...` : fullRef;
+
+      const descRow = document.getElementById('modalDescRow');
+      if (tx.description) {
+        descRow.style.display = 'flex';
+        document.getElementById('modalDescVal').textContent = tx.description;
+      } else {
+        descRow.style.display = 'none';
+      }
+
+      document.getElementById('receiptModal').style.display = 'flex';
+    }
+
+    function closeReceiptModal() {
+      document.getElementById('receiptModal').style.display = 'none';
+      state.selectedTx = null;
+    }
+
+    function copyModalRef() {
+      if (!state.selectedTx) return;
+      const ref = state.selectedTx.reference || state.selectedTx._id || '';
+      navigator.clipboard.writeText(ref).then(() => {
+        alert("Copied to Clipboard: " + ref);
+      });
+    }
+  </script>
+</body>
+</html>

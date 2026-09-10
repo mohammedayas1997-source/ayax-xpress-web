@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Manage System Roles | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-light: #f8fafc;
+      --card-white: #ffffff;
+      --primary-navy: #1e3a8a;
+      --primary-navy-dark: #0f172a;
+      --accent-blue: #0284c7;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Command Header */
+    .top-header {
+      background: var(--primary-navy-dark);
+      border-bottom: 1px solid #1e293b;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      margin: 0;
+      letter-spacing: -0.2px;
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: #38bdf8;
+      margin: 2px 0 0 0;
+      font-weight: 600;
+    }
+
+    .refresh-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #38bdf8;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 80px 16px;
+    }
+
+    /* Header Controls */
+    .controls-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .controls-card {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .page-heading {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 4px 0;
+    }
+
+    .page-subheading {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .search-wrapper {
+      width: 100%;
+      max-width: 320px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 42px;
+      background: #ffffff;
+      border: 1px solid var(--border-input);
+      border-radius: 10px;
+      padding: 0 14px 0 38px;
+      font-size: 13px;
+      color: var(--text-dark);
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 13px;
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    /* Table Surface */
+    .table-surface {
+      background: var(--card-white);
+      border-radius: 16px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #f8fafc;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    th {
+      padding: 14px 20px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border-light);
+      transition: background-color 0.15s;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    td {
+      padding: 16px 20px;
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    .user-name {
+      font-weight: 700;
+      color: var(--text-dark);
+      font-size: 13.5px;
+      margin: 0;
+    }
+
+    .user-id {
+      font-size: 10.5px;
+      color: var(--text-light);
+      margin: 2px 0 0 0;
+      font-family: monospace;
+    }
+
+    .user-email {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Badges */
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .badge-superadmin { background-color: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
+    .badge-supervisor { background-color: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+    .badge-admin { background-color: #e0e7ff; color: #3730a3; border-color: #a5b4fc; }
+    .badge-agent { background-color: #dcfce7; color: #166534; border-color: #86efac; }
+    .badge-user { background-color: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+
+    /* Action Select Box */
+    .role-select {
+      height: 38px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-input);
+      background-color: #ffffff;
+      color: var(--text-dark);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .role-select:focus {
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
+    }
+
+    .role-select:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Loading & Error Overlays */
+    .state-box {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .error-card {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 16px;
+      color: #991b1b;
+      margin-bottom: 20px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-retry {
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Bar -->
+  <header class="top-header">
+    <div class="header-left">
+      <a href="javascript:history.back()" class="back-btn" title="Back">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div>
+        <h1 class="header-title">System Role Governance</h1>
+        <p class="header-sub">Staff Access & Privilege Delegation</p>
+      </div>
+    </div>
+    <button type="button" class="refresh-btn" onclick="fetchUsers(true)" title="Refresh Users">
+      <i class="fa-solid fa-rotate" id="refreshIcon"></i>
+    </button>
+  </header>
+
+  <!-- Content Container -->
+  <main class="container">
+    <!-- Controls Card -->
+    <div class="controls-card">
+      <div>
+        <h2 class="page-heading">Manage System Roles</h2>
+        <p class="page-subheading">Monitor and update staff and user access privileges.</p>
+      </div>
+
+      <!-- Search Field -->
+      <div class="search-wrapper">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search by name or email..."
+          spellcheck="false"
+          autocorrect="off"
+          autocapitalize="off"
+          oninput="handleSearch()"
+        />
+      </div>
+    </div>
+
+    <!-- Error Banner Placeholder -->
+    <div id="errorBanner" style="display: none;" class="error-card">
+      <span id="errorMessage">Failed to load users list.</span>
+      <button type="button" class="btn-retry" onclick="fetchUsers()">Try Again</button>
+    </div>
+
+    <!-- Table Surface -->
+    <div class="table-surface">
+      <!-- Loading State -->
+      <div id="loadingBox" class="state-box">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 26px; color: var(--primary-navy); margin-bottom: 12px;"></i>
+        <p style="margin: 0; font-weight: 700; font-size: 13px;">Loading Users...</p>
+      </div>
+
+      <!-- Table View -->
+      <div class="table-container" id="tableContainer" style="display: none;">
+        <table>
+          <thead>
+            <tr>
+              <th>User Details</th>
+              <th>Email</th>
+              <th>Current Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <!-- Injected via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.vercel.app/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      users: [],
+      searchTerm: '',
+      updatingId: null
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session Expired: Please log in again.");
+        window.location.href = "index.html";
+        return;
+      }
+      fetchUsers();
+    });
+
+    async function fetchUsers(isBackground = false) {
+      const loadingBox = document.getElementById('loadingBox');
+      const tableContainer = document.getElementById('tableContainer');
+      const errorBanner = document.getElementById('errorBanner');
+      const refreshIcon = document.getElementById('refreshIcon');
+
+      if (!isBackground && state.users.length === 0) {
+        loadingBox.style.display = 'block';
+        tableContainer.style.display = 'none';
+      }
+      if (refreshIcon) refreshIcon.classList.add('fa-spin');
+      errorBanner.style.display = 'none';
+
+      try {
+        const response = await fetch(`${BASE_URL}/admin/users`, {
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = "index.html";
+          return;
+        }
+
+        const data = await response.json();
+        state.users = data.data || data.users || (Array.isArray(data) ? data : []);
+        renderUsers();
+
+        loadingBox.style.display = 'none';
+        tableContainer.style.display = 'block';
+      } catch (err) {
+        document.getElementById('errorMessage').textContent = "Failed to load users list. Please check your network.";
+        errorBanner.style.display = 'flex';
+        loadingBox.style.display = 'none';
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+      }
+    }
+
+    function handleSearch() {
+      state.searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+      renderUsers();
+    }
+
+    function getRoleBadgeClass(role) {
+      switch (String(role).toLowerCase()) {
+        case "superadmin": return "badge-superadmin";
+        case "supervisor": return "badge-supervisor";
+        case "admin": return "badge-admin";
+        case "agent": return "badge-agent";
+        default: return "badge-user";
+      }
+    }
+
+    async function changeRole(userId, newRole) {
+      if (!newRole) return;
+
+      const targetUser = state.users.find(u => (u._id || u.id) === userId);
+      const userName = targetUser ? (targetUser.firstName || targetUser.name || "this user") : "this user";
+
+      if (!confirm(`Are you sure you want to change ${userName}'s role to ${newRole.toUpperCase()}?`)) {
+        renderUsers();
+        return;
+      }
+
+      state.updatingId = userId;
+      renderUsers();
+
+      try {
+        const response = await fetch(`${BASE_URL}/admin/manage-role`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ userId, newRole })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && (result.success || result.status === 'success' || response.status === 200)) {
+          state.users = state.users.map(u => (u._id || u.id) === userId ? { ...u, role: newRole } : u);
+          alert("Role updated successfully!");
+        } else {
+          throw new Error(result.message || "Failed to update role.");
+        }
+      } catch (err) {
+        alert(err.message || "Failed to update role.");
+      } finally {
+        state.updatingId = null;
+        renderUsers();
+      }
+    }
+
+    function renderUsers() {
+      const tbody = document.getElementById('userTableBody');
+      const filtered = state.users.filter(user => {
+        const fullName = `${user.firstName || ""} ${user.surname || ""} ${user.name || ""}`.toLowerCase();
+        const email = (user.email || "").toLowerCase();
+        return fullName.includes(state.searchTerm) || email.includes(state.searchTerm);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="state-box" style="padding: 40px 20px;">
+              No users found matching your search.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(user => {
+        const id = user._id || user.id;
+        const name = `${user.firstName || user.name || "User"} ${user.surname || ""}`.trim();
+        const email = user.email || "No email assigned";
+        const role = user.role || "user";
+        const isUpdating = state.updatingId === id;
+
+        return `
+          <tr>
+            <td>
+              <div class="user-name">${name}</div>
+              <div class="user-id">ID: ${id}</div>
+            </td>
+            <td>
+              <div class="user-email">${email}</div>
+            </td>
+            <td>
+              <span class="role-badge ${getRoleBadgeClass(role)}">
+                ${role}
+              </span>
+            </td>
+            <td>
+              <select
+                class="role-select"
+                ${isUpdating ? "disabled" : ""}
+                onchange="changeRole('${id}', this.value)"
+              >
+                <option value="" disabled selected>
+                  ${isUpdating ? "Updating..." : "Change Role"}
+                </option>
+                <option value="superadmin">Make Superadmin</option>
+                <option value="supervisor">Make Supervisor</option>
+                <option value="admin">Make Admin</option>
+                <option value="agent">Make Agent</option>
+                <option value="user">Make User</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/adminApi.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

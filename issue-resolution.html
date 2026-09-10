@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Issue Resolution Desk | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --border-dark: #1e293b;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #16a34a;
+      --accent-amber: #d97706;
+      --accent-red: #dc2626;
+      --text-white: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Command Bar */
+    .top-bar {
+      background: var(--bg-dark);
+      padding: 16px 18px 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-dark);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+    }
+
+    .back-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-white);
+      text-decoration: none;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .top-bar-center {
+      flex: 1;
+      margin-left: 12px;
+    }
+
+    .top-bar-title {
+      color: var(--text-white);
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    .top-bar-sub {
+      color: var(--accent-cyan);
+      font-size: 10.5px;
+      margin: 2px 0 0 0;
+    }
+
+    .quick-escalate-btn {
+      background: rgba(251, 191, 36, 0.15);
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: #fbbf24;
+      cursor: pointer;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Container Area */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 14px 16px 80px 16px;
+    }
+
+    /* Search & Action Box */
+    .search-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .search-card-heading {
+      font-size: 10.5px;
+      font-weight: 900;
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+      letter-spacing: 0.6px;
+      display: block;
+    }
+
+    .text-input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border-input);
+      border-radius: 10px;
+      padding: 0 12px;
+      height: 44px;
+      color: var(--text-dark);
+      font-size: 13px;
+      margin-bottom: 10px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: var(--accent-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+
+    .search-btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-btn-primary {
+      flex: 1.2;
+      background: var(--accent-blue);
+      border: none;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-white);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .search-btn-primary:hover {
+      background: #0369a1;
+    }
+
+    .direct-refund-btn {
+      flex: 1;
+      background: var(--accent-green);
+      border: none;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-white);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .direct-refund-btn:hover {
+      background: #059669;
+    }
+
+    /* User Profile Card */
+    .user-profile-card {
+      display: none;
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent-blue);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .user-profile-top {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .user-avatar-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #e0f2fe;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .user-name-text {
+      color: var(--text-dark);
+      font-size: 14px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .user-role-tag {
+      color: var(--text-muted);
+      font-size: 10px;
+      margin: 2px 0 0 0;
+    }
+
+    .wallet-bal-text {
+      color: var(--accent-green);
+      font-size: 15px;
+      font-weight: 900;
+      margin: 0;
+      text-align: right;
+    }
+
+    .wallet-bal-sub {
+      color: #94a3b8;
+      font-size: 9px;
+      margin: 1px 0 0 0;
+      text-align: right;
+    }
+
+    .user-meta-container {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid var(--border-light);
+      margin-top: 8px;
+    }
+
+    .user-meta-text {
+      font-size: 11px;
+      color: #475569;
+      margin: 3px 0;
+    }
+
+    .meta-bold {
+      color: var(--text-dark);
+      font-weight: 700;
+    }
+
+    /* Transactions Container */
+    .transactions-container {
+      margin-bottom: 14px;
+    }
+
+    .section-heading {
+      font-size: 11px;
+      font-weight: 900;
+      color: #475569;
+      margin: 16px 0 10px 0;
+      letter-spacing: 0.6px;
+      display: block;
+    }
+
+    .tx-audit-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .tx-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .tx-ref-val {
+      font-size: 12px;
+      color: var(--text-dark);
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .tx-type-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin: 2px 0 0 0;
+    }
+
+    .tx-amount-val {
+      font-size: 14px;
+      color: var(--text-dark);
+      font-weight: 900;
+      margin: 0;
+      text-align: right;
+    }
+
+    .tx-status-badge {
+      font-size: 9.5px;
+      font-weight: 900;
+      margin: 2px 0 0 0;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .tx-controls-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 10px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 8px;
+    }
+
+    .tx-action-btn-secondary {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 7px 0;
+      border-radius: 6px;
+      gap: 4px;
+      color: var(--accent-blue);
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tx-action-btn-primary {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-green);
+      border: none;
+      padding: 7px 0;
+      border-radius: 6px;
+      gap: 4px;
+      color: var(--text-white);
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tx-action-btn-danger {
+      flex: 0.8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      padding: 7px 0;
+      border-radius: 6px;
+      gap: 4px;
+      color: var(--accent-red);
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid var(--border-input);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 8px;
+    }
+
+    .modal-title {
+      color: var(--text-dark);
+      font-size: 14.5px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .modal-sub {
+      color: var(--text-muted);
+      font-size: 10.5px;
+      margin: 2px 0 0 0;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .field-label {
+      color: var(--accent-blue);
+      font-size: 10px;
+      font-weight: 900;
+      margin: 10px 0 4px 0;
+      display: block;
+    }
+
+    .modal-input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border-input);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+      outline: none;
+    }
+
+    .modal-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .modal-submit-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 10px;
+      border: none;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Bar -->
+  <header class="top-bar">
+    <a href="admin-dashboard.html" class="back-icon-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div class="top-bar-center">
+      <h1 class="top-bar-title">Issue Resolution Desk</h1>
+      <p class="top-bar-sub">Audit, Re-query, Refund & Escalate Disputes</p>
+    </div>
+    <button type="button" class="quick-escalate-btn" onclick="openActionModal('escalate')" title="Escalate to SuperAdmin">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </button>
+  </header>
+
+  <!-- Container Area -->
+  <main class="container">
+
+    <!-- Search / Audit Engine -->
+    <section class="search-card">
+      <span class="search-card-heading">CUSTOMER & DISPUTE AUDIT ENGINE</span>
+      <input
+        type="text"
+        id="searchInput"
+        class="text-input"
+        placeholder="Search by Phone, Email, Reference, or Verification ID..."
+        onkeydown="if(event.key === 'Enter') handleDiagnosticSearch()"
+      />
+
+      <div class="search-btn-row">
+        <button type="button" class="search-btn-primary" id="btnRunDiagnostics" onclick="handleDiagnosticSearch()">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>RUN DIAGNOSTICS</span>
+        </button>
+
+        <button type="button" class="direct-refund-btn" onclick="openActionModal('refund')">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+          <span>INSTANT REFUND</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Diagnostic User Profile Card -->
+    <section class="user-profile-card" id="userProfileCard">
+      <div class="user-profile-top">
+        <div class="user-avatar-box">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+        <div style="flex: 1; margin-left: 10px;">
+          <h3 class="user-name-text" id="profileName">-</h3>
+          <p class="user-role-tag" id="profileRoleTag">ROLE: USER • STATUS: ACTIVE</p>
+        </div>
+        <div>
+          <h4 class="wallet-bal-text" id="profileWalletBal">₦0.00</h4>
+          <p class="wallet-bal-sub">Float Balance</p>
+        </div>
+      </div>
+
+      <div class="user-meta-container">
+        <p class="user-meta-text">📞 Phone: <span class="meta-bold" id="profilePhone">-</span></p>
+        <p class="user-meta-text">✉️ Email: <span class="meta-bold" id="profileEmail">-</span></p>
+        <p class="user-meta-text">🏦 Bank Account: <span class="meta-bold" id="profileBankAccount">-</span></p>
+        <p class="user-meta-text">📍 Region: <span class="meta-bold" id="profileRegion">-</span></p>
+      </div>
+    </section>
+
+    <!-- Transaction Telemetry Audit Section -->
+    <section class="transactions-container" id="txContainer" style="display: none;">
+      <span class="section-heading" id="txSectionTitle">TRANSACTION TELEMETRY AUDIT (0)</span>
+      <div id="txListWrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Resolution / Refund / Escalation Modal -->
+  <div class="modal-overlay" id="actionModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title" id="modalTitle">Resolution Action</h2>
+          <p class="modal-sub" id="modalSub">Direct Adjustment</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeActionModal()">&times;</button>
+      </div>
+
+      <form id="resolutionForm" onsubmit="event.preventDefault(); handleExecuteResolution();">
+        <div id="refundAmountGroup" style="display: none;">
+          <label class="field-label" for="modalRefundAmount">REFUND AMOUNT (₦)</label>
+          <input
+            type="number"
+            id="modalRefundAmount"
+            class="modal-input"
+            placeholder="Enter amount..."
+            min="1"
+            step="any"
+          />
+        </div>
+
+        <div id="resolutionNoteGroup" style="display: none;">
+          <label class="field-label" for="modalResolutionNote">DIAGNOSTIC RESOLUTION NOTE</label>
+          <textarea
+            id="modalResolutionNote"
+            class="modal-input"
+            style="height: 75px; resize: none;"
+            placeholder="Provide detailed diagnostic reason for audit trails..."
+          ></textarea>
+        </div>
+
+        <button type="submit" class="modal-submit-btn" id="btnModalSubmit">
+          CONFIRM ACTION
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      accountData: null,
+      disputedTransactions: [],
+      selectedTx: null,
+      actionType: ''
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Authentication required. Please login.");
+        window.location.href = "index.html";
+      }
+    });
+
+    async function handleDiagnosticSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) {
+        alert("Please provide a Phone Number, Email, Reference, or Verification ID.");
+        return;
+      }
+
+      const btn = document.getElementById('btnRunDiagnostics');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Searching...';
+
+        let res = await fetch(`${BASE_URL}/support/search-user/${encodeURIComponent(query)}`, {
+          headers: { 'Authorization': `Bearer ${state.token}` }
+        });
+
+        if (!res.ok) {
+          res = await fetch(`${BASE_URL}/support/trace/all/${encodeURIComponent(query)}`, {
+            headers: { 'Authorization': `Bearer ${state.token}` }
+          });
+        }
+
+        const data = await res.json();
+        const payload = data.data || data || {};
+        const profile = payload.profile || payload.user || payload;
+        const transactions = payload.recentTransactions || payload.transactions || (Array.isArray(payload) ? payload : []);
+
+        state.accountData = profile && (profile.phone || profile.email) ? profile : null;
+        state.disputedTransactions = Array.isArray(transactions) ? transactions : [];
+
+        renderAuditResults(query);
+      } catch (err) {
+        alert("Diagnostic Error: Failed to query telemetry logs.");
+        state.accountData = null;
+        state.disputedTransactions = [];
+        renderAuditResults(query);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function renderAuditResults(query) {
+      const profileCard = document.getElementById('userProfileCard');
+      const txContainer = document.getElementById('txContainer');
+      const txListWrap = document.getElementById('txListWrap');
+      const txSectionTitle = document.getElementById('txSectionTitle');
+
+      if (state.accountData) {
+        const u = state.accountData;
+        document.getElementById('profileName').textContent = u.name || `${u.firstName || ''} ${u.surname || ''}`.trim() || "User Account";
+        
+        const isSusp = !!u.isSuspended;
+        document.getElementById('profileRoleTag').innerHTML = `ROLE: ${String(u.role || 'USER').toUpperCase()} • STATUS: <span style="color: ${isSusp ? '#ef4444' : '#16a34a'}; font-weight: 900;">${isSusp ? 'SUSPENDED' : 'ACTIVE'}</span>`;
+        
+        const bal = Number(u.walletBalance ?? u.balance ?? 0);
+        document.getElementById('profileWalletBal').textContent = `₦${bal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+        
+        document.getElementById('profilePhone').textContent = u.phone || "N/A";
+        document.getElementById('profileEmail').textContent = u.email || "N/A";
+        document.getElementById('profileBankAccount').textContent = `${u.bankName || "Wema Bank"} (${u.accountNumber || "N/A"})`;
+        document.getElementById('profileRegion').textContent = `${u.lga || "LGA"}, ${u.state || "State"}`;
+        
+        profileCard.style.display = 'block';
+      } else {
+        profileCard.style.display = 'none';
+      }
+
+      if (state.disputedTransactions.length > 0) {
+        txSectionTitle.textContent = `TRANSACTION TELEMETRY AUDIT (${state.disputedTransactions.length})`;
+        txListWrap.innerHTML = state.disputedTransactions.map((tx, idx) => {
+          const isSuccess = tx.status === "success" || tx.status === "completed";
+          const isFailed = tx.status === "failed";
+          const ref = tx.reference || tx.transactionId || tx._id || `TX-${idx}`;
+          const amount = Number(tx.amount || 0);
+          const dateStr = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : "Real-Time";
+          const service = tx.service || tx.type || "Service";
+
+          const statusColor = isSuccess ? '#16a34a' : (isFailed ? '#ef4444' : '#d97706');
+          const txId = tx._id || tx.transactionId || ref;
+
+          return `
+            <div class="tx-audit-card">
+              <div class="tx-header-row">
+                <div style="flex: 1;">
+                  <p class="tx-ref-val">Ref: ${ref}</p>
+                  <p class="tx-type-sub">${service} • ${dateStr}</p>
+                </div>
+                <div>
+                  <p class="tx-amount-val">₦${amount.toLocaleString()}</p>
+                  <p class="tx-status-badge" style="color: ${statusColor};">${String(tx.status || 'PENDING').toUpperCase()}</p>
+                </div>
+              </div>
+
+              <div class="tx-controls-row">
+                <button type="button" class="tx-action-btn-secondary" onclick="openActionModal('requery', '${txId}')">
+                  <i class="fa-solid fa-rotate"></i> Gateway Re-Query
+                </button>
+                <button type="button" class="tx-action-btn-primary" onclick="openActionModal('refund', '${txId}')">
+                  <i class="fa-solid fa-arrow-rotate-left"></i> Credit Refund
+                </button>
+                <button type="button" class="tx-action-btn-danger" onclick="openActionModal('escalate', '${txId}')">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Escalate
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+        txContainer.style.display = 'block';
+      } else {
+        txContainer.style.display = 'none';
+        if (!state.accountData && query) {
+          alert(`No logs or customer accounts matched "${query}".`);
+        }
+      }
+    }
+
+    function openActionModal(type, txId = null) {
+      state.actionType = type;
+      state.selectedTx = txId ? state.disputedTransactions.find(t => (t._id || t.transactionId || t.reference) == txId) : null;
+
+      const modalTitle = document.getElementById('modalTitle');
+      const modalSub = document.getElementById('modalSub');
+      const refundGroup = document.getElementById('refundAmountGroup');
+      const noteGroup = document.getElementById('resolutionNoteGroup');
+      const submitBtn = document.getElementById('btnModalSubmit');
+
+      const ref = state.selectedTx?.reference || state.selectedTx?._id || "Direct User Adjustment";
+      modalSub.textContent = `Ref: ${ref}`;
+
+      document.getElementById('modalResolutionNote').value = '';
+      document.getElementById('modalRefundAmount').value = state.selectedTx?.amount ? String(state.selectedTx.amount) : '';
+
+      if (type === 'requery') {
+        modalTitle.textContent = "Telecom Gateway Re-Query";
+        refundGroup.style.display = 'none';
+        noteGroup.style.display = 'none';
+        submitBtn.style.backgroundColor = 'var(--accent-blue)';
+        submitBtn.textContent = "EXECUTE GATEWAY RE-QUERY";
+      } else if (type === 'refund') {
+        modalTitle.textContent = "Authorize Wallet Refund";
+        refundGroup.style.display = 'block';
+        noteGroup.style.display = 'block';
+        submitBtn.style.backgroundColor = 'var(--accent-green)';
+        submitBtn.textContent = "CONFIRM WALLET CREDIT REFUND";
+      } else if (type === 'escalate') {
+        modalTitle.textContent = "Escalate Dispute to SuperAdmin";
+        refundGroup.style.display = 'none';
+        noteGroup.style.display = 'block';
+        submitBtn.style.backgroundColor = 'var(--accent-red)';
+        submitBtn.textContent = "DISPATCH TO SUPERADMIN DESK";
+      }
+
+      document.getElementById('actionModal').style.display = 'flex';
+    }
+
+    function closeActionModal() {
+      document.getElementById('actionModal').style.display = 'none';
+      state.selectedTx = null;
+    }
+
+    async function handleExecuteResolution() {
+      const type = state.actionType;
+      const note = document.getElementById('modalResolutionNote').value.trim();
+      const amount = document.getElementById('modalRefundAmount').value.trim();
+
+      if (type !== 'requery' && !note) {
+        alert("Validation Error: Please provide a diagnostic note or reason.");
+        return;
+      }
+
+      const btn = document.getElementById('btnModalSubmit');
+      const originalText = btn.textContent;
+
+      try {
+        btn.disabled = true;
+        btn.textContent = "Processing...";
+
+        if (type === "requery") {
+          const res = await fetch(`${BASE_URL}/support/requery-transaction`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${state.token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              reference: state.selectedTx?.reference || state.selectedTx?.transactionId || state.selectedTx?._id,
+              service: state.selectedTx?.service || state.selectedTx?.type
+            })
+          });
+          const d = await res.json();
+          alert(d.message || "Transaction status synchronized with telecom gateway.");
+        } else if (type === "refund") {
+          const res = await fetch(`${BASE_URL}/support/refund`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${state.token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              userId: state.accountData?._id || state.selectedTx?.user?._id || state.selectedTx?.user,
+              phone: state.accountData?.phone || state.selectedTx?.recipient,
+              amount: Number(amount),
+              reference: state.selectedTx?.reference || `REF-${Date.now()}`,
+              reason: note
+            })
+          });
+          const d = await res.json();
+          alert(d.message || `₦${Number(amount).toLocaleString()} credited back to user wallet.`);
+        } else if (type === "escalate") {
+          const res = await fetch(`${BASE_URL}/support/escalate-refund`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${state.token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              userId: state.accountData?._id || state.selectedTx?.user?._id,
+              phoneOrEmail: state.accountData?.phone || state.accountData?.email || state.selectedTx?.recipient,
+              amount: Number(amount || state.selectedTx?.amount || 0),
+              reference: state.selectedTx?.reference || "N/A",
+              reason: note,
+              priority: "URGENT_DISPUTE"
+            })
+          });
+          const d = await res.json();
+          alert(d.message || "Dispute packet dispatched to SuperAdmin executive desk.");
+        }
+
+        closeActionModal();
+        handleDiagnosticSearch();
+      } catch (err) {
+        alert("Resolution Error: " + (err.message || "Failed to process resolution."));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

@@ -1,0 +1,2604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>SuperAdmin Executive Terminal | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Favicon & Web App Manifest -->
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0284c7">
+
+  <style>
+    :root {
+      --bg-dark: #0b1120;
+      --card-dark: #0f172a;
+      --card-surface: #1e293b;
+      --border-dark: #1e293b;
+      --border-subtle: #334155;
+      --accent-cyan: #00f0ff;
+      --accent-blue: #0284c7;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+      --accent-rose: #ef4444;
+      --text-white: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Command Header */
+    .top-bar {
+      background: #0f172a;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-dark);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .top-brand-group {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .enterprise-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 240, 255, 0.08);
+      padding: 3px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      margin-bottom: 3px;
+    }
+
+    .live-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 8px var(--accent-cyan);
+    }
+
+    .enterprise-badge-text {
+      color: var(--accent-cyan);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+    }
+
+    .top-brand-title {
+      color: var(--text-white);
+      font-size: 13.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 18px;
+      background: #1e293b;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-cyan);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .avatar-btn:hover {
+      background: #334155;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+
+    .logout-btn {
+      border-color: var(--accent-rose);
+      background: rgba(239, 68, 68, 0.12);
+      color: var(--accent-rose);
+    }
+
+    /* Main Navigation Tabs */
+    .main-nav-bar {
+      display: flex;
+      background: #0f172a;
+      border-bottom: 1px solid var(--border-dark);
+      padding: 0 16px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .main-nav-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px 16px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-dim);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      background: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .main-nav-tab.active {
+      border-bottom-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
+    }
+
+    /* Container Layout */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 18px 80px 18px;
+    }
+
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .section-header-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin: 0;
+    }
+
+    .section-header-sub {
+      color: var(--text-dim);
+      font-size: 10px;
+      margin: 2px 0 0 0;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: var(--accent-emerald);
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+
+    /* Telemetry Grid */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 800px) {
+      .metric-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .metric-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid var(--border-dark);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 900;
+      margin: 4px 0 2px 0;
+    }
+
+    .metric-sub {
+      color: var(--text-dim);
+      font-size: 10px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* Nigerian States Matrix */
+    .state-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .state-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .state-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .state-card {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .state-card:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 240, 255, 0.12);
+    }
+
+    .state-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .state-pin-box {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(0, 240, 255, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-cyan);
+      font-size: 12px;
+    }
+
+    .state-name-text {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .state-sm-name {
+      color: var(--text-dim);
+      font-size: 9.5px;
+      margin: 1px 0 0 0;
+    }
+
+    .state-percent-text {
+      font-size: 13.5px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .state-percent-sub {
+      color: var(--text-dim);
+      font-size: 8.5px;
+      margin: 0;
+    }
+
+    .state-progress-track {
+      height: 5px;
+      background: var(--border-dark);
+      border-radius: 3px;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+
+    .state-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .state-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9.5px;
+      color: var(--text-muted);
+    }
+
+    /* Directorate & State Manager Cards */
+    .hierarchy-category-title {
+      color: var(--accent-cyan);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin: 14px 0 8px 0;
+      display: block;
+    }
+
+    .sm-director-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-dark);
+      border-left: 4px solid;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sm-director-card:hover {
+      border-color: var(--border-subtle);
+      transform: translateY(-2px);
+    }
+
+    .sm-card-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sm-avatar-crown-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--card-surface);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .sm-director-name {
+      color: var(--text-white);
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .sm-director-role {
+      color: var(--text-muted);
+      font-size: 10.5px;
+      margin: 2px 0 0 0;
+      font-weight: 700;
+    }
+
+    .sm-director-email {
+      color: var(--text-dim);
+      font-size: 10px;
+      margin: 1px 0 0 0;
+    }
+
+    .sm-wallet-bal-text {
+      color: var(--accent-emerald);
+      font-size: 14px;
+      font-weight: 900;
+      margin: 0;
+      text-align: right;
+    }
+
+    .sm-wallet-bal-sub {
+      color: var(--text-dim);
+      font-size: 9px;
+      margin: 0;
+      text-align: right;
+    }
+
+    .sm-card-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      border-top: 1px solid var(--border-dark);
+      padding-top: 8px;
+      font-size: 10.5px;
+    }
+
+    /* Directory Filters & Search */
+    .filter-tabs-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-bottom: 12px;
+      white-space: nowrap;
+      padding-bottom: 4px;
+    }
+
+    .filter-tabs-scroll::-webkit-scrollbar { height: 4px; }
+    .filter-tabs-scroll::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 4px; }
+
+    .category-tab {
+      padding: 7px 14px;
+      border-radius: 8px;
+      background: #0f172a;
+      border: 1px solid var(--border-dark);
+      color: var(--text-muted);
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .category-tab.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 240, 255, 0.2);
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #0f172a;
+      padding: 0 14px;
+      border-radius: 10px;
+      height: 44px;
+      border: 1px solid var(--border-dark);
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      flex: 1;
+      height: 100%;
+      border: none !important;
+      background: transparent;
+      outline: none !important;
+      color: #ffffff;
+      font-size: 12px;
+      font-family: inherit;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* User Entity Card */
+    .user-entity-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-entity-card:hover {
+      border-color: var(--border-subtle);
+      transform: translateY(-1px);
+    }
+
+    .user-entity-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .user-avatar-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--card-surface);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-cyan);
+      flex-shrink: 0;
+    }
+
+    .user-entity-name {
+      color: var(--text-white);
+      font-size: 13.5px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .user-entity-sub {
+      color: var(--text-dim);
+      font-size: 10.5px;
+      margin: 2px 0 0 0;
+    }
+
+    .user-entity-location {
+      color: var(--accent-cyan);
+      font-size: 10px;
+      margin: 1px 0 0 0;
+      font-weight: 700;
+    }
+
+    .role-badge {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    .user-wallet-balance {
+      color: var(--accent-emerald);
+      font-size: 13.5px;
+      font-weight: 900;
+      margin: 0;
+      text-align: right;
+    }
+
+    /* Bulk Refund Queue */
+    .bulk-refund-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0f172a;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-dark);
+    }
+
+    .bulk-refund-select-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: var(--accent-cyan);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .bulk-refund-submit-btn {
+      background: var(--accent-rose);
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .bulk-refund-submit-btn:hover {
+      background: #dc2626;
+    }
+
+    .refund-queue-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--accent-rose);
+      transition: all 0.2s;
+    }
+
+    .refund-queue-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .refund-queue-beneficiary {
+      color: var(--text-white);
+      font-size: 13.5px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .refund-queue-ref {
+      color: var(--text-dim);
+      font-size: 10.5px;
+      margin: 2px 0 0 0;
+    }
+
+    .refund-queue-reason {
+      color: #f87171;
+      font-size: 11px;
+      margin: 4px 0 0 0;
+    }
+
+    .refund-queue-amount {
+      color: #f87171;
+      font-size: 16px;
+      font-weight: 900;
+      margin: 0;
+      text-align: right;
+    }
+
+    .refund-queue-status {
+      color: var(--accent-amber);
+      font-size: 9.5px;
+      font-weight: 900;
+      margin: 2px 0 0 0;
+      text-align: right;
+    }
+
+    .approve-refund-btn {
+      background: var(--accent-emerald);
+      color: #ffffff;
+      border: none;
+      padding: 8px 0;
+      border-radius: 8px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .approve-refund-btn:hover {
+      background: #059669;
+    }
+
+    /* Audit Ledger History */
+    .history-card {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-dark);
+    }
+
+    .history-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history-type-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-service-title {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .history-amount-text {
+      font-size: 14px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .history-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      border-top: 1px solid var(--border-dark);
+      padding-top: 8px;
+      font-size: 11px;
+    }
+
+    .empty-feed {
+      background: #0f172a;
+      padding: 40px 20px;
+      border-radius: 14px;
+      text-align: center;
+      border: 1px solid var(--border-dark);
+    }
+
+    /* Modal Framework */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      background: #0f172a;
+      border-radius: 20px;
+      padding: 22px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-dark);
+      padding-bottom: 10px;
+    }
+
+    .modal-card-title {
+      color: var(--text-white);
+      font-size: 15px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .modal-card-subtitle {
+      color: var(--text-dim);
+      font-size: 11px;
+      margin: 2px 0 0 0;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .form-field-label {
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin: 12px 0 6px 0;
+      display: block;
+    }
+
+    .text-input-style {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0 12px;
+      height: 44px;
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-family: inherit;
+    }
+
+    .text-input-style:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
+    }
+
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .pill-btn {
+      padding: 8px 12px;
+      background: #1e293b;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .pill-btn.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 240, 255, 0.2);
+    }
+
+    .toggle-row-container {
+      display: flex;
+      background: #1e293b;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 8px 0;
+      text-align: center;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.credit-active {
+      background: var(--accent-emerald);
+      color: #ffffff;
+    }
+
+    .toggle-btn.debit-active {
+      background: var(--accent-rose);
+      color: #ffffff;
+    }
+
+    .primary-action-btn {
+      width: 100%;
+      height: 48px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .primary-action-btn:hover {
+      background: #0369a1;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+
+    /* Inspector Specific Cards */
+    .inspector-detail-card {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .inspector-section-heading {
+      color: var(--accent-cyan);
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      margin: 0 0 6px 0;
+    }
+
+    .override-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .override-btn {
+      padding: 10px 8px;
+      border-radius: 8px;
+      border: none;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+
+    /* Slideout Sidebar Drawer */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+    }
+
+    .sidebar-container {
+      position: absolute;
+      top: 0; bottom: 0; left: 0;
+      width: 310px;
+      background: #0f172a;
+      border-right: 1px solid var(--border-dark);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-dark);
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-brand-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-category {
+      color: var(--text-dim);
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin: 16px 0 6px 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 10px;
+      border-radius: 10px;
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(0, 240, 255, 0.08);
+      color: var(--accent-cyan);
+    }
+
+    .nav-icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .sidebar-logout-btn {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 10px;
+      border: none;
+      border-top: 1px solid var(--border-dark);
+      background: none;
+      color: var(--accent-rose);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Bar -->
+  <header class="top-bar">
+    <button type="button" class="avatar-btn" onclick="toggleSidebar(true)">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="top-brand-group">
+      <div class="enterprise-badge">
+        <div class="live-pulse-dot"></div>
+        <span class="enterprise-badge-text">ROOT MASTER ACTIVE</span>
+      </div>
+      <h1 class="top-brand-title">AYAX SUPREME CONSOLE</h1>
+    </div>
+
+    <div class="top-actions">
+      <button type="button" class="avatar-btn" onclick="openActionModal('transfer')" title="Reassign Agent Network">
+        <i class="fa-solid fa-people-arrows"></i>
+      </button>
+
+      <button type="button" class="avatar-btn" onclick="openActionModal('create_user')" title="Provision User">
+        <i class="fa-solid fa-user-plus"></i>
+      </button>
+
+      <button type="button" class="avatar-btn" onclick="openActionModal('notify')" title="Broadcast Directive">
+        <i class="fa-solid fa-bullhorn"></i>
+      </button>
+
+      <button type="button" class="avatar-btn logout-btn" onclick="handleLogout()" title="Logout Session">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Navigation Tabs -->
+  <nav class="main-nav-bar">
+    <button type="button" class="main-nav-tab active" id="tabBtnOverview" onclick="switchMainTab('overview')">
+      <i class="fa-solid fa-table-cells-large"></i>
+      <span>Overview</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnHierarchy" onclick="switchMainTab('sm_hierarchy')">
+      <i class="fa-solid fa-crown"></i>
+      <span>SM & NSD</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnUsers" onclick="switchMainTab('users')">
+      <i class="fa-solid fa-users-gear"></i>
+      <span id="tabLabelUsers">Directory (0)</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnRefunds" onclick="switchMainTab('refunds')">
+      <i class="fa-solid fa-arrow-rotate-left"></i>
+      <span id="tabLabelRefunds">Refunds (0)</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnHistory" onclick="switchMainTab('history')">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Audit Log</span>
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- ================= TAB 1: OVERVIEW ================= -->
+    <section id="tabContentOverview">
+      <!-- Telemetry Section -->
+      <div class="section-header-row">
+        <h2 class="section-header-label">REAL-TIME FINANCIAL TELEMETRY</h2>
+        <div class="live-badge">
+          <div class="live-pulse-dot" style="background: #10b981;"></div>
+          <span id="statGatewaySync">GATEWAY: LIVE SYNC</span>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card" style="border-color: rgba(16, 185, 129, 0.3);">
+          <div class="card-header-row">
+            <span class="metric-label">Total Revenue</span>
+            <i class="fa-solid fa-money-bill-wave" style="color: var(--accent-emerald);"></i>
+          </div>
+          <p class="metric-value" style="color: var(--accent-emerald);" id="statRevenue">₦0</p>
+          <p class="metric-sub" id="statTxLogged">0 Transactions Logged</p>
+        </div>
+
+        <div class="metric-card" style="border-color: rgba(0, 240, 255, 0.3);">
+          <div class="card-header-row">
+            <span class="metric-label">Wallet Liabilities</span>
+            <i class="fa-solid fa-wallet" style="color: var(--accent-cyan);"></i>
+          </div>
+          <p class="metric-value" style="color: var(--accent-cyan);" id="statLiabilities">₦0</p>
+          <p class="metric-sub">Floating Float Capital</p>
+        </div>
+
+        <div class="metric-card" style="border-color: rgba(239, 68, 68, 0.3);">
+          <div class="card-header-row">
+            <span class="metric-label">Refund Queue</span>
+            <i class="fa-solid fa-circle-exclamation" style="color: var(--accent-rose);"></i>
+          </div>
+          <p class="metric-value" style="color: var(--accent-rose);" id="statPendingRefunds">0</p>
+          <p class="metric-sub">Actionable Tickets</p>
+        </div>
+
+        <div class="metric-card" style="border-color: rgba(168, 85, 247, 0.3);">
+          <div class="card-header-row">
+            <span class="metric-label">Total Accounts</span>
+            <i class="fa-solid fa-users" style="color: var(--accent-purple);"></i>
+          </div>
+          <p class="metric-value" style="color: #c084fc;" id="statTotalUsers">0</p>
+          <p class="metric-sub">NSD • SM • Supervisors • Agents</p>
+        </div>
+      </div>
+
+      <!-- States Matrix -->
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-header-label">NIGERIAN STATES TARGET & PERFORMANCE MATRIX</h2>
+          <p class="section-header-sub">Tap any state to inspect appointed SM, supervisors, and agents</p>
+        </div>
+        <button type="button" class="category-tab active" onclick="switchMainTab('sm_hierarchy')">
+          VIEW ALL SMS
+        </button>
+      </div>
+
+      <div class="state-cards-grid" id="statesGridContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: SM & NSD HIERARCHY ================= -->
+    <section id="tabContentHierarchy" style="display: none;">
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-header-label">NATIONAL SALES DIRECTORS (NSD) & STATE MANAGERS (SM)</h2>
+          <p class="section-header-sub">Tap on any leader to inspect quotas, targets, and field hierarchy</p>
+        </div>
+        <button type="button" class="category-tab active" onclick="openActionModal('create_user')">
+          <i class="fa-solid fa-user-plus"></i> APPOINT SM / NSD
+        </button>
+      </div>
+
+      <span class="hierarchy-category-title">NATIONAL SALES DIRECTORS (NSD)</span>
+      <div id="nsdListContainer"></div>
+
+      <span class="hierarchy-category-title" style="margin-top: 24px;">APPOINTED STATE MANAGERS (SM)</span>
+      <div id="smListContainer"></div>
+    </section>
+
+    <!-- ================= TAB 3: USER DIRECTORY ================= -->
+    <section id="tabContentUsers" style="display: none;">
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-header-label">ALL COMPANY USERS, AGENTS & SUPERVISORS</h2>
+          <p class="section-header-sub">Search any staff or agent to inspect balances, targets & overrides</p>
+        </div>
+        <button type="button" class="category-tab active" onclick="openActionModal('create_user')">
+          <i class="fa-solid fa-user-plus"></i> CREATE USER
+        </button>
+      </div>
+
+      <!-- Role Tabs -->
+      <div class="filter-tabs-scroll" id="roleFilterTabs">
+        <button type="button" class="category-tab active" data-role="all" onclick="setUserFilterRole('all', this)">ALL ROLES</button>
+        <button type="button" class="category-tab" data-role="agent" onclick="setUserFilterRole('agent', this)">AGENT</button>
+        <button type="button" class="category-tab" data-role="supervisor" onclick="setUserFilterRole('supervisor', this)">SUPERVISOR</button>
+        <button type="button" class="category-tab" data-role="state_manager" onclick="setUserFilterRole('state_manager', this)">STATE MANAGER</button>
+        <button type="button" class="category-tab" data-role="national_sales_director" onclick="setUserFilterRole('national_sales_director', this)">NSD</button>
+        <button type="button" class="category-tab" data-role="support" onclick="setUserFilterRole('support', this)">SUPPORT</button>
+        <button type="button" class="category-tab" data-role="admin" onclick="setUserFilterRole('admin', this)">ADMIN</button>
+        <button type="button" class="category-tab" data-role="user" onclick="setUserFilterRole('user', this)">CUSTOMER</button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass" style="color: #64748b; margin-right: 8px;"></i>
+        <input
+          type="text"
+          id="userSearchInput"
+          class="search-input"
+          placeholder="Search by Agent name, Phone, Email, State, or LGA..."
+          spellcheck="false"
+          autocorrect="off"
+          autocapitalize="off"
+          oninput="handleUserSearch()"
+        />
+      </div>
+
+      <div id="usersListContainer"></div>
+    </section>
+
+    <!-- ================= TAB 4: BATCH REFUND QUEUE ================= -->
+    <section id="tabContentRefunds" style="display: none;">
+      <!-- Bulk Toolbar -->
+      <div class="bulk-refund-toolbar">
+        <button type="button" class="bulk-refund-select-btn" onclick="toggleSelectAllRefunds()">
+          <i class="fa-regular fa-square" id="selectAllRefundsIcon"></i>
+          <span id="selectAllRefundsText">Select All (0/0)</span>
+        </button>
+
+        <button type="button" class="bulk-refund-submit-btn" id="btnBatchRefund" onclick="handleBatchApproveRefunds()" disabled>
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+          <span id="btnBatchRefundText">Refund Selected (0)</span>
+        </button>
+      </div>
+
+      <div class="section-header-row">
+        <h2 class="section-header-label">PENDING REFUND REQUESTS QUEUE</h2>
+        <span style="color: var(--accent-rose); font-size: 11px; font-weight: 900;" id="refundQueueCount">0 ACTION REQUIRED</span>
+      </div>
+
+      <div id="refundsListContainer"></div>
+    </section>
+
+    <!-- ================= TAB 5: AUDIT LOG ================= -->
+    <section id="tabContentHistory" style="display: none;">
+      <div class="section-header-row">
+        <h2 class="section-header-label">ALL COMPANY TRANSACTIONS & AUDIT STREAM</h2>
+        <span style="color: var(--accent-cyan); font-size: 11px; font-weight: bold;" id="txCountBadge">0 TRANSACTIONS</span>
+      </div>
+
+      <div id="txHistoryContainer"></div>
+    </section>
+
+  </main>
+
+  <!-- ================= SLIDEOUT SIDEBAR DRAWER ================= -->
+  <div class="sidebar-backdrop" id="sidebarDrawer" onclick="toggleSidebar(false)">
+    <div class="sidebar-container" onclick="event.stopPropagation()">
+      <div class="sidebar-header">
+        <div class="sidebar-brand-row">
+          <i class="fa-solid fa-shield-halved" style="color: var(--accent-amber); font-size: 26px;"></i>
+          <div>
+            <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: #f8fafc;">Ayax Supreme</h3>
+            <span style="font-size: 10px; color: var(--accent-cyan); font-weight: 800;">Root SuperAdmin Control</span>
+          </div>
+        </div>
+        <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 22px; color: #94a3b8; cursor: pointer;">&times;</button>
+      </div>
+
+      <div style="overflow-y: auto; flex: 1;">
+        <div class="sidebar-category">CORE NAVIGATION PANELS</div>
+        <div class="nav-item active" onclick="switchMainTab('overview'); toggleSidebar(false);">
+          <div class="nav-icon-box" style="background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan);"><i class="fa-solid fa-table-cells-large"></i></div>
+          <span>Overview & State Targets</span>
+        </div>
+        <div class="nav-item" onclick="switchMainTab('sm_hierarchy'); toggleSidebar(false);">
+          <div class="nav-icon-box" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);"><i class="fa-solid fa-crown"></i></div>
+          <span>SM & NSD Hierarchy</span>
+        </div>
+        <div class="nav-item" onclick="switchMainTab('users'); toggleSidebar(false);">
+          <div class="nav-icon-box" style="background: rgba(168, 85, 247, 0.2); color: var(--accent-purple);"><i class="fa-solid fa-users-gear"></i></div>
+          <span>User & Agent Directory</span>
+        </div>
+        <div class="nav-item" onclick="switchMainTab('refunds'); toggleSidebar(false);">
+          <div class="nav-icon-box" style="background: rgba(239, 68, 68, 0.15); color: var(--accent-rose);"><i class="fa-solid fa-arrow-rotate-left"></i></div>
+          <span>Refund Queue</span>
+        </div>
+
+        <div class="sidebar-category">CREATION & REASSIGNMENT</div>
+        <div class="nav-item" onclick="openActionModal('transfer')">
+          <div class="nav-icon-box" style="background: rgba(0, 240, 255, 0.15); color: var(--accent-cyan);"><i class="fa-solid fa-people-arrows"></i></div>
+          <span>Reassign Agent Network</span>
+        </div>
+        <div class="nav-item" onclick="openActionModal('create_user')">
+          <div class="nav-icon-box" style="background: rgba(0, 240, 255, 0.15); color: var(--accent-cyan);"><i class="fa-solid fa-user-plus"></i></div>
+          <span>Create User / Appoint Staff</span>
+        </div>
+        <div class="nav-item" onclick="openActionModal('role')">
+          <div class="nav-icon-box" style="background: rgba(168, 85, 247, 0.2); color: var(--accent-purple);"><i class="fa-solid fa-user-shield"></i></div>
+          <span>Promote / Change Role</span>
+        </div>
+
+        <div class="sidebar-category">FINANCIAL OPERATIONS</div>
+        <div class="nav-item" onclick="openActionModal('wallet')">
+          <div class="nav-icon-box" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);"><i class="fa-solid fa-wallet"></i></div>
+          <span>Direct Ledger (Credit/Debit)</span>
+        </div>
+        <div class="nav-item" onclick="openActionModal('target')">
+          <div class="nav-icon-box" style="background: rgba(217, 119, 6, 0.2); color: var(--accent-amber);"><i class="fa-solid fa-bullseye"></i></div>
+          <span>Deploy Target & Goals</span>
+        </div>
+
+        <div class="sidebar-category">SECURITY & COMMUNICATION</div>
+        <div class="nav-item" onclick="openActionModal('notify')">
+          <div class="nav-icon-box" style="background: rgba(2, 132, 199, 0.2); color: #38bdf8;"><i class="fa-solid fa-bullhorn"></i></div>
+          <span>Broadcast Push Alert</span>
+        </div>
+        <div class="nav-item" onclick="openActionModal('security')">
+          <div class="nav-icon-box" style="background: rgba(79, 70, 229, 0.2); color: #818cf8;"><i class="fa-solid fa-lock-open"></i></div>
+          <span>Force-Reset Credentials</span>
+        </div>
+      </div>
+
+      <button type="button" class="sidebar-logout-btn" onclick="handleLogout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span>Logout Session</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 1: ENTITY INSPECTOR ================= -->
+  <div class="modal-overlay" id="inspectorModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title" id="inspectorTitle">Entity Audit Sheet</h2>
+          <p class="modal-card-subtitle" id="inspectorSubtitle">Administrative Override Terminal</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('inspectorModal')">&times;</button>
+      </div>
+
+      <div id="inspectorContentBody">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: PROVISION / CREATE USER ================= -->
+  <div class="modal-overlay" id="createUserModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Provision Database User / Staff</h2>
+          <p class="modal-card-subtitle">Create account with full database synchronization</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('createUserModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleCreateUserSubmit();">
+        <div style="display: flex; gap: 8px;">
+          <div style="flex: 1;">
+            <label class="form-field-label">FIRST NAME *</label>
+            <input type="text" id="newFirstName" class="text-input-style" placeholder="e.g. Aliyu" required />
+          </div>
+          <div style="flex: 1;">
+            <label class="form-field-label">SURNAME</label>
+            <input type="text" id="newSurname" class="text-input-style" placeholder="e.g. Ibrahim" />
+          </div>
+        </div>
+
+        <label class="form-field-label">PHONE NUMBER *</label>
+        <input type="tel" id="newPhone" class="text-input-style" placeholder="e.g. 08012345678" required />
+
+        <label class="form-field-label">EMAIL ADDRESS</label>
+        <input type="email" id="newEmail" class="text-input-style" placeholder="user@ayaxdata.online" />
+
+        <label class="form-field-label">APPOINT ROLE</label>
+        <div class="pill-grid" id="newRolePillGrid">
+          <button type="button" class="pill-btn active" data-role="agent" onclick="setNewUserRole('agent', this)">Agent</button>
+          <button type="button" class="pill-btn" data-role="supervisor" onclick="setNewUserRole('supervisor', this)">Supervisor</button>
+          <button type="button" class="pill-btn" data-role="state_manager" onclick="setNewUserRole('state_manager', this)">State Manager</button>
+          <button type="button" class="pill-btn" data-role="national_sales_director" onclick="setNewUserRole('national_sales_director', this)">NSD</button>
+          <button type="button" class="pill-btn" data-role="support" onclick="setNewUserRole('support', this)">Support</button>
+          <button type="button" class="pill-btn" data-role="admin" onclick="setNewUserRole('admin', this)">Admin</button>
+          <button type="button" class="pill-btn" data-role="user" onclick="setNewUserRole('user', this)">Customer</button>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <div style="flex: 1;">
+            <label class="form-field-label">STATE</label>
+            <input type="text" id="newState" class="text-input-style" value="Kano" />
+          </div>
+          <div style="flex: 1;">
+            <label class="form-field-label">LGA</label>
+            <input type="text" id="newLga" class="text-input-style" value="Ajingi" />
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <div style="flex: 1;">
+            <label class="form-field-label">PASSWORD</label>
+            <input type="text" id="newPassword" class="text-input-style" value="Password123@" required />
+          </div>
+          <div style="flex: 1;">
+            <label class="form-field-label">INITIAL WALLET (₦)</label>
+            <input type="number" id="newInitialBalance" class="text-input-style" value="0" />
+          </div>
+        </div>
+
+        <button type="submit" class="primary-action-btn" id="btnCreateUserSubmit">
+          <span>PROVISION & SAVE IN DATABASE</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 3: DEPLOY TARGETS ================= -->
+  <div class="modal-overlay" id="targetModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Assign Targets & Quotas</h2>
+          <p class="modal-card-subtitle">Set goals for NSD, State Managers, Supervisors & Agents</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('targetModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleAssignTargetSubmit();">
+        <label class="form-field-label">STAFF ID, PHONE, OR EMAIL *</label>
+        <input type="text" id="targetStaffId" class="text-input-style" placeholder="e.g. 09033738409" required />
+
+        <div style="display: flex; gap: 8px;">
+          <div style="flex: 1;">
+            <label class="form-field-label">DATA GOAL (GB)</label>
+            <input type="number" id="targetDataGoal" class="text-input-style" value="500" required />
+          </div>
+          <div style="flex: 1;">
+            <label class="form-field-label">AGENT GOAL</label>
+            <input type="number" id="targetAgentGoal" class="text-input-style" value="10" required />
+          </div>
+        </div>
+
+        <label class="form-field-label">AIRTIME GOAL (₦)</label>
+        <input type="number" id="targetAirtimeGoal" class="text-input-style" value="50000" required />
+
+        <label class="form-field-label">TARGET MONTH</label>
+        <input type="text" id="targetMonth" class="text-input-style" value="September 2026" required />
+
+        <button type="submit" class="primary-action-btn" style="background: var(--accent-amber); color: #000;" id="btnAssignTargetSubmit">
+          <span>DEPLOY MONTHLY TARGET</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 4: DIRECT LEDGER / WALLET ================= -->
+  <div class="modal-overlay" id="walletModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Direct Ledger Adjustment</h2>
+          <p class="modal-card-subtitle">Instant balance injection or deduction</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('walletModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleWalletAdjustSubmit();">
+        <div class="toggle-row-container">
+          <button type="button" class="toggle-btn credit-active" id="btnWalletCredit" onclick="setWalletAction('credit')">+ Credit</button>
+          <button type="button" class="toggle-btn" id="btnWalletDebit" onclick="setWalletAction('debit')">- Debit</button>
+        </div>
+
+        <label class="form-field-label">TARGET PHONE, EMAIL, OR USER ID *</label>
+        <input type="text" id="walletUserId" class="text-input-style" placeholder="e.g. 09033738409" required />
+
+        <label class="form-field-label">AMOUNT (₦) *</label>
+        <input type="number" id="walletAmount" class="text-input-style" placeholder="e.g. 5000" min="1" step="any" required />
+
+        <label class="form-field-label">AUDIT REMARKS</label>
+        <input type="text" id="walletReason" class="text-input-style" placeholder="e.g. Operational float adjustment" />
+
+        <button type="submit" class="primary-action-btn" id="btnWalletSubmit" style="background: var(--accent-emerald);">
+          <span>AUTHORIZE CREDIT</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 5: CHANGE ROLE ================= -->
+  <div class="modal-overlay" id="roleModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Change User Role</h2>
+          <p class="modal-card-subtitle">Promote or re-assign platform permissions</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('roleModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleRoleChangeSubmit();">
+        <label class="form-field-label">TARGET PHONE, EMAIL, OR USER ID *</label>
+        <input type="text" id="roleUserId" class="text-input-style" placeholder="Enter User Phone or Email" required />
+
+        <label class="form-field-label">ASSIGN ROLE</label>
+        <div class="pill-grid" id="assignRolePillGrid">
+          <button type="button" class="pill-btn active" data-role="agent" onclick="setAssignRole('agent', this)">Agent</button>
+          <button type="button" class="pill-btn" data-role="supervisor" onclick="setAssignRole('supervisor', this)">Supervisor</button>
+          <button type="button" class="pill-btn" data-role="state_manager" onclick="setAssignRole('state_manager', this)">State Manager</button>
+          <button type="button" class="pill-btn" data-role="national_sales_director" onclick="setAssignRole('national_sales_director', this)">NSD</button>
+          <button type="button" class="pill-btn" data-role="support" onclick="setAssignRole('support', this)">Support</button>
+          <button type="button" class="pill-btn" data-role="admin" onclick="setAssignRole('admin', this)">Admin</button>
+          <button type="button" class="pill-btn" data-role="user" onclick="setAssignRole('user', this)">Customer</button>
+        </div>
+
+        <button type="submit" class="primary-action-btn" id="btnRoleSubmit" style="background: #7c3aed;">
+          <span>UPDATE PERMISSION ROLE</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 6: RESET CREDENTIALS ================= -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Override Security Credentials</h2>
+          <p class="modal-card-subtitle">Direct administrative security reset</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('passwordModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handlePasswordOverrideSubmit();">
+        <label class="form-field-label">TARGET PHONE, EMAIL, OR USER ID *</label>
+        <input type="text" id="pwdUserId" class="text-input-style" placeholder="Enter phone or email" required />
+
+        <label class="form-field-label">NEW STRONG PASSWORD (OPTIONAL)</label>
+        <input type="text" id="pwdNew" class="text-input-style" placeholder="Enter new password" />
+
+        <label class="form-field-label">NEW TRANSACTION PIN (OPTIONAL)</label>
+        <input type="password" id="pinNew" class="text-input-style" placeholder="4-Digit PIN" maxlength="4" inputmode="numeric" />
+
+        <button type="submit" class="primary-action-btn" id="btnPasswordSubmit" style="background: #4f46e5;">
+          <span>SAVE NEW CREDENTIALS</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 7: BROADCAST NOTIFICATION ================= -->
+  <div class="modal-overlay" id="notificationModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Dispatch Notification</h2>
+          <p class="modal-card-subtitle">Target a specific group or single account</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('notificationModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleBroadcastSubmit();">
+        <label class="form-field-label">TARGET AUDIENCE</label>
+        <div class="pill-grid" id="notifAudiencePillGrid">
+          <button type="button" class="pill-btn active" data-aud="all" onclick="setNotifAudience('all', this)">All Users</button>
+          <button type="button" class="pill-btn" data-aud="agents" onclick="setNotifAudience('agents', this)">All Agents</button>
+          <button type="button" class="pill-btn" data-aud="supervisors" onclick="setNotifAudience('supervisors', this)">All Supervisors</button>
+          <button type="button" class="pill-btn" data-aud="state_managers" onclick="setNotifAudience('state_managers', this)">All SMs</button>
+          <button type="button" class="pill-btn" data-aud="nsd" onclick="setNotifAudience('nsd', this)">All NSDs</button>
+          <button type="button" class="pill-btn" data-aud="users" onclick="setNotifAudience('users', this)">Customers Only</button>
+          <button type="button" class="pill-btn" data-aud="single" onclick="setNotifAudience('single', this)">Single User</button>
+        </div>
+
+        <div id="singleRecipientInputBox" style="display: none;">
+          <label class="form-field-label" style="color: var(--accent-cyan);">TARGET PHONE, EMAIL, OR USER ID *</label>
+          <input type="text" id="notifTargetUser" class="text-input-style" placeholder="e.g. 08012345678 or user@ayaxdata.online" />
+        </div>
+
+        <label class="form-field-label">NOTIFICATION TITLE *</label>
+        <input type="text" id="notifTitle" class="text-input-style" placeholder="e.g. Operational Directive / Flash Promo" required />
+
+        <label class="form-field-label">CATEGORY</label>
+        <div class="pill-grid" id="notifCategoryPillGrid">
+          <button type="button" class="pill-btn active" data-cat="ADMIN_BROADCAST" onclick="setNotifCategory('ADMIN_BROADCAST', this)">ADMIN BROADCAST</button>
+          <button type="button" class="pill-btn" data-cat="SYSTEM_UPDATE" onclick="setNotifCategory('SYSTEM_UPDATE', this)">SYSTEM UPDATE</button>
+          <button type="button" class="pill-btn" data-cat="DIRECTIVE" onclick="setNotifCategory('DIRECTIVE', this)">DIRECTIVE</button>
+          <button type="button" class="pill-btn" data-cat="PRICE_ALERT" onclick="setNotifCategory('PRICE_ALERT', this)">PRICE ALERT</button>
+        </div>
+
+        <label class="form-field-label">BODY MESSAGE *</label>
+        <textarea id="notifMessage" class="text-input-style" style="height: 80px; padding: 10px; resize: none;" placeholder="Type announcement here..." required></textarea>
+
+        <button type="submit" class="primary-action-btn" id="btnBroadcastSubmit">
+          <span>DISPATCH NOTIFICATION</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 8: REASSIGN AGENT NETWORK ================= -->
+  <div class="modal-overlay" id="transferModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Reassign Agent Network</h2>
+          <p class="modal-card-subtitle">Move agents to a new supervisor</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('transferModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleTransferSubmit();">
+        <div class="toggle-row-container">
+          <button type="button" class="toggle-btn credit-active" id="btnTransferBulk" onclick="setTransferModeUI('bulk')">Entire Team (Bulk)</button>
+          <button type="button" class="toggle-btn" id="btnTransferSingle" onclick="setTransferModeUI('single')">Single Agent</button>
+        </div>
+
+        <div id="transferBulkField">
+          <label class="form-field-label">CURRENT/SUSPENDED SUPERVISOR ID *</label>
+          <input type="text" id="oldSupervisorId" class="text-input-style" placeholder="Enter current supervisor ID" />
+        </div>
+
+        <div id="transferSingleField" style="display: none;">
+          <label class="form-field-label">AGENT ID TO TRANSFER *</label>
+          <input type="text" id="transferAgentId" class="text-input-style" placeholder="Enter agent ID" />
+        </div>
+
+        <label class="form-field-label">DESTINATION SUPERVISOR ID (NEW LEAD) *</label>
+        <input type="text" id="newSupervisorId" class="text-input-style" placeholder="Enter new supervisor ID" required />
+
+        <button type="submit" class="primary-action-btn" id="btnTransferSubmit">
+          <span>AUTHORIZE TEAM REASSIGNMENT</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    const ALL_NIGERIAN_STATES = [
+      "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno",
+      "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT - Abuja", "Gombe",
+      "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara",
+      "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau",
+      "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
+    ];
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      stats: null,
+      recentTx: [],
+      allUsersList: [],
+      pendingRefundsList: [],
+      selectedRefundIds: [],
+      activeMainTab: 'overview',
+      userRoleFilter: 'all',
+      userSearchQuery: '',
+      inspectedEntity: null,
+      inspectedType: 'user',
+      newRole: 'agent',
+      walletAction: 'credit',
+      selectedRole: 'agent',
+      notifAudience: 'all',
+      notifCategory: 'ADMIN_BROADCAST',
+      transferType: 'bulk'
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Authentication required. Please log in.");
+        window.location.href = "index.html";
+        return;
+      }
+      fetchMasterTelemetry();
+      setInterval(() => fetchMasterTelemetry(true), 12000);
+    });
+
+    async function fetchMasterTelemetry(isBackground = false) {
+      const headers = {
+        'Authorization': `Bearer ${state.token}`,
+        'Accept': 'application/json'
+      };
+
+      try {
+        const [overviewRes, txRes, usersRes, refundsRes] = await Promise.allSettled([
+          fetch(`${BASE_URL}/superadmin/overview`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/superadmin/transactions?limit=150`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/superadmin/users?limit=400`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/superadmin/refund-requests`, { headers }).then(r => r.json())
+        ]);
+
+        if (overviewRes.status === 'fulfilled' && overviewRes.value) {
+          const d = overviewRes.value.data || overviewRes.value;
+          state.stats = d.stats || d;
+        }
+
+        if (txRes.status === 'fulfilled' && txRes.value) {
+          const d = txRes.value.transactions || txRes.value.data || [];
+          state.recentTx = Array.isArray(d) ? d : [];
+        }
+
+        if (usersRes.status === 'fulfilled' && usersRes.value) {
+          const d = usersRes.value.users || usersRes.value.data || [];
+          state.allUsersList = Array.isArray(d) ? d : [];
+        }
+
+        if (refundsRes.status === 'fulfilled' && refundsRes.value) {
+          const d = refundsRes.value.requests || refundsRes.value.data || refundsRes.value.transactions || [];
+          state.pendingRefundsList = Array.isArray(d) ? d : [];
+        }
+
+        updateUI();
+      } catch (err) {
+        if (!isBackground) console.warn("Telemetry warning:", err);
+      }
+    }
+
+    function updateUI() {
+      // 1. Overview Telemetry
+      const rev = Number(state.stats?.totalRevenue || state.stats?.revenue || 0);
+      const liab = Number(state.stats?.totalWalletLiabilities || state.stats?.totalUserBalance || 0);
+      const refs = state.pendingRefundsList.length || state.stats?.pendingRefunds || 0;
+      const users = state.allUsersList.length || state.stats?.totalUsers || 0;
+
+      document.getElementById('statRevenue').textContent = `₦${rev.toLocaleString()}`;
+      document.getElementById('statTxLogged').textContent = `${state.recentTx.length} Transactions Logged`;
+      document.getElementById('statLiabilities').textContent = `₦${liab.toLocaleString()}`;
+      document.getElementById('statPendingRefunds').textContent = refs;
+      document.getElementById('statTotalUsers').textContent = users;
+      if (state.stats?.gatewayBalance) {
+        document.getElementById('statGatewaySync').textContent = `GATEWAY: ₦${state.stats.gatewayBalance}`;
+      }
+
+      document.getElementById('tabLabelUsers').textContent = `Directory (${state.allUsersList.length})`;
+      document.getElementById('tabLabelRefunds').textContent = `Refunds (${state.pendingRefundsList.length})`;
+      document.getElementById('refundQueueCount').textContent = `${state.pendingRefundsList.length} ACTION REQUIRED`;
+      document.getElementById('txCountBadge').textContent = `${state.recentTx.length} TRANSACTIONS`;
+
+      renderStatesGrid();
+      renderHierarchyLists();
+      renderUsersList();
+      renderRefundsList();
+      renderTxHistory();
+    }
+
+    function switchMainTab(tab) {
+      state.activeMainTab = tab;
+      const tabs = ['overview', 'sm_hierarchy', 'users', 'refunds', 'history'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(t === 'overview' ? 'tabBtnOverview' : t === 'sm_hierarchy' ? 'tabBtnHierarchy' : t === 'users' ? 'tabBtnUsers' : t === 'refunds' ? 'tabBtnRefunds' : 'tabBtnHistory');
+        const content = document.getElementById(t === 'overview' ? 'tabContentOverview' : t === 'sm_hierarchy' ? 'tabContentHierarchy' : t === 'users' ? 'tabContentUsers' : t === 'refunds' ? 'tabContentRefunds' : 'tabContentHistory');
+        if (btn) btn.classList.toggle('active', t === tab);
+        if (content) content.style.display = t === tab ? 'block' : 'none';
+      });
+    }
+
+    /* 1. States Matrix */
+    function renderStatesGrid() {
+      const container = document.getElementById('statesGridContainer');
+      const stateManagersList = state.allUsersList.filter(u => {
+        const r = (u.role || "").toLowerCase();
+        return r === "state_manager" || r === "leader";
+      });
+
+      container.innerHTML = ALL_NIGERIAN_STATES.map(stateName => {
+        const assignedSm = stateManagersList.find(sm => (sm.state || "").toLowerCase() === stateName.toLowerCase());
+        const stateSupervisors = state.allUsersList.filter(u => ((u.role || "").toLowerCase() === "supervisor" || (u.role || "").toLowerCase() === "field_supervisor") && (u.state || "").toLowerCase() === stateName.toLowerCase());
+        const stateAgents = state.allUsersList.filter(u => (u.role || "").toLowerCase() === "agent" && (u.state || "").toLowerCase() === stateName.toLowerCase());
+
+        const targetDataGB = assignedSm?.targets?.dataGoal || 1000;
+        const achievedDataGB = assignedSm?.currentSalesGB || (stateAgents.length * 45);
+        const targetAirtime = assignedSm?.targets?.airtimeGoal || 100000;
+        const agentsGoal = assignedSm?.targets?.agentGoal || 25;
+        const percent = Math.min(Math.round((achievedDataGB / targetDataGB) * 100), 100);
+
+        const entityData = {
+          stateName,
+          assignedSm,
+          supervisorsCount: stateSupervisors.length,
+          agentsCount: stateAgents.length,
+          targetDataGB,
+          achievedDataGB,
+          targetAirtime,
+          agentsGoal,
+          percent
+        };
+
+        return `
+          <div class="state-card" onclick='openInspectorEntity(${JSON.stringify(entityData)}, "state")'>
+            <div class="state-card-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="state-pin-box"><i class="fa-solid fa-location-dot"></i></div>
+                <div>
+                  <h4 class="state-name-text">${stateName}</h4>
+                  <p class="state-sm-name">SM: ${assignedSm ? (assignedSm.name || `${assignedSm.firstName} ${assignedSm.surname}`) : "Vacant / Not Appointed"}</p>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <p class="state-percent-text" style="color: ${percent >= 70 ? '#10b981' : '#00f0ff'};">${percent}%</p>
+                <p class="state-percent-sub">Quota</p>
+              </div>
+            </div>
+
+            <div class="state-progress-track">
+              <div class="state-progress-fill" style="width: ${percent}%; background: ${percent >= 70 ? '#10b981' : '#00f0ff'};"></div>
+            </div>
+
+            <div class="state-card-footer">
+              <span>Data: <strong style="color: #10b981;">${achievedDataGB}GB</strong>/${targetDataGB}GB</span>
+              <span>${stateSupervisors.length} Sup • ${stateAgents.length} Agents</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* 2. Hierarchy Lists */
+    function renderHierarchyLists() {
+      const nsdWrap = document.getElementById('nsdListContainer');
+      const smWrap = document.getElementById('smListContainer');
+
+      const nationalDirectorsList = state.allUsersList.filter(u => {
+        const r = (u.role || "").toLowerCase();
+        return r === "national_sales_director" || r === "super_leader";
+      });
+
+      const stateManagersList = state.allUsersList.filter(u => {
+        const r = (u.role || "").toLowerCase();
+        return r === "state_manager" || r === "leader";
+      });
+
+      if (nationalDirectorsList.length === 0) {
+        nsdWrap.innerHTML = '<div class="empty-feed"><p style="color: #64748b; font-size: 12px; margin: 0;">No National Sales Directors appointed yet.</p></div>';
+      } else {
+        nsdWrap.innerHTML = nationalDirectorsList.map(nsd => `
+          <div class="sm-director-card" style="border-left-color: #f59e0b;" onclick='openInspectorEntity(${JSON.stringify(nsd)}, "user")'>
+            <div class="sm-card-top-row">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="sm-avatar-crown-box"><i class="fa-solid fa-crown" style="color: #f59e0b;"></i></div>
+                <div>
+                  <h4 class="sm-director-name">${nsd.name || `${nsd.firstName || ''} ${nsd.surname || ''}`}</h4>
+                  <p class="sm-director-role">NATIONAL SALES DIRECTOR • Phone: ${nsd.phone || 'N/A'}</p>
+                  <p class="sm-director-email">Email: ${nsd.email || 'N/A'}</p>
+                </div>
+              </div>
+              <div>
+                <p class="sm-wallet-bal-text">₦${Number(nsd.walletBalance || nsd.balance || 0).toLocaleString()}</p>
+                <p class="sm-wallet-bal-sub">Wallet Balance</p>
+              </div>
+            </div>
+            <div class="sm-card-footer-row">
+              <span>Target: ${nsd.targets?.dataGoal || 5000}GB Data • ${nsd.targets?.agentGoal || 100} Agents</span>
+              <span style="color: #00f0ff; font-weight: bold;">Inspect Profile & Override ➔</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (stateManagersList.length === 0) {
+        smWrap.innerHTML = '<div class="empty-feed"><p style="color: #64748b; font-size: 12px; margin: 0;">No State Managers assigned.</p></div>';
+      } else {
+        smWrap.innerHTML = stateManagersList.map(sm => {
+          const smSupervisors = state.allUsersList.filter(u => ((u.role || "").toLowerCase() === "supervisor" || (u.role || "").toLowerCase() === "field_supervisor") && (u.state || "").toLowerCase() === (sm.state || "").toLowerCase());
+          const smAgents = state.allUsersList.filter(u => (u.role || "").toLowerCase() === "agent" && (u.state || "").toLowerCase() === (sm.state || "").toLowerCase());
+
+          return `
+            <div class="sm-director-card" style="border-left-color: #00f0ff;" onclick='openInspectorEntity(${JSON.stringify(sm)}, "user")'>
+              <div class="sm-card-top-row">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div class="sm-avatar-crown-box"><i class="fa-solid fa-user-tie" style="color: #00f0ff;"></i></div>
+                  <div>
+                    <h4 class="sm-director-name">${sm.name || `${sm.firstName || ''} ${sm.surname || ''}`}</h4>
+                    <p class="sm-director-role">STATE MANAGER (${(sm.state || "GENERAL").toUpperCase()}) • Phone: ${sm.phone || 'N/A'}</p>
+                    <p class="sm-director-email">Email: ${sm.email || 'N/A'}</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="sm-wallet-bal-text">₦${Number(sm.walletBalance || sm.balance || 0).toLocaleString()}</p>
+                  <p class="sm-wallet-bal-sub">Wallet Balance</p>
+                </div>
+              </div>
+              <div class="sm-card-footer-row">
+                <span>${smSupervisors.length} Supervisors • ${smAgents.length} Retail Agents</span>
+                <span style="color: #00f0ff; font-weight: bold;">Inspect State Target ➔</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    /* 3. Directory */
+    function setUserFilterRole(role, el) {
+      state.userRoleFilter = role;
+      document.querySelectorAll('#roleFilterTabs .category-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderUsersList();
+    }
+
+    function handleUserSearch() {
+      state.userSearchQuery = document.getElementById('userSearchInput').value.toLowerCase().trim();
+      renderUsersList();
+    }
+
+    function renderUsersList() {
+      const container = document.getElementById('usersListContainer');
+      const q = state.userSearchQuery;
+      const roleFilter = state.userRoleFilter;
+
+      const filtered = state.allUsersList.filter(u => {
+        const roleMatch = roleFilter === "all" || (u.role || "user").toLowerCase() === roleFilter.toLowerCase();
+        const nameMatch = (u.name || `${u.firstName || ""} ${u.surname || ""}`).toLowerCase().includes(q);
+        const phoneMatch = (u.phone || "").includes(q);
+        const emailMatch = (u.email || "").toLowerCase().includes(q);
+        const stateMatch = (u.state || "").toLowerCase().includes(q);
+        const lgaMatch = (u.lga || "").toLowerCase().includes(q);
+        return roleMatch && (nameMatch || phoneMatch || emailMatch || stateMatch || lgaMatch);
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-feed"><i class="fa-solid fa-users-slash" style="font-size: 36px; color: #475569; margin-bottom: 8px;"></i><p style="color: #64748b; font-size: 13px; margin: 0;">No accounts found matching this search criteria.</p></div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const uName = item.name || `${item.firstName || ""} ${item.surname || ""}`.trim() || "User Node";
+        const uRole = (item.role || "user").toUpperCase();
+        const isSuspended = Boolean(item.isSuspended);
+
+        return `
+          <div class="user-entity-card" onclick='openInspectorEntity(${JSON.stringify(item)}, "user")'>
+            <div class="user-entity-top">
+              <div style="display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden;">
+                <div class="user-avatar-box">
+                  <i class="fa-solid ${uRole.includes('DIRECTOR') || uRole.includes('MANAGER') ? 'fa-crown' : uRole.includes('SUPERVISOR') ? 'fa-user-tie' : uRole === 'AGENT' ? 'fa-store' : 'fa-user'}"></i>
+                </div>
+                <div style="overflow: hidden;">
+                  <h4 class="user-entity-name">${uName}</h4>
+                  <p class="user-entity-sub">Phone: ${item.phone || 'No phone'} • Email: ${item.email || 'No email'}</p>
+                  ${item.state ? `<p class="user-entity-location">Region: ${item.state} ${item.lga ? `(${item.lga} LGA)` : ''}</p>` : ''}
+                </div>
+              </div>
+
+              <div style="text-align: right; flex-shrink: 0;">
+                <div class="role-badge" style="background: ${isSuspended ? '#7f1d1d' : 'rgba(0, 240, 255, 0.15)'}; color: ${isSuspended ? '#fca5a5' : '#00f0ff'};">
+                  ${isSuspended ? 'SUSPENDED' : uRole}
+                </div>
+                <p class="user-wallet-balance">₦${Number(item.walletBalance || item.balance || 0).toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* 4. Batch Refunds */
+    function toggleSelectAllRefunds() {
+      if (state.selectedRefundIds.length === state.pendingRefundsList.length && state.pendingRefundsList.length > 0) {
+        state.selectedRefundIds = [];
+      } else {
+        state.selectedRefundIds = state.pendingRefundsList.map(item => item._id || item.transactionId || item.id);
+      }
+      renderRefundsList();
+    }
+
+    function toggleRefundItem(id) {
+      if (state.selectedRefundIds.includes(id)) {
+        state.selectedRefundIds = state.selectedRefundIds.filter(i => i !== id);
+      } else {
+        state.selectedRefundIds.push(id);
+      }
+      renderRefundsList();
+    }
+
+    function renderRefundsList() {
+      const container = document.getElementById('refundsListContainer');
+      const isAll = state.selectedRefundIds.length === state.pendingRefundsList.length && state.pendingRefundsList.length > 0;
+
+      document.getElementById('selectAllRefundsIcon').className = isAll ? 'fa-solid fa-square-check' : 'fa-regular fa-square';
+      document.getElementById('selectAllRefundsText').textContent = isAll ? 'Deselect All' : `Select All (${state.selectedRefundIds.length}/${state.pendingRefundsList.length})`;
+
+      const btnBatch = document.getElementById('btnBatchRefund');
+      btnBatch.disabled = state.selectedRefundIds.length === 0;
+      document.getElementById('btnBatchRefundText').textContent = `Refund Selected (${state.selectedRefundIds.length})`;
+
+      if (state.pendingRefundsList.length === 0) {
+        container.innerHTML = '<div class="empty-feed"><i class="fa-solid fa-circle-check" style="font-size: 36px; color: var(--accent-emerald); margin-bottom: 8px;"></i><p style="color: #64748b; font-size: 13px; margin: 0;">No pending refund disputes. All customer tickets are clear.</p></div>';
+        return;
+      }
+
+      container.innerHTML = state.pendingRefundsList.map((item, idx) => {
+        const id = item._id || item.transactionId || item.id || String(idx);
+        const isChecked = state.selectedRefundIds.includes(id);
+        const beneficiary = item.user?.phone || item.user?.email || item.phone || item.recipient || "Subscriber";
+        const amount = Number(item.amount || item.refundAmount || 0);
+        const ref = item.reference || item.transactionReference || id;
+
+        return `
+          <div class="refund-queue-card" style="border-color: ${isChecked ? 'var(--accent-cyan)' : 'var(--border-subtle)'}; background: ${isChecked ? 'rgba(0, 240, 255, 0.05)' : '#0f172a'};">
+            <div class="refund-queue-top">
+              <div style="display: flex; gap: 10px; align-items: flex-start; flex: 1;">
+                <button type="button" onclick="toggleRefundItem('${id}')" style="background: none; border: none; font-size: 20px; color: ${isChecked ? 'var(--accent-cyan)' : '#64748b'}; cursor: pointer; padding: 0;">
+                  <i class="${isChecked ? 'fa-solid fa-square-check' : 'fa-regular fa-square'}"></i>
+                </button>
+                <div>
+                  <h4 class="refund-queue-beneficiary">Account: ${beneficiary}</h4>
+                  <p class="refund-queue-ref">Ref: ${ref}</p>
+                  <p class="refund-queue-reason">Reason: <span style="color: #f8fafc;">${item.reason || item.refundReason || 'Debited without value'}</span></p>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <p class="refund-queue-amount">₦${amount.toLocaleString()}</p>
+                <p class="refund-queue-status">PENDING APPROVAL</p>
+              </div>
+            </div>
+
+            <button type="button" class="approve-refund-btn" onclick='handleApproveSingleRefund(${JSON.stringify(item)})'>
+              <i class="fa-solid fa-circle-check"></i>
+              <span>APPROVE & REFUND WALLET</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleBatchApproveRefunds() {
+      if (state.selectedRefundIds.length === 0) return;
+      if (!confirm(`Are you sure you want to approve and refund ${state.selectedRefundIds.length} selected accounts?`)) return;
+
+      const btn = document.getElementById('btnBatchRefund');
+      btn.disabled = true;
+
+      try {
+        const headers = { 'Authorization': `Bearer ${state.token}`, 'Content-Type': 'application/json' };
+        const res = await fetch(`${BASE_URL}/superadmin/refunds/batch-approve`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ transactionIds: state.selectedRefundIds })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`Batch Refunds Approved: Processed refund for ${state.selectedRefundIds.length} tickets.`);
+          state.selectedRefundIds = [];
+          fetchMasterTelemetry();
+        } else {
+          throw new Error(data.message || "Failed to batch refund.");
+        }
+      } catch (err) {
+        alert("Refund Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function handleApproveSingleRefund(item) {
+      const targetId = item._id || item.transactionId;
+      const ref = item.reference || item.transactionReference;
+      const beneficiary = item.user?.phone || item.user?.email || item.phone || item.recipient;
+      const amount = Number(item.amount || item.refundAmount || 0);
+
+      try {
+        const headers = { 'Authorization': `Bearer ${state.token}`, 'Content-Type': 'application/json' };
+        const res = await fetch(`${BASE_URL}/superadmin/refunds/approve`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            transactionId: targetId,
+            reference: ref,
+            beneficiary: beneficiary,
+            refundAmount: amount,
+            reason: item.reason || item.refundReason || "SuperAdmin Approved Refund"
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`Refund Executed: ₦${amount.toLocaleString()} credited back to ${beneficiary}.`);
+          fetchMasterTelemetry();
+        } else {
+          throw new Error(data.message || "Refund approval failed.");
+        }
+      } catch (err) {
+        alert("Refund Error: " + err.message);
+      }
+    }
+
+    /* 5. Audit History */
+    function renderTxHistory() {
+      const container = document.getElementById('txHistoryContainer');
+
+      if (state.recentTx.length === 0) {
+        container.innerHTML = '<div class="empty-feed"><i class="fa-solid fa-receipt" style="font-size: 36px; color: #475569; margin-bottom: 8px;"></i><p style="color: #64748b; font-size: 13px; margin: 0;">No audit transaction records located.</p></div>';
+        return;
+      }
+
+      container.innerHTML = state.recentTx.map(tx => {
+        const isInflow = tx.category === "CREDIT" || tx.type === "wallet_funding" || tx.type === "deposit" || tx.type === "refund";
+        const isFailed = tx.status === "failed";
+        const isRefunded = tx.status === "refunded";
+
+        return `
+          <div class="history-card">
+            <div class="history-card-top">
+              <div class="history-type-row">
+                <i class="fa-solid ${isInflow ? 'fa-circle-arrow-down' : 'fa-circle-arrow-up'}" style="color: ${isInflow ? 'var(--accent-emerald)' : '#f87171'}; font-size: 16px;"></i>
+                <h4 class="history-service-title">${(tx.type || 'TRANSACTION').toUpperCase()}</h4>
+              </div>
+              <span class="history-amount-text" style="color: ${isInflow ? 'var(--accent-emerald)' : '#f8fafc'};">
+                ${isInflow ? '+' : '-'}₦${Number(tx.amount || 0).toLocaleString()}
+              </span>
+            </div>
+
+            <div class="history-card-bottom">
+              <span>User: ${tx.user?.phone || tx.phoneNumber || tx.user?.email || "Platform Node"}</span>
+              <span>Ref: ${tx.reference || tx.transactionId || "N/A"}</span>
+              <span style="font-weight: 900; color: ${isFailed ? '#ef4444' : isRefunded ? '#f59e0b' : '#10b981'};">
+                ${(tx.status || 'SUCCESS').toUpperCase()}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* Modal Operations */
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function toggleSidebar(open) { document.getElementById('sidebarDrawer').style.display = open ? 'block' : 'none'; }
+
+    function openActionModal(actionKey) {
+      toggleSidebar(false);
+      switch (actionKey) {
+        case "create_user": openModal('createUserModal'); break;
+        case "transfer": openModal('transferModal'); break;
+        case "notify": openModal('notificationModal'); break;
+        case "wallet": openModal('walletModal'); break;
+        case "target": openModal('targetModal'); break;
+        case "role": openModal('roleModal'); break;
+        case "security": openModal('passwordModal'); break;
+      }
+    }
+
+    function openInspectorEntity(entity, type) {
+      state.inspectedEntity = entity;
+      state.inspectedType = type;
+
+      const titleEl = document.getElementById('inspectorTitle');
+      const subEl = document.getElementById('inspectorSubtitle');
+      const bodyEl = document.getElementById('inspectorContentBody');
+
+      if (type === 'state') {
+        titleEl.textContent = `${entity.stateName} State Target & Directorate`;
+        subEl.textContent = "Regional supervisor and agent performance telemetry";
+
+        bodyEl.innerHTML = `
+          <div class="inspector-detail-card">
+            <h4 class="inspector-section-heading">APPOINTED STATE MANAGER</h4>
+            <p style="margin: 0; font-size: 14px; font-weight: 800; color: #fff;">
+              Account: ${entity.assignedSm ? (entity.assignedSm.name || `${entity.assignedSm.firstName} ${entity.assignedSm.surname}`) : "Vacant / Not Appointed"}
+            </p>
+            ${entity.assignedSm ? `
+              <p style="margin: 4px 0 0 0; font-size: 11px; color: #cbd5e1;">Phone: ${entity.assignedSm.phone}</p>
+              <p style="margin: 2px 0 0 0; font-size: 11px; color: #cbd5e1;">Email: ${entity.assignedSm.email}</p>
+              <p style="margin: 4px 0 0 0; font-size: 12px; color: #cbd5e1;">
+                SM Float Balance: <strong style="color: var(--accent-emerald);">₦${Number(entity.assignedSm.walletBalance || entity.assignedSm.balance || 0).toLocaleString()}</strong>
+              </p>
+            ` : ''}
+          </div>
+
+          <div class="inspector-detail-card">
+            <h4 class="inspector-section-heading">STATE PERFORMANCE & TARGET METRICS</h4>
+            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Data Sales: <strong style="color: var(--accent-cyan);">${entity.achievedDataGB} GB</strong> / ${entity.targetDataGB} GB Goal</p>
+            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Airtime Sales Target: <strong style="color: var(--accent-emerald);">₦${Number(entity.targetAirtime).toLocaleString()}</strong></p>
+            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Retail Agents: <strong style="color: #c084fc;">${entity.agentsCount}</strong> Active / ${entity.agentsGoal} Recruited Goal</p>
+            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Field Supervisors: <strong style="color: var(--accent-amber);">${entity.supervisorsCount}</strong> Assigned</p>
+          </div>
+
+          ${entity.assignedSm ? `
+            <button type="button" class="primary-action-btn" style="background: var(--accent-amber); color: #000;" onclick="setupStateTargetOverride('${entity.assignedSm.phone || entity.assignedSm._id}', ${entity.targetDataGB}, ${entity.agentsGoal}, ${entity.targetAirtime})">
+              ADJUST STATE TARGETS
+            </button>
+          ` : ''}
+        `;
+      } else {
+        const uName = entity.name || `${entity.firstName || ''} ${entity.surname || ''}`.trim();
+        titleEl.textContent = `${uName} Audit Sheet`;
+        subEl.textContent = `Role: ${(entity.role || 'user').toUpperCase()} • Administrative Override Terminal`;
+
+        bodyEl.innerHTML = `
+          <div class="inspector-detail-card">
+            <h4 class="inspector-section-heading">FINANCIAL & PROFILE AUDIT</h4>
+            <p style="margin: 0; font-size: 14px; font-weight: 800; color: #fff;">Account: ${uName}</p>
+            <p style="margin: 4px 0 0 0; font-size: 11px; color: #cbd5e1;">Phone: <strong style="color: #fff;">${entity.phone}</strong></p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #cbd5e1;">Email: ${entity.email || 'N/A'}</p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #cbd5e1;">Role: <strong style="color: var(--accent-cyan);">${(entity.role || 'user').toUpperCase()}</strong></p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #cbd5e1;">Location: ${entity.state || 'Kano'} ${entity.lga ? `(${entity.lga} LGA)` : ''}</p>
+            <p style="margin: 6px 0 0 0; font-size: 13px; color: #cbd5e1;">Live Wallet: <strong style="color: var(--accent-emerald);">₦${Number(entity.walletBalance || entity.balance || 0).toLocaleString()}</strong></p>
+          </div>
+
+          <div class="inspector-detail-card">
+            <h4 class="inspector-section-heading">ASSIGNED PERFORMANCE TARGETS</h4>
+            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Data Quota Goal: <strong style="color: var(--accent-cyan);">${entity.targets?.dataGoal || 500} GB</strong></p>
+            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Agent Recruitment Goal: <strong style="color: #c084fc;">${entity.targets?.agentGoal || 10} Agents</strong></p>
+            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Airtime Quota: <strong style="color: var(--accent-emerald);">₦${Number(entity.targets?.airtimeGoal || 0).toLocaleString()}</strong></p>
+          </div>
+
+          <span class="form-field-label">EXECUTIVE OVERRIDE COMMANDS</span>
+          <div class="override-btn-grid">
+            <button type="button" class="override-btn" style="background: #059669;" onclick="shortcutWalletAdjust('${entity.phone || entity._id}')">
+              <i class="fa-solid fa-wallet"></i> Adjust Wallet
+            </button>
+            <button type="button" class="override-btn" style="background: #d97706;" onclick="shortcutAssignTarget('${entity.phone || entity._id}')">
+              <i class="fa-solid fa-bullseye"></i> Set Target
+            </button>
+            <button type="button" class="override-btn" style="background: #7c3aed;" onclick="shortcutRoleChange('${entity.phone || entity._id}')">
+              <i class="fa-solid fa-user-shield"></i> Change Role
+            </button>
+            <button type="button" class="override-btn" style="background: #4f46e5;" onclick="shortcutResetPassword('${entity.phone || entity._id}')">
+              <i class="fa-solid fa-key"></i> Reset Security
+            </button>
+          </div>
+        `;
+      }
+
+      openModal('inspectorModal');
+    }
+
+    function setupStateTargetOverride(staffId, dataGoal, agentGoal, airtimeGoal) {
+      closeModal('inspectorModal');
+      document.getElementById('targetStaffId').value = staffId;
+      document.getElementById('targetDataGoal').value = dataGoal;
+      document.getElementById('targetAgentGoal').value = agentGoal;
+      document.getElementById('targetAirtimeGoal').value = airtimeGoal;
+      openModal('targetModal');
+    }
+
+    function shortcutWalletAdjust(id) {
+      closeModal('inspectorModal');
+      document.getElementById('walletUserId').value = id;
+      openModal('walletModal');
+    }
+
+    function shortcutAssignTarget(id) {
+      closeModal('inspectorModal');
+      document.getElementById('targetStaffId').value = id;
+      openModal('targetModal');
+    }
+
+    function shortcutRoleChange(id) {
+      closeModal('inspectorModal');
+      document.getElementById('roleUserId').value = id;
+      openModal('roleModal');
+    }
+
+    function shortcutResetPassword(id) {
+      closeModal('inspectorModal');
+      document.getElementById('pwdUserId').value = id;
+      openModal('passwordModal');
+    }
+
+    /* Form Handlers */
+    function setNewUserRole(role, el) {
+      state.newRole = role;
+      document.querySelectorAll('#newRolePillGrid .pill-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    async function handleCreateUserSubmit() {
+      const btn = document.getElementById('btnCreateUserSubmit');
+      btn.disabled = true;
+
+      try {
+        const payload = {
+          firstName: document.getElementById('newFirstName').value.trim(),
+          surname: document.getElementById('newSurname').value.trim() || "Staff",
+          name: `${document.getElementById('newFirstName').value.trim()} ${document.getElementById('newSurname').value.trim()}`.trim().toUpperCase(),
+          phone: document.getElementById('newPhone').value.trim(),
+          email: document.getElementById('newEmail').value.trim() || `${document.getElementById('newPhone').value.trim()}@ayaxdata.online`,
+          password: document.getElementById('newPassword').value.trim() || "Password123@",
+          role: state.newRole,
+          state: document.getElementById('newState').value.trim() || "Kano",
+          lga: document.getElementById('newLga').value.trim() || "Ajingi",
+          walletBalance: Number(document.getElementById('newInitialBalance').value || 0),
+          balance: Number(document.getElementById('newInitialBalance').value || 0),
+          pin: "2026",
+          transactionPin: "2026",
+          isVerified: true,
+          status: "active"
+        };
+
+        const res = await fetch(`${BASE_URL}/superadmin/create-user`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok && (data.success || res.status === 201)) {
+          alert(`User Provisioned: Account created for ${payload.name} as ${payload.role.toUpperCase()}.`);
+          closeModal('createUserModal');
+          fetchMasterTelemetry();
+        } else {
+          throw new Error(data.message || "Failed to create user.");
+        }
+      } catch (e) {
+        alert("Creation Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function setWalletAction(type) {
+      state.walletAction = type;
+      document.getElementById('btnWalletCredit').className = `toggle-btn ${type === 'credit' ? 'credit-active' : ''}`;
+      document.getElementById('btnWalletDebit').className = `toggle-btn ${type === 'debit' ? 'debit-active' : ''}`;
+      document.getElementById('btnWalletSubmit').style.backgroundColor = type === 'credit' ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+      document.getElementById('btnWalletSubmit').querySelector('span').textContent = `AUTHORIZE ${type.toUpperCase()}`;
+    }
+
+    async function handleWalletAdjustSubmit() {
+      const btn = document.getElementById('btnWalletSubmit');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BASE_URL}/superadmin/wallet/adjust`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: document.getElementById('walletUserId').value.trim(),
+            amount: Number(document.getElementById('walletAmount').value),
+            reason: document.getElementById('walletReason').value.trim() || "Administrative settlement",
+            actionType: state.walletAction
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert("Ledger Synced: " + (data.message || "Wallet adjusted successfully."));
+          closeModal('walletModal');
+          fetchMasterTelemetry();
+        } else {
+          throw new Error(data.message || "Failed to adjust wallet.");
+        }
+      } catch (e) {
+        alert("Ledger Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function handleAssignTargetSubmit() {
+      const btn = document.getElementById('btnAssignTargetSubmit');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BASE_URL}/superadmin/assign-target`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            supervisorId: document.getElementById('targetStaffId').value.trim(),
+            userId: document.getElementById('targetStaffId').value.trim(),
+            agentGoal: Number(document.getElementById('targetAgentGoal').value),
+            dataGoal: Number(document.getElementById('targetDataGoal').value),
+            airtimeGoal: Number(document.getElementById('targetAirtimeGoal').value),
+            month: document.getElementById('targetMonth').value.trim()
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert("Target Deployed: " + (data.message || "Targets allocated successfully."));
+          closeModal('targetModal');
+          fetchMasterTelemetry();
+        } else {
+          throw new Error(data.message || "Target assignment error.");
+        }
+      } catch (e) {
+        alert("Target Assignment Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function setAssignRole(r, el) {
+      state.selectedRole = r;
+      document.querySelectorAll('#assignRolePillGrid .pill-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    async function handleRoleChangeSubmit() {
+      const btn = document.getElementById('btnRoleSubmit');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BASE_URL}/superadmin/users/change-role`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: document.getElementById('roleUserId').value.trim(),
+            newRole: state.selectedRole
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert("Role Updated: User role modified.");
+          closeModal('roleModal');
+          fetchMasterTelemetry();
+        } else {
+          throw new Error(data.message || "Failed to change role.");
+        }
+      } catch (e) {
+        alert("Role Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function handlePasswordOverrideSubmit() {
+      const btn = document.getElementById('btnPasswordSubmit');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BASE_URL}/superadmin/users/force-reset-security`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: document.getElementById('pwdUserId').value.trim(),
+            newPassword: document.getElementById('pwdNew').value.trim() || null,
+            newPin: document.getElementById('pinNew').value.trim() || null
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert("Credentials Reset: Security credentials updated successfully.");
+          closeModal('passwordModal');
+        } else {
+          throw new Error(data.message || "Failed to reset security.");
+        }
+      } catch (e) {
+        alert("Security Override Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function setNotifAudience(aud, el) {
+      state.notifAudience = aud;
+      document.querySelectorAll('#notifAudiencePillGrid .pill-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('singleRecipientInputBox').style.display = aud === 'single' ? 'block' : 'none';
+    }
+
+    function setNotifCategory(cat, el) {
+      state.notifCategory = cat;
+      document.querySelectorAll('#notifCategoryPillGrid .pill-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    async function handleBroadcastSubmit() {
+      const btn = document.getElementById('btnBroadcastSubmit');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BASE_URL}/superadmin/broadcast-notification`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: document.getElementById('notifTitle').value.trim(),
+            message: document.getElementById('notifMessage').value.trim(),
+            category: state.notifCategory,
+            audience: state.notifAudience,
+            recipientId: state.notifAudience === 'single' ? document.getElementById('notifTargetUser').value.trim() : null,
+            isBroadcast: state.notifAudience !== 'single'
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert("Broadcast Dispatched: Notification delivered successfully.");
+          closeModal('notificationModal');
+        } else {
+          throw new Error(data.message || "Broadcast failed.");
+        }
+      } catch (e) {
+        alert("Notification Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function setTransferModeUI(type) {
+      state.transferType = type;
+      document.getElementById('btnTransferBulk').className = `toggle-btn ${type === 'bulk' ? 'credit-active' : ''}`;
+      document.getElementById('btnTransferSingle').className = `toggle-btn ${type === 'single' ? 'debit-active' : ''}`;
+      document.getElementById('transferBulkField').style.display = type === 'bulk' ? 'block' : 'none';
+      document.getElementById('transferSingleField').style.display = type === 'single' ? 'block' : 'none';
+      document.getElementById('btnTransferSubmit').querySelector('span').textContent = type === 'bulk' ? "AUTHORIZE TEAM REASSIGNMENT" : "REASSIGN AGENT";
+    }
+
+    async function handleTransferSubmit() {
+      const btn = document.getElementById('btnTransferSubmit');
+      btn.disabled = true;
+
+      try {
+        const endpoint = state.transferType === 'bulk'
+          ? `${BASE_URL}/supervisors/transfer-all-agents`
+          : `${BASE_URL}/supervisors/transfer-single-agent`;
+
+        const payload = state.transferType === 'bulk'
+          ? {
+              oldSupervisorId: document.getElementById('oldSupervisorId').value.trim(),
+              newSupervisorId: document.getElementById('newSupervisorId').value.trim()
+            }
+          : {
+              agentId: document.getElementById('transferAgentId').value.trim(),
+              newSupervisorId: document.getElementById('newSupervisorId').value.trim()
+            };
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert("Transfer Successful: " + (data.message || "Agent reassignment processed."));
+          closeModal('transferModal');
+          fetchMasterTelemetry();
+        } else {
+          throw new Error(data.message || "Could not complete reassignment.");
+        }
+      } catch (e) {
+        alert("Transfer Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Terminate the SuperAdmin Administrative Session?")) {
+        localStorage.clear();
+        window.location.href = "index.html";
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/adminApi.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

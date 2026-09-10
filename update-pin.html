@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Transaction PIN | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-slate: #f8fafc;
+      --card-white: #ffffff;
+      --primary-navy: #1e3a8a;
+      --primary-navy-hover: #172554;
+      --accent-blue: #0284c7;
+      --text-dark: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #64748b;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+      --icon-bg: #eff6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-slate);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      background-color: var(--primary-navy);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(30, 58, 138, 0.2);
+    }
+
+    .back-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .header-title {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: 0.3px;
+    }
+
+    /* Container Area */
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 30px 16px 60px 16px;
+    }
+
+    .form-card {
+      background: var(--card-white);
+      border-radius: 20px;
+      padding: 28px 24px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    /* Key Icon Visual */
+    .icon-container {
+      width: 70px;
+      height: 70px;
+      border-radius: 35px;
+      background-color: var(--icon-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 16px auto;
+      color: var(--primary-navy);
+      font-size: 30px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-body);
+      text-align: center;
+      margin: 0 0 6px 0;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.5;
+      margin: 0 0 24px 0;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #475569;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      display: block;
+    }
+
+    .text-input {
+      width: 100%;
+      height: 52px;
+      background: #ffffff;
+      border: 1px solid var(--border-input);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-size: 15px;
+      color: var(--text-body);
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    .pin-input {
+      width: 100%;
+      height: 52px;
+      background: #ffffff;
+      border: 1px solid var(--border-input);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-size: 20px;
+      color: var(--text-body);
+      letter-spacing: 12px;
+      text-align: center;
+      font-family: inherit;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .pin-input:focus {
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    .save-btn {
+      width: 100%;
+      height: 54px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 24px;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
+      transition: all 0.2s;
+    }
+
+    .save-btn:hover {
+      background: var(--primary-navy-hover);
+    }
+
+    .save-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="header-title" id="screenTitle">Setup Transaction PIN</h1>
+    <div style="width: 38px;"></div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+    <div class="form-card">
+      <div class="icon-container">
+        <i class="fa-solid fa-key"></i>
+      </div>
+
+      <h2 class="title">Secure Your Transactions</h2>
+      <p class="subtitle">
+        Enter a 4-digit PIN to authorize transfers and utility purchases on Ayax Xpress.
+      </p>
+
+      <form id="pinForm" onsubmit="event.preventDefault(); handleSavePin();">
+
+        <!-- Password Field (Visible only if user already has a PIN) -->
+        <div class="input-group" id="passwordGroup" style="display: none;">
+          <label class="label" for="passwordInput">Account Password</label>
+          <input
+            type="password"
+            id="passwordInput"
+            class="text-input"
+            placeholder="Enter your login password"
+            autocomplete="current-password"
+            spellcheck="false"
+            autocorrect="off"
+            autocapitalize="off"
+          />
+        </div>
+
+        <!-- New 4-Digit PIN -->
+        <div class="input-group">
+          <label class="label" for="newPinInput">New 4-Digit PIN</label>
+          <input
+            type="password"
+            id="newPinInput"
+            class="pin-input"
+            placeholder="••••"
+            maxlength="4"
+            inputmode="numeric"
+            autocomplete="off"
+            spellcheck="false"
+            autocorrect="off"
+            autocapitalize="off"
+            required
+          />
+        </div>
+
+        <!-- Confirm New PIN -->
+        <div class="input-group">
+          <label class="label" for="confirmPinInput">Confirm New PIN</label>
+          <input
+            type="password"
+            id="confirmPinInput"
+            class="pin-input"
+            placeholder="••••"
+            maxlength="4"
+            inputmode="numeric"
+            autocomplete="off"
+            spellcheck="false"
+            autocorrect="off"
+            autocapitalize="off"
+            required
+          />
+        </div>
+
+        <button type="submit" class="save-btn" id="btnSave">
+          <span>SAVE TRANSACTION PIN</span>
+        </button>
+
+      </form>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      isUpdating: false
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session Expired: Authentication token missing. Please log in again.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      // Read isUpdating from URL parameter or user cache
+      const params = new URLSearchParams(window.location.search);
+      const urlIsUpdating = params.get('isUpdating');
+
+      if (urlIsUpdating === 'true') {
+        state.isUpdating = true;
+      } else {
+        const cachedUser = localStorage.getItem('userData');
+        if (cachedUser) {
+          try {
+            const user = JSON.parse(cachedUser);
+            state.isUpdating = Boolean(user.has_transaction_pin || user.hasPin || (user.pin && user.pin !== '0000'));
+          } catch (_) {}
+        }
+      }
+
+      updateUI();
+    });
+
+    function updateUI() {
+      const titleEl = document.getElementById('screenTitle');
+      const pwdGroup = document.getElementById('passwordGroup');
+
+      if (state.isUpdating) {
+        titleEl.textContent = "Change Transaction PIN";
+        pwdGroup.style.display = "block";
+      } else {
+        titleEl.textContent = "Setup Transaction PIN";
+        pwdGroup.style.display = "none";
+      }
+    }
+
+    async function handleSavePin() {
+      const password = document.getElementById('passwordInput').value.trim();
+      const newPin = document.getElementById('newPinInput').value.trim();
+      const confirmPin = document.getElementById('confirmPinInput').value.trim();
+
+      if (state.isUpdating && !password) {
+        alert("Password Required: Please enter your account password to update your PIN.");
+        return;
+      }
+
+      if (!newPin || newPin.length !== 4) {
+        alert("Invalid PIN: Please enter a valid 4-digit numeric PIN.");
+        return;
+      }
+
+      if (newPin !== confirmPin) {
+        alert("Mismatch: The new PIN and confirmation PIN do not match.");
+        return;
+      }
+
+      const btn = document.getElementById('btnSave');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right: 6px;"></i> Processing...';
+
+        const endpoint = state.isUpdating
+          ? `${BASE_URL}/auth/update-pin`
+          : `${BASE_URL}/auth/create-pin`;
+
+        const payload = state.isUpdating
+          ? { password: password, newPin: newPin, pin: newPin }
+          : { newPin: newPin, pin: newPin };
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          const cachedUser = localStorage.getItem('userData');
+          if (cachedUser) {
+            try {
+              const parsedUser = JSON.parse(cachedUser);
+              parsedUser.has_transaction_pin = true;
+              parsedUser.hasPin = true;
+              localStorage.setItem('userData', JSON.stringify(parsedUser));
+            } catch (_) {}
+          }
+
+          alert("Success 🎉\n\n" + (data.message || "Transaction PIN successfully configured."));
+          window.location.href = "profile.html";
+        } else {
+          alert("Failed: " + (data.message || "Could not save PIN."));
+        }
+      } catch (err) {
+        alert("Network Error: Unable to connect to server. Please check your network connection.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

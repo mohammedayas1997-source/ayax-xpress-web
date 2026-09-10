@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Create Account | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-slate: #f1f5f9;
+      --card-white: #ffffff;
+      --primary-navy: #1e3a8a;
+      --primary-navy-hover: #172554;
+      --accent-blue: #0284c7;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+      --error-bg: #fef2f2;
+      --error-border: #fee2e2;
+      --error-text: #991b1b;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-slate);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .main-wrapper {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-white);
+      border-radius: 24px;
+      padding: 32px 24px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    .header-area {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 6px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 12.5px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .error-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      color: var(--error-text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .label {
+      color: #334155;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      display: block;
+      letter-spacing: 0.3px;
+    }
+
+    /* Role Switcher */
+    .role-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .role-btn {
+      flex: 1;
+      height: 45px;
+      background: #f8fafc;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .role-btn.active {
+      background: var(--primary-navy);
+      border-color: var(--primary-navy);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(30, 58, 138, 0.2);
+    }
+
+    .row-inputs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-col {
+      flex: 1;
+    }
+
+    .input-view {
+      width: 100%;
+      height: 48px;
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      transition: all 0.2s;
+    }
+
+    .input-view:focus-within {
+      border-color: var(--primary-navy);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    .input-text {
+      width: 100%;
+      height: 100%;
+      border: none !important;
+      background: transparent;
+      outline: none !important;
+      font-size: 14px;
+      color: var(--text-dark);
+      font-family: inherit;
+    }
+
+    .input-text::placeholder {
+      color: #94a3b8;
+    }
+
+    .toggle-pass-btn {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Agent Section */
+    .agent-section {
+      background: #f1f5f9;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .agent-info-title {
+      color: var(--primary-navy);
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .image-picker {
+      width: 100%;
+      height: 120px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 2px dashed #cbd5e1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-picker-text {
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    /* Submit Button */
+    .signup-btn {
+      width: 100%;
+      height: 52px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
+      transition: all 0.2s;
+    }
+
+    .signup-btn:hover {
+      background: var(--primary-navy-hover);
+    }
+
+    .signup-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .footer-text {
+      color: var(--text-muted);
+    }
+
+    .login-link {
+      color: var(--primary-navy);
+      font-weight: 800;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+    <div class="container">
+
+      <!-- Header Area -->
+      <header class="header-area">
+        <h1 class="title">Create Account</h1>
+        <p class="subtitle">Join Ayax Data Xpress to start enjoying affordable VTU and Data services.</p>
+      </header>
+
+      <form id="signupForm" onsubmit="event.preventDefault(); handleSignup();">
+
+        <!-- Error Banner -->
+        <div class="error-banner" id="errorBanner">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span id="errorBannerText">Validation Error</span>
+        </div>
+
+        <!-- Account Role Selection -->
+        <label class="label">Select Account Type</label>
+        <div class="role-container">
+          <button type="button" class="role-btn active" id="btnRoleUser" onclick="setAccountRole('user')">
+            Customer / User
+          </button>
+          <button type="button" class="role-btn" id="btnRoleAgent" onclick="setAccountRole('agent')">
+            Sub-Agent / Reseller
+          </button>
+        </div>
+
+        <!-- Names Row -->
+        <div class="row-inputs">
+          <div class="input-col">
+            <label class="label" for="surnameInput">Surname (Last Name)</label>
+            <div class="input-view">
+              <input
+                type="text"
+                id="surnameInput"
+                class="input-text"
+                placeholder="Compulsory"
+                spellcheck="false"
+                autocorrect="off"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="input-col">
+            <label class="label" for="firstNameInput">First Name</label>
+            <div class="input-view">
+              <input
+                type="text"
+                id="firstNameInput"
+                class="input-text"
+                placeholder="Compulsory"
+                spellcheck="false"
+                autocorrect="off"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Middle Name -->
+        <label class="label" for="otherNameInput">Middle Name (Optional)</label>
+        <div class="input-view">
+          <input
+            type="text"
+            id="otherNameInput"
+            class="input-text"
+            placeholder="Enter Middle Name"
+            spellcheck="false"
+            autocorrect="off"
+          />
+        </div>
+
+        <!-- Email Address -->
+        <label class="label" for="emailInput">Email Address</label>
+        <div class="input-view">
+          <input
+            type="email"
+            id="emailInput"
+            class="input-text"
+            placeholder="example@gmail.com"
+            autocomplete="email"
+            spellcheck="false"
+            autocorrect="off"
+            required
+          />
+        </div>
+
+        <!-- Phone Number -->
+        <label class="label" for="phoneInput">Active Phone Number</label>
+        <div class="input-view">
+          <input
+            type="tel"
+            id="phoneInput"
+            class="input-text"
+            placeholder="080XXXXXXXX"
+            autocomplete="tel"
+            spellcheck="false"
+            autocorrect="off"
+            required
+          />
+        </div>
+
+        <!-- Agent Business Section (Conditional) -->
+        <div class="agent-section" id="agentSection">
+          <h3 class="agent-info-title">Business Verification Details</h3>
+
+          <label class="label" for="supervisorIdInput">Supervisor Referral Code (Optional)</label>
+          <div class="input-view">
+            <input
+              type="text"
+              id="supervisorIdInput"
+              class="input-text"
+              placeholder="e.g. AX770"
+              spellcheck="false"
+              autocorrect="off"
+              autocapitalize="characters"
+            />
+          </div>
+
+          <label class="label" for="addressInput">Shop / Office Address</label>
+          <div class="input-view">
+            <input
+              type="text"
+              id="addressInput"
+              class="input-text"
+              placeholder="Enter full business address"
+              spellcheck="false"
+              autocorrect="off"
+            />
+          </div>
+
+          <div class="row-inputs">
+            <div class="input-col">
+              <label class="label" for="stateInput">State</label>
+              <div class="input-view">
+                <input
+                  type="text"
+                  id="stateInput"
+                  class="input-text"
+                  placeholder="e.g. Kano"
+                  spellcheck="false"
+                  autocorrect="off"
+                />
+              </div>
+            </div>
+
+            <div class="input-col">
+              <label class="label" for="lgaInput">LGA</label>
+              <div class="input-view">
+                <input
+                  type="text"
+                  id="lgaInput"
+                  class="input-text"
+                  placeholder="Local Govt"
+                  spellcheck="false"
+                  autocorrect="off"
+                />
+              </div>
+            </div>
+          </div>
+
+          <label class="label">Upload Utility Bill or Shop Image</label>
+          <div class="image-picker" onclick="document.getElementById('imageFileInput').click()">
+            <span class="image-picker-text" id="imagePickerLabel">Upload Utility Bill or Shop Image</span>
+            <img id="previewImg" class="preview-image" alt="Business verification preview" />
+            <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelection(event)" />
+          </div>
+        </div>
+
+        <!-- Create Password -->
+        <label class="label" for="passwordInput">Create Password</label>
+        <div class="input-view">
+          <input
+            type="password"
+            id="passwordInput"
+            class="input-text"
+            placeholder="Minimum of 6 characters"
+            autocomplete="new-password"
+            spellcheck="false"
+            autocorrect="off"
+            required
+          />
+          <button type="button" class="toggle-pass-btn" onclick="togglePass('passwordInput', this)">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+        </div>
+
+        <!-- Confirm Password -->
+        <label class="label" for="confirmPasswordInput">Confirm Password</label>
+        <div class="input-view">
+          <input
+            type="password"
+            id="confirmPasswordInput"
+            class="input-text"
+            placeholder="Repeat your password"
+            autocomplete="new-password"
+            spellcheck="false"
+            autocorrect="off"
+            required
+          />
+          <button type="button" class="toggle-pass-btn" onclick="togglePass('confirmPasswordInput', this)">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="signup-btn" id="btnSignup">
+          <span>REGISTER ACCOUNT</span>
+        </button>
+
+        <!-- Footer -->
+        <div class="footer">
+          <span class="footer-text">Already have an account? </span>
+          <a href="index.html" class="login-link">Login Here</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      role: 'user',
+      base64Image: null
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Parse parameters if redirected from Supervisor or referral link
+      const params = new URLSearchParams(window.location.search);
+      const referral = params.get('referralCode') || params.get('referredBy');
+      const paramState = params.get('state');
+      const paramLga = params.get('lga');
+      const paramRole = params.get('role');
+
+      if (referral) {
+        document.getElementById('supervisorIdInput').value = referral;
+      }
+      if (paramState) {
+        document.getElementById('stateInput').value = paramState;
+      }
+      if (paramLga) {
+        document.getElementById('lgaInput').value = paramLga;
+      }
+      if (paramRole && (paramRole === 'agent' || paramRole === 'user')) {
+        setAccountRole(paramRole);
+      }
+    });
+
+    function setAccountRole(selectedRole) {
+      state.role = selectedRole;
+      document.getElementById('btnRoleUser').classList.toggle('active', selectedRole === 'user');
+      document.getElementById('btnRoleAgent').classList.toggle('active', selectedRole === 'agent');
+      document.getElementById('agentSection').style.display = selectedRole === 'agent' ? 'block' : 'none';
+    }
+
+    function togglePass(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+      }
+    }
+
+    function showError(msg) {
+      const banner = document.getElementById('errorBanner');
+      document.getElementById('errorBannerText').textContent = msg;
+      banner.style.display = 'flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideError() {
+      document.getElementById('errorBanner').style.display = 'none';
+    }
+
+    document.querySelectorAll('.input-text').forEach(input => {
+      input.addEventListener('input', hideError);
+    });
+
+    function handleImageSelection(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        state.base64Image = e.target.result;
+        const preview = document.getElementById('previewImg');
+        preview.src = state.base64Image;
+        preview.style.display = 'block';
+        document.getElementById('imagePickerLabel').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function validateInputs() {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^[0-9]{10,15}$/;
+
+      const firstName = document.getElementById('firstNameInput').value.trim();
+      const surname = document.getElementById('surnameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+      const password = document.getElementById('passwordInput').value;
+      const confirmPassword = document.getElementById('confirmPasswordInput').value;
+
+      if (!firstName || !surname || !email || !phone || !password) {
+        showError("Please fill all the compulsory fields before proceeding.");
+        return false;
+      }
+
+      if (!emailRegex.test(email)) {
+        showError("The email address format is wrong. Please check it.");
+        return false;
+      }
+
+      if (!phoneRegex.test(phone)) {
+        showError("Please enter a valid phone number (10 to 15 digits).");
+        return false;
+      }
+
+      if (password.length < 6) {
+        showError("Your password must be at least 6 characters long.");
+        return false;
+      }
+
+      if (password !== confirmPassword) {
+        showError("The two passwords do not match. Please re-enter.");
+        return false;
+      }
+
+      if (state.role === 'agent') {
+        const address = document.getElementById('addressInput').value.trim();
+        const stateVal = document.getElementById('stateInput').value.trim();
+        const lgaVal = document.getElementById('lgaInput').value.trim();
+
+        if (!address || !stateVal || !lgaVal) {
+          showError("As an Agent, your State, LGA, and Business Address are compulsory.");
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    async function handleSignup() {
+      hideError();
+      if (!validateInputs()) return;
+
+      const firstName = document.getElementById('firstNameInput').value.trim();
+      const surname = document.getElementById('surnameInput').value.trim();
+      const otherName = document.getElementById('otherNameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim().toLowerCase();
+      const phone = document.getElementById('phoneInput').value.trim();
+      const password = document.getElementById('passwordInput').value;
+
+      const btn = document.getElementById('btnSignup');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing Registration...';
+
+        const registrationData = {
+          firstName,
+          surname,
+          otherName,
+          name: `${firstName} ${surname}`.trim(),
+          email,
+          phone,
+          password,
+          role: state.role.toLowerCase()
+        };
+
+        if (state.role === 'agent') {
+          const supervisorId = document.getElementById('supervisorIdInput').value.trim().toUpperCase();
+          registrationData.address = document.getElementById('addressInput').value.trim();
+          registrationData.state = document.getElementById('stateInput').value.trim();
+          registrationData.lga = document.getElementById('lgaInput').value.trim();
+          if (supervisorId) {
+            registrationData.supervisorId = supervisorId;
+            registrationData.referralCode = supervisorId;
+            registrationData.referredBy = supervisorId;
+          }
+          if (state.base64Image) {
+            registrationData.businessImage = state.base64Image;
+          }
+        }
+
+        // 1. Submit Registration
+        const response = await fetch(`${BASE_URL}/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(registrationData)
+        });
+
+        const resData = await response.json();
+
+        if (response.ok && (resData.success || resData.token || response.status === 201)) {
+          const token = resData.token;
+          let userPayload = resData.user || resData.data?.user || resData.data || { role: state.role.toLowerCase() };
+
+          if (token) {
+            localStorage.setItem('userToken', token);
+          }
+
+          // 2. Generate Automated Dedicated Virtual Account
+          try {
+            const accRes = await fetch(`${BASE_URL}/user/create-virtual-account`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+              }
+            });
+            const accData = await accRes.json();
+            if (accRes.ok && (accData.accountNumber || accData.data)) {
+              userPayload = { ...userPayload, ...(accData.accountNumber || accData.data) };
+            }
+          } catch (accErr) {
+            console.warn("Virtual account provisioning deferred:", accErr.message);
+          }
+
+          localStorage.setItem('userData', JSON.stringify(userPayload));
+
+          alert("Account Created 🎉\n\nYour registration and account number generation have been completed successfully! Click OK to proceed.");
+          
+          if (state.role === 'agent') {
+            window.location.href = "agent-dashboard.html";
+          } else {
+            window.location.href = "customer-dashboard.html";
+          }
+        } else {
+          showError(resData.message || "Registration failed. Please check your details.");
+        }
+      } catch (err) {
+        showError("Network connection issue. Please check your internet and try again.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/nigeriaGeoData.js"></script>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>About Us | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-slate: #f8fafc;
+      --card-white: #ffffff;
+      --primary-navy: #1e3a8a;
+      --accent-blue: #0284c7;
+      --accent-sky: #0369a1;
+      --accent-green: #16a34a;
+      --text-dark: #0f172a;
+      --text-sub: #334155;
+      --text-body: #475569;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+      --border-highlight: #bae6fd;
+      --bg-highlight: #f0f9ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-slate);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      background: var(--card-white);
+      border-bottom: 1px solid var(--border-light);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .back-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .header-nav-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin: 0;
+    }
+
+    /* Container Area */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 16px 60px 16px;
+    }
+
+    /* Header Presentation */
+    .header-section {
+      margin-bottom: 22px;
+    }
+
+    .header-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--primary-navy);
+      margin: 0 0 6px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .header-subtitle {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-white);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .highlight-card {
+      background: var(--bg-highlight);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-highlight);
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.05);
+    }
+
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .icon-box {
+      width: 38px;
+      height: 38px;
+      background: #eff6ff;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 12px;
+      color: var(--primary-navy);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin: 0;
+    }
+
+    .body-text {
+      font-size: 14px;
+      color: var(--text-body);
+      line-height: 1.6;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    .body-text-dark {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    .bold-text {
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .paragraph-space {
+      margin-top: 12px;
+    }
+
+    /* External Link Button */
+    .link-button {
+      background: var(--accent-blue);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+
+    .link-button:hover {
+      background: var(--accent-sky);
+      transform: translateY(-1px);
+    }
+
+    /* Features List */
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      margin-top: 14px;
+    }
+
+    .feature-icon {
+      color: var(--accent-green);
+      font-size: 16px;
+      margin-right: 12px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .feature-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 2px 0 0 0;
+      font-weight: 500;
+    }
+
+    /* Footer */
+    .footer-container {
+      text-align: center;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .footer-brand {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin: 0;
+    }
+
+    .footer-sub {
+      font-size: 11px;
+      color: var(--text-light);
+      margin: 4px 0 0 0;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h2 class="header-nav-title">Corporate Overview</h2>
+    <div style="width: 38px;"></div>
+  </header>
+
+  <!-- Content Container -->
+  <main class="container">
+
+    <!-- Header Section -->
+    <section class="header-section">
+      <h1 class="header-title">About Ayax Xpress</h1>
+      <p class="header-subtitle">
+        Your Ultimate Plug for Fast, Secure, and Automated Digital Services.
+      </p>
+    </section>
+
+    <!-- Identity Card -->
+    <article class="card">
+      <div class="card-header-row">
+        <div class="icon-box">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3 class="section-title">Our Identity & Foundation</h3>
+      </div>
+      <p class="body-text">
+        Ayax Xpress is a flagship digital product engineered and operated under
+        <span class="bold-text">Ayax Digital Solutions</span>, a premier technology firm rooted in Kano State, Nigeria. 
+        Founded by <span class="bold-text">Abdulrahman Mohammed Ayas</span>, our vision is to bridge the digital divide by transforming complex technological infrastructure into everyday consumer-friendly utilities. We specialize in robust, high-performance automated systems tailored specifically to meet the dynamic needs of the modern Nigerian populace.
+      </p>
+    </article>
+
+    <!-- Mission & Vision Card -->
+    <article class="card">
+      <div class="card-header-row">
+        <div class="icon-box">
+          <i class="fa-solid fa-rocket"></i>
+        </div>
+        <h3 class="section-title">Our Core Mission & Vision</h3>
+      </div>
+      <p class="body-text">
+        Our overarching mission is to empower individuals, SME vendors, and corporate enterprises by providing the most aggressive data rates, instant airtime top-ups, reliable electricity token vending, cable TV subscriptions, and seamless bill payment solutions.
+      </p>
+      <p class="body-text paragraph-space">
+        We firmly operate under the philosophy that digital connectivity and financial inclusion are fundamental rights rather than luxuries. Consequently, we continuously optimize our backend routing to ensure maximum affordability without compromising on absolute reliability and speed.
+      </p>
+    </article>
+
+    <!-- Ayax APIs Marketplace Section -->
+    <article class="highlight-card">
+      <div class="card-header-row">
+        <div class="icon-box" style="background: #ffffff; color: var(--accent-blue);">
+          <i class="fa-solid fa-network-wired"></i>
+        </div>
+        <h3 class="section-title" style="color: var(--accent-sky);">
+          Ayax APIs Marketplace
+        </h3>
+      </div>
+      <p class="body-text-dark">
+        As part of our commitment to driving software innovation and developer growth across Africa, we proudly present the <span class="bold-text">Ayax APIs Marketplace</span>. 
+        This is a robust, developer-first infrastructure designed for tech entrepreneurs, VTU business owners, and software engineers looking to scale.
+      </p>
+      <p class="body-text-dark paragraph-space">
+        Our APIs offer seamless, high-uptime integration for automated data delivery, airtime conversion, cable subscriptions, electricity bills, and NIN/NIMC verification services. Build, scale, and automate your own platform with our enterprise-grade endpoints.
+      </p>
+
+      <a href="https://www.ayaxapis.com" target="_blank" rel="noopener noreferrer" class="link-button">
+        <i class="fa-solid fa-globe"></i>
+        <span>Visit www.ayaxapis.com</span>
+      </a>
+    </article>
+
+    <!-- Why Choose Us Card -->
+    <article class="card">
+      <div class="card-header-row">
+        <div class="icon-box">
+          <i class="fa-solid fa-star"></i>
+        </div>
+        <h3 class="section-title">Why Choose Ayax Xpress?</h3>
+      </div>
+
+      <div class="feature-item">
+        <i class="fa-solid fa-bolt feature-icon"></i>
+        <div>
+          <h4 class="feature-title">Lightning-Fast Automation</h4>
+          <p class="feature-desc">Our fully automated infrastructure guarantees transaction fulfillment within seconds of request initiation.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <i class="fa-solid fa-wallet feature-icon"></i>
+        <div>
+          <h4 class="feature-title">Unbeatable Cost Efficiency</h4>
+          <p class="feature-desc">We negotiate optimal institutional pricing to pass massive savings directly to our retail users and API partners.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <i class="fa-solid fa-shield-halved feature-icon"></i>
+        <div>
+          <h4 class="feature-title">Military-Grade Security</h4>
+          <p class="feature-desc">Advanced encryption standards, secure transaction PIN workflows, and protected database interactions safeguard your assets.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <i class="fa-solid fa-users feature-icon"></i>
+        <div>
+          <h4 class="feature-title">Dedicated Local Support</h4>
+          <p class="feature-desc">Built right here in Nigeria, our support team completely understands your local utility demands and responds instantly.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Footer Branding -->
+    <footer class="footer-container">
+      <p class="footer-brand">Ayax Digital Solutions © 2026</p>
+      <p class="footer-sub">Empowering Digital Frontiers Across Nigeria</p>
+    </footer>
+
+  </main>
+ <script src="js/config.js"></script>
+</body>
+</html>

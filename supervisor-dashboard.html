@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Supervisor Field Dashboard | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Favicon & Web App Manifest -->
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0284c7">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --border-dark: #1e293b;
+      --accent-blue: #1e40af;
+      --accent-cyan: #38bdf8;
+      --accent-sky: #0284c7;
+      --accent-green: #059669;
+      --accent-amber: #fbbf24;
+      --accent-red: #ef4444;
+      --text-white: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Command Header */
+    .top-bar {
+      background: var(--bg-dark);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #1e293b;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+    }
+
+    .top-brand-group {
+      text-align: center;
+    }
+
+    .state-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      padding: 3px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      margin-bottom: 3px;
+    }
+
+    .live-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--accent-cyan);
+    }
+
+    .state-badge-text {
+      color: var(--accent-cyan);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+    }
+
+    .top-brand-title {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 18px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-cyan);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .avatar-btn:hover {
+      background: #334155;
+    }
+
+    .logout-btn {
+      border-color: var(--accent-red);
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--accent-red);
+    }
+
+    /* Navigation Tabs */
+    .main-nav-bar {
+      display: flex;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 16px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .main-nav-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px 12px;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      transition: all 0.2s;
+    }
+
+    .main-nav-tab.active {
+      border-bottom-color: var(--accent-blue);
+      color: var(--accent-blue);
+      font-weight: 900;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 16px 80px 16px;
+    }
+
+    /* Target Progress Card Dark */
+    .executive-target-card-dark {
+      background: var(--bg-dark);
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid #1e293b;
+      border-left: 5px solid var(--accent-cyan);
+      margin-bottom: 12px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .exec-header-row-dark {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .exec-badge-text-dark {
+      color: #94a3b8;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+    }
+
+    .exec-title-text-dark {
+      color: var(--text-white);
+      font-size: 13.5px;
+      font-weight: 900;
+      margin: 2px 0 0 0;
+    }
+
+    .live-tracking-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .exec-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .exec-metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .exec-metric-box-dark {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid #334155;
+    }
+
+    .exec-metric-label-dark {
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+
+    .exec-metric-value-dark {
+      font-size: 14.5px;
+      font-weight: 900;
+      margin: 4px 0;
+      color: #ffffff;
+    }
+
+    .exec-progress-bar-bg-dark {
+      height: 6px;
+      background: #334155;
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 4px 0;
+    }
+
+    .exec-progress-bar-fill {
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    .exec-percent-sub-dark {
+      color: #94a3b8;
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+
+    /* Referral Card */
+    .referral-banner-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border-light);
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .referral-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .referral-card-title {
+      color: var(--text-dark);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .referral-card-sub {
+      color: var(--text-muted);
+      font-size: 10.5px;
+      margin: 2px 0 0 0;
+    }
+
+    .copy-ref-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* Action Row */
+    .action-row-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .action-btn-full {
+      flex: 1.5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      padding: 12px 0;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      border: none;
+    }
+
+    .action-btn-secondary {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: var(--accent-sky);
+      padding: 12px 0;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* Search Bar */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      padding: 0 14px;
+      border-radius: 10px;
+      height: 44px;
+      border: 1px solid var(--border-input);
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      flex: 1;
+      height: 100%;
+      border: none !important;
+      background: transparent;
+      outline: none !important;
+      font-size: 12.5px;
+      color: var(--text-dark);
+      font-family: inherit;
+    }
+
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-header-label {
+      color: #475569;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .action-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* Agent Card */
+    .agent-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .agent-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .agent-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-green);
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .agent-name-text {
+      color: var(--text-dark);
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .agent-location-tag {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 2px 0 0 0;
+    }
+
+    .email-tag-text {
+      color: var(--accent-sky);
+      font-size: 11px;
+      margin: 1px 0 0 0;
+      font-weight: 600;
+    }
+
+    .agent-sales-text {
+      color: var(--accent-green);
+      font-size: 14px;
+      font-weight: 900;
+      margin: 0;
+      text-align: right;
+    }
+
+    .agent-sales-sub {
+      color: #94a3b8;
+      font-size: 9.5px;
+      margin: 1px 0 0 0;
+      text-align: right;
+    }
+
+    .agent-target-box {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid var(--border-light);
+    }
+
+    .agent-target-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .agent-target-box-title {
+      color: var(--accent-blue);
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .agent-mini-prog-bg {
+      height: 5px;
+      background: #e2e8f0;
+      border-radius: 2.5px;
+      overflow: hidden;
+    }
+
+    .agent-mini-prog-fill {
+      height: 5px;
+      border-radius: 2.5px;
+    }
+
+    .agent-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 8px;
+    }
+
+    .inspect-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--accent-blue);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .agent-call-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* Performance Cards */
+    .performance-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* History Cards */
+    .history-card-highlight {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1.5px solid var(--accent-cyan);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .history-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* Log Card */
+    .log-card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* Empty Feed */
+    .empty-feed {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 14px;
+      text-align: center;
+      border: 1px solid var(--border-light);
+      color: #94a3b8;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid var(--border-input);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 8px;
+    }
+
+    .modal-card-title {
+      color: var(--text-dark);
+      font-size: 15px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .modal-card-subtitle {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 2px 0 0 0;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #64748b;
+      cursor: pointer;
+    }
+
+    .form-field-label {
+      color: var(--accent-blue);
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      margin: 10px 0 4px 0;
+      display: block;
+    }
+
+    .text-input-style {
+      width: 100%;
+      height: 44px;
+      background: #f8fafc;
+      border: 1px solid var(--border-input);
+      border-radius: 10px;
+      padding: 0 12px;
+      font-size: 13px;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .primary-action-btn {
+      width: 100%;
+      height: 48px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .primary-action-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Sidebar Drawer */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 1000;
+    }
+
+    .sidebar-drawer {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 320px;
+      background: #ffffff;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: #334155;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: #eff6ff;
+      color: var(--accent-blue);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Bar -->
+  <header class="top-bar">
+    <button type="button" class="avatar-btn" onclick="toggleSidebar(true)">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="top-brand-group">
+      <div class="state-badge">
+        <div class="live-pulse-dot"></div>
+        <span class="state-badge-text" id="topBadgeText">AJINGI LGA FIELD SUPERVISOR (FS)</span>
+      </div>
+      <h1 class="top-brand-title" id="topTitleText">KANO STATE • 0 OUTLETS</h1>
+    </div>
+
+    <div class="top-actions">
+      <a href="signup.html" class="avatar-btn" title="Add Agent">
+        <i class="fa-solid fa-user-plus"></i>
+      </a>
+      <button type="button" class="avatar-btn" onclick="openModal('notifModal')" title="Broadcast Directive">
+        <i class="fa-solid fa-bullhorn"></i>
+      </button>
+      <button type="button" class="avatar-btn logout-btn" onclick="handleLogout()" title="Logout">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Navigation Tabs -->
+  <nav class="main-nav-bar">
+    <button type="button" class="main-nav-tab active" id="tabBtnAgents" onclick="switchTab('agents')">
+      <i class="fa-solid fa-users"></i>
+      <span id="tabLabelAgents">Outlets (0)</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnPerformance" onclick="switchTab('performance')">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Overview</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnHistory" onclick="switchTab('history_targets')">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+      <span>Target History</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnLogs" onclick="switchTab('logs')">
+      <i class="fa-solid fa-file-lines"></i>
+      <span>Logs</span>
+    </button>
+  </nav>
+
+  <!-- Main Container Area -->
+  <main class="container">
+
+    <!-- Section 1: SM Quota Progress Card -->
+    <section class="executive-target-card-dark">
+      <div class="exec-header-row-dark">
+        <div>
+          <div class="exec-badge-text-dark">STATE MANAGER TARGET ALLOCATION</div>
+          <h2 class="exec-title-text-dark" id="myTargetMonthTitle">SEPTEMBER 2026 QUOTA PROGRESS</h2>
+        </div>
+        <div class="live-tracking-badge">
+          <div class="live-pulse-dot"></div>
+          <span>LIVE TRACKING</span>
+        </div>
+      </div>
+
+      <div class="exec-metrics-grid">
+        <div class="exec-metric-box-dark">
+          <div class="exec-metric-label-dark" style="color: var(--accent-cyan);">DATA TARGET (GB)</div>
+          <div class="exec-metric-value-dark" id="metricDataVal">0 / 0 GB</div>
+          <div class="exec-progress-bar-bg-dark">
+            <div class="exec-progress-bar-fill" id="metricDataBar" style="width: 0%; background: var(--accent-cyan);"></div>
+          </div>
+          <div class="exec-percent-sub-dark" id="metricDataPercent">0% Completed</div>
+        </div>
+
+        <div class="exec-metric-box-dark">
+          <div class="exec-metric-label-dark" style="color: var(--accent-amber);">AIRTIME TARGET (₦)</div>
+          <div class="exec-metric-value-dark" id="metricAirtimeVal">₦0 / ₦0</div>
+          <div class="exec-progress-bar-bg-dark">
+            <div class="exec-progress-bar-fill" id="metricAirtimeBar" style="width: 0%; background: var(--accent-amber);"></div>
+          </div>
+          <div class="exec-percent-sub-dark" id="metricAirtimePercent">0% Quota Achieved</div>
+        </div>
+
+        <div class="exec-metric-box-dark">
+          <div class="exec-metric-label-dark" style="color: var(--accent-green);">AGENT REGISTRATION</div>
+          <div class="exec-metric-value-dark" id="metricAgentVal">0 / 10</div>
+          <div class="exec-progress-bar-bg-dark">
+            <div class="exec-progress-bar-fill" id="metricAgentBar" style="width: 0%; background: var(--accent-green);"></div>
+          </div>
+          <div class="exec-percent-sub-dark" id="metricAgentPercent">0% Outlets Registered</div>
+        </div>
+
+        <div class="exec-metric-box-dark">
+          <div class="exec-metric-label-dark" style="color: #a78bfa;">TOTAL TEAM FLOAT</div>
+          <div class="exec-metric-value-dark" id="metricFloatVal">₦0</div>
+          <div class="exec-progress-bar-bg-dark">
+            <div class="exec-progress-bar-fill" style="width: 100%; background: #a78bfa;"></div>
+          </div>
+          <div class="exec-percent-sub-dark">Live Float Balance</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Referral Banner -->
+    <section class="referral-banner-card">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="referral-icon-wrap">
+            <i class="fa-solid fa-ticket"></i>
+          </div>
+          <div>
+            <h3 class="referral-card-title">Supervisor Referral Code</h3>
+            <p class="referral-card-sub">Auto-binds agent to your LGA supervision during Signup</p>
+          </div>
+        </div>
+        <button type="button" class="copy-ref-btn" onclick="copyReferralCode()">
+          <i class="fa-regular fa-copy"></i>
+          <span id="refCodeDisplay">AYX-FS</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Section 3: Summary Actions -->
+    <div class="action-row-container">
+      <button type="button" class="action-btn-full" onclick="navigateToSignup()">
+        <i class="fa-solid fa-user-plus"></i>
+        <span id="registerAgentActionLabel">+ REGISTER AGENT (0/10)</span>
+      </button>
+
+      <button type="button" class="action-btn-secondary" onclick="openModal('notifModal')">
+        <i class="fa-solid fa-bullhorn"></i>
+        <span>DIRECTIVE</span>
+      </button>
+    </div>
+
+    <!-- Search Input -->
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass" style="color: #64748b; margin-right: 8px;"></i>
+      <input
+        type="text"
+        id="searchAgentInput"
+        class="search-input"
+        placeholder="Search Agents by name, phone, email, or address..."
+        oninput="handleSearch()"
+      />
+    </div>
+
+    <!-- TAB 1: OUTLETS & TARGETS -->
+    <section id="tabContentAgents">
+      <div class="section-header-row">
+        <span class="section-header-label" id="agentSectionLabel">GRASSROOT RETAIL OUTLETS & TARGETS (0)</span>
+        <button type="button" class="action-pill-btn" onclick="navigateToSignup()">
+          <i class="fa-solid fa-user-plus"></i> + ADD AGENT
+        </button>
+      </div>
+
+      <div id="agentsListWrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- TAB 2: OVERVIEW -->
+    <section id="tabContentPerformance" style="display: none;">
+      <div class="section-header-row">
+        <span class="section-header-label">SM TARGET QUOTA BREAKDOWN</span>
+      </div>
+
+      <div class="performance-card">
+        <h4 style="margin: 0 0 8px 0; font-size: 13.5px; font-weight: 800;">Data Target Assigned by State Manager</h4>
+        <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 6px;">
+          <div id="perfDataFill" style="height: 8px; border-radius: 4px; width: 0%; background: var(--accent-cyan);"></div>
+        </div>
+        <p id="perfDataText" style="margin: 0; font-size: 11.5px; color: #64748b;">0 GB sold out of 0 GB assigned target (0%).</p>
+      </div>
+
+      <div class="performance-card">
+        <h4 style="margin: 0 0 8px 0; font-size: 13.5px; font-weight: 800;">Airtime Sales Target</h4>
+        <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 6px;">
+          <div id="perfAirtimeFill" style="height: 8px; border-radius: 4px; width: 0%; background: var(--accent-amber);"></div>
+        </div>
+        <p id="perfAirtimeText" style="margin: 0; font-size: 11.5px; color: #64748b;">₦0 sold out of ₦0 quota (0%).</p>
+      </div>
+
+      <div class="performance-card">
+        <h4 style="margin: 0 0 8px 0; font-size: 13.5px; font-weight: 800;">Agent Enrollment Quota (Recruitment Goal)</h4>
+        <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 6px;">
+          <div id="perfAgentFill" style="height: 8px; border-radius: 4px; width: 0%; background: var(--accent-green);"></div>
+        </div>
+        <p id="perfAgentText" style="margin: 0; font-size: 11.5px; color: #64748b;">0 out of 10 retail agents onboarded (0%).</p>
+      </div>
+    </section>
+
+    <!-- TAB 3: TARGET HISTORY -->
+    <section id="tabContentHistory" style="display: none;">
+      <div class="section-header-row">
+        <span class="section-header-label">TARGET ALLOCATION HISTORY ARCHIVE</span>
+      </div>
+
+      <div class="history-card-highlight">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong id="histCurrentMonthTitle" style="font-size: 13.5px; color: #0f172a;">SEPTEMBER 2026 (CURRENT)</strong>
+          <span style="background: #eff6ff; color: var(--accent-blue); padding: 3px 8px; border-radius: 6px; font-size: 9.5px; font-weight: 900; border: 1px solid #bfdbfe;">ACTIVE</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11.5px;">
+          <span>🎯 Data: <strong id="histCurrentData" style="color: var(--accent-blue);">0 GB</strong></span>
+          <span>🎯 Airtime: <strong id="histCurrentAirtime" style="color: var(--accent-amber);">₦0</strong></span>
+          <span>🎯 Agents: <strong id="histCurrentAgent" style="color: var(--accent-green);">0 Outlets</strong></span>
+        </div>
+      </div>
+
+      <div id="targetHistoryWrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- TAB 4: DISPATCH LOGS -->
+    <section id="tabContentLogs" style="display: none;">
+      <div class="section-header-row">
+        <span class="section-header-label">REAL-TIME FIELD DISPATCH LOGS</span>
+      </div>
+
+      <div id="logsListWrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sidebar Drawer -->
+  <div class="sidebar-overlay" id="sidebarDrawer" onclick="toggleSidebar(false)">
+    <div class="sidebar-drawer" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 14px; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 38px; height: 38px; border-radius: 10px; background: #eff6ff; display: flex; justify-content: center; align-items: center; border: 1px solid #bfdbfe; color: var(--accent-blue);">
+            <i class="fa-solid fa-user-tie"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 14px; font-weight: 900;" id="sidebarName">Field Supervisor</h3>
+            <span style="font-size: 10.5px; color: var(--accent-blue); font-weight: 700;" id="sidebarJurisdiction">Ajingi LGA Field Lead</span>
+          </div>
+        </div>
+        <button onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer;">&times;</button>
+      </div>
+
+      <div style="background: #f8fafc; border-radius: 10px; padding: 10px; border: 1px solid var(--border-light); margin-bottom: 12px; font-size: 11px;">
+        <div>📞 Phone: <strong id="sidebarPhone">-</strong></div>
+        <div style="margin-top: 3px;">✉️ Email: <strong id="sidebarEmail" style="color: var(--accent-sky);">-</strong></div>
+        <div style="margin-top: 3px;">📍 Jurisdiction: <strong id="sidebarRegion">-</strong></div>
+      </div>
+
+      <div style="color: #64748b; font-size: 9.5px; font-weight: 900; letter-spacing: 1px; margin-bottom: 6px;">COMMAND ACTIONS</div>
+      <a class="nav-item" onclick="toggleSidebar(false); navigateToSignup();">
+        <i class="fa-solid fa-user-plus" style="color: var(--accent-blue);"></i> Register New Agent
+      </a>
+      <a class="nav-item" onclick="toggleSidebar(false); copyReferralCode();">
+        <i class="fa-solid fa-ticket" style="color: var(--accent-green);"></i> Copy Referral Code
+      </a>
+      <a class="nav-item" onclick="toggleSidebar(false); openModal('notifModal');">
+        <i class="fa-solid fa-bullhorn" style="color: var(--accent-sky);"></i> Broadcast to Outlets
+      </a>
+
+      <button type="button" onclick="handleLogout()" style="margin-top: auto; display: flex; align-items: center; gap: 8px; padding: 14px 10px; border: none; border-top: 1px solid var(--border-light); background: none; color: #dc2626; font-size: 13px; font-weight: 800; cursor: pointer;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Exit Supervisor Session
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 1: INSPECT AGENT -->
+  <div class="modal-overlay" id="inspectModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title" id="inspectAgentName">Retail Agent</h2>
+          <p class="modal-card-subtitle" id="inspectAgentContact">📞 - • ✉️ -</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('inspectModal')">&times;</button>
+      </div>
+
+      <div style="display: flex; background: #eff6ff; border-radius: 12px; padding: 12px; border: 1px solid #bfdbfe; margin-bottom: 12px;">
+        <div style="flex: 1; text-align: center;">
+          <span style="font-size: 10px; font-weight: 700; color: var(--accent-blue);">Wallet Balance</span>
+          <div style="font-size: 16px; font-weight: 900; color: var(--accent-green); margin-top: 2px;" id="inspectAgentWallet">₦0</div>
+        </div>
+        <div style="width: 1px; background: #bfdbfe;"></div>
+        <div style="flex: 1; text-align: center;">
+          <span style="font-size: 10px; font-weight: 700; color: var(--accent-blue);">Data Sold</span>
+          <div style="font-size: 16px; font-weight: 900; color: var(--accent-blue); margin-top: 2px;" id="inspectAgentDataSold">0 GB</div>
+        </div>
+      </div>
+
+      <label class="form-field-label">TARGET ALLOCATED BY STATE MANAGER</label>
+      <div style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: 10px; padding: 10px; font-size: 12px; margin-bottom: 10px;">
+        <div>🎯 Data Quota: <strong style="color: var(--accent-blue);" id="inspectAgentDataGoal">0 GB</strong></div>
+        <div style="margin-top: 3px;">🎯 Airtime Quota: <strong style="color: var(--accent-amber);" id="inspectAgentAirtimeGoal">₦0</strong></div>
+      </div>
+
+      <label class="form-field-label">OUTLET LOCATION</label>
+      <p id="inspectAgentAddress" style="margin: 2px 0 0 0; font-size: 12px; font-weight: 600; color: #0f172a;">📍 Registered under LGA</p>
+    </div>
+  </div>
+
+  <!-- MODAL 2: DIRECTIVE BROADCAST -->
+  <div class="modal-overlay" id="notifModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title">Broadcast LGA Directive</h2>
+          <p class="modal-card-subtitle" id="notifModalSub">Send alert to all retail agents in LGA</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('notifModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleBroadcastToAgents();">
+        <label class="form-field-label">DIRECTIVE TITLE</label>
+        <input type="text" id="notifTitleInput" class="text-input-style" placeholder="e.g. Fast Data Sales Incentive" required />
+
+        <label class="form-field-label">DIRECTIVE BODY</label>
+        <textarea id="notifMessageInput" class="text-input-style" style="height: 80px; padding: 10px; resize: none;" placeholder="Type your announcement to all retail agents..." required></textarea>
+
+        <button type="submit" class="primary-action-btn" id="btnDispatchNotif">
+          DISPATCH TO AGENTS
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      profile: {
+        name: "Field Supervisor",
+        phone: "",
+        email: "",
+        state: "Kano",
+        lga: "Ajingi",
+        referralCode: "AYX-FS"
+      },
+      agents: [],
+      activityLogs: [],
+      targetHistoryList: [],
+      myTarget: {
+        dataGoal: 0,
+        airtimeGoal: 0,
+        agentGoal: 10,
+        currentMonth: "September 2026",
+        dataSold: 0,
+        airtimeSold: 0
+      },
+      searchQuery: ''
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session expired. Please login.");
+        window.location.href = "index.html";
+        return;
+      }
+      fetchDashboardData();
+    });
+
+    async function fetchDashboardData() {
+      const headers = { 'Authorization': `Bearer ${state.token}` };
+
+      try {
+        const [dashRes, targetRes, agentsRes, logsRes, histRes] = await Promise.allSettled([
+          fetch(`${BASE_URL}/supervisor/dashboard`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/supervisor/my-target`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/supervisor/agents`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/supervisor/activity-logs`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/supervisor/target-history`, { headers }).then(r => r.json())
+        ]);
+
+        let storedUser = {};
+        try {
+          storedUser = JSON.parse(localStorage.getItem('userData') || '{}');
+        } catch (_) {}
+
+        const dashData = (dashRes.status === 'fulfilled' && dashRes.value) ? (dashRes.value.data || dashRes.value) : {};
+
+        // Merge and resolve agents uniquely
+        let combinedAgents = [];
+        if (Array.isArray(dashData.agents)) combinedAgents.push(...dashData.agents);
+        if (agentsRes.status === 'fulfilled' && agentsRes.value) {
+          const aData = agentsRes.value.agents || agentsRes.value.data || (Array.isArray(agentsRes.value) ? agentsRes.value : []);
+          if (Array.isArray(aData)) combinedAgents.push(...aData);
+        }
+
+        const uniqueMap = new Map();
+        combinedAgents.forEach(a => {
+          const id = a._id || a.id;
+          if (id && !uniqueMap.has(String(id))) uniqueMap.set(String(id), a);
+        });
+        state.agents = Array.from(uniqueMap.values());
+
+        // Resolve logs & target history
+        if (logsRes.status === 'fulfilled' && logsRes.value) {
+          state.activityLogs = logsRes.value.logs || logsRes.value.data?.logs || (Array.isArray(logsRes.value) ? logsRes.value : []) || dashData.activityLogs || [];
+        }
+
+        if (histRes.status === 'fulfilled' && histRes.value) {
+          state.targetHistoryList = histRes.value.history || histRes.value.data || (Array.isArray(histRes.value) ? histRes.value : []) || dashData.targetHistory || [];
+        }
+
+        // Supervisor Profile resolution
+        const currentPhone = String(dashData.phone || storedUser.phone || "").trim();
+        const currentName = dashData.name || storedUser.name || `${dashData.firstName || storedUser.firstName || "Field"} ${dashData.surname || storedUser.surname || "Supervisor"}`.trim();
+        const currentLga = dashData.lga || storedUser.lga || "Ajingi";
+        const currentState = dashData.state || storedUser.state || "Kano";
+        const currentEmail = dashData.email || storedUser.email || (currentPhone ? `${currentPhone}@ayaxdata.online` : "supervisor@ayaxdata.online");
+        const cleanRefCode = dashData.referralCode || storedUser.referralCode || `AYX-${String(currentLga).toUpperCase()}-${String(currentPhone).slice(-4)}`;
+
+        state.profile = {
+          name: currentName,
+          phone: currentPhone,
+          email: currentEmail,
+          state: currentState,
+          lga: currentLga,
+          referralCode: cleanRefCode
+        };
+
+        // Targets resolution
+        const t1 = dashData.myTarget || {};
+        const t2 = dashData.targets || {};
+        const t3 = (targetRes.status === 'fulfilled' && targetRes.value) ? (targetRes.value.targets || targetRes.value.data?.targets || targetRes.value.data || {}) : {};
+        const t4 = storedUser.targets || {};
+
+        const totalDataSold = state.agents.reduce((acc, curr) => acc + Number(curr.dataVolumeSold || curr.dataSold || 0), 0);
+        const totalAirtimeSold = state.agents.reduce((acc, curr) => acc + Number(curr.airtimeSold || curr.totalAirtime || 0), 0);
+
+        state.myTarget = {
+          dataGoal: Number(t1.dataGoal || t2.dataGoal || t3.dataGoal || t4.dataGoal || dashData.dataGoal || 0),
+          airtimeGoal: Number(t1.airtimeGoal || t2.airtimeGoal || t3.airtimeGoal || t4.airtimeGoal || dashData.airtimeGoal || 0),
+          agentGoal: Number(t1.agentGoal || t2.agentGoal || t3.agentGoal || t4.agentGoal || dashData.agentGoal || 10),
+          currentMonth: t1.currentMonth || t2.currentMonth || t3.currentMonth || t4.currentMonth || "September 2026",
+          dataSold: totalDataSold,
+          airtimeSold: totalAirtimeSold
+        };
+
+        updateUI();
+      } catch (err) {
+        console.warn("Supervisor Dashboard Sync Warning:", err);
+      }
+    }
+
+    function updateUI() {
+      // Top header updates
+      document.getElementById('topBadgeText').textContent = `${state.profile.lga.toUpperCase()} LGA FIELD SUPERVISOR (FS)`;
+      document.getElementById('topTitleText').textContent = `${state.profile.state.toUpperCase()} STATE • ${state.agents.length} OUTLETS`;
+      document.getElementById('tabLabelAgents').textContent = `Outlets (${state.agents.length})`;
+      document.getElementById('refCodeDisplay').textContent = state.profile.referralCode;
+      document.getElementById('registerAgentActionLabel').textContent = `+ REGISTER AGENT (${state.agents.length}/${state.myTarget.agentGoal})`;
+
+      // Executive target progress numbers
+      document.getElementById('myTargetMonthTitle').textContent = `${state.myTarget.currentMonth.toUpperCase()} QUOTA PROGRESS`;
+      document.getElementById('metricDataVal').textContent = `${state.myTarget.dataSold} / ${state.myTarget.dataGoal} GB`;
+      document.getElementById('metricAirtimeVal').textContent = `₦${state.myTarget.airtimeSold.toLocaleString()} / ₦${state.myTarget.airtimeGoal.toLocaleString()}`;
+      document.getElementById('metricAgentVal').textContent = `${state.agents.length} / ${state.myTarget.agentGoal}`;
+
+      const totalFloat = state.agents.reduce((acc, curr) => acc + Number(curr.walletBalance || curr.balance || 0), 0);
+      document.getElementById('metricFloatVal').textContent = `₦${totalFloat.toLocaleString()}`;
+
+      const dataProg = state.myTarget.dataGoal > 0 ? Math.min(Math.round((state.myTarget.dataSold / state.myTarget.dataGoal) * 100), 100) : 0;
+      const airProg = state.myTarget.airtimeGoal > 0 ? Math.min(Math.round((state.myTarget.airtimeSold / state.myTarget.airtimeGoal) * 100), 100) : 0;
+      const agentProg = state.myTarget.agentGoal > 0 ? Math.min(Math.round((state.agents.length / state.myTarget.agentGoal) * 100), 100) : 0;
+
+      document.getElementById('metricDataBar').style.width = `${dataProg}%`;
+      document.getElementById('metricDataPercent').textContent = `${dataProg}% Completed`;
+      document.getElementById('metricAirtimeBar').style.width = `${airProg}%`;
+      document.getElementById('metricAirtimePercent').textContent = `${airProg}% Quota Achieved`;
+      document.getElementById('metricAgentBar').style.width = `${agentProg}%`;
+      document.getElementById('metricAgentPercent').textContent = `${agentProg}% Outlets Registered`;
+
+      // Overview Tab (Tab 2)
+      document.getElementById('perfDataFill').style.width = `${dataProg}%`;
+      document.getElementById('perfDataText').textContent = `${state.myTarget.dataSold} GB sold out of ${state.myTarget.dataGoal} GB assigned target (${dataProg}%).`;
+      document.getElementById('perfAirtimeFill').style.width = `${airProg}%`;
+      document.getElementById('perfAirtimeText').textContent = `₦${state.myTarget.airtimeSold.toLocaleString()} sold out of ₦${state.myTarget.airtimeGoal.toLocaleString()} quota (${airProg}%).`;
+      document.getElementById('perfAgentFill').style.width = `${agentProg}%`;
+      document.getElementById('perfAgentText').textContent = `${state.agents.length} out of ${state.myTarget.agentGoal} retail agents onboarded (${agentProg}%).`;
+
+      // History Tab (Tab 3)
+      document.getElementById('histCurrentMonthTitle').textContent = `${state.myTarget.currentMonth.toUpperCase()} (CURRENT)`;
+      document.getElementById('histCurrentData').textContent = `${state.myTarget.dataGoal} GB`;
+      document.getElementById('histCurrentAirtime').textContent = `₦${state.myTarget.airtimeGoal.toLocaleString()}`;
+      document.getElementById('histCurrentAgent').textContent = `${state.myTarget.agentGoal} Outlets`;
+
+      // Sidebar info
+      document.getElementById('sidebarName').textContent = state.profile.name;
+      document.getElementById('sidebarJurisdiction').textContent = `${state.profile.lga} LGA Field Lead`;
+      document.getElementById('sidebarPhone').textContent = state.profile.phone || "N/A";
+      document.getElementById('sidebarEmail').textContent = state.profile.email;
+      document.getElementById('sidebarRegion').textContent = `${state.profile.lga} LGA, ${state.profile.state}`;
+
+      renderAgentsList();
+      renderHistoryList();
+      renderLogsList();
+    }
+
+    function switchTab(tab) {
+      const tabs = ['agents', 'performance', 'history_targets', 'logs'];
+      tabs.forEach(t => {
+        let btnKey = 'tabBtn' + (t === 'agents' ? 'Agents' : (t === 'performance' ? 'Performance' : (t === 'history_targets' ? 'History' : 'Logs')));
+        let contentKey = 'tabContent' + (t === 'agents' ? 'Agents' : (t === 'performance' ? 'Performance' : (t === 'history_targets' ? 'History' : 'Logs')));
+
+        const btn = document.getElementById(btnKey);
+        const content = document.getElementById(contentKey);
+        if (btn) btn.classList.toggle('active', t === tab);
+        if (content) content.style.display = t === tab ? 'block' : 'none';
+      });
+    }
+
+    function handleSearch() {
+      state.searchQuery = document.getElementById('searchAgentInput').value.toLowerCase().trim();
+      renderAgentsList();
+    }
+
+    function renderAgentsList() {
+      const wrap = document.getElementById('agentsListWrap');
+      const q = state.searchQuery;
+
+      const filtered = state.agents.filter(ag => {
+        const name = (ag.name || `${ag.firstName || ''} ${ag.surname || ''}`).toLowerCase();
+        const phone = (ag.phone || '');
+        const email = (ag.email || '').toLowerCase();
+        const address = (ag.address || '').toLowerCase();
+        return !q || name.includes(q) || phone.includes(q) || email.includes(q) || address.includes(q);
+      });
+
+      document.getElementById('agentSectionLabel').textContent = `GRASSROOT RETAIL OUTLETS & TARGETS (${filtered.length})`;
+
+      if (filtered.length === 0) {
+        wrap.innerHTML = `<div class="empty-feed"><i class="fa-solid fa-users" style="font-size: 32px; margin-bottom: 8px;"></i><p style="margin: 0; font-size: 12px;">No retail agents registered in ${state.profile.lga} LGA matching criteria.</p></div>`;
+        return;
+      }
+
+      wrap.innerHTML = filtered.map(ag => {
+        const id = ag._id || ag.id;
+        const name = ag.name || `${ag.firstName || ''} ${ag.surname || ''}` || 'Retail Agent';
+        const phone = ag.phone || 'No Phone';
+        const email = ag.email || `${phone}@ayaxdata.online`;
+        const floatBal = Number(ag.walletBalance || ag.balance || 0);
+
+        const dataGoal = Number(ag.targets?.dataGoal || ag.dataGoal || 0);
+        const airtimeGoal = Number(ag.targets?.airtimeGoal || ag.airtimeGoal || 0);
+        const dataSold = Number(ag.dataVolumeSold || ag.dataSold || 0);
+        const airtimeSold = Number(ag.airtimeSold || 0);
+
+        const dProg = dataGoal > 0 ? Math.min(Math.round((dataSold / dataGoal) * 100), 100) : 0;
+        const aProg = airtimeGoal > 0 ? Math.min(Math.round((airtimeSold / airtimeGoal) * 100), 100) : 0;
+
+        return `
+          <div class="agent-card">
+            <div class="agent-card-top">
+              <div class="agent-main-info">
+                <div class="agent-avatar"><i class="fa-solid fa-store"></i></div>
+                <div style="margin-left: 10px; flex: 1;">
+                  <h4 class="agent-name-text">${name}</h4>
+                  <p class="agent-location-tag">📍 ${ag.lga || state.profile.lga} LGA • 📞 ${phone}</p>
+                  <p class="email-tag-text">✉️ ${email}</p>
+                  ${ag.address ? `<p class="address-tag-text">🏬 ${ag.address}</p>` : ''}
+                </div>
+              </div>
+
+              <div style="text-align: right;">
+                <h4 class="agent-sales-text">₦${floatBal.toLocaleString()}</h4>
+                <p class="agent-sales-sub">Float Balance</p>
+              </div>
+            </div>
+
+            <div class="agent-target-box">
+              <div class="agent-target-header-row">
+                <span class="agent-target-box-title">SM ASSIGNED MONTHLY TARGET</span>
+                <span class="agent-target-month-text">${ag.targets?.currentMonth || state.myTarget.currentMonth}</span>
+              </div>
+
+              <div class="agent-target-metric-row">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+                  <span>Data: ${dataSold} / ${dataGoal} GB</span>
+                  <strong style="color: var(--accent-blue);">${dProg}%</strong>
+                </div>
+                <div class="agent-mini-prog-bg">
+                  <div class="agent-mini-prog-fill" style="width: ${dProg}%; background: var(--accent-cyan);"></div>
+                </div>
+              </div>
+
+              <div class="agent-target-metric-row" style="margin-top: 6px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+                  <span>Airtime: ₦${airtimeSold.toLocaleString()} / ₦${airtimeGoal.toLocaleString()}</span>
+                  <strong style="color: var(--accent-amber);">${aProg}%</strong>
+                </div>
+                <div class="agent-mini-prog-bg">
+                  <div class="agent-mini-prog-fill" style="width: ${aProg}%; background: var(--accent-amber);"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="agent-card-bottom">
+              <button type="button" class="inspect-btn" onclick="inspectAgent('${id}')">
+                <i class="fa-regular fa-eye"></i> Inspect Live Outlet
+              </button>
+              <div style="display: flex; gap: 6px;">
+                <a href="tel:${phone}" class="agent-call-btn" title="Call Agent"><i class="fa-solid fa-phone"></i></a>
+                ${email ? `<a href="mailto:${email}" class="agent-call-btn" title="Email Agent"><i class="fa-regular fa-envelope"></i></a>` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderHistoryList() {
+      const wrap = document.getElementById('targetHistoryWrap');
+      if (state.targetHistoryList.length === 0) {
+        wrap.innerHTML = '';
+        return;
+      }
+
+      wrap.innerHTML = state.targetHistoryList.map(h => `
+        <div class="history-card">
+          <strong style="font-size: 13px; color: #0f172a;">${h.month || h.currentMonth || "Previous Month"}</strong>
+          <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: #475569;">
+            <span>Data Goal: <strong>${h.dataGoal || 0} GB</strong></span>
+            <span>Airtime Goal: <strong>₦${Number(h.airtimeGoal || 0).toLocaleString()}</strong></span>
+            <span>Agent Goal: <strong>${h.agentGoal || 10}</strong></span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderLogsList() {
+      const wrap = document.getElementById('logsListWrap');
+      if (state.activityLogs.length === 0) {
+        wrap.innerHTML = '<div class="empty-feed"><i class="fa-solid fa-file-lines" style="font-size: 32px; margin-bottom: 8px;"></i><p style="margin: 0; font-size: 12px;">No dispatch logs recorded yet.</p></div>';
+        return;
+      }
+
+      wrap.innerHTML = state.activityLogs.map(log => `
+        <div class="log-card">
+          <p style="margin: 0 0 4px 0; font-size: 12px; font-weight: 600; color: #0f172a;">${log.details || log.action || "Field operation recorded."}</p>
+          <span style="font-size: 10px; color: #64748b;">Time: ${log.createdAt ? new Date(log.createdAt).toLocaleTimeString() : 'Live'}</span>
+        </div>
+      `).join('');
+    }
+
+    function inspectAgent(id) {
+      const ag = state.agents.find(a => (a._id || a.id) === id);
+      if (!ag) return;
+
+      document.getElementById('inspectAgentName').textContent = ag.name || 'Retail Agent';
+      document.getElementById('inspectAgentContact').textContent = `📞 ${ag.phone || 'N/A'} • ✉️ ${ag.email || 'N/A'}`;
+      document.getElementById('inspectAgentWallet').textContent = `₦${Number(ag.walletBalance || ag.balance || 0).toLocaleString()}`;
+      document.getElementById('inspectAgentDataSold').textContent = `${ag.dataVolumeSold || ag.dataSold || 0} GB`;
+      document.getElementById('inspectAgentDataGoal').textContent = `${Number(ag.targets?.dataGoal || ag.dataGoal || 0)} GB`;
+      document.getElementById('inspectAgentAirtimeGoal').textContent = `₦${Number(ag.targets?.airtimeGoal || ag.airtimeGoal || 0).toLocaleString()}`;
+      document.getElementById('inspectAgentAddress').textContent = `📍 ${ag.address || "Registered under " + state.profile.lga + " LGA"}`;
+
+      openModal('inspectModal');
+    }
+
+    function copyReferralCode() {
+      navigator.clipboard.writeText(state.profile.referralCode).then(() => {
+        alert(`Copied 📋\n\nReferral Code: ${state.profile.referralCode} copied to clipboard.`);
+      });
+    }
+
+    function navigateToSignup() {
+      const params = new URLSearchParams({
+        role: "agent",
+        referralCode: state.profile.referralCode,
+        referredBy: state.profile.referralCode,
+        supervisorId: state.profile.referralCode,
+        state: state.profile.state,
+        lga: state.profile.lga
+      });
+      window.location.href = `signup.html?${params.toString()}`;
+    }
+
+    function openModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function toggleSidebar(open) {
+      document.getElementById('sidebarDrawer').style.display = open ? 'block' : 'none';
+    }
+
+    async function handleBroadcastToAgents() {
+      const title = document.getElementById('notifTitleInput').value.trim();
+      const message = document.getElementById('notifMessageInput').value.trim();
+
+      if (!title || !message) {
+        alert("Validation Error: Directive Title and Message Body are required.");
+        return;
+      }
+
+      const btn = document.getElementById('btnDispatchNotif');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BASE_URL}/notifications/send`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title,
+            message,
+            category: "LGA_DIRECTIVE",
+            lga: state.profile.lga,
+            state: state.profile.state
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && (data.success || res.status === 200)) {
+          alert(`Directive Dispatched 🚀\n\nAlert sent to all agents in ${state.profile.lga} LGA.`);
+          closeModal('notifModal');
+          document.getElementById('notifTitleInput').value = '';
+          document.getElementById('notifMessageInput').value = '';
+        } else {
+          throw new Error(data.message || "Failed to broadcast directive.");
+        }
+      } catch (err) {
+        alert("Broadcast Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Confirm Logout: Exit current Field Supervisor session?")) {
+        localStorage.clear();
+        window.location.href = "index.html";
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/adminApi.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

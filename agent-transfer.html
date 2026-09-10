@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Agent Reassignment | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #050811;
+      --card-bg: #0b1120;
+      --border-dark: #1e293b;
+      --accent-red: #dc2626;
+      --text-white: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-label: #cbd5e1;
+      --input-bg: #050811;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Navigation Header */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 30px 18px 20px 18px;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-white);
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-white);
+      margin: 0;
+      letter-spacing: 0.3px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 0 16px 40px 16px;
+    }
+
+    /* Tab Switcher */
+    .tab-container {
+      display: flex;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-dark);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 0;
+      text-align: center;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-red);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    }
+
+    /* Card Component */
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 22px;
+      border: 1px solid var(--border-dark);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .desc-text {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0 0 20px 0;
+    }
+
+    .label {
+      display: block;
+      color: var(--text-label);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .input-field {
+      width: 100%;
+      height: 48px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 10px;
+      padding: 0 14px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      outline: none;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+      text-transform: uppercase;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+    }
+
+    .input-field::placeholder {
+      color: #64748b;
+      text-transform: none;
+      font-weight: normal;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      height: 50px;
+      background: var(--accent-red);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: #b91c1c;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Feedback Banner */
+    .status-banner {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .status-success {
+      background: rgba(22, 163, 74, 0.15);
+      border: 1px solid #16a34a;
+      color: #4ade80;
+    }
+    .status-error {
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid #dc2626;
+      color: #f87171;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <a href="admin-dashboard.html" class="back-btn" title="Back to Dashboard">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="header-title">Agent Reassignment</h1>
+    <div style="width: 40px;"></div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Tab Switcher -->
+    <div class="tab-container">
+      <button id="tabBulk" class="tab-btn active" onclick="setTransferMode('bulk')">Bulk Transfer</button>
+      <button id="tabSingle" class="tab-btn" onclick="setTransferMode('single')">Single Agent</button>
+    </div>
+
+    <!-- Feedback Banner -->
+    <div id="statusBanner" class="status-banner"></div>
+
+    <!-- Transfer Action Card -->
+    <section class="card">
+      <p id="descText" class="desc-text">
+        Reassign all retail agents from a terminated/suspended supervisor to a new supervisor using their Ref Codes.
+      </p>
+
+      <!-- Bulk Form Group -->
+      <div id="groupBulk">
+        <label class="label" for="oldSupervisorRef">Source Supervisor Ref Code (e.g. AYX-AJINGI-7764)</label>
+        <input
+          type="text"
+          id="oldSupervisorRef"
+          class="input-field"
+          placeholder="e.g. AYX-AJINGI-7764"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Single Form Group -->
+      <div id="groupSingle" style="display: none;">
+        <label class="label" for="agentIdentifier">Agent Ref Code or Phone Number</label>
+        <input
+          type="text"
+          id="agentIdentifier"
+          class="input-field"
+          placeholder="e.g. AYX-AJINGI-1024 or 08012345678"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Destination Supervisor Field -->
+      <label class="label" for="newSupervisorRef">Destination Supervisor Ref Code (New Lead)</label>
+      <input
+        type="text"
+        id="newSupervisorRef"
+        class="input-field"
+        placeholder="e.g. AYX-KANO-9921"
+        autocomplete="off"
+      />
+
+      <!-- Submit Action Button -->
+      <button id="btnSubmit" class="submit-btn" onclick="handleTransferSubmit()">
+        <i class="fa-solid fa-people-arrows"></i>
+        <span id="btnSubmitText">Reassign All Agents</span>
+      </button>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let currentMode = 'bulk';
+
+    function setTransferMode(mode) {
+      currentMode = mode;
+      const tabBulk = document.getElementById('tabBulk');
+      const tabSingle = document.getElementById('tabSingle');
+      const groupBulk = document.getElementById('groupBulk');
+      const groupSingle = document.getElementById('groupSingle');
+      const descText = document.getElementById('descText');
+      const btnSubmitText = document.getElementById('btnSubmitText');
+
+      if (mode === 'bulk') {
+        tabBulk.classList.add('active');
+        tabSingle.classList.remove('active');
+        groupBulk.style.display = 'block';
+        groupSingle.style.display = 'none';
+        descText.textContent = "Reassign all retail agents from a terminated/suspended supervisor to a new supervisor using their Ref Codes.";
+        btnSubmitText.textContent = "Reassign All Agents";
+      } else {
+        tabSingle.classList.add('active');
+        tabBulk.classList.remove('active');
+        groupBulk.style.display = 'none';
+        groupSingle.style.display = 'block';
+        descText.textContent = "Select an individual agent to reassign to a new supervisor using their Ref Code or registered phone number.";
+        btnSubmitText.textContent = "Reassign Agent";
+      }
+    }
+
+    function showFeedback(message, isSuccess = true) {
+      const banner = document.getElementById('statusBanner');
+      banner.textContent = message;
+      banner.className = `status-banner ${isSuccess ? 'status-success' : 'status-error'}`;
+      banner.style.display = 'block';
+
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 6000);
+    }
+
+    async function handleTransferSubmit() {
+      const token = localStorage.getItem('userToken') || localStorage.getItem('token') || '';
+      if (!token) {
+        alert('Authentication required. Please login.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const cleanNewRef = document.getElementById('newSupervisorRef').value.trim().toUpperCase();
+      const cleanOldRef = document.getElementById('oldSupervisorRef').value.trim().toUpperCase();
+      const cleanAgentIdent = document.getElementById('agentIdentifier').value.trim();
+
+      if (!cleanNewRef) {
+        alert('Validation Error: Destination Supervisor Ref code is required.');
+        return;
+      }
+
+      if (currentMode === 'bulk' && !cleanOldRef) {
+        alert('Validation Error: Source Supervisor Ref code is required.');
+        return;
+      }
+
+      if (currentMode === 'single' && !cleanAgentIdent) {
+        alert('Validation Error: Agent Ref code or Phone number is required.');
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmit');
+      const originalHtml = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        const endpoint = currentMode === 'bulk'
+          ? `${BASE_URL}/supervisors/transfer-all-agents`
+          : `${BASE_URL}/supervisors/transfer-single-agent`;
+
+        const payload = currentMode === 'bulk'
+          ? {
+              oldSupervisorRef: cleanOldRef,
+              oldSupervisorId: cleanOldRef,
+              newSupervisorRef: cleanNewRef,
+              newSupervisorId: cleanNewRef,
+            }
+          : {
+              agentRef: cleanAgentIdent,
+              agentId: cleanAgentIdent,
+              newSupervisorRef: cleanNewRef,
+              newSupervisorId: cleanNewRef,
+            };
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showFeedback(data.message || 'Agent reassignment successful.', true);
+          document.getElementById('oldSupervisorRef').value = '';
+          document.getElementById('newSupervisorRef').value = '';
+          document.getElementById('agentIdentifier').value = '';
+        } else {
+          showFeedback(data.message || 'Failed to process transfer.', false);
+        }
+      } catch (err) {
+        showFeedback(err.message || 'Server communication error.', false);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+  </script>
+  
+</body>
+</html>

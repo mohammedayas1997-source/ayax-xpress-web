@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Cable TV & Streaming | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-navy: #0a1d37;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #059669;
+      --accent-red: #ef4444;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #ffffff;
+      --card-bg: #f8fafc;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Navigation Bar */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 24px 20px 14px 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .btn-back {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #e2e8f0;
+    }
+
+    .header-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin: 0;
+    }
+
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px 20px 80px 20px;
+    }
+
+    /* Service Fee Notice */
+    .fee-notice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0f9ff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #bae6fd;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: #0369a1;
+    }
+
+    .label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      margin: 16px 0 8px 0;
+      display: block;
+    }
+
+    /* Provider Grid */
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .provider-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      padding: 12px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .provider-card i {
+      font-size: 18px;
+      color: var(--primary-navy);
+      margin-bottom: 6px;
+      transition: color 0.2s;
+    }
+
+    .provider-card-text {
+      font-weight: 800;
+      color: var(--primary-navy);
+      font-size: 11px;
+      margin: 0;
+      transition: color 0.2s;
+    }
+
+    .provider-card.active {
+      background: var(--primary-navy);
+      border-color: var(--primary-navy);
+      box-shadow: 0 4px 12px rgba(10, 29, 55, 0.25);
+    }
+
+    .provider-card.active i,
+    .provider-card.active .provider-card-text {
+      color: #ffffff;
+    }
+
+    /* Input & Verify Row */
+    .input-wrapper {
+      display: flex;
+      gap: 10px;
+    }
+
+    .main-input {
+      flex: 1;
+      height: 50px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-size: 15px;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .main-input:focus {
+      border-color: var(--accent-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+
+    .main-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .verify-btn {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 0 20px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .verify-btn:hover {
+      background: #0369a1;
+    }
+
+    .verify-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Customer Verification Box */
+    .customer-box {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: #ecfdf5;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-top: 10px;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* Packages List */
+    .package-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .package-container::-webkit-scrollbar { width: 4px; }
+    .package-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .pkg-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pkg-card:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .pkg-card.active {
+      background: var(--primary-navy);
+      border-color: var(--primary-navy);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(10, 29, 55, 0.2);
+    }
+
+    .pkg-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .pkg-caption {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 3px 0 0 0;
+    }
+
+    .pkg-cost {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--primary-navy);
+      white-space: nowrap;
+    }
+
+    .pkg-card.active .pkg-title {
+      color: #ffffff;
+    }
+
+    .pkg-card.active .pkg-caption {
+      color: #cbd5e1;
+    }
+
+    .pkg-card.active .pkg-cost {
+      color: #38bdf8;
+    }
+
+    /* Pay Button */
+    .pay-btn {
+      width: 100%;
+      height: 52px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 22px;
+      box-shadow: 0 4px 14px rgba(10, 29, 55, 0.25);
+      transition: all 0.2s;
+    }
+
+    .pay-btn:hover {
+      background: #061325;
+      transform: translateY(-1px);
+    }
+
+    .pay-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Feedback Banner */
+    .status-banner {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 16px;
+      text-align: center;
+    }
+    .status-success {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+    .status-error {
+      background: #fee2e2;
+      border: 1px solid #fecdd3;
+      color: #991b1b;
+    }
+
+    /* PIN Verification Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 340px;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 26px 22px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      background: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 12px auto;
+      color: var(--primary-navy);
+      font-size: 26px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 6px 0;
+    }
+
+    .modal-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0 0 18px 0;
+      line-height: 1.5;
+    }
+
+    .pin-input {
+      width: 100%;
+      height: 55px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-input);
+      border-radius: 14px;
+      text-align: center;
+      font-size: 24px;
+      letter-spacing: 8px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+      outline: none;
+    }
+
+    .pin-input:focus {
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 3px rgba(10, 29, 55, 0.12);
+    }
+
+    .verify-modal-btn {
+      width: 100%;
+      height: 48px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .verify-modal-btn:hover {
+      background: #061325;
+    }
+
+    .verify-modal-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .cancel-modal-btn {
+      background: none;
+      border: none;
+      color: var(--accent-red);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 6px 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="nav-bar">
+    <a href="javascript:history.back()" class="btn-back" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="header-text">Cable TV & Streaming</h1>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Service Fee Notice -->
+    <div class="fee-notice">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Standard transaction processing fee: <strong>₦50</strong></span>
+    </div>
+
+    <!-- Provider Selector -->
+    <label class="label">Select Cable / Streaming Provider</label>
+    <div class="provider-grid">
+      <div class="provider-card active" data-id="GOTV" onclick="setProvider('GOTV', this)">
+        <i class="fa-solid fa-tv"></i>
+        <span class="provider-card-text">GOtv</span>
+      </div>
+      <div class="provider-card" data-id="DSTV" onclick="setProvider('DSTV', this)">
+        <i class="fa-solid fa-satellite-dish"></i>
+        <span class="provider-card-text">DStv</span>
+      </div>
+      <div class="provider-card" data-id="STARTIMES" onclick="setProvider('STARTIMES', this)">
+        <i class="fa-solid fa-tower-broadcast"></i>
+        <span class="provider-card-text">StarTimes</span>
+      </div>
+      <div class="provider-card" data-id="SHOWMAX" onclick="setProvider('SHOWMAX', this)">
+        <i class="fa-solid fa-circle-play"></i>
+        <span class="provider-card-text">Showmax</span>
+      </div>
+    </div>
+
+    <!-- Smartcard / Account Input -->
+    <label class="label" id="smartCardLabel" for="smartCardInput">IUC / Smartcard Number</label>
+    <div class="input-wrapper">
+      <input
+        type="text"
+        id="smartCardInput"
+        class="main-input"
+        placeholder="e.g. 7012345678"
+        autocomplete="off"
+        oninput="handleSmartcardChange()"
+      />
+      <button type="button" class="verify-btn" id="btnVerifyIUC" onclick="validateIUC()">
+        Verify
+      </button>
+    </div>
+
+    <!-- Customer Verification Banner -->
+    <div class="customer-box" id="customerBox">
+      <i class="fa-solid fa-circle-check"></i>
+      <span id="customerNameText">Verified Customer</span>
+    </div>
+
+    <!-- Bouquets / Packages List -->
+    <label class="label" id="packageListLabel">Select Desired Bouquet / Plan</label>
+    <div class="package-container" id="packageListContainer">
+      <!-- Injected via JavaScript -->
+    </div>
+
+    <!-- Pay Button -->
+    <button type="button" class="pay-btn" id="btnPaySubscription" onclick="handleInitiatePayment()">
+      ACTIVATE SUBSCRIPTION (₦0)
+    </button>
+
+    <!-- Feedback Banner -->
+    <div id="statusBanner" class="status-banner"></div>
+
+  </main>
+
+  <!-- PIN Verification Modal -->
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal-content">
+      <div class="modal-header-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h2 class="modal-title">Enter Transaction PIN</h2>
+      <p class="modal-subtitle" id="modalSubtitle">Total Debit: ₦0 (Package + ₦50 Fee)</p>
+
+      <input
+        type="password"
+        id="pinInput"
+        class="pin-input"
+        placeholder="••••"
+        maxlength="4"
+        inputmode="numeric"
+      />
+
+      <button type="button" class="verify-modal-btn" id="btnConfirmPay" onclick="handlePayment()">
+        Confirm & Pay
+      </button>
+
+      <button type="button" class="cancel-modal-btn" onclick="closePinModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    const SERVICE_FEE = 50;
+
+    const cableData = {
+      GOTV: [
+        { id: "gotv-smallie", name: "GOtv Smallie (Monthly)", price: 1575 },
+        { id: "gotv-smallie-quarterly", name: "GOtv Smallie (Quarterly)", price: 4175 },
+        { id: "gotv-smallie-annual", name: "GOtv Smallie (Annual)", price: 12300 },
+        { id: "gotv-jinja", name: "GOtv Jinja Package", price: 3300 },
+        { id: "gotv-jolli", name: "GOtv Jolli Package", price: 4850 },
+        { id: "gotv-max", name: "GOtv Max Package", price: 7200 },
+        { id: "gotv-supa", name: "GOtv Supa Package", price: 9600 },
+        { id: "gotv-supa-plus", name: "GOtv Supa Plus (EPL Package)", price: 15700 },
+      ],
+      DSTV: [
+        { id: "dstv-padi", name: "DStv Padi", price: 4400 },
+        { id: "dstv-yanga", name: "DStv Yanga", price: 6000 },
+        { id: "dstv-confam", name: "DStv Confam", price: 11000 },
+        { id: "dstv-compact", name: "DStv Compact", price: 19000 },
+        { id: "dstv-compact-plus", name: "DStv Compact Plus", price: 30000 },
+        { id: "dstv-premium", name: "DStv Premium", price: 44000 },
+        { id: "dstv-french-plus", name: "DStv French Plus", price: 47000 },
+        { id: "dstv-asia", name: "DStv Asia Bouquet", price: 12400 },
+      ],
+      STARTIMES: [
+        { id: "startimes-nova-daily", name: "Nova (Daily)", price: 500 },
+        { id: "startimes-nova-weekly", name: "Nova (Weekly)", price: 1400 },
+        { id: "startimes-nova-monthly", name: "Nova (Monthly)", price: 2100 },
+        { id: "startimes-basic-daily", name: "Basic (Daily)", price: 800 },
+        { id: "startimes-basic-weekly", name: "Basic (Weekly)", price: 2600 },
+        { id: "startimes-basic-monthly", name: "Basic (Monthly)", price: 4000 },
+        { id: "startimes-smart-daily", name: "Smart (Daily)", price: 1100 },
+        { id: "startimes-smart-weekly", name: "Smart (Weekly)", price: 3700 },
+        { id: "startimes-smart-monthly", name: "Smart (Monthly)", price: 5100 },
+        { id: "startimes-classic-daily", name: "Classic (Daily)", price: 1500 },
+        { id: "startimes-classic-weekly", name: "Classic (Weekly)", price: 4500 },
+        { id: "startimes-classic-monthly", name: "Classic (Monthly)", price: 6500 },
+        { id: "startimes-super-daily", name: "Super (Daily)", price: 2000 },
+        { id: "startimes-super-weekly", name: "Super (Weekly)", price: 6200 },
+        { id: "startimes-super-monthly", name: "Super (Monthly)", price: 9000 },
+      ],
+      SHOWMAX: [
+        { id: "showmax-entertainment", name: "Showmax Entertainment Mobile", price: 1600 },
+        { id: "showmax-entertainment-all", name: "Showmax Entertainment (All Devices)", price: 3200 },
+        { id: "showmax-premier-league", name: "Showmax Premier League Mobile", price: 3200 },
+        { id: "showmax-combo-mobile", name: "Showmax Entertainment + PL (Mobile)", price: 4000 },
+        { id: "showmax-combo-all", name: "Showmax Entertainment + PL (All Devices)", price: 6000 },
+      ]
+    };
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      provider: 'GOTV',
+      selectedPackage: null,
+      customerName: ''
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderPackages();
+    });
+
+    function setProvider(providerId, el) {
+      state.provider = providerId;
+      state.selectedPackage = null;
+      state.customerName = '';
+
+      document.querySelectorAll('.provider-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+
+      const label = document.getElementById('smartCardLabel');
+      const input = document.getElementById('smartCardInput');
+
+      if (providerId === 'SHOWMAX') {
+        label.textContent = 'Showmax Phone / Email Account';
+        input.placeholder = 'e.g. 08012345678 or user@gmail.com';
+        input.type = 'text';
+      } else {
+        label.textContent = 'IUC / Smartcard Number';
+        input.placeholder = 'e.g. 7012345678';
+        input.type = 'number';
+      }
+
+      input.value = '';
+      hideCustomerBox();
+      renderPackages();
+      updatePayButton();
+    }
+
+    function renderPackages() {
+      const container = document.getElementById('packageListContainer');
+      const pkgs = cableData[state.provider] || [];
+
+      document.getElementById('packageListLabel').textContent = `Select Desired Bouquet / Plan (${pkgs.length} Available)`;
+
+      container.innerHTML = pkgs.map(pkg => {
+        const isSelected = state.selectedPackage && state.selectedPackage.id === pkg.id;
+        const total = pkg.price + SERVICE_FEE;
+
+        return `
+          <div class="pkg-card ${isSelected ? 'active' : ''}" onclick="selectPackage('${pkg.id}')">
+            <div style="flex: 1; margin-right: 10px;">
+              <h4 class="pkg-title">${pkg.name}</h4>
+              <p class="pkg-caption">Package: ₦${pkg.price.toLocaleString()} (+₦${SERVICE_FEE} service fee)</p>
+            </div>
+            <div class="pkg-cost">₦${total.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectPackage(pkgId) {
+      const pkgs = cableData[state.provider] || [];
+      const found = pkgs.find(p => p.id === pkgId);
+      if (!found) return;
+
+      state.selectedPackage = found;
+      renderPackages();
+      updatePayButton();
+    }
+
+    function updatePayButton() {
+      const btn = document.getElementById('btnPaySubscription');
+      if (state.selectedPackage) {
+        const total = state.selectedPackage.price + SERVICE_FEE;
+        btn.textContent = `ACTIVATE SUBSCRIPTION (₦${total.toLocaleString()})`;
+      } else {
+        btn.textContent = 'ACTIVATE SUBSCRIPTION (₦0)';
+      }
+    }
+
+    function handleSmartcardChange() {
+      state.customerName = '';
+      hideCustomerBox();
+    }
+
+    function hideCustomerBox() {
+      document.getElementById('customerBox').style.display = 'none';
+      document.getElementById('customerNameText').textContent = '';
+    }
+
+    async function validateIUC() {
+      const smartCard = document.getElementById('smartCardInput').value.trim();
+
+      if (state.provider === 'SHOWMAX') {
+        if (!smartCard.includes('@') && smartCard.length < 10) {
+          alert('Error: Enter a valid Email or Registered Phone Number for Showmax.');
+          return;
+        }
+        state.customerName = 'Showmax Account Verified';
+        showCustomerBox(state.customerName);
+        return;
+      }
+
+      if (!smartCard || smartCard.length < 9) {
+        alert('Error: Enter a valid IUC or Smartcard Number (9-11 Digits).');
+        return;
+      }
+
+      if (!state.token) {
+        alert('Session Expired: Please login again.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const btn = document.getElementById('btnVerifyIUC');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        const response = await fetch(`${BASE_URL}/bills/cable/verify`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            provider: state.provider.toLowerCase(),
+            cableTv: state.provider.toLowerCase(),
+            service: state.provider.toLowerCase(),
+            smartCardNo: smartCard,
+            smartCardNumber: smartCard,
+            iuc: smartCard
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && (result.success || result.status === 'success')) {
+          state.customerName = result.customerName || result.name || result.data?.customerName || 'Verified Customer';
+          showCustomerBox(state.customerName);
+        } else {
+          throw new Error(result.message || 'Validation failed');
+        }
+      } catch (err) {
+        alert('Validation Error: ' + (err.message || 'Could not verify Smartcard. Check number and retry.'));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function showCustomerBox(name) {
+      const box = document.getElementById('customerBox');
+      document.getElementById('customerNameText').textContent = `Verified: ${name}`;
+      box.style.display = 'flex';
+    }
+
+    function handleInitiatePayment() {
+      const smartCard = document.getElementById('smartCardInput').value.trim();
+
+      if (!smartCard || !state.selectedPackage) {
+        alert('Required: Please provide Smartcard/Account Number and select a package.');
+        return;
+      }
+
+      if (!state.customerName) {
+        alert('Verification Required: Please verify the Smartcard/Account details first.');
+        return;
+      }
+
+      const total = state.selectedPackage.price + SERVICE_FEE;
+      document.getElementById('modalSubtitle').textContent = `Total Debit: ₦${total.toLocaleString()} (Package + ₦${SERVICE_FEE} Fee)`;
+
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('pinInput').focus(), 100);
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').style.display = 'none';
+      document.getElementById('pinInput').value = '';
+    }
+
+    async function handlePayment() {
+      const pin = document.getElementById('pinInput').value.trim();
+      const smartCard = document.getElementById('smartCardInput').value.trim();
+
+      if (!pin || pin.length < 4) {
+        alert('Error: Enter your valid 4-digit Transaction PIN.');
+        return;
+      }
+
+      if (!state.token) {
+        closePinModal();
+        alert('Session Expired: Please login again.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmPay');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        const response = await fetch(`${BASE_URL}/bills/cable/buy`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            provider: state.provider.toLowerCase(),
+            cableTv: state.provider.toLowerCase(),
+            smartCardNo: smartCard,
+            smartCardNumber: smartCard,
+            iuc: smartCard,
+            packageCode: state.selectedPackage.id,
+            planCode: state.selectedPackage.id,
+            planName: state.selectedPackage.name,
+            amount: state.selectedPackage.price,
+            pin: pin,
+            transactionPin: pin
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && (result.success || result.status === 'success')) {
+          closePinModal();
+          alert(`Subscription Active 🎉\n\n${state.selectedPackage.name} activated successfully for ${smartCard}.`);
+          window.location.href = 'agent-dashboard.html';
+        } else {
+          throw new Error(result.message || 'Subscription activation error.');
+        }
+      } catch (err) {
+        alert('Subscription Failed: ' + (err.message || 'Gateway timeout. Please check transaction history.'));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

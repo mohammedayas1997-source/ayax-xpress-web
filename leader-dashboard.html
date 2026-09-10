@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>State Operations Command | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Favicon & Web App Manifest -->
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0284c7">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-dark: #1e293b;
+      --border-dark: #334155;
+      --accent-blue: #1e40af;
+      --accent-cyan: #38bdf8;
+      --accent-sky: #0284c7;
+      --accent-green: #059669;
+      --accent-amber: #fbbf24;
+      --accent-red: #ef4444;
+      --text-white: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Command Header */
+    .top-bar {
+      background: var(--bg-dark);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #1e293b;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+    }
+
+    .top-brand-group {
+      text-align: center;
+    }
+
+    .state-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      padding: 3px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      margin-bottom: 3px;
+    }
+
+    .live-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--accent-cyan);
+    }
+
+    .state-badge-text {
+      color: var(--accent-cyan);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+    }
+
+    .top-brand-title {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 18px;
+      background: #1e293b;
+      border: 1px solid var(--border-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-cyan);
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .avatar-btn:hover {
+      background: #334155;
+    }
+
+    .target-quick-btn {
+      border-color: var(--accent-amber);
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--accent-amber);
+    }
+
+    .logout-btn {
+      border-color: var(--accent-red);
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--accent-red);
+    }
+
+    /* Main Navigation Tabs */
+    .main-nav-bar {
+      display: flex;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 16px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .main-nav-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px 12px;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      transition: all 0.2s;
+    }
+
+    .main-nav-tab.active {
+      border-bottom-color: var(--accent-blue);
+      color: var(--accent-blue);
+      font-weight: 900;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 16px 80px 16px;
+    }
+
+    /* Executive Target Card Dark */
+    .exec-target-card-dark {
+      background: var(--bg-dark);
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid #1e293b;
+      border-left: 5px solid var(--accent-cyan);
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .exec-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .exec-badge-text {
+      color: #94a3b8;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+    }
+
+    .exec-title-text {
+      color: var(--text-white);
+      font-size: 13.5px;
+      font-weight: 900;
+      margin: 2px 0 0 0;
+    }
+
+    .auto-split-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-sky);
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .exec-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .exec-metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .exec-metric-box {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid var(--border-dark);
+    }
+
+    .exec-metric-label {
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+
+    .exec-metric-value {
+      font-size: 14.5px;
+      font-weight: 900;
+      margin: 4px 0;
+      color: var(--text-white);
+    }
+
+    .exec-progress-bar-bg {
+      height: 6px;
+      background: #334155;
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 4px 0;
+    }
+
+    .exec-progress-fill {
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    .exec-percent-sub {
+      color: #94a3b8;
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+
+    /* Target Command Banner */
+    .target-command-banner {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid var(--border-light);
+      border-left: 5px solid var(--accent-blue);
+      margin-bottom: 14px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .target-banner-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #eff6ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      border: 1px solid #bfdbfe;
+    }
+
+    .target-banner-btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 10px;
+    }
+
+    .banner-action-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 0;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+
+    .banner-btn-primary { background: var(--accent-blue); color: #ffffff; }
+    .banner-btn-secondary { background: #ecfdf5; border-color: #a7f3d0; color: var(--accent-green); }
+    .banner-btn-tertiary { background: #eff6ff; border-color: #bfdbfe; color: var(--accent-sky); }
+
+    /* Summary Telemetry Metrics */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    @media (min-width: 768px) {
+      .metric-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .metric-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid #1e293b;
+      border-left: 4px solid var(--accent-cyan);
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .metric-label-dark {
+      font-size: 11px;
+      font-weight: 800;
+      color: #94a3b8;
+    }
+
+    .metric-value-dark {
+      font-size: 18px;
+      font-weight: 900;
+      margin: 4px 0;
+      color: #ffffff;
+    }
+
+    .metric-sub-dark {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    /* Search Input */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      padding: 0 14px;
+      border-radius: 10px;
+      height: 44px;
+      border: 1px solid var(--border-input);
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      flex: 1;
+      height: 100%;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 12.5px;
+      color: var(--text-dark);
+    }
+
+    /* Section Header Row */
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-header-label {
+      color: #475569;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .action-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* Cards */
+    .sup-card, .agent-card, .log-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .sup-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sup-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .stats-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 8px;
+      margin-top: 10px;
+      border: 1px solid var(--border-light);
+      text-align: center;
+    }
+
+    .sup-action-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      border-top: 1px solid var(--border-light);
+      padding-top: 8px;
+    }
+
+    .sup-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 6px;
+    }
+
+    .inspect-pill-btn {
+      background: #eff6ff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #bfdbfe;
+      color: var(--accent-blue);
+      font-weight: 900;
+    }
+
+    /* LGA Matrix Grid */
+    .lga-grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .lga-grid-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .lga-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* Modal Overlay & Containers */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-input);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 10px;
+    }
+
+    .modal-card-title {
+      color: var(--text-dark);
+      font-size: 15px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .modal-card-subtitle {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 2px 0 0 0;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .text-input-style {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border-input);
+      border-radius: 10px;
+      padding: 0 12px;
+      height: 44px;
+      color: var(--text-dark);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      outline: none;
+    }
+
+    .primary-action-btn {
+      width: 100%;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 14px 0;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      margin-top: 14px;
+    }
+
+    .primary-action-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Drawer Sidebar */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 1000;
+    }
+
+    .sidebar-drawer {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 320px;
+      background: #ffffff;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: #334155;
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      cursor: pointer;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: #eff6ff;
+      color: var(--accent-blue);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Bar -->
+  <header class="top-bar">
+    <button type="button" class="avatar-btn" onclick="toggleSidebar(true)">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="top-brand-group">
+      <div class="state-badge">
+        <div class="live-pulse-dot"></div>
+        <span class="state-badge-text" id="stateBadgeText">KANO STATE MANAGER (SM)</span>
+      </div>
+      <h1 class="top-brand-title" id="topBrandTitle">44 LGAS COMMAND DESK</h1>
+    </div>
+
+    <div class="top-actions">
+      <button type="button" class="avatar-btn target-quick-btn" onclick="openSmartTargetPortal('supervisor')" title="Auto-Split Quotas">
+        <i class="fa-solid fa-bullseye"></i>
+      </button>
+      <button type="button" class="avatar-btn" onclick="openModal('transferModal')" title="Reassign Agents">
+        <i class="fa-solid fa-people-arrows"></i>
+      </button>
+      <button type="button" class="avatar-btn" onclick="openModal('enrollModal')" title="Enroll Supervisor">
+        <i class="fa-solid fa-user-plus"></i>
+      </button>
+      <button type="button" class="avatar-btn" onclick="openModal('notifModal')" title="Broadcast Directive">
+        <i class="fa-solid fa-bullhorn"></i>
+      </button>
+      <button type="button" class="avatar-btn logout-btn" onclick="handleLogout()" title="Logout">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Navigation Tabs -->
+  <nav class="main-nav-bar">
+    <button type="button" class="main-nav-tab active" id="tabBtnSupervisors" onclick="switchMainTab('supervisors')">
+      <i class="fa-solid fa-user-tie"></i>
+      <span id="tabLabelSupervisors">Supervisors (0)</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnAgents" onclick="switchMainTab('agents')">
+      <i class="fa-solid fa-users"></i>
+      <span id="tabLabelAgents">Agents (0)</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnLgas" onclick="switchMainTab('lgas')">
+      <i class="fa-solid fa-map-location-dot"></i>
+      <span id="tabLabelLgas">LGAs (44)</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnHistory" onclick="switchMainTab('history')">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Audit Logs</span>
+    </button>
+  </nav>
+
+  <!-- Container Dashboard -->
+  <main class="container">
+
+    <!-- Section 1: Executive Target Overview -->
+    <section class="exec-target-card-dark">
+      <div class="exec-header-row">
+        <div>
+          <div class="exec-badge-text">OFFICIAL NSD STATE QUOTA ALLOCATION</div>
+          <h2 class="exec-title-text" id="execMonthTitle">SEPTEMBER 2026 TARGET MATRIX</h2>
+        </div>
+        <button type="button" class="auto-split-btn" onclick="openSmartTargetPortal('supervisor')">
+          <i class="fa-solid fa-calculator"></i>
+          <span>AUTO-SPLIT QUOTA</span>
+        </button>
+      </div>
+
+      <div class="exec-metrics-grid">
+        <div class="exec-metric-box">
+          <div class="exec-metric-label" style="color: #38bdf8;">DATA QUOTA (GB)</div>
+          <div class="exec-metric-value" id="execDataVal">0 / 0 GB</div>
+          <div class="exec-progress-bar-bg">
+            <div class="exec-progress-fill" id="execDataBar" style="width: 0%; background: #38bdf8;"></div>
+          </div>
+          <div class="exec-percent-sub" id="execDataPercent">0% Completed</div>
+        </div>
+
+        <div class="exec-metric-box">
+          <div class="exec-metric-label" style="color: #fbbf24;">AIRTIME SALES (₦)</div>
+          <div class="exec-metric-value" id="execAirtimeVal">₦0 / ₦0</div>
+          <div class="exec-progress-bar-bg">
+            <div class="exec-progress-fill" id="execAirtimeBar" style="width: 0%; background: #fbbf24;"></div>
+          </div>
+          <div class="exec-percent-sub" id="execAirtimePercent">0% Completed</div>
+        </div>
+
+        <div class="exec-metric-box">
+          <div class="exec-metric-label" style="color: #34d399;">NEW AGENTS TARGET</div>
+          <div class="exec-metric-value" id="execAgentsVal">0 / 50</div>
+          <div class="exec-percent-sub">Registered Retail Outlets</div>
+        </div>
+
+        <div class="exec-metric-box">
+          <div class="exec-metric-label" style="color: #2dd4bf;">SUPERVISORS TARGET</div>
+          <div class="exec-metric-value" id="execSupervisorsVal">0 / 44</div>
+          <div class="exec-percent-sub">LGA Network Leads</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Command Banner -->
+    <section class="target-command-banner">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="target-banner-icon-wrap">
+          <i class="fa-solid fa-bullseye"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 13.5px; font-weight: 900; color: #0f172a;">State Quota Command Desk</h3>
+          <p style="margin: 1px 0 0 0; font-size: 11px; color: #64748b;">
+            System calculates & splits quota automatically to Supervisors and child Agents
+          </p>
+        </div>
+      </div>
+
+      <div class="target-banner-btn-row">
+        <button type="button" class="banner-action-btn banner-btn-primary" onclick="openSmartTargetPortal('supervisor')">
+          <i class="fa-solid fa-user-tie"></i>
+          <span>AUTO-SPLIT SUPERVISORS</span>
+        </button>
+        <button type="button" class="banner-action-btn banner-btn-secondary" onclick="openSmartTargetPortal('agent')">
+          <i class="fa-solid fa-users"></i>
+          <span>AUTO-SPLIT AGENTS</span>
+        </button>
+        <button type="button" class="banner-action-btn banner-btn-tertiary" onclick="openModal('targetModal')">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span>TARGET LGAS</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Section 3: Telemetry Metric Grid -->
+    <section class="metric-grid">
+      <div class="metric-card">
+        <div class="card-header-row">
+          <span class="metric-label-dark">Field Supervisors</span>
+          <i class="fa-solid fa-user-tie" style="color: #38bdf8;"></i>
+        </div>
+        <div class="metric-value-dark" id="statSupervisors">0</div>
+        <div class="metric-sub-dark" id="statActiveLgas">Across 0 LGAs</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="card-header-row">
+          <span class="metric-label-dark">Retail Agents</span>
+          <i class="fa-solid fa-users" style="color: #34d399;"></i>
+        </div>
+        <div class="metric-value-dark" id="statAgents">0</div>
+        <div class="metric-sub-dark">Active Resellers</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="card-header-row">
+          <span class="metric-label-dark">Data Delivered</span>
+          <i class="fa-solid fa-server" style="color: #a78bfa;"></i>
+        </div>
+        <div class="metric-value-dark" id="statDataSold">0 GB</div>
+        <div class="metric-sub-dark">Retail Data Volume</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="card-header-row">
+          <span class="metric-label-dark">Airtime Sales</span>
+          <i class="fa-solid fa-phone" style="color: #fbbf24;"></i>
+        </div>
+        <div class="metric-value-dark" id="statAirtimeSold">₦0</div>
+        <div class="metric-sub-dark">Gross VTU Volume</div>
+      </div>
+    </section>
+
+    <!-- Search Input -->
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass" style="color: #64748b; margin-right: 8px;"></i>
+      <input
+        type="text"
+        id="searchFilterInput"
+        class="search-input"
+        placeholder="Search Supervisors, Agents, or LGA..."
+        oninput="handleSearch()"
+      />
+    </div>
+
+    <!-- TAB CONTENT 1: SUPERVISORS -->
+    <section id="tabContentSupervisors">
+      <div class="section-header-row">
+        <span class="section-header-label" id="sectionLabelSupervisors">FIELD SUPERVISORS DIRECTORY (0)</span>
+        <div style="display: flex; gap: 6px;">
+          <button type="button" class="action-pill-btn" style="background: #0284c7;" onclick="openModal('transferModal')">
+            <i class="fa-solid fa-people-arrows"></i> TRANSFER
+          </button>
+          <button type="button" class="action-pill-btn" onclick="openModal('enrollModal')">
+            <i class="fa-solid fa-user-plus"></i> ENROLL FS
+          </button>
+        </div>
+      </div>
+
+      <div id="supervisorsListWrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- TAB CONTENT 2: AGENTS -->
+    <section id="tabContentAgents" style="display: none;">
+      <div class="section-header-row">
+        <span class="section-header-label" id="sectionLabelAgents">GRASSROOT RETAIL AGENTS (0)</span>
+      </div>
+
+      <div id="agentsListWrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- TAB CONTENT 3: LGAS -->
+    <section id="tabContentLgas" style="display: none;">
+      <div class="section-header-row">
+        <span class="section-header-label">LOCAL GOVERNMENTS DEPLOYMENT MATRIX</span>
+        <button type="button" class="action-pill-btn" onclick="openModal('enrollModal')">
+          <i class="fa-solid fa-user-plus"></i> ENROLL FS
+        </button>
+      </div>
+
+      <div class="lga-grid-container" id="lgaGridWrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- TAB CONTENT 4: AUDIT LOGS -->
+    <section id="tabContentHistory" style="display: none;">
+      <div class="section-header-row">
+        <span class="section-header-label">REAL-TIME FIELD OPERATIONS LOG</span>
+        <span style="color: #059669; font-size: 11px; font-weight: bold;">LIVE STREAM</span>
+      </div>
+
+      <div id="logsListWrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sidebar Drawer -->
+  <div class="sidebar-overlay" id="sidebarDrawer" onclick="toggleSidebar(false)">
+    <div class="sidebar-drawer" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 14px; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-shield-halved" style="color: var(--accent-blue); font-size: 24px;"></i>
+          <div>
+            <h3 style="margin: 0; font-size: 15px; font-weight: 900;" id="sidebarStateName">Kano State</h3>
+            <span style="font-size: 10.5px; color: var(--accent-blue); font-weight: 700;">State Operations Hub</span>
+          </div>
+        </div>
+        <button onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer;">&times;</button>
+      </div>
+
+      <div style="color: #64748b; font-size: 9.5px; font-weight: 900; letter-spacing: 1px; margin: 12px 0 6px 4px;">OPERATIONS NAVIGATION</div>
+      <a class="nav-item active" onclick="switchMainTab('supervisors'); toggleSidebar(false);">
+        <i class="fa-solid fa-user-tie" style="color: var(--accent-blue);"></i> Field Supervisors (FS)
+      </a>
+      <a class="nav-item" onclick="switchMainTab('agents'); toggleSidebar(false);">
+        <i class="fa-solid fa-users" style="color: var(--accent-green);"></i> Grassroot Agents
+      </a>
+      <a class="nav-item" onclick="switchMainTab('lgas'); toggleSidebar(false);">
+        <i class="fa-solid fa-map-location-dot" style="color: var(--accent-blue);"></i> LGAs Matrix
+      </a>
+      <a class="nav-item" onclick="switchMainTab('history'); toggleSidebar(false);">
+        <i class="fa-solid fa-chart-line" style="color: var(--accent-amber);"></i> Audit Live Stream
+      </a>
+
+      <div style="color: #64748b; font-size: 9.5px; font-weight: 900; letter-spacing: 1px; margin: 16px 0 6px 4px;">COMMAND ACTIONS</div>
+      <a class="nav-item" onclick="toggleSidebar(false); openModal('transferModal');">
+        <i class="fa-solid fa-people-arrows" style="color: var(--accent-sky);"></i> Reassign Agents (Transfer)
+      </a>
+      <a class="nav-item" onclick="toggleSidebar(false); openSmartTargetPortal('supervisor');">
+        <i class="fa-solid fa-bullseye" style="color: var(--accent-blue);"></i> Auto-Split to Supervisors
+      </a>
+      <a class="nav-item" onclick="toggleSidebar(false); openSmartTargetPortal('agent');">
+        <i class="fa-solid fa-calculator" style="color: var(--accent-green);"></i> Auto-Split to Agents
+      </a>
+      <a class="nav-item" onclick="toggleSidebar(false); openModal('enrollModal');">
+        <i class="fa-solid fa-user-plus" style="color: var(--accent-blue);"></i> Appoint Field Supervisor
+      </a>
+      <a class="nav-item" onclick="toggleSidebar(false); openModal('notifModal');">
+        <i class="fa-solid fa-bullhorn" style="color: var(--accent-sky);"></i> Broadcast Directive
+      </a>
+
+      <button type="button" onclick="handleLogout()" style="margin-top: auto; display: flex; align-items: center; gap: 8px; padding: 14px 10px; border: none; border-top: 1px solid var(--border-light); background: none; color: #dc2626; font-size: 13px; font-weight: 800; cursor: pointer;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Exit Manager Session
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 1: SMART TARGET ALLOCATION PORTAL -->
+  <div class="modal-overlay" id="targetPortalModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title" id="portalSplitTitle">Auto-Split & Quota Adjustment</h2>
+          <p class="modal-card-subtitle" id="portalSplitSubtitle">NSD State Pool</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('targetPortalModal')">&times;</button>
+      </div>
+
+      <div style="display: flex; align-items: center; background: #eff6ff; padding: 10px; border-radius: 8px; border: 1px solid #bfdbfe; margin-bottom: 12px;">
+        <i class="fa-solid fa-circle-info" style="color: var(--accent-blue); margin-right: 8px;"></i>
+        <p style="margin: 0; font-size: 11px; color: var(--accent-blue); line-height: 1.5;">
+          System divides the quota among registered staff and automatically cascades targets. Adjust numbers below before deploying.
+        </p>
+      </div>
+
+      <div id="allocatedListContainer" style="max-height: 380px; overflow-y: auto; margin-bottom: 14px;">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <button type="button" class="primary-action-btn" id="btnDeployAllocated" onclick="handleDeployAllocatedTargets()">
+        CONFIRM & DEPLOY ADJUSTED TARGETS TO FIELD
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 2: ENROLL SUPERVISOR -->
+  <div class="modal-overlay" id="enrollModal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title">Appoint Field Supervisor (FS)</h2>
+          <p class="modal-card-subtitle">Deploy LGA field coordinator</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('enrollModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleEnrollSupervisor();">
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">SELECT LGA</label>
+        <select id="newSupLga" class="text-input-style" style="height: 44px;"></select>
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">SUPERVISOR FULL NAME</label>
+        <input type="text" id="newSupName" class="text-input-style" placeholder="e.g. Aliyu Mohammed" required />
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">PHONE NUMBER (LOGIN USERNAME)</label>
+        <input type="tel" id="newSupPhone" class="text-input-style" placeholder="e.g. 08031234567" required />
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">EMAIL ADDRESS</label>
+        <input type="email" id="newSupEmail" class="text-input-style" placeholder="supervisor@ayaxdata.online" />
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">LOGIN PASSWORD</label>
+        <input type="text" id="newSupPassword" class="text-input-style" value="Password123@" required />
+
+        <button type="submit" class="primary-action-btn" id="btnEnrollSupSubmit">
+          AUTHORIZE APPOINTMENT & CREATE ACCOUNT
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: TRANSFER AGENT TEAM -->
+  <div class="modal-overlay" id="transferModal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title">Reassign Agent Network</h2>
+          <p class="modal-card-subtitle">Transfer agents to a new active supervisor</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('transferModal')">&times;</button>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <button type="button" id="btnTransferModeBulk" class="action-pill-btn" style="flex: 1; justify-content: center;" onclick="setTransferModeUI('bulk')">
+          Bulk Transfer
+        </button>
+        <button type="button" id="btnTransferModeSingle" class="action-pill-btn" style="flex: 1; justify-content: center; background: #94a3b8;" onclick="setTransferModeUI('single')">
+          Single Agent
+        </button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleExecuteAgentTransfer();">
+        <div id="transferSourceGroup">
+          <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">SOURCE SUPERVISOR (CURRENT)</label>
+          <input type="text" id="transferSourceSupId" class="text-input-style" placeholder="Enter current/suspended supervisor ID" />
+        </div>
+
+        <div id="transferSingleAgentGroup" style="display: none;">
+          <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">AGENT ID TO REASSIGN</label>
+          <input type="text" id="transferSelectedAgentId" class="text-input-style" placeholder="Enter agent ID" />
+        </div>
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">DESTINATION SUPERVISOR (NEW LEAD)</label>
+        <input type="text" id="transferTargetSupId" class="text-input-style" placeholder="Enter new supervisor ID" required />
+
+        <button type="submit" class="primary-action-btn" id="btnTransferSubmit">
+          REASSIGN AGENTS NOW
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: DIRECTIVE BROADCAST -->
+  <div class="modal-overlay" id="notifModal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title">Broadcast State Directive</h2>
+          <p class="modal-card-subtitle">Push real-time alert across state</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('notifModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleBroadcastAlert();">
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">DIRECTIVE TITLE</label>
+        <input type="text" id="notifTitle" class="text-input-style" placeholder="e.g. Month-End Quota Acceleration" required />
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">DIRECTIVE BODY</label>
+        <textarea id="notifMessage" class="text-input-style" style="height: 90px; padding: 10px; resize: none;" placeholder="Type your official announcement..." required></textarea>
+
+        <button type="submit" class="primary-action-btn" id="btnBroadcastSubmit">
+          DISPATCH DIRECTIVE
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 5: ADVANCED CUSTOM TARGET DEPLOYMENT -->
+  <div class="modal-overlay" id="targetModal">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title">Deploy Custom Targets</h2>
+          <p class="modal-card-subtitle">State Operations: Quota Allocation</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('targetModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleDeployCustomTarget();">
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">TARGET CYCLE / MONTH</label>
+        <input type="text" id="customTargetMonth" class="text-input-style" value="September 2026" required />
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">DATA VOLUME GOAL (GB)</label>
+        <input type="number" id="customTargetData" class="text-input-style" value="500" required />
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">AIRTIME SALES GOAL (₦)</label>
+        <input type="number" id="customTargetAirtime" class="text-input-style" value="50000" required />
+
+        <label style="font-size: 10.5px; font-weight: 900; color: var(--accent-blue); display: block; margin-bottom: 4px;">NEW AGENTS RECRUITMENT GOAL</label>
+        <input type="number" id="customTargetAgents" class="text-input-style" value="10" required />
+
+        <button type="submit" class="primary-action-btn" id="btnCustomTargetSubmit">
+          AUTHORIZE & DEPLOY TARGET QUOTAS
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    const DEFAULT_LGAS = [
+      "Ajingi", "Albasu", "Bagwai", "Bebeji", "Bichi", "Bunkure", "Dala", "Dambatta",
+      "Dawakin Kudu", "Dawakin Tofa", "Doguwa", "Fagge", "Gabasawa", "Garko", "Garun Mallam",
+      "Gaya", "Gezawa", "Gwale", "Gwarzo", "Kabo", "Kano Municipal", "Karaye", "Kibiya",
+      "Kiru", "Kumbotso", "Kunchi", "Kura", "Madobi", "Makoda", "Minjibir", "Nasarawa",
+      "Rano", "Rimin Gado", "Rogo", "Shanono", "Sumaila", "Takai", "Tarauni", "Tofa",
+      "Tsanyawa", "Tudun Wada", "Ungogo", "Warawa", "Wudil"
+    ];
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      managerState: 'Kano',
+      currentLgas: DEFAULT_LGAS,
+      supervisors: [],
+      agents: [],
+      activityLogs: [],
+      splitMode: 'supervisor',
+      allocatedList: [],
+      transferMode: 'bulk',
+      searchQuery: '',
+      target: {
+        dataGoal: 0,
+        airtimeGoal: 0,
+        agentGoal: 0,
+        supervisorGoal: 44,
+        dataSold: 0,
+        airtimeSold: 0,
+        currentMonth: 'September 2026'
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session expired. Please login.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const storedUser = localStorage.getItem('userData');
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          if (parsed.state) state.managerState = parsed.state;
+        } catch (_) {}
+      }
+
+      document.getElementById('stateBadgeText').textContent = `${state.managerState.toUpperCase()} STATE MANAGER (SM)`;
+      document.getElementById('sidebarStateName').textContent = `${state.managerState} State`;
+      populateLgaDropdown();
+      fetchDashboardData();
+    });
+
+    function populateLgaDropdown() {
+      const select = document.getElementById('newSupLga');
+      select.innerHTML = state.currentLgas.map(lga => `<option value="${lga}">${lga}</option>`).join('');
+    }
+
+    async function fetchDashboardData() {
+      const headers = { 'Authorization': `Bearer ${state.token}` };
+
+      try {
+        const [dashRes, agentsRes, logsRes, targetRes] = await Promise.allSettled([
+          fetch(`${BASE_URL}/leader/dashboard`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/leader/agents-stream`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/leader/live-audit-stream`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/leader/my-state-target`, { headers }).then(r => r.json())
+        ]);
+
+        if (dashRes.status === 'fulfilled' && dashRes.value) {
+          const d = dashRes.value.data || dashRes.value;
+          state.supervisors = Array.isArray(d.supervisors) ? d.supervisors : [];
+          const net = d.networkStats || {};
+          state.target.dataSold = Number(net.overallDataSold || 0);
+          state.target.airtimeSold = Number(net.overallAirtimeSold || 0);
+        }
+
+        if (agentsRes.status === 'fulfilled' && agentsRes.value) {
+          state.agents = Array.isArray(agentsRes.value.agents) ? agentsRes.value.agents : [];
+        }
+
+        if (logsRes.status === 'fulfilled' && logsRes.value) {
+          state.activityLogs = Array.isArray(logsRes.value.logs) ? logsRes.value.logs : [];
+        }
+
+        if (targetRes.status === 'fulfilled' && targetRes.value) {
+          const t = targetRes.value.targets || targetRes.value.data?.assignedTargets || targetRes.value.data || {};
+          state.target.dataGoal = Number(t.dataGoal || 0);
+          state.target.airtimeGoal = Number(t.airtimeGoal || 0);
+          state.target.agentGoal = Number(t.agentGoal || 50);
+          state.target.currentMonth = t.currentMonth || t.month || 'September 2026';
+        }
+
+        updateUI();
+      } catch (err) {
+        console.warn("Dashboard sync warning:", err);
+      }
+    }
+
+    function updateUI() {
+      // Numbers & Stats
+      document.getElementById('execMonthTitle').textContent = `${state.target.currentMonth.toUpperCase()} TARGET MATRIX`;
+      document.getElementById('execDataVal').textContent = `${state.target.dataSold} / ${state.target.dataGoal} GB`;
+      document.getElementById('execAirtimeVal').textContent = `₦${state.target.airtimeSold.toLocaleString()} / ₦${state.target.airtimeGoal.toLocaleString()}`;
+      document.getElementById('execAgentsVal').textContent = `${state.agents.length} / ${state.target.agentGoal}`;
+      document.getElementById('execSupervisorsVal').textContent = `${state.supervisors.length} / ${state.currentLgas.length}`;
+
+      const dataPct = state.target.dataGoal > 0 ? Math.min(Math.round((state.target.dataSold / state.target.dataGoal) * 100), 100) : 0;
+      const airPct = state.target.airtimeGoal > 0 ? Math.min(Math.round((state.target.airtimeSold / state.target.airtimeGoal) * 100), 100) : 0;
+
+      document.getElementById('execDataBar').style.width = `${dataPct}%`;
+      document.getElementById('execDataPercent').textContent = `${dataPct}% Completed`;
+      document.getElementById('execAirtimeBar').style.width = `${airPct}%`;
+      document.getElementById('execAirtimePercent').textContent = `${airPct}% Completed`;
+
+      document.getElementById('statSupervisors').textContent = state.supervisors.length;
+      document.getElementById('statAgents').textContent = state.agents.length;
+      document.getElementById('statDataSold').textContent = `${state.target.dataSold.toLocaleString()} GB`;
+      document.getElementById('statAirtimeSold').textContent = `₦${state.target.airtimeSold.toLocaleString()}`;
+      document.getElementById('statActiveLgas').textContent = `Across ${new Set(state.supervisors.map(s => s.lga).filter(Boolean)).size} LGAs`;
+
+      document.getElementById('tabLabelSupervisors').textContent = `Supervisors (${state.supervisors.length})`;
+      document.getElementById('tabLabelAgents').textContent = `Agents (${state.agents.length})`;
+
+      renderSupervisors();
+      renderAgents();
+      renderLgas();
+      renderLogs();
+    }
+
+    function switchMainTab(tabId) {
+      const tabs = ['supervisors', 'agents', 'lgas', 'history'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        const content = document.getElementById(`tabContent${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        if (btn) btn.classList.toggle('active', t === tabId);
+        if (content) content.style.display = t === tabId ? 'block' : 'none';
+      });
+    }
+
+    function handleSearch() {
+      state.searchQuery = document.getElementById('searchFilterInput').value.toLowerCase().trim();
+      renderSupervisors();
+      renderAgents();
+    }
+
+    function renderSupervisors() {
+      const wrap = document.getElementById('supervisorsListWrap');
+      const q = state.searchQuery;
+      const filtered = state.supervisors.filter(s => {
+        const name = (s.name || `${s.firstName || ''} ${s.surname || ''}`).toLowerCase();
+        const phone = (s.phone || '');
+        const lga = (s.lga || '').toLowerCase();
+        return !q || name.includes(q) || phone.includes(q) || lga.includes(q);
+      });
+
+      document.getElementById('sectionLabelSupervisors').textContent = `FIELD SUPERVISORS DIRECTORY (${filtered.length})`;
+
+      if (filtered.length === 0) {
+        wrap.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted);">No field supervisors found matching filter.</div>';
+        return;
+      }
+
+      wrap.innerHTML = filtered.map(s => {
+        const id = s._id || s.id;
+        const name = s.name || `${s.firstName || ''} ${s.surname || ''}`.trim() || 'Field Supervisor';
+        const lga = s.lga || 'Unassigned LGA';
+        const phone = s.phone || 'N/A';
+        const ref = s.referralCode || `AYX-${lga.toUpperCase()}-${String(phone).slice(-4)}`;
+
+        return `
+          <div class="sup-card">
+            <div class="sup-card-header">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="sup-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                <div>
+                  <h4 style="margin: 0; font-size: 14px; font-weight: 800; color: #0f172a;">${name}</h4>
+                  <p style="margin: 2px 0 0 0; font-size: 11px; color: #64748b;">📍 ${lga} LGA • 📞 ${phone}</p>
+                  <p style="margin: 2px 0 0 0; font-size: 10.5px; color: var(--accent-blue); font-weight: 700;">Ref: ${ref}</p>
+                </div>
+              </div>
+              <span style="font-size: 10px; font-weight: 900; color: ${s.isSuspended ? '#ef4444' : '#059669'};">
+                ${s.isSuspended ? 'SUSPENDED' : 'ACTIVE'}
+              </span>
+            </div>
+
+            <div class="stats-summary-grid">
+              <div><span style="font-size: 8.5px; color: #64748b; font-weight: 700;">Data Target</span><div style="font-weight: 900; color: var(--accent-blue);">${s.targets?.dataGoal || s.dataGoal || 0} GB</div></div>
+              <div><span style="font-size: 8.5px; color: #64748b; font-weight: 700;">Airtime Target</span><div style="font-weight: 900; color: var(--accent-amber);">₦${Number(s.targets?.airtimeGoal || s.airtimeGoal || 0).toLocaleString()}</div></div>
+              <div><span style="font-size: 8.5px; color: #64748b; font-weight: 700;">Agents Goal</span><div style="font-weight: 900; color: var(--accent-green);">${s.targets?.agentGoal || s.agentGoal || 10}</div></div>
+              <div><span style="font-size: 8.5px; color: #64748b; font-weight: 700;">Team Size</span><div style="font-weight: 900; color: var(--accent-sky);">${s.teamSize || s.agentsCount || 0}</div></div>
+            </div>
+
+            <div class="sup-action-row">
+              <button class="sup-action-btn inspect-pill-btn" onclick="openSingleTargetModal('${id}', '${name}', ${s.targets?.dataGoal || 500}, ${s.targets?.airtimeGoal || 50000})">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Target
+              </button>
+              <button class="sup-action-btn" style="color: #0284c7;" onclick="prepareTransfer('${id}')">
+                <i class="fa-solid fa-people-arrows"></i> Transfer
+              </button>
+              <button class="sup-action-btn" style="color: #dc2626;" onclick="clearTarget('${id}')">
+                <i class="fa-solid fa-trash-can"></i> Clear
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAgents() {
+      const wrap = document.getElementById('agentsListWrap');
+      const q = state.searchQuery;
+      const filtered = state.agents.filter(a => {
+        const name = (a.name || `${a.firstName || ''} ${a.surname || ''}`).toLowerCase();
+        const phone = (a.phone || '');
+        const lga = (a.lga || '').toLowerCase();
+        return !q || name.includes(q) || phone.includes(q) || lga.includes(q);
+      });
+
+      document.getElementById('sectionLabelAgents').textContent = `GRASSROOT RETAIL AGENTS (${filtered.length})`;
+
+      if (filtered.length === 0) {
+        wrap.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted);">No retail agents found matching filter.</div>';
+        return;
+      }
+
+      wrap.innerHTML = filtered.map(a => {
+        const name = a.name || 'Retail Agent';
+        const phone = a.phone || 'N/A';
+        const bal = Number(a.walletBalance || a.balance || 0);
+
+        return `
+          <div class="agent-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h4 style="margin: 0; font-size: 14px; font-weight: 800; color: #0f172a;">${name}</h4>
+                <p style="margin: 2px 0 0 0; font-size: 11px; color: #64748b;">📍 ${a.lga || 'LGA'} • 📞 ${phone}</p>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 14px; font-weight: 900; color: var(--accent-green);">₦${bal.toLocaleString()}</div>
+                <span style="font-size: 9.5px; color: #94a3b8;">Float</span>
+              </div>
+            </div>
+            <div style="margin-top: 8px; font-size: 11px; color: #64748b;">
+              Data Target: <strong style="color: var(--accent-blue);">${a.targets?.dataGoal || 0} GB</strong> • 
+              Airtime Target: <strong style="color: var(--accent-amber);">₦${Number(a.targets?.airtimeGoal || 0).toLocaleString()}</strong>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderLgas() {
+      const wrap = document.getElementById('lgaGridWrap');
+      wrap.innerHTML = state.currentLgas.map(lga => {
+        const sups = state.supervisors.filter(s => s.lga && s.lga.toLowerCase() === lga.toLowerCase());
+        const ags = state.agents.filter(a => a.lga && a.lga.toLowerCase() === lga.toLowerCase());
+
+        return `
+          <div class="lga-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="font-size: 13px; color: #0f172a;">${lga}</strong>
+              <span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; background: ${sups.length > 0 ? '#ecfdf5' : '#fef2f2'}; color: ${sups.length > 0 ? '#059669' : '#dc2626'};">
+                ${sups.length} FS
+              </span>
+            </div>
+            <p style="margin: 6px 0 0 0; font-size: 11px; color: var(--accent-blue); font-weight: 700;">
+              👥 ${sups.length} Supervisor(s) Active
+            </p>
+            <p style="margin: 2px 0 0 0; font-size: 10px; color: #64748b;">
+              ${ags.length} Agents Enrolled
+            </p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderLogs() {
+      const wrap = document.getElementById('logsListWrap');
+      if (state.activityLogs.length === 0) {
+        wrap.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted);">No real-time audit logs recorded yet.</div>';
+        return;
+      }
+
+      wrap.innerHTML = state.activityLogs.map(l => `
+        <div class="log-card">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-size: 9.5px; font-weight: bold; background: #eff6ff; color: var(--accent-blue); padding: 2px 6px; border-radius: 4px;">${l.category || 'FIELD_ACTION'}</span>
+            <span style="font-size: 10px; color: #94a3b8;">${l.createdAt ? new Date(l.createdAt).toLocaleTimeString() : 'Live'}</span>
+          </div>
+          <p style="margin: 6px 0; font-size: 12px; font-weight: 600; color: #0f172a;">${l.details || l.action || 'Action recorded'}</p>
+          <span style="font-size: 10px; color: #64748b;">Actor: ${l.user?.phone || l.actorRole || 'State Desk'}</span>
+        </div>
+      `).join('');
+    }
+
+    /* Modals & Portals */
+    function openModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function toggleSidebar(open) {
+      document.getElementById('sidebarDrawer').style.display = open ? 'block' : 'none';
+    }
+
+    function openSmartTargetPortal(mode) {
+      state.splitMode = mode;
+      const pool = mode === 'supervisor' ? state.supervisors : state.agents;
+
+      if (pool.length === 0) {
+        alert(`No registered ${mode === 'supervisor' ? 'Supervisors' : 'Agents'} found to allocate.`);
+        return;
+      }
+
+      const count = pool.length;
+      const dataPer = Math.floor((state.target.dataGoal || 0) / count);
+      const airPer = Math.floor((state.target.airtimeGoal || 0) / count);
+
+      state.allocatedList = pool.map((item, idx) => ({
+        id: item._id || item.id,
+        name: item.name || `Staff ${idx + 1}`,
+        lga: item.lga || 'LGA',
+        phone: item.phone || '',
+        dataGoal: String(item.targets?.dataGoal || dataPer),
+        airtimeGoal: String(item.targets?.airtimeGoal || airPer),
+        agentGoal: String(item.targets?.agentGoal || 10)
+      }));
+
+      document.getElementById('portalSplitTitle').textContent = `Auto-Split (${mode.toUpperCase()}S)`;
+      document.getElementById('portalSplitSubtitle').textContent = `State Pool: ${state.target.dataGoal} GB Data & ₦${state.target.airtimeGoal.toLocaleString()} Airtime (${count} staff)`;
+
+      const container = document.getElementById('allocatedListContainer');
+      container.innerHTML = state.allocatedList.map((item, idx) => `
+        <div style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: 10px; padding: 10px; margin-bottom: 8px;">
+          <strong>${idx + 1}. ${item.name}</strong> (${item.lga} LGA • ${item.phone})
+          <div style="display: flex; gap: 8px; margin-top: 6px;">
+            <div style="flex: 1;">
+              <span style="font-size: 9px; font-weight: 800; color: #475569;">DATA (GB)</span>
+              <input type="number" class="text-input-style" style="height: 36px; margin-bottom: 0;" value="${item.dataGoal}" onchange="updateAllocItem('${item.id}', 'dataGoal', this.value)" />
+            </div>
+            <div style="flex: 1;">
+              <span style="font-size: 9px; font-weight: 800; color: #475569;">AIRTIME (₦)</span>
+              <input type="number" class="text-input-style" style="height: 36px; margin-bottom: 0;" value="${item.airtimeGoal}" onchange="updateAllocItem('${item.id}', 'airtimeGoal', this.value)" />
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      openModal('targetPortalModal');
+    }
+
+    function updateAllocItem(id, field, val) {
+      const found = state.allocatedList.find(i => i.id === id);
+      if (found) found[field] = val;
+    }
+
+    async function handleDeployAllocatedTargets() {
+      const btn = document.getElementById('btnDeployAllocated');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deploying...';
+
+      try {
+        const headers = {
+          'Authorization': `Bearer ${state.token}`,
+          'Content-Type': 'application/json'
+        };
+
+        for (const item of state.allocatedList) {
+          await fetch(`${BASE_URL}/leader/assign-target`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              mode: state.splitMode === 'supervisor' ? 'single_supervisor' : 'single_agent',
+              category: state.splitMode,
+              scope: 'selected',
+              supervisorId: state.splitMode === 'supervisor' ? item.id : undefined,
+              agentId: state.splitMode === 'agent' ? item.id : undefined,
+              dataGoal: Number(item.dataGoal) || 0,
+              airtimeGoal: Number(item.airtimeGoal) || 0,
+              agentGoal: Number(item.agentGoal) || 0,
+              month: state.target.currentMonth,
+              state: state.managerState,
+              lga: item.lga
+            })
+          });
+        }
+
+        alert("Targets Deployed Successfully 🎯");
+        closeModal('targetPortalModal');
+        fetchDashboardData();
+      } catch (e) {
+        alert("Deployment Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "CONFIRM & DEPLOY ADJUSTED TARGETS TO FIELD";
+      }
+    }
+
+    async function handleEnrollSupervisor() {
+      const btn = document.getElementById('btnEnrollSupSubmit');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BASE_URL}/leader/create-supervisor`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: document.getElementById('newSupName').value.trim(),
+            phone: document.getElementById('newSupPhone').value.trim(),
+            email: document.getElementById('newSupEmail').value.trim() || undefined,
+            password: document.getElementById('newSupPassword').value.trim(),
+            state: state.managerState,
+            lga: document.getElementById('newSupLga').value,
+            role: 'supervisor'
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && (data.success || res.status === 201)) {
+          alert("Supervisor Enrolled Successfully 🎉");
+          closeModal('enrollModal');
+          fetchDashboardData();
+        } else {
+          throw new Error(data.message || "Failed to create supervisor.");
+        }
+      } catch (err) {
+        alert("Enrollment Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function setTransferModeUI(mode) {
+      state.transferMode = mode;
+      document.getElementById('btnTransferModeBulk').style.background = mode === 'bulk' ? 'var(--accent-blue)' : '#94a3b8';
+      document.getElementById('btnTransferModeSingle').style.background = mode === 'single' ? 'var(--accent-blue)' : '#94a3b8';
+      document.getElementById('transferSourceGroup').style.display = mode === 'bulk' ? 'block' : 'none';
+      document.getElementById('transferSingleAgentGroup').style.display = mode === 'single' ? 'block' : 'none';
+    }
+
+    function prepareTransfer(supId) {
+      document.getElementById('transferSourceSupId').value = supId;
+      setTransferModeUI('bulk');
+      openModal('transferModal');
+    }
+
+    async function handleExecuteAgentTransfer() {
+      const btn = document.getElementById('btnTransferSubmit');
+      btn.disabled = true;
+
+      try {
+        const endpoint = state.transferMode === 'bulk'
+          ? `${BASE_URL}/supervisors/transfer-all-agents`
+          : `${BASE_URL}/supervisors/transfer-single-agent`;
+
+        const payload = state.transferMode === 'bulk'
+          ? {
+              oldSupervisorId: document.getElementById('transferSourceSupId').value.trim(),
+              newSupervisorId: document.getElementById('transferTargetSupId').value.trim()
+            }
+          : {
+              agentId: document.getElementById('transferSelectedAgentId').value.trim(),
+              newSupervisorId: document.getElementById('transferTargetSupId').value.trim()
+            };
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert("Transfer Complete: Operation successful.");
+          closeModal('transferModal');
+          fetchDashboardData();
+        } else {
+          throw new Error(data.message || "Transfer failed.");
+        }
+      } catch (e) {
+        alert("Transfer Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function handleBroadcastAlert() {
+      const btn = document.getElementById('btnBroadcastSubmit');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BASE_URL}/notifications/send`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: document.getElementById('notifTitle').value.trim(),
+            message: document.getElementById('notifMessage').value.trim(),
+            category: "STATE_DIRECTIVE",
+            state: state.managerState
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert("Directive Dispatched 🚀");
+          closeModal('notifModal');
+        } else {
+          throw new Error(data.message || "Broadcast failed.");
+        }
+      } catch (e) {
+        alert("Broadcast Error: " + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function clearTarget(recipientId) {
+      if (!confirm("Are you sure you want to reset target quota to 0?")) return;
+
+      try {
+        await fetch(`${BASE_URL}/leader/assign-target`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            mode: "single_supervisor",
+            category: "supervisor",
+            scope: "selected",
+            supervisorId: recipientId,
+            supervisorIds: [recipientId],
+            dataGoal: 0,
+            airtimeGoal: 0,
+            agentGoal: 0,
+            month: state.target.currentMonth,
+            state: state.managerState
+          })
+        });
+        alert("Target quota reset to 0.");
+        fetchDashboardData();
+      } catch (e) {
+        alert("Could not clear target.");
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Exit current State Operations session?")) {
+        localStorage.clear();
+        window.location.href = "index.html";
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/adminApi.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

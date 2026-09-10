@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Agent Terminal Dashboard | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Favicon & Web App Manifest -->
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0284c7">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-surface: #1e293b;
+      --primary-navy: #0a1d37;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #16a34a;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-rose: #e11d48;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --border-light: #e2e8f0;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Header */
+    .top-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      padding: 16px 20px 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .btn-menu {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-dark);
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .agent-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #0369a1;
+      letter-spacing: 0.5px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-green);
+    }
+
+    .notif-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 800;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .welcome-section {
+      margin-top: 4px;
+    }
+
+    .welcome-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .user-name {
+      font-size: 21px;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin: 2px 0 0 0;
+      letter-spacing: -0.5px;
+    }
+
+    /* Scrollable Container */
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 16px 18px 90px 18px;
+    }
+
+    /* Wallet Floating Card */
+    .wallet-card {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%);
+      border-radius: 20px;
+      padding: 22px;
+      color: #ffffff;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.28);
+    }
+
+    .wallet-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .shield-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: #e0f2fe;
+    }
+
+    .history-pill {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #ffffff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .balance-container {
+      display: flex;
+      align-items: center;
+      margin: 14px 0;
+    }
+
+    .currency {
+      font-size: 24px;
+      font-weight: 900;
+      color: #e0f2fe;
+      margin-right: 6px;
+    }
+
+    .balance-text {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .eye-toggle {
+      background: none;
+      border: none;
+      color: #e0f2fe;
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+
+    .wallet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn-wallet-action {
+      height: 44px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+    }
+
+    .btn-fund {
+      background: #ffffff;
+      color: #0369a1;
+    }
+
+    .btn-support {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+
+    /* Executive Target Quota Card */
+    .executive-card-dark {
+      background: var(--bg-dark);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--bg-surface);
+      border-left: 5px solid var(--accent-cyan);
+      margin-bottom: 18px;
+      color: #ffffff;
+    }
+
+    .exec-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .exec-badge-sub {
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.6px;
+    }
+
+    .exec-title-main {
+      font-size: 13px;
+      font-weight: 900;
+      margin-top: 2px;
+    }
+
+    .cycle-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+
+    .exec-metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .metric-box-dark {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid #334155;
+    }
+
+    .metric-label-dark {
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+
+    .metric-val-dark {
+      font-size: 14px;
+      font-weight: 900;
+      margin: 4px 0;
+      color: #ffffff;
+    }
+
+    .progress-track {
+      height: 6px;
+      background: #334155;
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 4px 0;
+    }
+
+    .progress-bar {
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    .percent-sub {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    /* Dedicated Virtual Account */
+    .section-head-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .section-label {
+      font-size: 11.5px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: #475569;
+    }
+
+    .auto-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #15803d;
+    }
+
+    .dva-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .dva-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .bank-name {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--accent-blue);
+      margin: 0;
+    }
+
+    .account-name {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin: 2px 0 0 0;
+    }
+
+    .btn-copy-acc {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .account-num-val {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--text-dark);
+      margin: 6px 0;
+    }
+
+    .dva-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .no-account-box {
+      text-align: center;
+      padding: 14px;
+    }
+
+    .btn-generate-acc {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    /* Retail Services Grid */
+    .services-grid-card {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid var(--border-light);
+      padding: 18px 10px 8px 10px;
+      margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .service-btn {
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 8px 4px;
+    }
+
+    .service-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      margin-bottom: 6px;
+      transition: all 0.2s;
+    }
+
+    .service-btn:hover .service-icon-wrap {
+      transform: translateY(-2px);
+    }
+
+    .service-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #1e293b;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* Supervisor Card */
+    .supervisor-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid var(--border-light);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .sup-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      font-size: 16px;
+      margin-right: 12px;
+    }
+
+    .sup-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0;
+    }
+
+    .sup-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 2px 0 0 0;
+    }
+
+    .sup-call-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    /* Sidebar Drawer */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 1000;
+    }
+
+    .sidebar-drawer {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 300px;
+      background: #ffffff;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 10px;
+    }
+
+    .nav-link-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: #334155;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+
+    .nav-link-item:hover {
+      background: #f1f5f9;
+    }
+
+    .btn-sidebar-logout {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 12px;
+      border-top: 1px solid var(--border-light);
+      color: #dc2626;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      width: 100%;
+    }
+
+    /* Bottom Navigation Tab */
+    .bottom-tab {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 99;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 700;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .tab-item.active {
+      color: var(--accent-blue);
+    }
+
+    .tab-item i {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="nav-row">
+      <button class="btn-menu" onclick="toggleSidebar(true)"><i class="fa-solid fa-bars"></i></button>
+
+      <div class="agent-badge">
+        <span class="live-dot"></span>
+        <span id="headerStationBadge">RETAIL AGENT • NIGERIA</span>
+      </div>
+
+      <div class="notif-btn" onclick="alert('Notification Center Active')">
+        <i class="fa-regular fa-bell"></i>
+        <div class="notif-badge" id="unreadNotifCount" style="display: none;">0</div>
+      </div>
+    </div>
+
+    <div class="welcome-section">
+      <p class="welcome-text">Welcome back,</p>
+      <h1 class="user-name" id="agentDisplayName">Agent Terminal</h1>
+    </div>
+  </header>
+
+  <!-- Main Scrollable Body -->
+  <main class="container">
+
+    <!-- 1. Wallet Balance Card -->
+    <section class="wallet-card">
+      <div class="wallet-top">
+        <div class="shield-row">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>AVAILABLE WALLET BALANCE</span>
+        </div>
+        <a class="history-pill" onclick="alert('Routing to Transaction History')">
+          <span>History</span> <i class="fa-solid fa-chevron-right" style="font-size: 9px;"></i>
+        </a>
+      </div>
+
+      <div class="balance-container">
+        <span class="currency">₦</span>
+        <span class="balance-text" id="walletBalanceVal">0.00</span>
+        <button class="eye-toggle" onclick="toggleBalanceVisibility()"><i class="fa-regular fa-eye" id="eyeIcon"></i></button>
+      </div>
+
+      <div class="wallet-actions">
+        <button class="btn-wallet-action btn-fund" onclick="alert('Wallet Funding Portal Active')">
+          <i class="fa-solid fa-circle-plus"></i> FUND WALLET
+        </button>
+        <button class="btn-wallet-action btn-support" onclick="openWhatsApp()">
+          <i class="fa-brands fa-whatsapp" style="color: #22c55e;"></i> WHATSAPP
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. Quota & Target Tracking Card -->
+    <section class="executive-card-dark">
+      <div class="exec-header-row">
+        <div>
+          <div class="exec-badge-sub">OFFICIAL SUPERVISOR QUOTA ALLOCATION</div>
+          <div class="exec-title-main" id="targetMonthHeader">PERFORMANCE QUOTA</div>
+        </div>
+        <div class="cycle-badge">
+          <i class="fa-regular fa-calendar"></i> <span id="targetMonthBadge">Cycle</span>
+        </div>
+      </div>
+
+      <div class="exec-metrics-row">
+        <!-- Data Quota -->
+        <div class="metric-box-dark">
+          <div class="metric-label-dark" style="color: #38bdf8;">DATA QUOTA (GB)</div>
+          <div class="metric-val-dark" id="dataQuotaNumbers">0 / 100 GB</div>
+          <div class="progress-track">
+            <div class="progress-bar" id="dataProgressBar" style="width: 0%; background: #38bdf8;"></div>
+          </div>
+          <div class="percent-sub" id="dataPercentSub">0% Delivered</div>
+        </div>
+
+        <!-- Airtime Quota -->
+        <div class="metric-box-dark">
+          <div class="metric-label-dark" style="color: #fbbf24;">AIRTIME SALES (₦)</div>
+          <div class="metric-val-dark" id="airtimeQuotaNumbers">₦0 / ₦10,000</div>
+          <div class="progress-track">
+            <div class="progress-bar" id="airtimeProgressBar" style="width: 0%; background: #fbbf24;"></div>
+          </div>
+          <div class="percent-sub" id="airtimePercentSub">0% Delivered</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Dedicated Virtual Account Card -->
+    <div class="section-head-row">
+      <span class="section-label">DEDICATED AUTOMATED ACCOUNT</span>
+      <div class="auto-pill">
+        <span class="live-dot"></span> Instant Credit
+      </div>
+    </div>
+
+    <section class="dva-card" id="dvaContainer">
+      <div class="no-account-box" id="noAccountBox">
+        <i class="fa-regular fa-credit-card" style="font-size: 26px; color: #0284c7; margin-bottom: 6px;"></i>
+        <p style="font-size: 12px; color: #64748b; margin: 0 0 10px 0;">
+          Your dedicated automated bank account is ready for activation.
+        </p>
+        <button class="btn-generate-acc" onclick="handleCreateVirtualAccount()">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Activate Virtual Account
+        </button>
+      </div>
+
+      <div id="activeAccountBox" style="display: none;">
+        <div class="dva-top">
+          <div>
+            <h3 class="bank-name" id="dvaBankName">Wema Bank</h3>
+            <p class="account-name" id="dvaAccountName">Ayax Agent</p>
+          </div>
+          <button class="btn-copy-acc" onclick="copyAccountNumber()">
+            <i class="fa-regular fa-copy"></i> COPY
+          </button>
+        </div>
+        <div class="account-num-val" id="dvaAccountNumber">0000000000</div>
+        <p class="dva-note">Transfer directly to this account to fund your wallet automatically.</p>
+      </div>
+    </section>
+
+    <!-- 4. Retail Services Grid -->
+    <span class="section-label">RETAIL SERVICES & DISPENSER</span>
+    <section class="services-grid-card">
+      <button class="service-btn" onclick="alert('Dispense Data Bundles Active')">
+        <div class="service-icon-wrap" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-wifi"></i></div>
+        <span class="service-label">Buy Data</span>
+      </button>
+
+      <button class="service-btn" onclick="alert('Airtime VTU Gateway Active')">
+        <div class="service-icon-wrap" style="background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-phone"></i></div>
+        <span class="service-label">Airtime VTU</span>
+      </button>
+
+      <button class="service-btn" onclick="alert('Electricity Token Portal Active')">
+        <div class="service-icon-wrap" style="background: #fef3c7; color: #d97706;"><i class="fa-solid fa-bolt"></i></div>
+        <span class="service-label">Electricity</span>
+      </button>
+
+      <button class="service-btn" onclick="alert('Cable TV Subscription Active')">
+        <div class="service-icon-wrap" style="background: #ede9fe; color: #7c3aed;"><i class="fa-solid fa-tv"></i></div>
+        <span class="service-label">Cable TV</span>
+      </button>
+
+      <button class="service-btn" onclick="alert('NIMC Verification Desk Active')">
+        <div class="service-icon-wrap" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-id-card"></i></div>
+        <span class="service-label">NIMC Verify</span>
+      </button>
+
+      <button class="service-btn" onclick="alert('NIMC Modification Desk Active')">
+        <div class="service-icon-wrap" style="background: #ffe4e6; color: #e11d48;"><i class="fa-solid fa-fingerprint"></i></div>
+        <span class="service-label">NIMC Mod</span>
+      </button>
+
+      <button class="service-btn" onclick="alert('BVN Verification Desk Active')">
+        <div class="service-icon-wrap" style="background: #ffedd5; color: #ea580c;"><i class="fa-solid fa-shield-halved"></i></div>
+        <span class="service-label">BVN Desk</span>
+      </button>
+
+      <button class="service-btn" onclick="alert('NIN Validation Active')">
+        <div class="service-icon-wrap" style="background: #e0e7ff; color: #4f46e5;"><i class="fa-solid fa-user-shield"></i></div>
+        <span class="service-label">NIN Validate</span>
+      </button>
+
+      <button class="service-btn" onclick="alert('Routing to Transaction History')">
+        <div class="service-icon-wrap" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <span class="service-label">History</span>
+      </button>
+    </section>
+
+    <!-- 5. Assigned Field Supervisor -->
+    <span class="section-label">LGA FIELD SUPERVISOR LEAD</span>
+    <section class="supervisor-card">
+      <div class="sup-avatar">
+        <i class="fa-solid fa-user-tie"></i>
+      </div>
+      <div style="flex: 1;">
+        <h4 class="sup-name" id="supName">Field Operations Desk</h4>
+        <p class="sup-sub" id="supSub">LGA Coordinator • 09033738409</p>
+      </div>
+      <a href="tel:09033738409" class="sup-call-btn" id="supCallBtn" title="Call Supervisor">
+        <i class="fa-solid fa-phone"></i>
+      </a>
+    </section>
+
+  </main>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarDrawer" onclick="toggleSidebar(false)">
+    <div class="sidebar-drawer" onclick="event.stopPropagation()">
+      <div class="sidebar-head">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-tower-broadcast" style="font-size: 22px; color: #0284c7;"></i>
+          <div>
+            <h3 style="margin: 0; font-size: 15px; font-weight: 900;">Ayax Retail</h3>
+            <span style="font-size: 10px; color: #0284c7; font-weight: 700;">Agent Terminal Node</span>
+          </div>
+        </div>
+        <button onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 18px; color: #64748b; cursor: pointer;">&times;</button>
+      </div>
+
+      <div style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 0.8px; margin: 12px 0 6px 4px;">SERVICES & UTILITIES</div>
+      <a class="nav-link-item" onclick="alert('Data Bundles')"><i class="fa-solid fa-wifi" style="color: #0284c7;"></i> Dispense Data Bundles</a>
+      <a class="nav-link-item" onclick="alert('Airtime VTU')"><i class="fa-solid fa-phone" style="color: #16a34a;"></i> Recharge Airtime VTU</a>
+      <a class="nav-link-item" onclick="alert('Records')"><i class="fa-solid fa-clock-rotate-left" style="color: #d97706;"></i> Transaction Records</a>
+
+      <div style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 0.8px; margin: 16px 0 6px 4px;">ACCOUNT</div>
+      <a class="nav-link-item" onclick="alert('Profile')"><i class="fa-solid fa-user" style="color: #0284c7;"></i> Agent Profile</a>
+      <a class="nav-link-item" onclick="openWhatsApp()"><i class="fa-brands fa-whatsapp" style="color: #16a34a;"></i> Supervisor Help Desk</a>
+
+      <button class="btn-sidebar-logout" onclick="handleLogout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout Agent Terminal
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Tab -->
+  <nav class="bottom-tab">
+    <div class="tab-item active">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </div>
+    <div class="tab-item" onclick="alert('Routing to Transaction History')">
+      <i class="fa-solid fa-receipt"></i>
+      <span>History</span>
+    </div>
+    <div class="tab-item" onclick="alert('Routing to Agent Profile')">
+      <i class="fa-solid fa-user"></i>
+      <span>Profile</span>
+    </div>
+    <div class="tab-item" onclick="openWhatsApp()">
+      <i class="fa-brands fa-whatsapp"></i>
+      <span>Support</span>
+    </div>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || '',
+      user: null,
+      balanceVisible: true,
+      virtualAccount: null,
+      quota: { dataGoal: 100, airtimeGoal: 10000, dataSold: 0, airtimeSold: 0, currentMonth: "September 2026" }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert('Please login first.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Load cached local user data first for zero latency
+      const cached = localStorage.getItem('userData');
+      if (cached) {
+        try {
+          state.user = JSON.parse(cached);
+          renderUserData();
+        } catch (e) {}
+      }
+
+      fetchAgentDashboardData();
+      setInterval(fetchAgentDashboardData, 5000);
+    });
+
+    async function fetchAgentDashboardData() {
+      const headers = { 'Authorization': `Bearer ${state.token}`, 'Accept': 'application/json' };
+
+      try {
+        const [profileRes, supRes, notifRes] = await Promise.allSettled([
+          fetch(`${BASE_URL}/user/profile`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/agent/my-supervisor`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/notifications`, { headers }).then(r => r.json())
+        ]);
+
+        if (profileRes.status === 'fulfilled' && profileRes.value) {
+          const user = profileRes.value.user || profileRes.value.data || profileRes.value;
+          if (user && Object.keys(user).length > 0) {
+            state.user = user;
+            localStorage.setItem('userData', JSON.stringify(user));
+            renderUserData();
+          }
+        }
+
+        if (supRes.status === 'fulfilled' && supRes.value?.data) {
+          const sup = supRes.value.data;
+          document.getElementById('supName').textContent = sup.name || 'Field Operations Lead';
+          document.getElementById('supSub').textContent = `${state.user?.lga || 'LGA'} Coordinator • ${sup.phone || ''}`;
+          if (sup.phone) {
+            document.getElementById('supCallBtn').href = 'tel:' + sup.phone;
+          }
+        }
+
+        if (notifRes.status === 'fulfilled' && notifRes.value) {
+          const notifs = notifRes.value.notifications || notifRes.value.data || [];
+          const unread = notifs.filter(n => n.isRead === false || n.status === 'unread').length;
+          const badge = document.getElementById('unreadNotifCount');
+          if (unread > 0) {
+            badge.textContent = unread;
+            badge.style.display = 'flex';
+          } else {
+            badge.style.display = 'none';
+          }
+        }
+      } catch (e) {
+        console.warn('Dashboard sync:', e.message);
+      }
+    }
+
+    function renderUserData() {
+      const u = state.user;
+      if (!u) return;
+
+      document.getElementById('agentDisplayName').textContent = u.firstName || u.name || 'Retail Agent';
+      const lga = u.lga ? u.lga.toUpperCase() + ' LGA' : 'RETAIL AGENT';
+      const st = u.state ? u.state.toUpperCase() : 'NIGERIA';
+      document.getElementById('headerStationBadge').textContent = `${lga} • ${st}`;
+
+      // Balance
+      updateBalanceDisplay();
+
+      // Virtual Account
+      const acc = u.virtualAccount || u.dva || {};
+      const accNum = acc.accountNumber || acc.account_number || u.accountNumber;
+      if (accNum && String(accNum).trim().length > 6) {
+        state.virtualAccount = {
+          bankName: acc.bankName || acc.bank_name || 'Wema Bank',
+          accountName: acc.accountName || acc.account_name || u.name || 'Ayax Agent',
+          accountNumber: String(accNum).trim()
+        };
+        document.getElementById('noAccountBox').style.display = 'none';
+        document.getElementById('activeAccountBox').style.display = 'block';
+        document.getElementById('dvaBankName').textContent = state.virtualAccount.bankName;
+        document.getElementById('dvaAccountName').textContent = state.virtualAccount.accountName;
+        document.getElementById('dvaAccountNumber').textContent = state.virtualAccount.accountNumber;
+      } else {
+        document.getElementById('noAccountBox').style.display = 'block';
+        document.getElementById('activeAccountBox').style.display = 'none';
+      }
+
+      // Quotas
+      const tg = u.targets || {};
+      const dataGoal = Number(tg.dataGoal || u.dataGoal || 100);
+      const airtimeGoal = Number(tg.airtimeGoal || u.airtimeGoal || 10000);
+      const dataSold = Number(u.dataSold || u.dataVolumeSold || 0);
+      const airtimeSold = Number(u.airtimeSold || 0);
+      const month = tg.currentMonth || "September 2026";
+
+      document.getElementById('targetMonthHeader').textContent = month.toUpperCase() + ' PERFORMANCE';
+      document.getElementById('targetMonthBadge').textContent = month;
+
+      const dataPct = Math.min(Math.round((dataSold / (dataGoal || 1)) * 100), 100);
+      const airtimePct = Math.min(Math.round((airtimeSold / (airtimeGoal || 1)) * 100), 100);
+
+      document.getElementById('dataQuotaNumbers').textContent = `${dataSold} / ${dataGoal} GB`;
+      document.getElementById('dataProgressBar').style.width = `${dataPct}%`;
+      document.getElementById('dataPercentSub').textContent = `${dataPct}% Delivered`;
+
+      document.getElementById('airtimeQuotaNumbers').textContent = `₦${airtimeSold.toLocaleString()} / ₦${airtimeGoal.toLocaleString()}`;
+      document.getElementById('airtimeProgressBar').style.width = `${airtimePct}%`;
+      document.getElementById('airtimePercentSub').textContent = `${airtimePct}% Delivered`;
+    }
+
+    function updateBalanceDisplay() {
+      const bal = Number(state.user?.walletBalance || state.user?.balance || 0);
+      const el = document.getElementById('walletBalanceVal');
+      const icon = document.getElementById('eyeIcon');
+
+      if (state.balanceVisible) {
+        el.textContent = bal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        icon.className = 'fa-regular fa-eye';
+      } else {
+        el.textContent = '••••••••';
+        icon.className = 'fa-regular fa-eye-slash';
+      }
+    }
+
+    function toggleBalanceVisibility() {
+      state.balanceVisible = !state.balanceVisible;
+      updateBalanceDisplay();
+    }
+
+    async function handleCreateVirtualAccount() {
+      try {
+        const res = await fetch(`${BASE_URL}/virtual-account/create`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${state.token}`, 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Dedicated Virtual Account generated successfully!');
+          fetchAgentDashboardData();
+        } else {
+          alert(data.message || 'Could not generate virtual account.');
+        }
+      } catch (err) {
+        alert('Network error: ' + err.message);
+      }
+    }
+
+    function copyAccountNumber() {
+      if (!state.virtualAccount) return;
+      navigator.clipboard.writeText(state.virtualAccount.accountNumber).then(() => {
+        alert('Account number copied to clipboard: ' + state.virtualAccount.accountNumber);
+      });
+    }
+
+    function openWhatsApp() {
+      const phone = '2349033738409';
+      const msg = encodeURIComponent(`Hello Ayax Support, I am Retail Agent ${state.user?.name || state.user?.phone}. I need assistance.`);
+      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+    }
+
+    function toggleSidebar(show) {
+      document.getElementById('sidebarDrawer').style.display = show ? 'block' : 'none';
+    }
+
+    function handleLogout() {
+      if (confirm('Do you want to log out of your Agent terminal?')) {
+        localStorage.clear();
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/adminApi.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

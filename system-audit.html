@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>System Audit & Insights | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #111827;
+      --primary-indigo: #4f46e5;
+      --primary-indigo-hover: #4338ca;
+      --accent-purple: #6366f1;
+      --indigo-light: #c7d2fe;
+      --stat-blue-bg: #eef2ff;
+      --stat-green-bg: #f0fdf4;
+      --card-bg: #fafafa;
+      --border-card: #f3f4f6;
+      --border-btn: #e5e7eb;
+      --text-dark: #111827;
+      --text-sub: #374151;
+      --text-muted: #6b7280;
+      --text-light: #9ca3af;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--white);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Command Header */
+    .header {
+      padding: 25px 20px 20px 20px;
+      background-color: var(--bg-dark);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .header-content {
+      flex: 1;
+    }
+
+    .back-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--white);
+      cursor: pointer;
+      margin-right: 14px;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 3px 0 0 0;
+      font-weight: 500;
+    }
+
+    .refresh-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--indigo-light);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    /* Container Body */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 16px 40px 16px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      padding: 20px 0 10px 0;
+    }
+
+    .main-stat {
+      background-color: var(--primary-indigo);
+      padding: 22px 20px;
+      border-radius: 16px;
+      margin-bottom: 14px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+    }
+
+    .stat-label {
+      color: var(--indigo-light);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .revenue-text {
+      color: var(--white);
+      font-size: 30px;
+      font-weight: 900;
+      margin: 6px 0 0 0;
+      letter-spacing: -0.5px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mini-stat {
+      flex: 1;
+      padding: 16px;
+      border-radius: 14px;
+    }
+
+    .mini-label {
+      font-size: 12px;
+      color: #4b5563;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .mini-value {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin: 4px 0 0 0;
+    }
+
+    /* Section Area */
+    .section {
+      padding: 10px 0 20px 0;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 14px 0;
+      letter-spacing: -0.2px;
+    }
+
+    .audit-logs-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .log-card {
+      background-color: var(--card-bg);
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-card);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s;
+    }
+
+    .log-card:hover {
+      border-color: #e5e7eb;
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .staff-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0;
+    }
+
+    .staff-role {
+      color: var(--accent-purple);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .log-time {
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .action-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin: 4px 0 2px 0;
+    }
+
+    .log-detail {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    /* Action Section */
+    .action-section {
+      padding: 10px 0 40px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-btn);
+      background: var(--white);
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #f9fafb;
+    }
+
+    .action-btn-text {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-sub);
+      margin: 0;
+    }
+
+    .empty-text {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 13px;
+      margin: 30px 0;
+      font-weight: 600;
+    }
+
+    /* Loading Box */
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 60vh;
+    }
+
+    .loader-container i {
+      font-size: 32px;
+      color: var(--primary-indigo);
+      margin-bottom: 12px;
+    }
+
+    .loader-text {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Header -->
+  <header class="header">
+    <div style="display: flex; align-items: center; flex: 1;">
+      <a href="javascript:history.back()" class="back-btn" title="Back">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div class="header-content">
+        <h1 class="title">System Audit & Insights</h1>
+        <p class="subtitle">Global Governance & Activity Monitoring</p>
+      </div>
+    </div>
+    <button type="button" class="refresh-btn" onclick="fetchAuditData(true)" title="Refresh Governance Stream">
+      <i class="fa-solid fa-rotate" id="refreshIcon"></i>
+    </button>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Loading Indicator -->
+    <div class="loader-container" id="loadingBox">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <span class="loader-text">Loading Governance & Audit Metrics...</span>
+    </div>
+
+    <!-- Data Content -->
+    <div id="contentView" style="display: none;">
+
+      <!-- Stats Grid -->
+      <section class="stats-grid">
+        <div class="main-stat">
+          <p class="stat-label">Total Revenue</p>
+          <h2 class="revenue-text" id="statRevenue">₦0</h2>
+        </div>
+
+        <div class="row">
+          <div class="mini-stat" style="background-color: var(--stat-blue-bg);">
+            <p class="mini-label">Total Users</p>
+            <h3 class="mini-value" id="statTotalUsers">0</h3>
+          </div>
+          <div class="mini-stat" style="background-color: var(--stat-green-bg);">
+            <p class="mini-label">Admins</p>
+            <h3 class="mini-value" id="statTotalAdmins">0</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- Audit Logs Section -->
+      <section class="section">
+        <h3 class="section-title">Administrative Audit Logs</h3>
+        <div class="audit-logs-wrap" id="auditLogsWrap">
+          <!-- Injected via JavaScript -->
+        </div>
+      </section>
+
+      <!-- Action Navigation Section -->
+      <section class="action-section">
+        <button type="button" class="action-btn" onclick="window.location.href='wallet-history.html'">
+          <span class="action-btn-text">View Global Transaction Ledger</span>
+        </button>
+
+        <button type="button" class="action-btn" style="border-color: var(--primary-indigo);" onclick="window.location.href='superadmin-dashboard.html'">
+          <span class="action-btn-text" style="color: var(--primary-indigo);">Manage Permissions & Roles</span>
+        </button>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      stats: null,
+      auditLogs: []
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session Expired. Please login again.");
+        window.location.href = "index.html";
+        return;
+      }
+      fetchAuditData();
+    });
+
+    async function fetchAuditData(isBackground = false) {
+      const loadingBox = document.getElementById('loadingBox');
+      const contentView = document.getElementById('contentView');
+      const refreshIcon = document.getElementById('refreshIcon');
+
+      if (!isBackground) {
+        loadingBox.style.display = 'flex';
+        contentView.style.display = 'none';
+      }
+      if (refreshIcon) refreshIcon.classList.add('fa-spin');
+
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${state.token}`,
+          'Accept': 'application/json'
+        }
+      };
+
+      try {
+        const [statsRes, logsRes] = await Promise.all([
+          fetch(`${BASE_URL}/superadmin/stats`, config).then(r => r.json()),
+          fetch(`${BASE_URL}/superadmin/audit-logs`, config).then(r => r.json())
+        ]);
+
+        state.stats = statsRes.data || statsRes;
+        const rawLogs = logsRes.data || logsRes || [];
+        state.auditLogs = Array.isArray(rawLogs) ? rawLogs : [];
+
+        renderMetrics();
+        renderAuditLogs();
+
+        loadingBox.style.display = 'none';
+        contentView.style.display = 'block';
+      } catch (err) {
+        console.error("Audit Data Error:", err);
+        if (!isBackground) {
+          alert("Access Denied: Unable to load administrative governance data.");
+        }
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+      }
+    }
+
+    function renderMetrics() {
+      const financeRev = state.stats?.finance?.totalRevenue ?? state.stats?.totalRevenue ?? 0;
+      document.getElementById('statRevenue').textContent = `₦${Number(financeRev).toLocaleString()}`;
+
+      const totalUsers = state.stats?.users?.totalUsers ?? state.stats?.totalUsers ?? 0;
+      document.getElementById('statTotalUsers').textContent = Number(totalUsers).toLocaleString();
+
+      const totalAdmins = state.stats?.users?.totalAdmins ?? state.stats?.totalAdmins ?? 0;
+      document.getElementById('statTotalAdmins').textContent = Number(totalAdmins).toLocaleString();
+    }
+
+    function renderAuditLogs() {
+      const container = document.getElementById('auditLogsWrap');
+
+      if (!Array.isArray(state.auditLogs) || state.auditLogs.length === 0) {
+        container.innerHTML = `<p class="empty-text">No recent staff activities recorded.</p>`;
+        return;
+      }
+
+      container.innerHTML = state.auditLogs.map(item => {
+        const fName = item.staffId?.firstName || "Staff";
+        const sName = item.staffId?.surname || "";
+        const role = item.staffId?.role || "Admin";
+        const timeStr = item.createdAt ? new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+        const action = item.action || "Activity Performed";
+        const detail = item.details || item.description || "";
+
+        return `
+          <div class="log-card">
+            <div class="log-header">
+              <h4 class="staff-name">
+                ${fName} ${sName}
+                <span class="staff-role">(${role})</span>
+              </h4>
+              <span class="log-time">${timeStr}</span>
+            </div>
+            <p class="action-text">${action}</p>
+            ${detail ? `<p class="log-detail">${detail}</p>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

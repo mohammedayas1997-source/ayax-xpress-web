@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Buy Data Bundles | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #050811;
+      --card-bg: #0b1120;
+      --card-active: #071328;
+      --border-dark: #1e293b;
+      --accent-blue: #0284c7;
+      --accent-cyan: #00f0ff;
+      --accent-green: #10b981;
+      --accent-yellow: #eab308;
+      --accent-red: #ef4444;
+      --text-white: #f8fafc;
+      --text-muted: #64748b;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Command Header */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 18px 14px 18px;
+      max-width: 600px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-white);
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text-white);
+      margin: 0;
+      letter-spacing: 0.3px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px 16px 60px 16px;
+    }
+
+    .section-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin: 16px 0 8px 0;
+      display: block;
+    }
+
+    /* Network Grid */
+    .network-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .network-btn {
+      padding: 12px 0;
+      text-align: center;
+      background: var(--card-bg);
+      border-radius: 10px;
+      border: 1px solid var(--border-dark);
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .network-btn.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+    }
+
+    /* Type Selector Chips */
+    .type-chip-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      white-space: nowrap;
+    }
+    .type-chip-row::-webkit-scrollbar { height: 4px; }
+    .type-chip-row::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
+
+    .type-chip {
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .type-chip.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+    }
+
+    /* Inputs */
+    .input-field {
+      width: 100%;
+      height: 50px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 0 14px;
+      color: var(--text-white);
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
+    }
+
+    .input-field::placeholder {
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    /* Dropdown Toggle */
+    .dropdown-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .dropdown-btn.active {
+      border-color: var(--accent-cyan);
+      background: var(--card-active);
+    }
+
+    .dropdown-title {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .dropdown-sub {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 3px 0 0 0;
+    }
+
+    /* Plans Container Dropdown Menu */
+    .plans-container {
+      display: none;
+      background: #070c18;
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid var(--border-dark);
+      margin-top: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .plan-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .plan-card:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .plan-card.active {
+      border-color: var(--accent-cyan);
+      background: var(--card-active);
+    }
+
+    .plan-title {
+      color: var(--text-white);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .plan-type-tag {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .validity-tag {
+      color: var(--accent-yellow);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .plan-price {
+      color: var(--accent-cyan);
+      font-size: 15px;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .selected-badge {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      color: var(--accent-green);
+      font-size: 10px;
+      font-weight: 900;
+      margin-top: 2px;
+    }
+
+    /* Empty Box */
+    .empty-card {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid var(--border-dark);
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* Purchase Action Button */
+    .submit-btn {
+      width: 100%;
+      height: 52px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 18px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Feedback Banner */
+    .status-banner {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 16px;
+      text-align: center;
+    }
+    .status-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--accent-green);
+      color: #34d399;
+    }
+    .status-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--accent-red);
+      color: #f87171;
+    }
+
+    /* Transaction PIN Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 320px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      border: 1px solid var(--border-dark);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-icon {
+      font-size: 32px;
+      color: var(--accent-cyan);
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      color: var(--text-white);
+      font-size: 16px;
+      font-weight: 900;
+      margin: 0 0 6px 0;
+    }
+
+    .modal-subtitle {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 0 0 16px 0;
+      line-height: 1.5;
+    }
+
+    .pin-input {
+      width: 100%;
+      height: 52px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 24px;
+      letter-spacing: 10px;
+      color: #ffffff;
+      font-weight: bold;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .pin-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
+    }
+
+    .modal-submit-btn {
+      width: 100%;
+      height: 46px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .modal-submit-btn:hover {
+      background: #0369a1;
+    }
+
+    .modal-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .modal-cancel-btn {
+      background: none;
+      border: none;
+      color: var(--accent-red);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="header-title">Buy Data Bundles</h1>
+    <div style="width: 24px;"></div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- 1. Network Selection -->
+    <span class="section-label">SELECT NETWORK</span>
+    <div class="network-grid">
+      <div class="network-btn active" onclick="setNetwork('MTN', this)">MTN</div>
+      <div class="network-btn" onclick="setNetwork('AIRTEL', this)">AIRTEL</div>
+      <div class="network-btn" onclick="setNetwork('GLO', this)">GLO</div>
+      <div class="network-btn" onclick="setNetwork('9MOBILE', this)">9MOBILE</div>
+    </div>
+
+    <!-- 2. Plan Type Chips -->
+    <span class="section-label">PLAN TYPE</span>
+    <div class="type-chip-row">
+      <div class="type-chip active" onclick="setPlanType('ALL', this)">ALL</div>
+      <div class="type-chip" onclick="setPlanType('SME', this)">SME</div>
+      <div class="type-chip" onclick="setPlanType('GIFTING', this)">GIFTING</div>
+      <div class="type-chip" onclick="setPlanType('CG', this)">CG</div>
+      <div class="type-chip" onclick="setPlanType('CORPORATE_GIFTING', this)">CORPORATE_GIFTING</div>
+      <div class="type-chip" onclick="setPlanType('DIRECT', this)">DIRECT</div>
+    </div>
+
+    <!-- 3. Recipient Phone Number -->
+    <span class="section-label">RECIPIENT PHONE NUMBER</span>
+    <input
+      type="tel"
+      id="phoneNumberInput"
+      class="input-field"
+      placeholder="e.g. 08012345678"
+      maxlength="11"
+      autocomplete="tel"
+      oninput="updateSubmitButton()"
+    />
+
+    <!-- 4. Data Bundle Dropdown Package -->
+    <span class="section-label">DATA BUNDLE PACKAGE</span>
+    <button type="button" class="dropdown-btn" id="dropdownBtn" onclick="toggleDropdown()">
+      <div style="display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden;">
+        <i class="fa-solid fa-layer-group" id="dropdownIcon" style="color: var(--accent-cyan); font-size: 18px; flex-shrink: 0;"></i>
+        <div style="flex: 1; overflow: hidden;">
+          <h3 class="dropdown-title" id="dropdownTitle">Select Data Bundle (MTN)</h3>
+          <p class="dropdown-sub" id="dropdownSubtitle">Tap to open available plans</p>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-down" id="dropdownChevron" style="color: var(--text-muted); font-size: 14px;"></i>
+    </button>
+
+    <!-- Dropdown List Container -->
+    <div class="plans-container" id="plansContainer">
+      <!-- Injected via JavaScript -->
+    </div>
+
+    <!-- Submit Purchase Button -->
+    <button type="button" class="submit-btn" id="btnSubmitPurchase" onclick="handleInitiatePurchase()" disabled>
+      PURCHASE DATA (₦0)
+    </button>
+
+    <!-- Feedback Banner -->
+    <div id="statusBanner" class="status-banner"></div>
+
+  </main>
+
+  <!-- PIN Authorization Modal -->
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal-content">
+      <i class="fa-solid fa-shield-halved modal-icon"></i>
+      <h2 class="modal-title">Enter Transaction PIN</h2>
+      <p class="modal-subtitle">Enter your 4-digit PIN to confirm this data purchase</p>
+
+      <input
+        type="password"
+        id="pinInput"
+        class="pin-input"
+        placeholder="••••"
+        maxlength="4"
+        inputmode="numeric"
+      />
+
+      <button type="button" class="modal-submit-btn" id="btnConfirmPay" onclick="handleExecutePurchase()">
+        Confirm & Pay
+      </button>
+
+      <button type="button" class="modal-cancel-btn" onclick="closePinModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      userRole: 'user',
+      selectedNetwork: 'MTN',
+      selectedPlanType: 'ALL',
+      availablePlans: [],
+      selectedPlan: null,
+      isDropdownOpen: false
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Determine user role
+      const stored = localStorage.getItem('userData');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          state.userRole = (parsed.role || 'user').toLowerCase();
+        } catch (e) {}
+      }
+
+      fetchLivePlans(state.selectedNetwork);
+    });
+
+    function resolvePlanNetwork(plan) {
+      const rawNet = String(plan.network || plan.networkName || plan.network_name || plan.networkId || '').toUpperCase().trim();
+      const rawCode = String(plan.planCode || plan.code || '').toUpperCase().trim();
+      const rawName = String(plan.name || plan.planLabel || '').toUpperCase().trim();
+
+      if (rawNet.includes('MTN') || rawCode.startsWith('MTN') || rawName.includes('MTN')) return 'MTN';
+      if (rawNet.includes('AIRTEL') || rawCode.startsWith('AIRTEL') || rawName.includes('AIRTEL') || rawNet.includes('AIR')) return 'AIRTEL';
+      if (rawNet.includes('GLO') || rawCode.startsWith('GLO') || rawName.includes('GLO')) return 'GLO';
+      if (rawNet.includes('9MOB') || rawNet.includes('ETISALAT') || rawCode.startsWith('9MOB') || rawName.includes('9MOBILE')) return '9MOBILE';
+      return rawNet;
+    }
+
+    async function fetchLivePlans(network) {
+      const plansContainer = document.getElementById('plansContainer');
+      plansContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;"><i class="fa-solid fa-spinner fa-spin" style="color: var(--accent-cyan); margin-right: 6px;"></i> Loading ' + network + ' plans...</div>';
+
+      const headers = {
+        'Accept': 'application/json'
+      };
+      if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+
+      let plansArray = [];
+      try {
+        let res = await fetch(`${BASE_URL}/data/plans`, { headers });
+        if (!res.ok) res = await fetch(`${BASE_URL}/plans`, { headers });
+        if (!res.ok) res = await fetch(`${BASE_URL}/superadmin/plans`, { headers });
+
+        if (res.ok) {
+          const data = await res.json();
+          const rawPlans = data.data || data.plans || (Array.isArray(data) ? data : []);
+          plansArray = Array.isArray(rawPlans) ? rawPlans : [];
+        }
+      } catch (e) {
+        console.warn('Plans fetch issue:', e.message);
+      }
+
+      // Filter by Network
+      const targetNetwork = String(network).toUpperCase().trim();
+      state.availablePlans = plansArray.filter(p => resolvePlanNetwork(p) === targetNetwork);
+
+      renderPlans();
+    }
+
+    function renderPlans() {
+      const container = document.getElementById('plansContainer');
+      const filtered = state.availablePlans.filter(p => {
+        if (state.selectedPlanType === 'ALL') return true;
+        const pType = String(p.planType || p.type || '').toUpperCase();
+        const sType = String(state.selectedPlanType).toUpperCase();
+        const pName = String(p.name || p.planLabel || '').toUpperCase();
+        return pType.includes(sType) || pName.includes(sType);
+      });
+
+      document.getElementById('dropdownSubtitle').textContent = state.selectedPlan
+        ? `Validity: ${state.selectedPlan.validity || '30 Days'} • Type: ${state.selectedPlan.planType || 'SME'}`
+        : `Tap to open available plans (${filtered.length})`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-card">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 20px; margin-bottom: 6px;"></i>
+            <div>No active data plans found for ${state.selectedNetwork}.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(plan => {
+        const planId = plan._id || plan.id || plan.planCode || Math.random().toString();
+        const isSelected = state.selectedPlan && (state.selectedPlan._id === plan._id || state.selectedPlan.planCode === plan.planCode);
+        const finalPrice = state.userRole === 'agent'
+          ? (plan.agentPrice ?? plan.userPrice ?? plan.price ?? 0)
+          : (plan.userPrice ?? plan.price ?? 0);
+        const planTitle = plan.name || plan.planLabel || `${plan.network || state.selectedNetwork} ${plan.planCode}`;
+        const validity = plan.validity ? (String(plan.validity).includes('Day') ? plan.validity : `${plan.validity} Days`) : '30 Days';
+
+        return `
+          <div class="plan-card ${isSelected ? 'active' : ''}" onclick="selectPlan('${planId}')">
+            <div style="flex: 1; margin-right: 8px;">
+              <h4 class="plan-title">${planTitle}</h4>
+              <div class="meta-row">
+                <span class="plan-type-tag">${plan.planType || 'SME'} • Code: ${plan.planCode || 'N/A'}</span>
+                <span class="validity-tag">⏳ ${validity}</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div class="plan-price">₦${Number(finalPrice).toLocaleString()}</div>
+              ${isSelected ? '<div class="selected-badge"><i class="fa-solid fa-circle-check"></i> SELECTED</div>' : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setNetwork(net, el) {
+      state.selectedNetwork = net;
+      state.selectedPlan = null;
+      document.querySelectorAll('.network-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+
+      document.getElementById('dropdownTitle').textContent = `Select Data Bundle (${net})`;
+      document.getElementById('dropdownIcon').className = 'fa-solid fa-layer-group';
+      document.getElementById('dropdownIcon').style.color = 'var(--accent-cyan)';
+
+      closeDropdown();
+      fetchLivePlans(net);
+      updateSubmitButton();
+    }
+
+    function setPlanType(type, el) {
+      state.selectedPlanType = type;
+      document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      renderPlans();
+    }
+
+    function toggleDropdown() {
+      state.isDropdownOpen = !state.isDropdownOpen;
+      const container = document.getElementById('plansContainer');
+      const btn = document.getElementById('dropdownBtn');
+      const chevron = document.getElementById('dropdownChevron');
+
+      if (state.isDropdownOpen) {
+        container.style.display = 'block';
+        btn.classList.add('active');
+        chevron.className = 'fa-solid fa-chevron-up';
+      } else {
+        closeDropdown();
+      }
+    }
+
+    function closeDropdown() {
+      state.isDropdownOpen = false;
+      const container = document.getElementById('plansContainer');
+      const btn = document.getElementById('dropdownBtn');
+      const chevron = document.getElementById('dropdownChevron');
+
+      container.style.display = 'none';
+      btn.classList.remove('active');
+      chevron.className = 'fa-solid fa-chevron-down';
+    }
+
+    function selectPlan(planId) {
+      const plan = state.availablePlans.find(p => (p._id || p.id || p.planCode) === planId);
+      if (!plan) return;
+
+      state.selectedPlan = plan;
+      const finalPrice = state.userRole === 'agent'
+        ? (plan.agentPrice ?? plan.userPrice ?? plan.price ?? 0)
+        : (plan.userPrice ?? plan.price ?? 0);
+
+      document.getElementById('dropdownTitle').textContent = `${plan.name || plan.planLabel || plan.planCode} (₦${Number(finalPrice).toLocaleString()})`;
+      document.getElementById('dropdownSubtitle').textContent = `Validity: ${plan.validity || '30 Days'} • Type: ${plan.planType || 'SME'}`;
+      document.getElementById('dropdownIcon').className = 'fa-solid fa-circle-check';
+      document.getElementById('dropdownIcon').style.color = 'var(--accent-green)';
+
+      closeDropdown();
+      renderPlans();
+      updateSubmitButton();
+    }
+
+    function updateSubmitButton() {
+      const phone = document.getElementById('phoneNumberInput').value.trim();
+      const btn = document.getElementById('btnSubmitPurchase');
+
+      if (state.selectedPlan && phone.length >= 11) {
+        const finalPrice = state.userRole === 'agent'
+          ? (state.selectedPlan.agentPrice ?? state.selectedPlan.userPrice ?? state.selectedPlan.price ?? 0)
+          : (state.selectedPlan.userPrice ?? state.selectedPlan.price ?? 0);
+        btn.disabled = false;
+        btn.textContent = `PURCHASE DATA (₦${Number(finalPrice).toLocaleString()})`;
+      } else {
+        btn.disabled = true;
+        const currentPrice = state.selectedPlan
+          ? Number(state.userRole === 'agent'
+              ? (state.selectedPlan.agentPrice ?? state.selectedPlan.userPrice ?? state.selectedPlan.price ?? 0)
+              : (state.selectedPlan.userPrice ?? state.selectedPlan.price ?? 0)).toLocaleString()
+          : '0';
+        btn.textContent = `PURCHASE DATA (₦${currentPrice})`;
+      }
+    }
+
+    function showFeedback(message, isSuccess = true) {
+      const banner = document.getElementById('statusBanner');
+      banner.textContent = message;
+      banner.className = `status-banner ${isSuccess ? 'status-success' : 'status-error'}`;
+      banner.style.display = 'block';
+
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 6000);
+    }
+
+    function handleInitiatePurchase() {
+      const phone = document.getElementById('phoneNumberInput').value.trim();
+
+      if (!phone || phone.length < 11) {
+        alert("Please enter a valid 11-digit recipient phone number.");
+        return;
+      }
+
+      if (!state.selectedPlan) {
+        alert("Please tap on the Select Data Bundle button to choose a plan.");
+        return;
+      }
+
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinModal').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('pinInput').focus();
+      }, 100);
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').style.display = 'none';
+      document.getElementById('pinInput').value = '';
+    }
+
+    async function handleExecutePurchase() {
+      const pin = document.getElementById('pinInput').value.trim();
+      const phone = document.getElementById('phoneNumberInput').value.trim();
+
+      if (!pin || pin.length < 4) {
+        alert("Please enter your 4-digit Transaction PIN.");
+        return;
+      }
+
+      if (!state.token) {
+        closePinModal();
+        alert("Authentication Error: Please login again.");
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const netName = state.selectedPlan?.networkName || state.selectedPlan?.network || state.selectedNetwork;
+      const cleanPlanCode = state.selectedPlan?.planCode || state.selectedPlan?.code || "1000";
+      const finalAmount = state.userRole === 'agent'
+        ? (state.selectedPlan?.agentPrice ?? state.selectedPlan?.price ?? state.selectedPlan?.userPrice ?? 0)
+        : (state.selectedPlan?.userPrice ?? state.selectedPlan?.price ?? 0);
+
+      const requestBody = {
+        network: netName,
+        networkId: state.selectedPlan?.networkId || null,
+        planCode: cleanPlanCode,
+        phoneNumber: phone,
+        amount: Number(finalAmount),
+        validity: state.selectedPlan?.validity || "30 Days",
+        transactionPin: pin
+      };
+
+      const btn = document.getElementById('btnConfirmPay');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        const response = await fetch(`${BASE_URL}/vtu/buy-data`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        const resData = await response.json();
+
+        if (response.ok && (resData.success || resData.status === 'success')) {
+          closePinModal();
+          const dispatchedName = state.selectedPlan?.name || state.selectedPlan?.planLabel || state.selectedPlan?.planCode || 'Data package';
+          alert(`Purchase Successful 🎉\n\n${dispatchedName} dispatched to ${phone} successfully!`);
+          showFeedback(`${dispatchedName} dispatched to ${phone}`, true);
+
+          document.getElementById('phoneNumberInput').value = '';
+          state.selectedPlan = null;
+          document.getElementById('dropdownTitle').textContent = `Select Data Bundle (${state.selectedNetwork})`;
+          document.getElementById('dropdownIcon').className = 'fa-solid fa-layer-group';
+          document.getElementById('dropdownIcon').style.color = 'var(--accent-cyan)';
+          updateSubmitButton();
+          renderPlans();
+        } else {
+          throw new Error(resData.message || "Transaction Error");
+        }
+      } catch (err) {
+        alert(`Transaction Failed: ${err.message || 'Server or network failure.'}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

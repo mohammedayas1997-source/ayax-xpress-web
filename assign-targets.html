@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Deploy Field Target | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --primary-navy: #1e40af;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-amber: #d97706;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --input-bg: #f8fafc;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Command Header */
+    .top-bar {
+      background: var(--bg-dark);
+      padding: 20px 18px 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.15);
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .top-bar-title {
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin: 0;
+    }
+
+    /* Container */
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 18px 16px 80px 16px;
+    }
+
+    /* Banner Card */
+    .banner-card {
+      display: flex;
+      align-items: center;
+      background: #eff6ff;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid #bfdbfe;
+    }
+
+    .banner-icon {
+      font-size: 26px;
+      color: var(--primary-navy);
+      margin-right: 14px;
+    }
+
+    .banner-title {
+      color: var(--primary-navy);
+      font-size: 14px;
+      font-weight: 900;
+      margin: 0 0 2px 0;
+    }
+
+    .banner-sub {
+      color: var(--text-muted);
+      font-size: 11.5px;
+      margin: 0;
+    }
+
+    /* Form Card */
+    .form-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 22px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 900;
+      color: #475569;
+      margin-bottom: 6px;
+      letter-spacing: 0.8px;
+      display: block;
+    }
+
+    /* Selector Button */
+    .selector-btn {
+      display: flex;
+      align-items: center;
+      background: var(--input-bg);
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-input);
+      margin-bottom: 16px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .selector-btn:hover {
+      border-color: var(--primary-navy);
+    }
+
+    .sup-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      font-size: 15px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .selector-main-text {
+      color: var(--text-dark);
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .selector-sub-text {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 2px 0 0 0;
+    }
+
+    /* Input Wrappers */
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--input-bg);
+      border-radius: 12px;
+      border: 1.5px solid var(--border-input);
+      margin-bottom: 16px;
+      padding: 0 14px;
+      height: 48px;
+      transition: all 0.2s;
+    }
+
+    .input-wrapper:focus-within {
+      border-color: var(--primary-navy);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12);
+    }
+
+    .input-field {
+      flex: 1;
+      height: 100%;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      outline: none;
+    }
+
+    .input-field::placeholder {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .unit-text {
+      font-weight: 900;
+      font-size: 12px;
+      user-select: none;
+    }
+
+    /* Action Buttons */
+    .assign-btn {
+      width: 100%;
+      height: 52px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 14px rgba(30, 64, 175, 0.25);
+      transition: all 0.2s;
+    }
+
+    .assign-btn:hover {
+      background: #172554;
+      transform: translateY(-1px);
+    }
+
+    .assign-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .cancel-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 16px;
+      background: none;
+      border: none;
+      color: var(--accent-red);
+      font-weight: 700;
+      font-size: 12.5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* Feedback Banner */
+    .status-banner {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .status-success {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+    .status-error {
+      background: #fee2e2;
+      border: 1px solid #fecdd3;
+      color: #991b1b;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 440px;
+      border: 1px solid var(--border-input);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 10px;
+    }
+
+    .modal-title {
+      color: var(--text-dark);
+      font-size: 15px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .picker-list {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .picker-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .picker-item:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .picker-item.active {
+      background: #eff6ff;
+      border-color: var(--primary-navy);
+    }
+
+    .picker-item-name {
+      color: var(--text-dark);
+      font-size: 13.5px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .picker-item-sub {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 2px 0 0 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Header -->
+  <header class="top-bar">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="top-bar-title">DEPLOY FIELD TARGET</h1>
+    <div style="width: 40px;"></div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Banner Card -->
+    <div class="banner-card">
+      <i class="fa-solid fa-bullseye banner-icon"></i>
+      <div>
+        <h2 class="banner-title">Field Supervisor Allocation</h2>
+        <p class="banner-sub">Assign real-time data & airtime performance quotas</p>
+      </div>
+    </div>
+
+    <!-- Feedback Banner -->
+    <div id="statusBanner" class="status-banner"></div>
+
+    <!-- Form Card -->
+    <section class="form-card">
+
+      <!-- Supervisor Selector -->
+      <label class="label">ASSIGNED FIELD SUPERVISOR</label>
+      <div id="loadingSupervisorIndicator" style="text-align: center; padding: 10px; display: none;">
+        <i class="fa-solid fa-spinner fa-spin" style="color: var(--primary-navy);"></i>
+      </div>
+
+      <button type="button" class="selector-btn" id="btnOpenPicker" onclick="openSupervisorPicker()">
+        <div class="sup-avatar">
+          <i class="fa-solid fa-user-tie"></i>
+        </div>
+        <div style="flex: 1;">
+          <h3 class="selector-main-text" id="selectedSupName">Select Supervisor</h3>
+          <p class="selector-sub-text" id="selectedSupMeta">Tap to pick from list</p>
+        </div>
+        <i class="fa-solid fa-chevron-down" style="color: #64748b; font-size: 14px;"></i>
+      </button>
+
+      <!-- Target Month / Cycle -->
+      <label class="label" for="targetMonthInput">TARGET MONTH / CYCLE</label>
+      <div class="input-wrapper">
+        <input
+          type="text"
+          id="targetMonthInput"
+          class="input-field"
+          placeholder="e.g. September 2026"
+          value="September 2026"
+        />
+        <i class="fa-regular fa-calendar" style="color: var(--primary-navy); font-size: 16px;"></i>
+      </div>
+
+      <!-- Data Sales Goal -->
+      <label class="label" for="dataGoalInput">DATA VOLUME QUOTA (GB)</label>
+      <div class="input-wrapper">
+        <input
+          type="number"
+          id="dataGoalInput"
+          class="input-field"
+          placeholder="e.g. 500"
+          value="500"
+          min="1"
+        />
+        <span class="unit-text" style="color: var(--primary-navy);">GB</span>
+      </div>
+
+      <!-- Airtime Sales Goal -->
+      <label class="label" for="airtimeGoalInput">AIRTIME SALES QUOTA (₦ NAIRA)</label>
+      <div class="input-wrapper">
+        <input
+          type="number"
+          id="airtimeGoalInput"
+          class="input-field"
+          placeholder="e.g. 50000"
+          value="50000"
+          min="1"
+        />
+        <span class="unit-text" style="color: var(--accent-amber);">₦ NAIRA</span>
+      </div>
+
+      <!-- Agent Recruitment Goal -->
+      <label class="label" for="agentGoalInput">AGENT RECRUITMENT QUOTA (HEADCOUNT)</label>
+      <div class="input-wrapper">
+        <input
+          type="number"
+          id="agentGoalInput"
+          class="input-field"
+          placeholder="e.g. 10"
+          value="10"
+          min="1"
+        />
+        <span class="unit-text" style="color: var(--accent-green);">Agents</span>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="button" class="assign-btn" id="btnSubmitTarget" onclick="handleDeployTarget()">
+        AUTHORIZE & DEPLOY TARGET
+      </button>
+
+      <!-- Cancel Button -->
+      <a href="javascript:history.back()" class="cancel-btn">Discard and Return</a>
+    </section>
+  </main>
+
+  <!-- Supervisor Picker Modal -->
+  <div class="modal-overlay" id="pickerModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <h2 class="modal-title">Select Field Supervisor</h2>
+        <button class="btn-modal-close" onclick="closeSupervisorPicker()">&times;</button>
+      </div>
+
+      <div class="picker-list" id="pickerListContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      supervisors: [],
+      selectedSupervisor: null
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert('Authentication required. Please login.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Check URL search parameters for initial supervisor pre-selection
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialSupId = urlParams.get('supervisorId');
+
+      fetchSupervisors(initialSupId);
+    });
+
+    async function fetchSupervisors(preselectId) {
+      const loadingEl = document.getElementById('loadingSupervisorIndicator');
+      loadingEl.style.display = 'block';
+
+      try {
+        const response = await fetch(`${BASE_URL}/leader/dashboard`, {
+          headers: { 'Authorization': `Bearer ${state.token}` }
+        });
+        const data = await response.json();
+
+        const sups = data.data?.supervisors || data.supervisors || [];
+        state.supervisors = sups;
+
+        if (sups.length > 0) {
+          let selected = null;
+          if (preselectId) {
+            selected = sups.find(s => String(s._id || s.id) === String(preselectId));
+          }
+          if (!selected) {
+            selected = sups[0];
+          }
+          selectSupervisor(selected);
+        } else {
+          document.getElementById('selectedSupName').textContent = "No supervisors available";
+          document.getElementById('selectedSupMeta').textContent = "Enroll supervisors to assign targets";
+        }
+      } catch (err) {
+        console.warn("Failed to load supervisors:", err.message);
+      } finally {
+        loadingEl.style.display = 'none';
+      }
+    }
+
+    function selectSupervisor(sup) {
+      if (!sup) return;
+      state.selectedSupervisor = sup;
+
+      document.getElementById('selectedSupName').textContent = sup.name || sup.phone || "Field Supervisor";
+      const lga = sup.lga ? `📍 ${sup.lga} LGA` : "📍 Territory LGA";
+      const phone = sup.phone ? ` • 📞 ${sup.phone}` : "";
+      document.getElementById('selectedSupMeta').textContent = `${lga}${phone}`;
+
+      if (sup.targets) {
+        document.getElementById('dataGoalInput').value = sup.targets.dataGoal || 500;
+        document.getElementById('airtimeGoalInput').value = sup.targets.airtimeGoal || 50000;
+        document.getElementById('agentGoalInput').value = sup.targets.agentGoal || 10;
+        if (sup.targets.currentMonth || sup.targets.month) {
+          document.getElementById('targetMonthInput').value = sup.targets.currentMonth || sup.targets.month;
+        }
+      }
+    }
+
+    function openSupervisorPicker() {
+      renderPickerList();
+      document.getElementById('pickerModal').style.display = 'flex';
+    }
+
+    function closeSupervisorPicker() {
+      document.getElementById('pickerModal').style.display = 'none';
+    }
+
+    function renderPickerList() {
+      const container = document.getElementById('pickerListContainer');
+      if (state.supervisors.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #64748b; margin: 20px 0;">No supervisors registered in this station.</p>';
+        return;
+      }
+
+      container.innerHTML = state.supervisors.map(sup => {
+        const isSelected = state.selectedSupervisor && String(state.selectedSupervisor._id || state.selectedSupervisor.id) === String(sup._id || sup.id);
+        return `
+          <div class="picker-item ${isSelected ? 'active' : ''}" onclick="pickSupervisor('${sup._id || sup.id}')">
+            <div class="sup-avatar">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <div style="flex: 1;">
+              <h4 class="picker-item-name">${sup.name || sup.phone}</h4>
+              <p class="picker-item-sub">📍 ${sup.lga || 'Territory'} LGA • 📞 ${sup.phone || 'N/A'}</p>
+            </div>
+            ${isSelected ? '<i class="fa-solid fa-circle-check" style="color: var(--primary-navy); font-size: 18px;"></i>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function pickSupervisor(id) {
+      const found = state.supervisors.find(s => String(s._id || s.id) === String(id));
+      if (found) {
+        selectSupervisor(found);
+      }
+      closeSupervisorPicker();
+    }
+
+    function showFeedback(message, isSuccess = true) {
+      const banner = document.getElementById('statusBanner');
+      banner.textContent = message;
+      banner.className = `status-banner ${isSuccess ? 'status-success' : 'status-error'}`;
+      banner.style.display = 'block';
+
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 6000);
+    }
+
+    async function handleDeployTarget() {
+      if (!state.selectedSupervisor) {
+        alert("Validation Notice: Please select a Field Supervisor.");
+        return;
+      }
+
+      const dataGoal = document.getElementById('dataGoalInput').value.trim();
+      const airtimeGoal = document.getElementById('airtimeGoalInput').value.trim();
+      const agentGoal = document.getElementById('agentGoalInput').value.trim();
+      const month = document.getElementById('targetMonthInput').value.trim();
+
+      if (!dataGoal || !airtimeGoal || !agentGoal || !month) {
+        alert("Validation Notice: Please complete all quota target parameters.");
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmitTarget');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deploying Target...';
+
+        const payload = {
+          mode: "single_sup",
+          supervisorId: state.selectedSupervisor._id || state.selectedSupervisor.id,
+          dataGoal: Number(dataGoal),
+          airtimeGoal: Number(airtimeGoal),
+          agentGoal: Number(agentGoal),
+          month: month,
+          state: state.selectedSupervisor.state || "Kano",
+          lga: state.selectedSupervisor.lga || "Municipal"
+        };
+
+        const response = await fetch(`${BASE_URL}/leader/assign-target`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && (result.success || response.status === 200)) {
+          alert(`Target Activated! 🎯\n\nTarget successfully assigned to ${state.selectedSupervisor.name || state.selectedSupervisor.phone} (${state.selectedSupervisor.lga || "LGA"}):\n\n• Data: ${dataGoal} GB\n• Airtime: ₦${Number(airtimeGoal).toLocaleString()}\n• Agents: ${agentGoal} Headcount\n• Cycle: ${month}`);
+          showFeedback("Target quota deployed successfully.", true);
+        } else {
+          throw new Error(result.message || "Failed to deploy target.");
+        }
+      } catch (err) {
+        alert("Assignment Error: " + (err.message || "Could not deploy supervisor target."));
+        showFeedback(err.message || "Server communication error.", false);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

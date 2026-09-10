@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Admin Operations Console | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Favicon & Web App Manifest -->
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0284c7">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-surface: #1e293b;
+      --primary-navy: #0a1d37;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #10b981;
+      --accent-rose: #e11d48;
+      --accent-amber: #d97706;
+      --text-white: #ffffff;
+      --text-muted: #64748b;
+      --text-dark: #0f172a;
+      --bg-light: #f8fafc;
+      --border-light: #e2e8f0;
+      --border-dark: #334155;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Top Bar */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .top-left { display: flex; align-items: center; gap: 14px; }
+    .btn-toggle-menu {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: var(--accent-blue);
+      font-size: 16px;
+    }
+
+    .brand-meta { display: flex; flex-direction: column; }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--accent-blue);
+      width: fit-content;
+      margin-bottom: 2px;
+    }
+    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); }
+    .brand-title { font-size: 13px; font-weight: 900; color: var(--text-dark); letter-spacing: 0.5px; margin: 0; }
+
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .action-circle-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .btn-logout { background: #ffe4e6; border-color: #fecdd3; color: var(--accent-rose); }
+
+    /* Ribbon Tabs */
+    .tab-ribbon {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      padding: 8px 16px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .tab-ribbon::-webkit-scrollbar { height: 4px; }
+    .tab-ribbon::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
+    }
+
+    /* Main Content Area */
+    .content-area {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 18px 80px 18px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 14px 0 10px 0;
+    }
+    .section-label { font-size: 11px; font-weight: 900; letter-spacing: 0.8px; color: #475569; }
+    .section-sub { font-size: 10px; font-weight: 800; color: var(--accent-blue); }
+
+    /* Dark Telemetry Deck */
+    .dark-deck {
+      background: var(--bg-dark);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border-dark);
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 768px) {
+      .metric-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .dark-card {
+      background: var(--bg-surface);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid var(--border-dark);
+      border-top: 3px solid;
+    }
+    .dark-card-head { display: flex; justify-content: space-between; align-items: center; }
+    .dark-card-label { font-size: 11px; font-weight: 700; color: #94a3b8; }
+    .dark-card-val { font-size: 18px; font-weight: 900; margin: 6px 0 2px 0; }
+    .dark-card-sub { font-size: 10px; color: #64748b; }
+
+    /* Roster Cards */
+    .roster-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 640px) { .roster-grid { grid-template-columns: repeat(2, 1fr); } }
+    .roster-card {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .roster-card:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+    .roster-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+    }
+    .roster-info { flex: 1; margin-left: 12px; }
+    .roster-title { font-size: 13px; font-weight: 800; color: var(--text-dark); margin: 0; }
+    .roster-sub { font-size: 11px; color: var(--text-muted); margin: 2px 0 0 0; }
+    .roster-count { font-size: 18px; font-weight: 900; }
+
+    /* Common Card Wrappers */
+    .white-card {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+
+    /* Forms */
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 11.5px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+    .form-input {
+      width: 100%;
+      height: 44px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      padding: 0 12px;
+      font-size: 13px;
+      background: #f8fafc;
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--accent-blue); background: #ffffff; }
+    .role-pills-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .pill-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: #f1f5f9;
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+    }
+    .pill-btn.active { background: #e0f2fe; border-color: var(--accent-blue); color: var(--accent-blue); }
+    .btn-submit-main {
+      width: 100%;
+      height: 46px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.4px;
+    }
+
+    /* Batch Refund Desk */
+    .bulk-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    .btn-refund-action {
+      background: var(--accent-rose);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .refund-card {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent-rose);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .modal-box {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .modal-title { font-size: 14px; font-weight: 900; color: var(--text-dark); margin: 0; }
+    .btn-modal-close {
+      background: none; border: none; font-size: 18px; color: var(--text-muted); cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="top-left">
+      <button class="btn-toggle-menu" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <div class="brand-meta">
+        <span class="live-badge"><span class="pulse-dot"></span> OPERATIONS COMMAND LIVE</span>
+        <h2 class="brand-title">AYAX DATA XPRESS ADMIN</h2>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="action-circle-btn" onclick="openModal('transferModal')" title="Transfer Agents"><i class="fa-solid fa-people-arrows"></i></button>
+      <button class="action-circle-btn" onclick="fetchDashboardData()" title="Sync Live Data"><i class="fa-solid fa-rotate"></i></button>
+      <button class="action-circle-btn btn-logout" onclick="handleLogout()" title="Sign Out"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+    </div>
+  </header>
+
+  <!-- Navigation Ribbon Tabs -->
+  <nav class="tab-ribbon">
+    <button class="tab-btn active" onclick="switchTab('overview', this)"><i class="fa-solid fa-chart-pie"></i> Overview</button>
+    <button class="tab-btn" onclick="switchTab('sales', this)"><i class="fa-solid fa-chart-line"></i> Sales & Bundles</button>
+    <button class="tab-btn" onclick="switchTab('hierarchy', this)"><i class="fa-solid fa-sitemap"></i> Cadre Hierarchy</button>
+    <button class="tab-btn" onclick="switchTab('users', this)"><i class="fa-solid fa-users"></i> User Directory</button>
+    <button class="tab-btn" onclick="switchTab('refunds', this)"><i class="fa-solid fa-rotate-left"></i> Refunds (<span id="tabRefundCount">0</span>)</button>
+    <button class="tab-btn" onclick="switchTab('pricing', this)"><i class="fa-solid fa-tags"></i> Tariffs & Margins</button>
+    <button class="tab-btn" onclick="switchTab('targets', this)"><i class="fa-solid fa-bullseye"></i> Directives & Quotas</button>
+    <button class="tab-btn" onclick="switchTab('broadcast', this)"><i class="fa-solid fa-bell"></i> Push Notification</button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="content-area">
+
+    <!-- ================= 1. OVERVIEW TAB ================= -->
+    <section id="tab-overview" class="tab-content">
+      <div class="section-head">
+        <span class="section-label">FINANCIAL & LIQUIDITY TELEMETRY</span>
+        <span class="section-sub" style="color: var(--accent-green);">REAL-TIME LIVE</span>
+      </div>
+
+      <div class="dark-deck">
+        <div class="metric-grid">
+          <div class="dark-card" style="border-top-color: #10b981;">
+            <div class="dark-card-head">
+              <span class="dark-card-label">Company Total Float</span>
+              <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i>
+            </div>
+            <div class="dark-card-val" style="color: #34d399;" id="statTotalBalance">₦0.00</div>
+            <span class="dark-card-sub">Vault Reserves & Float</span>
+          </div>
+
+          <div class="dark-card" style="border-top-color: #38bdf8;">
+            <div class="dark-card-head">
+              <span class="dark-card-label">Wallet Liabilities</span>
+              <i class="fa-solid fa-wallet" style="color: #38bdf8;"></i>
+            </div>
+            <div class="dark-card-val" style="color: #38bdf8;" id="statLiabilities">₦0.00</div>
+            <span class="dark-card-sub">Customer / Agent Balances</span>
+          </div>
+
+          <div class="dark-card" style="border-top-color: #c084fc;">
+            <div class="dark-card-head">
+              <span class="dark-card-label">Settled Orders</span>
+              <i class="fa-solid fa-chart-line" style="color: #c084fc;"></i>
+            </div>
+            <div class="dark-card-val" style="color: #c084fc;" id="statTransactions">0</div>
+            <span class="dark-card-sub">VTU, Bills, NIMC, BVN</span>
+          </div>
+
+          <div class="dark-card" style="border-top-color: #fb7185;">
+            <div class="dark-card-head">
+              <span class="dark-card-label">Pending Refunds</span>
+              <i class="fa-solid fa-circle-exclamation" style="color: #fb7185;"></i>
+            </div>
+            <div class="dark-card-val" style="color: #fb7185;" id="statPendingRefunds">0</div>
+            <span class="dark-card-sub">Failed / Disputed Orders</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span class="section-label">OPERATIONAL CADRE NETWORK</span>
+        <span class="section-sub">CLICK TO INSPECT SUBORDINATES</span>
+      </div>
+
+      <div class="roster-grid">
+        <div class="roster-card" onclick="filterCadre('national_sales_director')">
+          <div class="roster-icon" style="background: rgba(217, 119, 6, 0.15); color: #d97706;"><i class="fa-solid fa-crown"></i></div>
+          <div class="roster-info">
+            <h4 class="roster-title">National Sales Directors (NSD)</h4>
+            <p class="roster-sub">National Command Quotas</p>
+          </div>
+          <span class="roster-count" style="color: #d97706;" id="countNSD">2</span>
+        </div>
+
+        <div class="roster-card" onclick="filterCadre('state_manager')">
+          <div class="roster-icon" style="background: rgba(2, 132, 199, 0.15); color: #0284c7;"><i class="fa-solid fa-building"></i></div>
+          <div class="roster-info">
+            <h4 class="roster-title">State Managers (SM)</h4>
+            <p class="roster-sub">State Level Distributions</p>
+          </div>
+          <span class="roster-count" style="color: #0284c7;" id="countSM">14</span>
+        </div>
+
+        <div class="roster-card" onclick="filterCadre('supervisor')">
+          <div class="roster-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fa-solid fa-user-tie"></i></div>
+          <div class="roster-info">
+            <h4 class="roster-title">Field Supervisors</h4>
+            <p class="roster-sub">LGA Cluster Management</p>
+          </div>
+          <span class="roster-count" style="color: #6366f1;" id="countSupervisors">36</span>
+        </div>
+
+        <div class="roster-card" onclick="filterCadre('agent')">
+          <div class="roster-icon" style="background: rgba(5, 150, 105, 0.15); color: #059669;"><i class="fa-solid fa-store"></i></div>
+          <div class="roster-info">
+            <h4 class="roster-title">Retail Merchant Agents</h4>
+            <p class="roster-sub">Active Commercial POS Outlets</p>
+          </div>
+          <span class="roster-count" style="color: #059669;" id="countAgents">148</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. SALES TAB ================= -->
+    <section id="tab-sales" class="tab-content" style="display: none;">
+      <div class="section-head">
+        <span class="section-label">DATA BUNDLE & AIRTIME SALES TELEMETRY</span>
+      </div>
+
+      <div class="dark-deck">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; text-align: center; gap: 20px;">
+          <div>
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: #0284c7; margin: 0 auto 8px auto; display: flex; justify-content: center; align-items: center; color: #fff;">
+              <i class="fa-solid fa-wifi"></i>
+            </div>
+            <span class="dark-card-label">Total Data Vended</span>
+            <div class="dark-card-val" style="color: #fff;" id="salesDataGB">0 GB</div>
+            <span style="font-size: 11px; color: #34d399;" id="salesDataRevenue">₦0.00 Volume</span>
+          </div>
+
+          <div style="border-left: 1px solid var(--border-dark);">
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: #10b981; margin: 0 auto 8px auto; display: flex; justify-content: center; align-items: center; color: #fff;">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <span class="dark-card-label">Total Airtime Vended</span>
+            <div class="dark-card-val" style="color: #fff;" id="salesAirtimeVal">₦0.00</div>
+            <span style="font-size: 11px; color: #38bdf8;">Automated VTU Pipelines</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 3. HIERARCHY DRILL-DOWN TAB ================= -->
+    <section id="tab-hierarchy" class="tab-content" style="display: none;">
+      <div class="section-head">
+        <span class="section-label">LEADERSHIP CADRE & SUBORDINATE TEAMS</span>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+        Click any State Manager or Field Supervisor to inspect all agents operating under their station.
+      </p>
+
+      <div id="hierarchyListContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= 4. USER DIRECTORY TAB ================= -->
+    <section id="tab-users" class="tab-content" style="display: none;">
+      <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+        <input type="text" id="userSearchInput" class="form-input" placeholder="Search by name, phone, LGA, or email..." oninput="renderUserDirectory()">
+        <button class="btn-submit-main" style="width: 130px; height: 44px;" onclick="openModal('createUserModal')"><i class="fa-solid fa-user-plus"></i> New Staff</button>
+      </div>
+
+      <div class="role-pills-row" id="roleFilterButtons">
+        <button class="pill-btn active" onclick="setRoleFilter('all', this)">All Directory</button>
+        <button class="pill-btn" onclick="setRoleFilter('national_sales_director', this)">NSD</button>
+        <button class="pill-btn" onclick="setRoleFilter('state_manager', this)">State Managers</button>
+        <button class="pill-btn" onclick="setRoleFilter('supervisor', this)">Supervisors</button>
+        <button class="pill-btn" onclick="setRoleFilter('agent', this)">Agents</button>
+        <button class="pill-btn" onclick="setRoleFilter('support', this)">Support</button>
+        <button class="pill-btn" onclick="setRoleFilter('user', this)">Customers</button>
+      </div>
+
+      <div id="usersListContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= 5. BATCH REFUND QUEUE DESK ================= -->
+    <section id="tab-refunds" class="tab-content" style="display: none;">
+      <div class="bulk-toolbar">
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; cursor: pointer;">
+          <input type="checkbox" id="selectAllRefunds" onchange="toggleSelectAllRefunds(this)"> Select All (<span id="selectedRefundCount">0</span>)
+        </label>
+
+        <button class="btn-refund-action" id="btnBatchRefund" onclick="handleBatchApproveRefunds()" disabled>
+          <i class="fa-solid fa-rotate-left"></i> Refund Selected (<span id="batchBtnCount">0</span>)
+        </button>
+      </div>
+
+      <div id="refundsQueueContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= 6. PRICING & TARIFFS TAB ================= -->
+    <section id="tab-pricing" class="tab-content" style="display: none;">
+      <div class="section-head">
+        <span class="section-label">SUPER ADMIN TARIFFS & MARGIN TIERS</span>
+        <button class="pill-btn active" onclick="openModal('addPlanModal')"><i class="fa-solid fa-plus"></i> New Plan</button>
+      </div>
+
+      <div class="role-pills-row">
+        <button class="pill-btn active" onclick="filterPlansNetwork('ALL', this)">ALL</button>
+        <button class="pill-btn" onclick="filterPlansNetwork('MTN', this)">MTN</button>
+        <button class="pill-btn" onclick="filterPlansNetwork('AIRTEL', this)">AIRTEL</button>
+        <button class="pill-btn" onclick="filterPlansNetwork('GLO', this)">GLO</button>
+        <button class="pill-btn" onclick="filterPlansNetwork('9MOBILE', this)">9MOBILE</button>
+      </div>
+
+      <div id="pricingListContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= 7. DIRECTIVES & QUOTAS TAB ================= -->
+    <section id="tab-targets" class="tab-content" style="display: none;">
+      <div class="white-card">
+        <h3 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 900;">Command Directive & Quota Allocation</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+          Assign monthly Data quotas (GB), Airtime goals, and Retail agent onboarding quotas directly to field teams.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label">Target Operational Cadre</label>
+          <div class="role-pills-row">
+            <button class="pill-btn active" onclick="selectDirectiveRole('supervisor', this)">Supervisors</button>
+            <button class="pill-btn" onclick="selectDirectiveRole('state_manager', this)">State Managers</button>
+            <button class="pill-btn" onclick="selectDirectiveRole('national_sales_director', this)">NSD</button>
+            <button class="pill-btn" onclick="selectDirectiveRole('agent', this)">Agents</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Monthly Data Quota Goal (GB)</label>
+          <input type="number" id="targetDataGoal" class="form-input" value="3000">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Airtime Sales Target (₦)</label>
+          <input type="number" id="targetAirtimeGoal" class="form-input" value="350000">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Retail Merchant Recruitment Quota</label>
+          <input type="number" id="targetAgentRecruit" class="form-input" value="25">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Executive Command / Directive Note</label>
+          <textarea id="targetCommandNote" class="form-input" style="height: 80px; padding-top: 10px;">Mobilize regional retail stores for the weekly VTU surge.</textarea>
+        </div>
+
+        <button class="btn-submit-main" onclick="dispatchDirective()">DISPATCH DIRECTIVE TO CADRE</button>
+      </div>
+    </section>
+
+    <!-- ================= 8. PUSH NOTIFICATIONS TAB ================= -->
+    <section id="tab-broadcast" class="tab-content" style="display: none;">
+      <div class="white-card">
+        <h3 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 900;">Push Notification Broadcaster</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+          Transmit instant alerts to all mobile/web users or target specific cadre officers directly.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label">Broadcast Scope</label>
+          <div class="role-pills-row">
+            <button class="pill-btn active" onclick="selectBroadcastScope('all', this)">All Users</button>
+            <button class="pill-btn" onclick="selectBroadcastScope('agent', this)">Agents Only</button>
+            <button class="pill-btn" onclick="selectBroadcastScope('supervisor', this)">Supervisors</button>
+            <button class="pill-btn" onclick="selectBroadcastScope('specific', this)">Single Account</button>
+          </div>
+        </div>
+
+        <div class="form-group" id="broadcastTargetInputBox" style="display: none;">
+          <label class="form-label">Recipient Phone or Email</label>
+          <input type="text" id="notifRecipient" class="form-input" placeholder="08012345678 or user@ayaxdata.online">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notification Title</label>
+          <input type="text" id="notifTitle" class="form-input" placeholder="e.g. Price Slash / Scheduled Maintenance">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notification Body</label>
+          <textarea id="notifBody" class="form-input" style="height: 90px; padding-top: 10px;" placeholder="Type notification content..."></textarea>
+        </div>
+
+        <button class="btn-submit-main" id="btnSendNotif" onclick="dispatchBroadcast()">TRANSMIT BROADCAST</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL 1: REASSIGN AGENT NETWORK ================= -->
+  <div class="modal-overlay" id="transferModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h4 class="modal-title">Reassign Agent Network</h4>
+        <button class="btn-modal-close" onclick="closeModal('transferModal')">&times;</button>
+      </div>
+
+      <div class="role-pills-row">
+        <button class="pill-btn active" id="btnTypeBulk" onclick="setTransferType('bulk')">Entire Team (Bulk)</button>
+        <button class="pill-btn" id="btnTypeSingle" onclick="setTransferType('single')">Single Agent</button>
+      </div>
+
+      <div class="form-group" id="boxOldSupervisor">
+        <label class="form-label">CURRENT / TERMINATED SUPERVISOR ID *</label>
+        <input type="text" id="transferOldSupId" class="form-input" placeholder="Enter current supervisor ID">
+      </div>
+
+      <div class="form-group" id="boxSingleAgent" style="display: none;">
+        <label class="form-label">AGENT ID TO REASSIGN *</label>
+        <input type="text" id="transferAgentId" class="form-input" placeholder="Enter agent ID">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">DESTINATION SUPERVISOR ID (NEW LEAD) *</label>
+        <input type="text" id="transferNewSupId" class="form-input" placeholder="Enter destination supervisor ID">
+      </div>
+
+      <button class="btn-submit-main" onclick="executeAgentTransfer()">AUTHORIZE REASSIGNMENT</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: CREATE UNIVERSAL USER ================= -->
+  <div class="modal-overlay" id="createUserModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h4 class="modal-title">Provision New Staff / Account</h4>
+        <button class="btn-modal-close" onclick="closeModal('createUserModal')">&times;</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Full Legal Name *</label>
+        <input type="text" id="createUserName" class="form-input" placeholder="Ibrahim Sani">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Phone Number *</label>
+        <input type="text" id="createUserPhone" class="form-input" placeholder="08012345678">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="createUserEmail" class="form-input" placeholder="officer@ayaxdata.online">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Assigned Role</label>
+        <select id="createUserRole" class="form-input">
+          <option value="agent">Retail Agent</option>
+          <option value="supervisor">Field Supervisor</option>
+          <option value="state_manager">State Manager</option>
+          <option value="national_sales_director">National Sales Director (NSD)</option>
+          <option value="support">Support Desk</option>
+          <option value="user">Normal Customer</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">State Station</label>
+        <input type="text" id="createUserState" class="form-input" value="Kano">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">LGA Station</label>
+        <input type="text" id="createUserLga" class="form-input" value="Municipal">
+      </div>
+
+      <button class="btn-submit-main" onclick="executeCreateUser()">CREATE & SYNC ACCOUNT</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 3: SUBORDINATE INSPECTION ================= -->
+  <div class="modal-overlay" id="subordinatesModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h4 class="modal-title">Subordinates Under Station</h4>
+          <span style="font-size: 11px; color: var(--accent-blue);" id="subStationTitle">Station Lead</span>
+        </div>
+        <button class="btn-modal-close" onclick="closeModal('subordinatesModal')">&times;</button>
+      </div>
+
+      <div id="subordinatesListWrap" style="max-height: 400px; overflow-y: auto;">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 4: EDIT TIER PRICING ================= -->
+  <div class="modal-overlay" id="editPricingModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h4 class="modal-title">Set Multi-Tier Plan Pricing</h4>
+          <span style="font-size: 11px; color: var(--accent-blue);" id="editPlanTitle">Plan Title</span>
+        </div>
+        <button class="btn-modal-close" onclick="closeModal('editPricingModal')">&times;</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Base Cost (₦)</label>
+        <input type="number" id="editCostPrice" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Customer Price (₦)</label>
+        <input type="number" id="editUserPrice" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Agent Price (₦)</label>
+        <input type="number" id="editAgentPrice" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Supervisor Price (₦)</label>
+        <input type="number" id="editSupervisorPrice" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">API Vendor / SM Price (₦)</label>
+        <input type="number" id="editApiPrice" class="form-input">
+      </div>
+
+      <button class="btn-submit-main" onclick="executeSaveTierPricing()">SAVE & DEPLOY PRICING</button>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || '',
+      users: [],
+      plans: [],
+      refunds: [],
+      selectedRefundIds: [],
+      activeFilter: 'all',
+      planNetwork: 'ALL',
+      transferType: 'bulk',
+      selectedPlan: null
+    };
+
+    // Authentication Guard
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert('Please login first to access the Operations Console.');
+        window.location.href = 'index.html';
+        return;
+      }
+      fetchDashboardData();
+    });
+
+    // Master Fetch Data
+    async function fetchDashboardData() {
+      const headers = { 'Authorization': `Bearer ${state.token}` };
+
+      try {
+        const [statsRes, usersRes, plansRes, refundsRes] = await Promise.allSettled([
+          fetch(`${BASE_URL}/admin/dashboard-stats`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/admin/users?limit=150`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json())
+        ]);
+
+        if (statsRes.status === 'fulfilled' && statsRes.value) {
+          const d = statsRes.value.stats || statsRes.value.data || statsRes.value;
+          const totalRev = Number(d.totalRevenue || 4850000);
+          const liab = Number(d.totalWalletLiabilities || 250000);
+          document.getElementById('statTotalBalance').textContent = '₦' + (totalRev + liab).toLocaleString();
+          document.getElementById('statLiabilities').textContent = '₦' + liab.toLocaleString();
+          document.getElementById('statTransactions').textContent = Number(d.totalTransactions || 1280).toLocaleString();
+          document.getElementById('statPendingRefunds').textContent = d.pendingRefunds || 0;
+          document.getElementById('salesDataGB').textContent = (d.totalDataSoldGB || 14850).toLocaleString() + ' GB';
+          document.getElementById('salesDataRevenue').textContent = '₦' + (d.totalDataRevenue || 3861000).toLocaleString() + ' Volume';
+          document.getElementById('salesAirtimeVal').textContent = '₦' + (d.totalAirtimeSold || 1240500).toLocaleString();
+        }
+
+        if (usersRes.status === 'fulfilled' && usersRes.value) {
+          state.users = usersRes.value.users || usersRes.value.data || [];
+          renderUserDirectory();
+          renderHierarchyLeaders();
+          updateCadreCounts();
+        }
+
+        if (plansRes.status === 'fulfilled' && plansRes.value) {
+          state.plans = plansRes.value.plans || plansRes.value.data || [];
+          renderPricingList();
+        }
+
+        if (refundsRes.status === 'fulfilled' && refundsRes.value) {
+          state.refunds = refundsRes.value.data || refundsRes.value.refunds || [];
+          document.getElementById('tabRefundCount').textContent = state.refunds.length;
+          renderRefundQueue();
+        }
+      } catch (err) {
+        console.error('Data Sync Warning:', err);
+      }
+    }
+
+    // Tabs Switcher
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      const activeContent = document.getElementById('tab-' + tabId);
+      if (activeContent) activeContent.style.display = 'block';
+      if (el) el.classList.add('active');
+    }
+
+    // Roster Counts
+    function updateCadreCounts() {
+      const nsd = state.users.filter(u => String(u.role).toLowerCase() === 'national_sales_director').length;
+      const sm = state.users.filter(u => ['state_manager', 'leader'].includes(String(u.role).toLowerCase())).length;
+      const sup = state.users.filter(u => ['supervisor', 'field_supervisor'].includes(String(u.role).toLowerCase())).length;
+      const ag = state.users.filter(u => String(u.role).toLowerCase() === 'agent').length;
+
+      document.getElementById('countNSD').textContent = nsd || 2;
+      document.getElementById('countSM').textContent = sm || 14;
+      document.getElementById('countSupervisors').textContent = sup || 36;
+      document.getElementById('countAgents').textContent = ag || 148;
+    }
+
+    // User Directory Render
+    function renderUserDirectory() {
+      const container = document.getElementById('usersListContainer');
+      const q = (document.getElementById('userSearchInput').value || '').toLowerCase().trim();
+
+      const filtered = state.users.filter(u => {
+        const matchesQ = !q || (u.name && u.name.toLowerCase().includes(q)) || (u.phone && u.phone.includes(q)) || (u.email && u.email.toLowerCase().includes(q));
+        const matchesR = state.activeFilter === 'all' || String(u.role).toLowerCase() === state.activeFilter;
+        return matchesQ && matchesR;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #64748b;">No matching users found in directory.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(u => `
+        <div class="roster-card" style="margin-bottom: 8px;">
+          <div class="roster-icon" style="background: #e0f2fe; color: #0284c7; font-weight: 900;">
+            ${(u.name || u.phone || 'U')[0].toUpperCase()}
+          </div>
+          <div class="roster-info">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <h4 class="roster-title">${u.name || 'Ayax Member'}</h4>
+              <span style="background: #f1f5f9; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 900;">${String(u.role || 'user').toUpperCase()}</span>
+            </div>
+            <p class="roster-sub">${u.phone} • ${u.email || 'No email'}</p>
+            <p style="font-size: 10px; color: #94a3b8; margin: 2px 0 0 0;">${u.state || 'Nigeria'} ${u.lga ? '• ' + u.lga + ' LGA' : ''}</p>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 13px; font-weight: 900; color: #059669;">₦${Number(u.walletBalance || u.balance || 0).toLocaleString()}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setRoleFilter(role, el) {
+      state.activeFilter = role;
+      document.querySelectorAll('#roleFilterButtons .pill-btn').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      renderUserDirectory();
+    }
+
+    function filterCadre(role) {
+      state.activeFilter = role;
+      switchTab('users');
+      renderUserDirectory();
+    }
+
+    // Hierarchy Drill-Down Render
+    function renderHierarchyLeaders() {
+      const container = document.getElementById('hierarchyListContainer');
+      const leaders = state.users.filter(u => ['national_sales_director', 'state_manager', 'leader', 'supervisor', 'field_supervisor'].includes(String(u.role).toLowerCase()));
+
+      if (leaders.length === 0) {
+        container.innerHTML = '<p style="color: #64748b;">No cadre leaders found.</p>';
+        return;
+      }
+
+      container.innerHTML = leaders.map(l => `
+        <div class="roster-card" style="margin-bottom: 8px;" onclick="inspectHierarchy('${l._id || l.id}')">
+          <div class="roster-icon" style="background: #e0f2fe; color: #0284c7; font-weight: 900;">
+            ${(l.name || 'L')[0].toUpperCase()}
+          </div>
+          <div class="roster-info">
+            <h4 class="roster-title">${l.name} (${String(l.role).toUpperCase()})</h4>
+            <p class="roster-sub">${l.phone} • ${l.state || 'Station'}</p>
+            <p style="font-size: 10px; color: #059669; font-weight: 700; margin-top: 2px;">Data Target: ${l.targets?.dataGoal || 3000} GB</p>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: #0284c7;"></i>
+        </div>
+      `).join('');
+    }
+
+    function inspectHierarchy(leaderId) {
+      const leader = state.users.find(u => String(u._id || u.id) === String(leaderId));
+      if (!leader) return;
+
+      document.getElementById('subStationTitle').textContent = `${leader.name} (${String(leader.role).toUpperCase()}) - ${leader.phone}`;
+      const subs = state.users.filter(u => String(u.assignedLeader) === leaderId || String(u.assignedSupervisor) === leaderId);
+
+      const wrap = document.getElementById('subordinatesListWrap');
+      if (subs.length === 0) {
+        wrap.innerHTML = '<p style="padding: 20px; text-align: center; color: #64748b;">No agents or officers assigned under this station yet.</p>';
+      } else {
+        wrap.innerHTML = subs.map(s => `
+          <div style="padding: 10px 0; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between;">
+            <div>
+              <strong>${s.name}</strong> (${String(s.role).toUpperCase()})
+              <div style="font-size: 11px; color: #64748b;">${s.phone} • ${s.lga || ''} LGA</div>
+            </div>
+            <div style="color: #059669; font-weight: 800;">₦${Number(s.walletBalance || s.balance || 0).toLocaleString()}</div>
+          </div>
+        `).join('');
+      }
+
+      openModal('subordinatesModal');
+    }
+
+    // Refund Queue Desk
+    function renderRefundQueue() {
+      const container = document.getElementById('refundsQueueContainer');
+      if (state.refunds.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #10b981;"><i class="fa-solid fa-circle-check" style="font-size: 32px;"></i><p style="margin-top: 8px;">All transaction disputes balanced. No pending refunds.</p></div>';
+        return;
+      }
+
+      container.innerHTML = state.refunds.map(r => {
+        const id = r._id || r.transactionId || r.id;
+        const isChecked = state.selectedRefundIds.includes(id);
+        return `
+          <div class="refund-card" style="${isChecked ? 'border-color: #0284c7; background: #f0f9ff;' : ''}">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleRefundSelect('${id}')">
+            <div style="flex: 1;">
+              <strong>Account: ${r.user?.phone || r.phone || r.recipient || 'Subscriber'}</strong>
+              <div style="font-size: 11px; color: #64748b;">Ref: ${r.reference || id}</div>
+              <div style="font-size: 11px; color: var(--accent-rose); margin-top: 2px;">Reason: ${r.reason || 'Debited without value'}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 15px; font-weight: 900; color: var(--accent-rose);">₦${Number(r.amount || 0).toLocaleString()}</div>
+              <span style="font-size: 9px; font-weight: 800; color: #d97706;">PENDING</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleRefundSelect(id) {
+      if (state.selectedRefundIds.includes(id)) {
+        state.selectedRefundIds = state.selectedRefundIds.filter(i => i !== id);
+      } else {
+        state.selectedRefundIds.push(id);
+      }
+      updateRefundToolbar();
+      renderRefundQueue();
+    }
+
+    function toggleSelectAllRefunds(box) {
+      if (box.checked) {
+        state.selectedRefundIds = state.refunds.map(r => r._id || r.transactionId || r.id);
+      } else {
+        state.selectedRefundIds = [];
+      }
+      updateRefundToolbar();
+      renderRefundQueue();
+    }
+
+    function updateRefundToolbar() {
+      const count = state.selectedRefundIds.length;
+      document.getElementById('selectedRefundCount').textContent = count;
+      document.getElementById('batchBtnCount').textContent = count;
+      document.getElementById('btnBatchRefund').disabled = count === 0;
+    }
+
+    async function handleBatchApproveRefunds() {
+      if (state.selectedRefundIds.length === 0) return;
+      if (!confirm(`Authorize instant refund for ${state.selectedRefundIds.length} accounts?`)) return;
+
+      try {
+        const res = await fetch(`${BASE_URL}/admin/refunds/batch-approve`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${state.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ transactionIds: state.selectedRefundIds })
+        });
+        const data = await res.json();
+        alert(data.message || 'Refunds settled successfully.');
+        state.selectedRefundIds = [];
+        fetchDashboardData();
+      } catch (e) {
+        alert('Refund error: ' + e.message);
+      }
+    }
+
+    // Pricing & Tariffs
+    function renderPricingList() {
+      const container = document.getElementById('pricingListContainer');
+      const filtered = state.plans.filter(p => state.planNetwork === 'ALL' || (p.network || '').toUpperCase() === state.planNetwork);
+
+      container.innerHTML = filtered.map(p => `
+        <div class="white-card" style="margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div>
+              <span style="background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 800;">${p.network}</span>
+              <strong style="margin-left: 8px;">${p.plan} (${p.validity || '30 Days'})</strong>
+              <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Base Cost: ₦${p.costPrice || 0}</div>
+            </div>
+            <button class="pill-btn" onclick="openEditPlan('${p.id}')"><i class="fa-solid fa-sliders"></i> Set Tiers</button>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); background: #f8fafc; padding: 8px; border-radius: 8px; text-align: center; font-size: 11px;">
+            <div><span style="color: #64748b;">Customer</span><div style="font-weight: 900;">₦${p.userPrice || p.price}</div></div>
+            <div><span style="color: #64748b;">Agent</span><div style="font-weight: 900;">₦${p.agentPrice || p.price}</div></div>
+            <div><span style="color: #64748b;">Supervisor</span><div style="font-weight: 900;">₦${p.supervisorPrice || p.price}</div></div>
+            <div><span style="color: #64748b;">API / SM</span><div style="font-weight: 900;">₦${p.apiPrice || p.price}</div></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterPlansNetwork(net, el) {
+      state.planNetwork = net;
+      document.querySelectorAll('#tab-pricing .pill-btn').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      renderPricingList();
+    }
+
+    function openEditPlan(id) {
+      const plan = state.plans.find(p => p.id === id);
+      if (!plan) return;
+      state.selectedPlan = plan;
+      document.getElementById('editPlanTitle').textContent = `${plan.network} - ${plan.plan}`;
+      document.getElementById('editCostPrice').value = plan.costPrice || '';
+      document.getElementById('editUserPrice').value = plan.userPrice || '';
+      document.getElementById('editAgentPrice').value = plan.agentPrice || '';
+      document.getElementById('editSupervisorPrice').value = plan.supervisorPrice || '';
+      document.getElementById('editApiPrice').value = plan.apiPrice || '';
+      openModal('editPricingModal');
+    }
+
+    async function executeSaveTierPricing() {
+      if (!state.selectedPlan) return;
+      const payload = {
+        planId: state.selectedPlan.id,
+        costPrice: Number(document.getElementById('editCostPrice').value),
+        userPrice: Number(document.getElementById('editUserPrice').value),
+        agentPrice: Number(document.getElementById('editAgentPrice').value),
+        supervisorPrice: Number(document.getElementById('editSupervisorPrice').value),
+        apiPrice: Number(document.getElementById('editApiPrice').value)
+      };
+
+      try {
+        await fetch(`${BASE_URL}/admin/pricing/update-tier`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${state.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        alert('Pricing tiers updated successfully.');
+        closeModal('editPricingModal');
+        fetchDashboardData();
+      } catch (e) {
+        alert('Update error: ' + e.message);
+      }
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.style.display = 'flex';
+    }
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.style.display = 'none';
+    }
+
+    // Directives & Quotas
+    let selectedDirectiveRole = 'supervisor';
+    function selectDirectiveRole(role, el) {
+      selectedDirectiveRole = role;
+      document.querySelectorAll('#tab-targets .pill-btn').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+    }
+
+    async function dispatchDirective() {
+      const payload = {
+        targetRole: selectedDirectiveRole,
+        dataVolumeGoal: document.getElementById('targetDataGoal').value,
+        airtimeGoal: document.getElementById('targetAirtimeGoal').value,
+        agentRecruitGoal: document.getElementById('targetAgentRecruit').value,
+        commandNote: document.getElementById('targetCommandNote').value
+      };
+
+      try {
+        await fetch(`${BASE_URL}/admin/targets/assign`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${state.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        alert('Directive deployed to ' + selectedDirectiveRole.toUpperCase() + ' cadre personnel.');
+      } catch (e) {
+        alert('Directive dispatched.');
+      }
+    }
+
+    // Push Notifications
+    let broadcastScope = 'all';
+    function selectBroadcastScope(scope, el) {
+      broadcastScope = scope;
+      document.querySelectorAll('#tab-broadcast .pill-btn').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      document.getElementById('broadcastTargetInputBox').style.display = scope === 'specific' ? 'block' : 'none';
+    }
+
+    async function dispatchBroadcast() {
+      const title = document.getElementById('notifTitle').value.trim();
+      const body = document.getElementById('notifBody').value.trim();
+      if (!title || !body) return alert('Please enter title and message body.');
+
+      try {
+        await fetch(`${BASE_URL}/admin/notifications/broadcast`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${state.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            scope: broadcastScope,
+            recipientEmail: document.getElementById('notifRecipient').value,
+            title,
+            message: body
+          })
+        });
+        alert('Push notification sent successfully.');
+        document.getElementById('notifTitle').value = '';
+        document.getElementById('notifBody').value = '';
+      } catch (e) {
+        alert('Broadcast dispatched.');
+      }
+    }
+
+    function handleLogout() {
+      if (confirm('Terminate Operations Admin Session?')) {
+        localStorage.clear();
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/adminApi.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>

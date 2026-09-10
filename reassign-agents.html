@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Network & Agents Reassignment | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --primary-navy: #1e40af;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Navigation Bar */
+    .top-bar {
+      background: var(--bg-dark);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #1e293b;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+    }
+
+    .btn-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-circle:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .top-bar-title {
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin: 0;
+      text-align: center;
+      flex: 1;
+    }
+
+    /* Content Area */
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 16px 16px 80px 16px;
+    }
+
+    /* Banner Card */
+    .banner-card {
+      display: flex;
+      align-items: center;
+      background: #eff6ff;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border: 1px solid #bfdbfe;
+    }
+
+    .banner-icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #bfdbfe;
+      color: var(--primary-navy);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .banner-title {
+      color: var(--primary-navy);
+      font-size: 13.5px;
+      font-weight: 900;
+      margin: 0 0 2px 0;
+    }
+
+    .banner-sub {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    /* Search Bar */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      padding: 0 14px;
+      border-radius: 12px;
+      height: 46px;
+      border: 1px solid var(--border-input);
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .search-bar:focus-within {
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+
+    .search-bar i {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-right: 10px;
+    }
+
+    .search-input {
+      flex: 1;
+      height: 100%;
+      border: none !important;
+      outline: none !important;
+      background: transparent;
+      color: var(--text-dark);
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .search-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .clear-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Bulk Action Ribbon */
+    .bulk-ribbon {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-light);
+    }
+
+    .bulk-select-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: var(--primary-navy);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .bulk-reassign-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bulk-reassign-btn:hover {
+      background: #172554;
+    }
+
+    /* Agent Cards */
+    .agents-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .agent-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+      transition: all 0.2s;
+    }
+
+    .agent-card.selected {
+      border-color: var(--primary-navy);
+      background: #f0f7ff;
+    }
+
+    .agent-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .check-trigger {
+      background: none;
+      border: none;
+      padding: 4px;
+      margin-right: 8px;
+      cursor: pointer;
+      color: #94a3b8;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+    }
+
+    .agent-card.selected .check-trigger {
+      color: var(--primary-navy);
+    }
+
+    .agent-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .agent-meta-main {
+      flex: 1;
+      margin-left: 10px;
+      overflow: hidden;
+    }
+
+    .agent-name {
+      color: var(--text-dark);
+      font-size: 13.5px;
+      font-weight: 800;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .agent-phone {
+      color: var(--text-muted);
+      font-size: 11.5px;
+      margin: 2px 0 0 0;
+    }
+
+    .float-meta {
+      text-align: right;
+    }
+
+    .float-val {
+      color: var(--accent-green);
+      font-size: 14px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .float-sub {
+      color: #94a3b8;
+      font-size: 9.5px;
+      margin: 1px 0 0 0;
+    }
+
+    .supervisor-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-top: 10px;
+      border: 1px solid var(--border-light);
+      font-size: 11.5px;
+    }
+
+    .card-action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 8px;
+    }
+
+    .reassign-single-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: var(--primary-navy);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reassign-single-btn:hover {
+      background: #dbeafe;
+    }
+
+    .call-icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-blue);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* Empty state */
+    .empty-box {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-box i {
+      font-size: 40px;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+    }
+
+    .empty-box p {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Modal Overlay & Card */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 440px;
+      border: 1px solid var(--border-input);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 10px;
+    }
+
+    .modal-title {
+      color: var(--text-dark);
+      font-size: 15px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .modal-subtitle {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin: 2px 0 0 0;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .form-field-label {
+      color: #475569;
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .supervisor-pick-list {
+      max-height: 280px;
+      overflow-y: auto;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .supervisor-pick-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .supervisor-pick-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .supervisor-pick-item.active {
+      background: #eff6ff;
+      border-color: var(--primary-navy);
+    }
+
+    .sup-avatar-small {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-navy);
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .sup-pick-name {
+      color: var(--text-dark);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .sup-pick-sub {
+      color: var(--text-muted);
+      font-size: 10.5px;
+      margin: 2px 0 0 0;
+    }
+
+    .primary-action-btn {
+      width: 100%;
+      height: 48px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .primary-action-btn:hover {
+      background: #172554;
+    }
+
+    .primary-action-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Bar -->
+  <header class="top-bar">
+    <a href="javascript:history.back()" class="btn-circle" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="top-bar-title">NETWORK & AGENTS REASSIGNMENT</h1>
+    <button type="button" class="btn-circle" onclick="fetchData(true)" title="Reload Data">
+      <i class="fa-solid fa-rotate" id="reloadIcon"></i>
+    </button>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Territory Banner -->
+    <div class="banner-card">
+      <div class="banner-icon-box">
+        <i class="fa-solid fa-people-arrows"></i>
+      </div>
+      <div style="margin-left: 12px; flex: 1;">
+        <h2 class="banner-title">Territory Network Management</h2>
+        <p class="banner-sub">Assign, migrate, and balance retail agents across LGA Field Supervisors</p>
+      </div>
+    </div>
+
+    <!-- Live Search Input -->
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="Search agents by name, phone, LGA, or supervisor..."
+        spellcheck="false"
+        autocorrect="off"
+        autocapitalize="off"
+        oninput="handleSearch()"
+      />
+      <button type="button" class="clear-btn" id="btnClearSearch" onclick="clearSearch()" style="display: none;">
+        <i class="fa-solid fa-circle-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Bulk Action Ribbon -->
+    <div class="bulk-ribbon">
+      <button type="button" class="bulk-select-btn" onclick="handleSelectAll()">
+        <i class="fa-regular fa-square" id="selectAllCheckbox"></i>
+        <span id="selectAllLabel">Select All (0/0)</span>
+      </button>
+
+      <button type="button" class="bulk-reassign-btn" id="btnBulkReassign" style="display: none;" onclick="openBulkReassignModal()">
+        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+        <span id="bulkReassignLabel">Reassign (0)</span>
+      </button>
+    </div>
+
+    <!-- Agents Dynamic List -->
+    <div class="agents-list" id="agentsListContainer">
+      <div class="empty-box">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Syncing Agent Network Nodes...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Reassignment Supervisor Selector Modal -->
+  <div class="modal-overlay" id="transferModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-title" id="transferModalTitle">Reassign Agent</h2>
+          <p class="modal-subtitle" id="transferModalSubtitle">Assign new supervisor for agent</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeTransferModal()">&times;</button>
+      </div>
+
+      <label class="form-field-label">SELECT NEW FIELD SUPERVISOR</label>
+      <div class="supervisor-pick-list" id="supervisorPickList">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <button type="button" class="primary-action-btn" id="btnConfirmTransfer" onclick="handleExecuteTransfer()">
+        <span>CONFIRM & MIGRATE NETWORK</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      agents: [],
+      supervisors: [],
+      selectedAgentIds: [],
+      searchQuery: '',
+      transferTargetAgent: null,
+      selectedSupervisorId: ''
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session expired. Please login.");
+        window.location.href = "index.html";
+        return;
+      }
+      fetchData();
+    });
+
+    async function fetchData(isBackground = false) {
+      const reloadIcon = document.getElementById('reloadIcon');
+      if (isBackground && reloadIcon) reloadIcon.classList.add('fa-spin');
+
+      const headers = { 'Authorization': `Bearer ${state.token}` };
+
+      try {
+        const [agentsRes, supsRes] = await Promise.allSettled([
+          fetch(`${BASE_URL}/leader/agents-stream`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/leader/dashboard`, { headers }).then(r => r.json())
+        ]);
+
+        if (agentsRes.status === 'fulfilled' && agentsRes.value) {
+          state.agents = agentsRes.value.agents || agentsRes.value.data || [];
+        }
+
+        if (supsRes.status === 'fulfilled' && supsRes.value) {
+          const d = supsRes.value.data || supsRes.value;
+          state.supervisors = d.supervisors || [];
+        }
+
+        renderAgents();
+      } catch (err) {
+        console.warn("Sync error:", err);
+      } finally {
+        if (reloadIcon) reloadIcon.classList.remove('fa-spin');
+      }
+    }
+
+    function getFilteredAgents() {
+      const q = state.searchQuery.toLowerCase().trim();
+      return state.agents.filter(item => {
+        const name = (item.name || `${item.firstName || ''} ${item.surname || ''}`).toLowerCase();
+        const phone = (item.phone || item.phoneNumber || '');
+        const lga = (item.lga || '').toLowerCase();
+        const supName = (item.assignedSupervisorName || item.assignedSupervisor?.name || '').toLowerCase();
+        return !q || name.includes(q) || phone.includes(q) || lga.includes(q) || supName.includes(q);
+      });
+    }
+
+    function handleSearch() {
+      const input = document.getElementById('searchInput');
+      state.searchQuery = input.value;
+      document.getElementById('btnClearSearch').style.display = input.value.length > 0 ? 'block' : 'none';
+      renderAgents();
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      state.searchQuery = '';
+      document.getElementById('btnClearSearch').style.display = 'none';
+      renderAgents();
+    }
+
+    function handleSelectAll() {
+      const filtered = getFilteredAgents();
+      if (state.selectedAgentIds.length === filtered.length && filtered.length > 0) {
+        state.selectedAgentIds = [];
+      } else {
+        state.selectedAgentIds = filtered.map(a => a._id || a.id);
+      }
+      renderAgents();
+    }
+
+    function toggleSelectAgent(id) {
+      if (state.selectedAgentIds.includes(id)) {
+        state.selectedAgentIds = state.selectedAgentIds.filter(item => item !== id);
+      } else {
+        state.selectedAgentIds.push(id);
+      }
+      renderAgents();
+    }
+
+    function renderAgents() {
+      const container = document.getElementById('agentsListContainer');
+      const filtered = getFilteredAgents();
+
+      // Update Ribbon
+      const allSelected = state.selectedAgentIds.length === filtered.length && filtered.length > 0;
+      document.getElementById('selectAllCheckbox').className = allSelected ? 'fa-solid fa-square-check' : 'fa-regular fa-square';
+      document.getElementById('selectAllLabel').textContent = allSelected ? 'Deselect All' : `Select All (${state.selectedAgentIds.length}/${filtered.length})`;
+
+      const btnBulk = document.getElementById('btnBulkReassign');
+      if (state.selectedAgentIds.length > 0) {
+        btnBulk.style.display = 'inline-flex';
+        document.getElementById('bulkReassignLabel').textContent = `Reassign (${state.selectedAgentIds.length})`;
+      } else {
+        btnBulk.style.display = 'none';
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-box">
+            <i class="fa-solid fa-users-slash"></i>
+            <p>No agents match your search criteria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const id = item._id || item.id;
+        const name = item.name || `${item.firstName || ''} ${item.surname || ''}`.trim() || 'Retail Agent';
+        const isChecked = state.selectedAgentIds.includes(id);
+        const supName = item.assignedSupervisorName || item.assignedSupervisor?.name || 'Unassigned';
+        const floatBal = Number(item.walletBalance || item.balance || 0);
+        const phone = item.phone || item.phoneNumber || '';
+
+        return `
+          <div class="agent-card ${isChecked ? 'selected' : ''}">
+            <div class="agent-card-header">
+              <button type="button" class="check-trigger" onclick="toggleSelectAgent('${id}')">
+                <i class="${isChecked ? 'fa-solid fa-square-check' : 'fa-regular fa-square'}"></i>
+              </button>
+
+              <div class="agent-avatar">
+                <i class="fa-solid fa-user"></i>
+              </div>
+
+              <div class="agent-meta-main">
+                <h3 class="agent-name">${name}</h3>
+                <p class="agent-phone">📞 ${phone || 'No contact'}</p>
+              </div>
+
+              <div class="float-meta">
+                <p class="float-val">₦${floatBal.toLocaleString()}</p>
+                <p class="float-sub">Float Balance</p>
+              </div>
+            </div>
+
+            <div class="supervisor-info-row">
+              <span style="color: var(--text-muted);">
+                Assigned Lead: <strong style="color: ${supName === 'Unassigned' ? 'var(--accent-red)' : 'var(--primary-navy)'};">${supName}</strong>
+              </span>
+              <strong style="color: var(--text-dark);">📍 ${item.lga || 'LGA'}</strong>
+            </div>
+
+            <div class="card-action-row">
+              <button type="button" class="reassign-single-btn" onclick="openSingleReassignModal('${id}')">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                <span>Change Supervisor</span>
+              </button>
+
+              ${phone ? `
+                <a href="tel:${phone}" class="call-icon-btn" title="Call Agent">
+                  <i class="fa-solid fa-phone"></i>
+                </a>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderSupervisorsList() {
+      const list = document.getElementById('supervisorPickList');
+
+      if (state.supervisors.length === 0) {
+        list.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin: 20px 0;">No field supervisors available.</p>';
+        return;
+      }
+
+      list.innerHTML = state.supervisors.map(sup => {
+        const id = sup._id || sup.id;
+        const isPicked = state.selectedSupervisorId === id;
+        const name = sup.name || sup.phone || 'Field Supervisor';
+
+        return `
+          <div class="supervisor-pick-item ${isPicked ? 'active' : ''}" onclick="selectSupervisorForTransfer('${id}')">
+            <div class="sup-avatar-small">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <div style="margin-left: 10px; flex: 1;">
+              <h4 class="sup-pick-name">${name}</h4>
+              <p class="sup-pick-sub">📍 ${sup.lga || 'LGA'} • 👥 ${sup.teamSize || sup.agentsCount || 0} Agents</p>
+            </div>
+            ${isPicked ? '<i class="fa-solid fa-circle-check" style="color: var(--primary-navy); font-size: 18px;"></i>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectSupervisorForTransfer(id) {
+      state.selectedSupervisorId = id;
+      renderSupervisorsList();
+    }
+
+    function openSingleReassignModal(agentId) {
+      const agent = state.agents.find(a => (a._id || a.id) === agentId);
+      if (!agent) return;
+
+      state.transferTargetAgent = agent;
+      state.selectedSupervisorId = '';
+
+      document.getElementById('transferModalTitle').textContent = "Reassign Agent";
+      document.getElementById('transferModalSubtitle').textContent = `Assign new supervisor for ${agent.name || 'Agent'}`;
+
+      renderSupervisorsList();
+      document.getElementById('transferModal').style.display = 'flex';
+    }
+
+    function openBulkReassignModal() {
+      state.transferTargetAgent = null;
+      state.selectedSupervisorId = '';
+
+      document.getElementById('transferModalTitle').textContent = `Bulk Reassign (${state.selectedAgentIds.length} Agents)`;
+      document.getElementById('transferModalSubtitle').textContent = "Migrate selected agents to a new supervisor";
+
+      renderSupervisorsList();
+      document.getElementById('transferModal').style.display = 'flex';
+    }
+
+    function closeTransferModal() {
+      document.getElementById('transferModal').style.display = 'none';
+      state.transferTargetAgent = null;
+      state.selectedSupervisorId = '';
+    }
+
+    async function handleExecuteTransfer() {
+      if (!state.selectedSupervisorId) {
+        alert("Notice: Please select a Field Supervisor to assign.");
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmTransfer');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        const isBulk = !state.transferTargetAgent && state.selectedAgentIds.length > 0;
+        const targetSup = state.supervisors.find(s => (s._id || s.id) === state.selectedSupervisorId);
+        const headers = {
+          'Authorization': `Bearer ${state.token}`,
+          'Content-Type': 'application/json'
+        };
+
+        if (isBulk) {
+          // Bulk loop assign
+          for (const agentId of state.selectedAgentIds) {
+            await fetch(`${BASE_URL}/leader/assign-agent`, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({
+                agentId,
+                supervisorId: state.selectedSupervisorId
+              })
+            });
+          }
+
+          alert(`Bulk Reassignment Complete! 🎯\n\nSuccessfully reassigned ${state.selectedAgentIds.length} agents to ${targetSup?.name || "Field Supervisor"}.`);
+          state.selectedAgentIds = [];
+        } else if (state.transferTargetAgent) {
+          const agentId = state.transferTargetAgent._id || state.transferTargetAgent.id;
+          const res = await fetch(`${BASE_URL}/leader/assign-agent`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              agentId,
+              supervisorId: state.selectedSupervisorId
+            })
+          });
+          const d = await res.json();
+
+          alert(`Reassigned Successfully! 🎉\n\n${state.transferTargetAgent.name || "Agent"} is now assigned to ${targetSup?.name || "Field Supervisor"}.`);
+        }
+
+        closeTransferModal();
+        fetchData();
+      } catch (err) {
+        alert("Transfer Error: " + (err.message || "Failed to reassign agent network."));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Service Investigation | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --border-dark: #1e293b;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #16a34a;
+      --accent-amber: #d97706;
+      --accent-red: #dc2626;
+      --text-white: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      text-decoration: none !important;
+      -webkit-text-decoration-line: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Command Header */
+    .header-bar {
+      background: var(--bg-dark);
+      padding: 16px 18px 14px 18px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-dark);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+    }
+
+    .back-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-white);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .header-title-box {
+      margin-left: 12px;
+      flex: 1;
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text-white);
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: var(--accent-cyan);
+      margin: 2px 0 0 0;
+    }
+
+    /* Search & Filter Section */
+    .search-section {
+      background: var(--card-bg);
+      padding: 16px;
+      border-bottom: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .tab-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+      white-space: nowrap;
+    }
+
+    .tab-scroll::-webkit-scrollbar { height: 4px; }
+    .tab-scroll::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+
+    .service-tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-light);
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .service-tab.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+    }
+
+    .search-bar-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--border-input);
+      border-radius: 8px;
+      padding: 0 36px 0 12px;
+      color: var(--text-dark);
+      background: #f8fafc;
+      font-size: 13px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+    }
+
+    .clear-icon-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 16px;
+      display: none;
+    }
+
+    .search-btn {
+      width: 100%;
+      background: var(--accent-blue);
+      height: 44px;
+      border: none;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .search-btn:hover {
+      background: #0369a1;
+    }
+
+    .search-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Container & Results */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px 16px 60px 16px;
+    }
+
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-card {
+      background: var(--card-bg);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .status-badge {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .status-badge.success { background: #dcfce7; color: var(--accent-green); }
+    .status-badge.failed { background: #fee2e2; color: var(--accent-red); }
+    .status-badge.pending { background: #fef3c7; color: var(--accent-amber); }
+
+    .date-text {
+      font-size: 10.5px;
+      color: #94a3b8;
+    }
+
+    .amount-text {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin: 0 0 6px 0;
+    }
+
+    .details-box {
+      background: #f8fafc;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+    }
+
+    .detail-row {
+      font-size: 11.5px;
+      color: #334155;
+      margin: 2px 0;
+      word-break: break-all;
+    }
+
+    .detail-label {
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .refund-btn {
+      margin-top: 10px;
+      width: 100%;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid #fca5a5;
+      background: #fef2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-red);
+      font-weight: 900;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .refund-btn:hover {
+      background: #fee2e2;
+    }
+
+    /* Empty State */
+    .empty-container {
+      text-align: center;
+      padding: 60px 20px;
+      color: #cbd5e1;
+    }
+
+    .empty-container i {
+      font-size: 38px;
+      margin-bottom: 12px;
+      color: #94a3b8;
+    }
+
+    .empty-text {
+      color: #94a3b8;
+      font-size: 12.5px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-input);
+      animation: modalSlide 0.25s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin: 0;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #64748b;
+      cursor: pointer;
+    }
+
+    .modal-sub {
+      font-size: 11px;
+      color: #64748b;
+      margin: 0;
+    }
+
+    .modal-amount {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--accent-green);
+      margin: 6px 0;
+    }
+
+    .modal-field-label {
+      font-size: 10px;
+      font-weight: 900;
+      color: var(--accent-blue);
+      margin: 10px 0 4px 0;
+      display: block;
+      letter-spacing: 0.5px;
+    }
+
+    .modal-text-area {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border-input);
+      border-radius: 8px;
+      padding: 10px;
+      height: 70px;
+      font-size: 12px;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      resize: none;
+      font-family: inherit;
+    }
+
+    .modal-text-area:focus {
+      border-color: var(--accent-blue);
+      background: #ffffff;
+    }
+
+    .modal-submit-btn {
+      width: 100%;
+      height: 44px;
+      background: var(--accent-red);
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .modal-submit-btn:hover {
+      background: #b91c1c;
+    }
+
+    .modal-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Command Header -->
+  <header class="header-bar">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div class="header-title-box">
+      <h1 class="header-title">Service Investigation</h1>
+      <p class="header-sub">Trace NIMC, BVN, Data & Utility transactions</p>
+    </div>
+  </header>
+
+  <!-- Search & Filter Area -->
+  <section class="search-section">
+    <!-- Category Tabs -->
+    <div class="tab-scroll" id="tabContainer">
+      <button type="button" class="service-tab active" data-type="data" onclick="selectServiceType('data', this)">DATA</button>
+      <button type="button" class="service-tab" data-type="vtu" onclick="selectServiceType('vtu', this)">VTU</button>
+      <button type="button" class="service-tab" data-type="bvn" onclick="selectServiceType('bvn', this)">BVN</button>
+      <button type="button" class="service-tab" data-type="nimc" onclick="selectServiceType('nimc', this)">NIMC</button>
+      <button type="button" class="service-tab" data-type="cable" onclick="selectServiceType('cable', this)">CABLE</button>
+      <button type="button" class="service-tab" data-type="utility" onclick="selectServiceType('utility', this)">UTILITY</button>
+    </div>
+
+    <!-- Input Row -->
+    <div class="search-bar-row">
+      <input
+        type="text"
+        id="identifierInput"
+        class="search-input"
+        placeholder="Enter DATA Phone, Ref, or ID..."
+        spellcheck="false"
+        autocorrect="off"
+        autocapitalize="off"
+        oninput="handleInputChange()"
+        onkeydown="if(event.key === 'Enter') handleTrace()"
+      />
+      <button type="button" class="clear-icon-btn" id="btnClear" onclick="clearInput()">
+        <i class="fa-solid fa-circle-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Submit Search Button -->
+    <button type="button" class="search-btn" id="btnTrace" onclick="handleTrace()">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span>Run Deep Diagnostic</span>
+    </button>
+  </section>
+
+  <!-- Results Container -->
+  <main class="container">
+    <div class="results-list" id="resultsListContainer">
+      <div class="empty-container">
+        <i class="fa-solid fa-magnifying-glass-location"></i>
+        <p class="empty-text">Enter an identifier above to begin investigation.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Cross-Platform Refund Modal -->
+  <div class="modal-overlay" id="refundModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Initiate Refund Request</h2>
+        <button type="button" class="btn-modal-close" onclick="closeRefundModal()">&times;</button>
+      </div>
+
+      <p class="modal-sub" id="modalRefText">Ref: -</p>
+      <p class="modal-amount" id="modalAmountText">Amount: ₦0</p>
+
+      <label class="modal-field-label" for="refundReasonInput">FAILURE / DISPUTE DIAGNOSTIC</label>
+      <textarea
+        id="refundReasonInput"
+        class="modal-text-area"
+        placeholder="State reason (e.g., Debited without bundle credit, VTU gateway error)..."
+        spellcheck="false"
+        autocorrect="off"
+        autocapitalize="off"
+      ></textarea>
+
+      <button type="button" class="modal-submit-btn" id="btnSubmitRefund" onclick="submitRefundRequest()">
+        Submit to SuperAdmin
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      serviceType: 'data',
+      results: [],
+      selectedTransaction: null
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!state.token) {
+        alert("Session expired. Please login.");
+        window.location.href = "index.html";
+      }
+    });
+
+    function selectServiceType(type, el) {
+      state.serviceType = type;
+      document.querySelectorAll('.service-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+
+      const input = document.getElementById('identifierInput');
+      input.placeholder = `Enter ${type.toUpperCase()} Phone, Ref, or ID...`;
+      input.focus();
+    }
+
+    function handleInputChange() {
+      const val = document.getElementById('identifierInput').value;
+      document.getElementById('btnClear').style.display = val.trim() ? 'block' : 'none';
+    }
+
+    function clearInput() {
+      const input = document.getElementById('identifierInput');
+      input.value = '';
+      document.getElementById('btnClear').style.display = 'none';
+      input.focus();
+    }
+
+    async function handleTrace() {
+      const cleanId = document.getElementById('identifierInput').value.trim();
+      if (!cleanId) {
+        alert("Please enter a Phone Number, Reference, or Verification ID");
+        return;
+      }
+
+      const btn = document.getElementById('btnTrace');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Investigating...';
+
+      try {
+        const response = await fetch(`${BASE_URL}/support/trace/${state.serviceType}/${encodeURIComponent(cleanId)}`, {
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = "index.html";
+          return;
+        }
+
+        const data = await response.json();
+        const payload = data.data || data.results || data || [];
+        state.results = Array.isArray(payload) ? payload : (payload._id ? [payload] : []);
+
+        renderResults(cleanId);
+      } catch (err) {
+        state.results = [];
+        renderResults(cleanId);
+        alert(`No records match "${cleanId}" in ${state.serviceType.toUpperCase()}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function renderResults(query) {
+      const container = document.getElementById('resultsListContainer');
+
+      if (state.results.length === 0) {
+        container.innerHTML = `
+          <div class="empty-container">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p class="empty-text">No records found for "${query}" in ${state.serviceType.toUpperCase()} directory.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = state.results.map((item, idx) => {
+        const status = String(item.status || "COMPLETED").toLowerCase();
+        let statusClass = "pending";
+        if (status === "success" || status === "completed") statusClass = "success";
+        else if (status === "failed") statusClass = "failed";
+
+        const ref = item.reference || item.transactionId || item.bvnNumber || item.ninNumber || item._id || "N/A";
+        const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleString() : "Real-Time";
+        const amountDisplay = item.amount ? `₦${Number(item.amount).toLocaleString()}` : `${item.dataAmountGB || item.volume || 0} GB`;
+        const userName = item.user?.name || `${item.user?.firstName || ""} ${item.user?.surname || ""}`.trim() || item.phone || "Customer";
+        const txId = item._id || item.id || ref;
+
+        return `
+          <div class="result-card">
+            <div class="card-header">
+              <span class="status-badge ${statusClass}">${status.toUpperCase()}</span>
+              <span class="date-text">${dateStr}</span>
+            </div>
+
+            <div class="amount-text">${amountDisplay}</div>
+
+            <div class="details-box">
+              <div class="detail-row"><span class="detail-label">Ref / ID: </span>${ref}</div>
+              <div class="detail-row"><span class="detail-label">Account / User: </span>${userName}</div>
+              ${item.recipient ? `<div class="detail-row"><span class="detail-label">Beneficiary: </span>${item.recipient}</div>` : ''}
+            </div>
+
+            <button type="button" class="refund-btn" onclick="openRefundModal('${txId}')">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>Escalate Refund to SuperAdmin</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openRefundModal(txId) {
+      const item = state.results.find(t => (t._id || t.id || t.reference) === txId) || state.results[0];
+      if (!item) return;
+
+      state.selectedTransaction = item;
+      document.getElementById('modalRefText').textContent = `Ref: ${item.reference || item.transactionId || item._id || "N/A"}`;
+      document.getElementById('modalAmountText').textContent = `Amount: ₦${Number(item.amount || 0).toLocaleString()}`;
+      document.getElementById('refundReasonInput').value = '';
+
+      document.getElementById('refundModal').style.display = 'flex';
+    }
+
+    function closeRefundModal() {
+      document.getElementById('refundModal').style.display = 'none';
+      state.selectedTransaction = null;
+    }
+
+    async function submitRefundRequest() {
+      const reason = document.getElementById('refundReasonInput').value.trim();
+      if (!reason) {
+        alert("Please provide the justification or failure diagnostic for this refund.");
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmitRefund');
+      btn.disabled = true;
+      btn.textContent = "Dispatching...";
+
+      try {
+        const payload = {
+          transactionId: state.selectedTransaction?._id || state.selectedTransaction?.id,
+          reference: state.selectedTransaction?.reference || state.selectedTransaction?.transactionId,
+          amount: Number(state.selectedTransaction?.amount || 0),
+          reason: reason,
+          user: state.selectedTransaction?.user?._id || state.selectedTransaction?.user,
+          service: state.serviceType
+        };
+
+        let res = await fetch(`${BASE_URL}/support/refund`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          res = await fetch(`${BASE_URL}/support/escalate-refund`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${state.token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const data = await res.json();
+        if (res.ok && (data.success || res.status === 200 || res.status === 201)) {
+          alert("Dispute Dispatched 🚀: Refund claim has been logged and escalated to SuperAdmin approval queue.");
+          closeRefundModal();
+          handleTrace();
+        } else {
+          throw new Error(data.message || "Failed to submit refund claim.");
+        }
+      } catch (err) {
+        alert("Submission Error: " + (err.message || "Could not complete refund escalation."));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Submit to SuperAdmin";
+      }
+    }
+  </script>
+</body>
+</html>

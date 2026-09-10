@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Fund Wallet | Ayax Xpress</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #030712;
+      --bg-light: #f8fafc;
+      --card-bg-light: #ffffff;
+      --border-light: #e2e8f0;
+      --accent-blue: #0284c7;
+      --accent-navy: #0369a1;
+      --accent-cyan: #38bdf8;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --text-white: #ffffff;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Modern Fintech Header Hero */
+    .header-hero {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      padding: 24px 20px 28px 20px;
+      border-bottom-left-radius: 28px;
+      border-bottom-right-radius: 28px;
+      color: #ffffff;
+      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.25);
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .btn-back {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--accent-green);
+      letter-spacing: 0.5px;
+    }
+
+    .balance-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .balance-label {
+      color: #cbd5e1;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      margin: 0;
+    }
+
+    .balance-row {
+      display: flex;
+      align-items: center;
+      margin: 6px 0 4px 0;
+    }
+
+    .balance-symbol {
+      color: var(--accent-cyan);
+      font-size: 24px;
+      font-weight: 900;
+      margin-right: 4px;
+    }
+
+    .balance-val {
+      color: #ffffff;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .auto-sync-note {
+      color: #cbd5e1;
+      font-size: 11px;
+      font-weight: 500;
+      margin: 2px 0 0 0;
+    }
+
+    /* Body Container */
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 22px 18px 80px 18px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: var(--text-dark);
+      margin: 0;
+    }
+
+    .badge-tag {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-recommended {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--accent-green);
+    }
+
+    .badge-paystack {
+      background: rgba(2, 132, 199, 0.12);
+      color: var(--accent-blue);
+    }
+
+    /* Dedicated Virtual Account Surface Card */
+    .dva-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      margin-bottom: 16px;
+    }
+
+    .dva-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dva-bank-heading {
+      color: var(--accent-blue);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin: 0;
+    }
+
+    .dva-beneficiary-name {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      margin: 2px 0 0 0;
+    }
+
+    .dva-chip-icon {
+      font-size: 32px;
+      color: var(--accent-amber);
+    }
+
+    .dva-number-row {
+      margin: 14px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dva-number-text {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: var(--text-dark);
+    }
+
+    .dva-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dva-copy-btn:hover {
+      background: var(--accent-navy);
+    }
+
+    .dva-instruction-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      background: rgba(2, 132, 199, 0.08);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Empty Provision Card */
+    .empty-provision-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid var(--border-light);
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .empty-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      background: rgba(2, 132, 199, 0.12);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 12px auto;
+      color: var(--accent-blue);
+      font-size: 24px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0;
+    }
+
+    .empty-sub {
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 4px 0 18px 0;
+    }
+
+    .provision-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .provision-btn:hover {
+      background: var(--accent-navy);
+    }
+
+    .provision-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Network Notice Banner */
+    .network-notice-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 14px;
+      border-radius: 16px;
+      margin: 22px 0 20px 0;
+    }
+
+    .network-notice-title {
+      color: #1e40af;
+      font-size: 12.5px;
+      font-weight: 800;
+      margin: 0 0 3px 0;
+    }
+
+    .network-notice-sub {
+      color: #3b82f6;
+      font-size: 11px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Card Payment / Paystack Box */
+    .card-payment-box {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .input-label {
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 0 14px;
+      height: 50px;
+      transition: all 0.2s;
+    }
+
+    .input-row:focus-within {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+      background: #ffffff;
+    }
+
+    .input-currency-prefix {
+      color: var(--accent-blue);
+      font-size: 18px;
+      font-weight: 900;
+      margin-right: 8px;
+    }
+
+    .amount-input {
+      flex: 1;
+      height: 100%;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .quick-chips-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .preset-chip {
+      padding: 8px 0;
+      text-align: center;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-chip.active {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      background: #e0f2fe;
+    }
+
+    .pay-online-btn {
+      width: 100%;
+      height: 50px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      transition: all 0.2s;
+    }
+
+    .pay-online-btn:hover {
+      opacity: 0.94;
+      transform: translateY(-1px);
+    }
+
+    .pay-online-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Modern Fintech Header Hero -->
+  <header class="header-hero">
+    <div class="top-nav">
+      <a href="javascript:history.back()" class="btn-back" title="Go Back">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="secure-badge">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>256-BIT ENCRYPTION</span>
+      </div>
+    </div>
+
+    <div class="balance-card">
+      <p class="balance-label">CURRENT WALLET BALANCE</p>
+      <div class="balance-row">
+        <span class="balance-symbol">₦</span>
+        <span class="balance-val" id="walletBalanceVal">0.00</span>
+      </div>
+      <p class="auto-sync-note">⚡ Real-time automated balance sync active</p>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <main class="container">
+
+    <!-- Method 1: Dedicated Virtual Account (Direct Bank Transfer) -->
+    <div class="section-header">
+      <h2 class="section-title">Method 1: Direct Bank Transfer</h2>
+      <div class="badge-tag badge-recommended">INSTANT CREDIT</div>
+    </div>
+
+    <!-- Active DVA Card Component -->
+    <section class="dva-card" id="dvaActiveCard" style="display: none;">
+      <div class="dva-meta-row">
+        <div>
+          <h3 class="dva-bank-heading" id="dvaBankName">Wema Bank</h3>
+          <p class="dva-beneficiary-name" id="dvaAccountName">Ayax Customer</p>
+        </div>
+        <i class="fa-solid fa-microchip dva-chip-icon"></i>
+      </div>
+
+      <div class="dva-number-row">
+        <span class="dva-number-text" id="dvaAccountNumber">0000000000</span>
+        <button type="button" class="dva-copy-btn" onclick="copyAccountNumber()">
+          <i class="fa-regular fa-copy"></i>
+          <span id="copyBtnText">COPY</span>
+        </button>
+      </div>
+
+      <div class="dva-instruction-box">
+        <i class="fa-solid fa-circle-info" style="color: var(--accent-blue); font-size: 14px; margin-top: 1px;"></i>
+        <span>Transfer any amount to this account for automatic instant wallet funding.</span>
+      </div>
+    </section>
+
+    <!-- Provision Virtual Account Card (If Not Assigned Yet) -->
+    <section class="empty-provision-card" id="dvaEmptyCard">
+      <div class="empty-icon-wrap">
+        <i class="fa-regular fa-credit-card"></i>
+      </div>
+      <h3 class="empty-title">No Virtual Account Assigned</h3>
+      <p class="empty-sub">Your dedicated automated deposit account is ready for activation.</p>
+      <button type="button" class="provision-btn" id="btnProvisionAccount" onclick="handleGetVirtualAccount()">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>Get Dedicated Account</span>
+      </button>
+    </section>
+
+    <!-- Network Delay Advisory Box -->
+    <div class="network-notice-box">
+      <i class="fa-solid fa-right-left" style="color: var(--accent-blue); font-size: 16px; margin-top: 2px;"></i>
+      <div>
+        <h4 class="network-notice-title">Experiencing Bank Network Delays?</h4>
+        <p class="network-notice-sub">Use the Paystack Gateway below to complete your payment with Zero Delays using Card, Bank App, or USSD.</p>
+      </div>
+    </div>
+
+    <!-- Method 2: Paystack Gateway Checkout -->
+    <div class="section-header">
+      <h2 class="section-title">Method 2: Paystack Online Gateway</h2>
+      <div class="badge-tag badge-paystack">SECURE GATEWAY</div>
+    </div>
+
+    <section class="card-payment-box">
+      <label class="input-label" for="amountInput">ENTER AMOUNT (₦)</label>
+      <div class="input-row">
+        <span class="input-currency-prefix">₦</span>
+        <input
+          type="number"
+          id="amountInput"
+          class="amount-input"
+          placeholder="e.g. 2000"
+          min="100"
+          step="any"
+        />
+      </div>
+
+      <!-- Quick Amount Preset Chips -->
+      <div class="quick-chips-row">
+        <div class="preset-chip" onclick="setPresetAmount('500', this)">₦500</div>
+        <div class="preset-chip" onclick="setPresetAmount('1000', this)">₦1,000</div>
+        <div class="preset-chip" onclick="setPresetAmount('2000', this)">₦2,000</div>
+        <div class="preset-chip" onclick="setPresetAmount('5000', this)">₦5,000</div>
+      </div>
+
+      <!-- Submit Checkout Button -->
+      <button type="button" class="pay-online-btn" id="btnPaystack" onclick="handlePaystackPayment()">
+        <i class="fa-regular fa-credit-card"></i>
+        <span>PAY VIA PAYSTACK (CARD / USSD / APP)</span>
+      </button>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script>
+    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
+      ? CONFIG.BASE_URL
+      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+
+    let state = {
+      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
+      userData: null,
+      virtualAccount: null
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Load cached user profile and virtual account immediately
+      const cachedAcc = localStorage.getItem('userVirtualAccount');
+      const cachedUser = localStorage.getItem('userData');
+
+      if (cachedAcc) {
+        try {
+          state.virtualAccount = JSON.parse(cachedAcc);
+          renderVirtualAccount();
+        } catch (_) {}
+      }
+
+      if (cachedUser) {
+        try {
+          state.userData = JSON.parse(cachedUser);
+          renderUserData();
+
+          if (!cachedAcc && (state.userData.virtualAccount || state.userData.virtualAccounts || state.userData.dva)) {
+            const acc = extractVirtualAccount(state.userData);
+            if (acc) {
+              state.virtualAccount = acc;
+              localStorage.setItem('userVirtualAccount', JSON.stringify(acc));
+              renderVirtualAccount();
+            }
+          }
+        } catch (_) {}
+      }
+
+      // 2. Fetch fresh real-time data
+      fetchUserData();
+    });
+
+    function extractVirtualAccount(user) {
+      if (!user) return null;
+      let activeAcc = null;
+
+      if (user.virtualAccount && (user.virtualAccount.accountNumber || user.virtualAccount.account_number)) {
+        activeAcc = {
+          bankName: user.virtualAccount.bankName || user.virtualAccount.bank_name || "Wema Bank",
+          accountName: user.virtualAccount.accountName || user.virtualAccount.account_name || user.name || "Ayax Customer",
+          accountNumber: user.virtualAccount.accountNumber || user.virtualAccount.account_number,
+        };
+      } else if (Array.isArray(user.virtualAccounts) && user.virtualAccounts.length > 0) {
+        const first = user.virtualAccounts[0];
+        activeAcc = {
+          bankName: first.bankName || first.bank_name || "Wema Bank",
+          accountName: first.accountName || first.account_name || user.name,
+          accountNumber: first.accountNumber || first.account_number,
+        };
+      } else if (user.dva && (user.dva.accountNumber || user.dva.account_number)) {
+        activeAcc = {
+          bankName: user.dva.bankName || user.dva.bank_name || "Wema Bank",
+          accountName: user.dva.accountName || user.dva.account_name || user.name,
+          accountNumber: user.dva.accountNumber || user.dva.account_number,
+        };
+      }
+      return activeAcc;
+    }
+
+    async function fetchUserData() {
+      if (!state.token) {
+        alert("Session expired. Please login again.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      try {
+        const response = await fetch(`${BASE_URL}/user/profile`, {
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = "index.html";
+          return;
+        }
+
+        const data = await response.json();
+        if (response.ok && data.success) {
+          const user = data.user || data.data;
+          state.userData = user;
+          localStorage.setItem('userData', JSON.stringify(user));
+          renderUserData();
+
+          const activeAcc = extractVirtualAccount(user);
+          if (activeAcc && activeAcc.accountNumber) {
+            state.virtualAccount = activeAcc;
+            localStorage.setItem('userVirtualAccount', JSON.stringify(activeAcc));
+            renderVirtualAccount();
+          }
+        }
+      } catch (err) {
+        console.warn("Profile synchronization warning:", err.message);
+      }
+    }
+
+    function renderUserData() {
+      const balance = Number(
+        state.userData?.walletBalance !== undefined
+          ? state.userData.walletBalance
+          : state.userData?.balance !== undefined
+          ? state.userData.balance
+          : 0
+      );
+      document.getElementById('walletBalanceVal').textContent = balance.toLocaleString("en-NG", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function renderVirtualAccount() {
+      const activeCard = document.getElementById('dvaActiveCard');
+      const emptyCard = document.getElementById('dvaEmptyCard');
+
+      if (state.virtualAccount && state.virtualAccount.accountNumber) {
+        document.getElementById('dvaBankName').textContent = state.virtualAccount.bankName || "Wema Bank";
+        document.getElementById('dvaAccountName').textContent = state.virtualAccount.accountName || "Ayax Customer";
+        document.getElementById('dvaAccountNumber').textContent = state.virtualAccount.accountNumber;
+
+        activeCard.style.display = 'block';
+        emptyCard.style.display = 'none';
+      } else {
+        activeCard.style.display = 'none';
+        emptyCard.style.display = 'block';
+      }
+    }
+
+    function copyAccountNumber() {
+      if (!state.virtualAccount?.accountNumber) return;
+      navigator.clipboard.writeText(state.virtualAccount.accountNumber).then(() => {
+        const text = document.getElementById('copyBtnText');
+        text.textContent = 'COPIED!';
+        setTimeout(() => {
+          text.textContent = 'COPY';
+        }, 3000);
+      });
+    }
+
+    async function handleGetVirtualAccount() {
+      if (!state.token) {
+        alert("Session expired. Please login again.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const btn = document.getElementById('btnProvisionAccount');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Activating...';
+
+        const response = await fetch(`${BASE_URL}/virtual-account/create`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        if (response.ok && data.success) {
+          const accData = data.data || data.virtualAccount;
+          const formattedAcc = {
+            bankName: accData.bankName || accData.bank_name || "Wema Bank",
+            accountName: accData.accountName || accData.account_name || state.userData?.name || "Ayax Customer",
+            accountNumber: accData.accountNumber || accData.account_number,
+          };
+
+          state.virtualAccount = formattedAcc;
+          localStorage.setItem('userVirtualAccount', JSON.stringify(formattedAcc));
+          renderVirtualAccount();
+          alert("Virtual account generated successfully!");
+          fetchUserData();
+        } else {
+          throw new Error(data.message || "Could not generate virtual account.");
+        }
+      } catch (error) {
+        alert("Error: " + (error.message || "Could not generate virtual account. Please try again later."));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function setPresetAmount(val, el) {
+      document.getElementById('amountInput').value = val;
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    document.getElementById('amountInput').addEventListener('input', () => {
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+    });
+
+    async function handlePaystackPayment() {
+      const amountVal = Number(document.getElementById('amountInput').value);
+
+      if (!amountVal || isNaN(amountVal) || amountVal < 100) {
+        alert("Invalid Amount: Minimum funding amount is ₦100.");
+        return;
+      }
+
+      if (!state.token) {
+        alert("Session expired. Please login again.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const btn = document.getElementById('btnPaystack');
+      const originalText = btn.innerHTML;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Initializing Paystack...';
+
+        const response = await fetch(`${BASE_URL}/wallet/initialize`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            amount: amountVal,
+            gateway: "paystack"
+          })
+        });
+
+        const data = await response.json();
+        const authUrl =
+          data?.data?.authorization_url ||
+          data?.authorization_url ||
+          data?.data?.checkout_url;
+
+        if (response.ok && data.success && authUrl) {
+          window.location.href = authUrl;
+        } else {
+          throw new Error(data.message || "Could not retrieve Paystack payment checkout link.");
+        }
+      } catch (error) {
+        alert("Payment Failed: " + (error.message || "Failed to initialize Paystack checkout."));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
+</body>
+</html>
