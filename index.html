@@ -76,17 +76,20 @@
       text-decoration: none;
     }
 
+    /* =========================================
+       FARIN BACKGROUND NA LOGO A NAVBAR
+       ========================================= */
     .nav-logo-box {
       width: 44px;
       height: 44px;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.08);
+      background: #ffffff; /* Farin Background */
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .nav-logo-box img {
@@ -121,7 +124,6 @@
       gap: 12px;
     }
 
-    /* Navbar Developer Link */
     .btn-nav-api {
       display: inline-flex;
       align-items: center;
@@ -261,7 +263,7 @@
       border-color: #ffffff;
     }
 
-    /* Core Services Grid */
+    /* Lower Section: What We Offer */
     .services-container {
       max-width: 1000px;
       margin: 50px auto 40px auto;
@@ -421,17 +423,20 @@
       margin-bottom: 22px;
     }
 
+    /* =========================================
+       FARIN BACKGROUND NA LOGO A MODAL
+       ========================================= */
     .modal-logo-box {
       width: 68px;
       height: 68px;
       border-radius: 20px;
-      background: #0a1d37;
+      background: #ffffff; /* Farin Background */
       margin: 0 auto 12px auto;
       display: flex;
       justify-content: center;
       align-items: center;
-      border: 2px solid #1e3a8a;
-      box-shadow: 0 8px 20px rgba(10, 29, 55, 0.25);
+      border: 1.5px solid var(--border-light);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
       overflow: hidden;
     }
 
@@ -439,7 +444,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 8px;
+      padding: 6px;
     }
 
     .app-name {
@@ -564,7 +569,6 @@
       background: #0284c7;
     }
 
-    /* Modal Developer API Button */
     .developer-api-btn {
       display: flex;
       align-items: center;
@@ -608,13 +612,11 @@
 </head>
 <body>
 
-  <!-- ========================================================
-       TOP NAVY SECTION (Daga Sama Har Zuwa Kafin What We Offer)
-       ======================================================== -->
+  <!-- TOP NAVY SECTION -->
   <div class="top-navy-wrapper">
-    <!-- Navbar -->
     <nav class="navbar">
       <a href="index.html" class="brand-group">
+        <!-- Farin Background Na Logo -->
         <div class="nav-logo-box">
           <img
             id="navLogoImg"
@@ -622,7 +624,7 @@
             alt="Ayax Xpress"
             onerror="tryNextLogo(this)"
           />
-          <i id="navLogoFallbackIcon" class="fa-solid fa-bolt" style="display: none; color: #38bdf8; font-size: 20px;"></i>
+          <i id="navLogoFallbackIcon" class="fa-solid fa-bolt" style="display: none; color: #0284c7; font-size: 20px;"></i>
         </div>
         <div>
           <span class="brand-title">Ayax Xpress</span>
@@ -630,7 +632,6 @@
         </div>
       </a>
       <div class="nav-actions">
-        <!-- Direct Developer Portal Link -->
         <a href="https://www.ayaxapis.com" target="_blank" rel="noopener noreferrer" class="btn-nav-api" title="Developer API Integration">
           <i class="fa-solid fa-code"></i>
           <span>APIs</span>
@@ -665,9 +666,7 @@
     </section>
   </div>
 
-  <!-- ========================================================
-       LOWER SECTION: WHAT WE OFFER
-       ======================================================== -->
+  <!-- LOWER SECTION: WHAT WE OFFER -->
   <main class="services-container">
     <div class="section-header">
       <h2 class="section-title">What We Offer</h2>
@@ -713,7 +712,7 @@
     </div>
   </main>
 
-  <!-- Simple Footer -->
+  <!-- Footer -->
   <footer class="footer">
     <div class="footer-links">
       <a href="about.html">About Us</a>
@@ -731,6 +730,7 @@
       <button type="button" class="close-modal-btn" onclick="closeLoginModal()">&times;</button>
 
       <section class="header-section">
+        <!-- Farin Background Na Logo a Modal -->
         <div class="modal-logo-box">
           <img
             id="modalLogoImg"
@@ -738,7 +738,7 @@
             alt="Ayax"
             onerror="tryNextLogo(this)"
           />
-          <i id="modalLogoFallbackIcon" class="fa-solid fa-bolt" style="display: none; color: #38bdf8; font-size: 26px;"></i>
+          <i id="modalLogoFallbackIcon" class="fa-solid fa-bolt" style="display: none; color: #0284c7; font-size: 26px;"></i>
         </div>
         <h2 class="app-name">Welcome Back</h2>
         <p class="tagline">Enter your credentials to access your dashboard</p>
@@ -787,7 +787,6 @@
           <span>Login to Account</span>
         </button>
 
-        <!-- Developer APIs Portal Link a Modal -->
         <a href="https://www.ayaxapis.com" target="_blank" rel="noopener noreferrer" class="developer-api-btn">
           <i class="fa-solid fa-code"></i>
           <span>Access Developer APIs</span>
