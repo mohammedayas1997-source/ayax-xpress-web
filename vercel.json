@@ -3,24 +3,48 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "routes": [
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/about",
-      "dest": "/about.html"
-    },
-    {
-      "src": "/privacy-policy",
-      "dest": "/privacy-policy.html"
-    },
-    {
-      "src": "/terms",
-      "dest": "/terms.html"
-    },
-    {
-      "src": "/home",
-      "dest": "/home.html"
-    }
+    { "handle": "filesystem" },
+    
+    { "src": "/index", "dest": "/index.html" },
+    { "src": "/login", "dest": "/index.html" },
+    { "src": "/home", "dest": "/home.html" },
+    { "src": "/dashboard", "dest": "/home.html" },
+    { "src": "/customer-dashboard", "dest": "/home.html" },
+
+    { "src": "/superadmin-dashboard", "dest": "/superadmin-dashboard.html" },
+    { "src": "/admin-dashboard", "dest": "/admin-dashboard.html" },
+    { "src": "/nsd-dashboard", "dest": "/nsd-dashboard.html" },
+    { "src": "/leader-dashboard", "dest": "/leader-dashboard.html" },
+    { "src": "/supervisor-dashboard", "dest": "/supervisor-dashboard.html" },
+    { "src": "/agent-dashboard", "dest": "/agent-dashboard.html" },
+    { "src": "/support-dashboard", "dest": "/support-dashboard.html" },
+
+    { "src": "/notifications", "dest": "/notifications.html" },
+    { "src": "/profile", "dest": "/profile.html" },
+    { "src": "/contact", "dest": "/contact.html" },
+    { "src": "/fund-wallet", "dest": "/fund-wallet.html" },
+    { "src": "/wallet-history", "dest": "/wallet-history.html" },
+    { "src": "/update-pin", "dest": "/update-pin.html" },
+
+    { "src": "/buy-data", "dest": "/buy-data.html" },
+    { "src": "/buy-airtime", "dest": "/buy-airtime.html" },
+    { "src": "/electricity", "dest": "/electricity.html" },
+    { "src": "/cable", "dest": "/cable.html" },
+
+    { "src": "/nimc", "dest": "/nin-verification-service.html" },
+    { "src": "/nin-verification-service", "dest": "/nin-verification-service.html" },
+    { "src": "/nimc-modification", "dest": "/nimc-modification.html" },
+    { "src": "/nimc-history", "dest": "/nimc-history.html" },
+    { "src": "/bvn-screen", "dest": "/bvn-history.html" },
+    { "src": "/bvn-history", "dest": "/bvn-history.html" },
+    { "src": "/identity-application-logs", "dest": "/identity-application-logs.html" },
+
+    { "src": "/about", "dest": "/about.html" },
+    { "src": "/terms", "dest": "/terms.html" },
+    { "src": "/privacy-policy", "dest": "/privacy-policy.html" },
+    { "src": "/signup", "dest": "/signup.html" },
+    { "src": "/forgot-password", "dest": "/forgot-password.html" },
+
+    { "src": "/(.*)", "dest": "/$1.html" }
   ]
 }
