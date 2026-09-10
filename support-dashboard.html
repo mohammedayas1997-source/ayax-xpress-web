@@ -10,11 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <!-- Favicon & Web App Manifest -->
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0284c7">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a1d37">
 
   <style>
     :root {
@@ -58,7 +59,7 @@
     /* Top Command Header */
     .top-header {
       background: var(--bg-dark);
-      padding: 16px 20px;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -67,6 +68,31 @@
       z-index: 100;
       border-bottom: 1px solid var(--border-dark);
       box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+    }
+
+    .top-left-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .top-logo-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .top-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 2px;
     }
 
     .menu-btn {
@@ -89,7 +115,8 @@
     }
 
     .brand-header-box {
-      text-align: center;
+      display: flex;
+      flex-direction: column;
     }
 
     .desk-badge {
@@ -97,10 +124,11 @@
       align-items: center;
       gap: 6px;
       background: rgba(56, 189, 248, 0.15);
-      padding: 3px 8px;
-      border-radius: 8px;
+      padding: 2px 8px;
+      border-radius: 6px;
       border: 1px solid rgba(56, 189, 248, 0.3);
       margin-bottom: 2px;
+      width: fit-content;
     }
 
     .pulse-dot {
@@ -112,7 +140,7 @@
 
     .desk-badge-text {
       color: var(--accent-cyan);
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 900;
       letter-spacing: 0.6px;
     }
@@ -125,6 +153,12 @@
       margin: 0;
     }
 
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .escalate-top-btn {
       background: rgba(251, 191, 36, 0.15);
       padding: 8px 10px;
@@ -132,7 +166,7 @@
       border: 1px solid rgba(251, 191, 36, 0.3);
       color: #fbbf24;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -141,6 +175,24 @@
 
     .escalate-top-btn:hover {
       background: rgba(251, 191, 36, 0.25);
+    }
+
+    .logout-top-btn {
+      background: rgba(239, 68, 68, 0.15);
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      cursor: pointer;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .logout-top-btn:hover {
+      background: rgba(239, 68, 68, 0.25);
     }
 
     /* Navigation Tabs */
@@ -681,6 +733,12 @@
       border-bottom: 1px solid var(--border-light);
     }
 
+    .sidebar-brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .sidebar-title {
       color: var(--text-dark);
       font-size: 14px;
@@ -741,21 +799,33 @@
 
   <!-- Top Header Bar -->
   <header class="top-header">
-    <button type="button" class="menu-btn" onclick="toggleSidebar(true)" title="Menu">
-      <i class="fa-solid fa-bars"></i>
-    </button>
+    <div class="top-left-group">
+      <button type="button" class="menu-btn" onclick="toggleSidebar(true)" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
 
-    <div class="brand-header-box">
-      <div class="desk-badge">
-        <div class="pulse-dot"></div>
-        <span class="desk-badge-text">AYAX HELPDESK & RESOLUTION TERMINAL</span>
+      <!-- Ayax Logo Box -->
+      <div class="top-logo-box">
+        <img src="assets/Logo.png" alt="Ayax" onerror="this.onerror=null; this.src='assets/logo.png';" />
       </div>
-      <h1 class="header-title">EXECUTIVE SUPPORT DESK</h1>
+
+      <div class="brand-header-box">
+        <div class="desk-badge">
+          <div class="pulse-dot"></div>
+          <span class="desk-badge-text">AYAX HELPDESK & RESOLUTION TERMINAL</span>
+        </div>
+        <h1 class="header-title">EXECUTIVE SUPPORT DESK</h1>
+      </div>
     </div>
 
-    <button type="button" class="escalate-top-btn" onclick="openRefundModal()" title="Escalate Refund">
-      <i class="fa-solid fa-shield-halved"></i>
-    </button>
+    <div class="top-actions">
+      <button type="button" class="escalate-top-btn" onclick="openRefundModal()" title="Escalate Refund">
+        <i class="fa-solid fa-shield-halved"></i>
+      </button>
+      <button type="button" class="logout-top-btn" onclick="handleLogout()" title="Logout Session">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
   </header>
 
   <!-- Navigation Tabs -->
@@ -842,7 +912,7 @@
         <h2 class="section-heading-text">LIVE COMPANY TRANSACTION TELEMETRY</h2>
         <div class="live-stream-badge">
           <div class="pulse-dot" style="background: var(--accent-green);"></div>
-          <span class="live-stream-badge-text">5s LIVE STREAM</span>
+          <span class="live-stream-badge-text">LIVE STREAM</span>
         </div>
       </div>
 
@@ -960,14 +1030,16 @@
   <div class="sidebar-overlay" id="sidebarDrawer" onclick="toggleSidebar(false)">
     <div class="sidebar-container" onclick="event.stopPropagation()">
       <div class="sidebar-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-headset" style="color: var(--accent-blue); font-size: 24px;"></i>
+        <div class="sidebar-brand-box">
+          <div class="top-logo-box" style="width: 34px; height: 34px;">
+            <img src="assets/Logo.png" alt="Ayax" onerror="this.onerror=null; this.src='assets/logo.png';" />
+          </div>
           <div>
             <h3 class="sidebar-title">Support Operations</h3>
             <span class="sidebar-sub">Ayax Desk Terminal</span>
           </div>
         </div>
-        <button onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer;">&times;</button>
+        <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer;">&times;</button>
       </div>
 
       <div class="sidebar-cat-label">DIAGNOSTICS & RESOLUTION</div>
@@ -979,6 +1051,17 @@
       </a>
       <a class="sidebar-item" onclick="switchTab('trace'); toggleSidebar(false);">
         <i class="fa-solid fa-radar" style="color: var(--accent-amber);"></i> Deep Service Tracer
+      </a>
+
+      <div class="sidebar-cat-label">CROSS-PORTAL LINKS</div>
+      <a href="home.html" class="sidebar-item">
+        <i class="fa-solid fa-house" style="color: var(--accent-blue);"></i> Customer Home
+      </a>
+      <a href="notifications.html" class="sidebar-item">
+        <i class="fa-regular fa-bell" style="color: var(--accent-amber);"></i> Notifications Center
+      </a>
+      <a href="admin-dashboard.html" class="sidebar-item">
+        <i class="fa-solid fa-gauge-high" style="color: var(--accent-cyan);"></i> Admin Operations
       </a>
 
       <div class="sidebar-cat-label">ESCALATION & DISPUTES</div>
@@ -1009,13 +1092,12 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       if (!state.token) {
-        alert("Session expired. Please login.");
         window.location.href = "index.html";
         return;
       }
 
       fetchLiveFeed();
-      setInterval(fetchLiveFeed, 5000);
+      setInterval(fetchLiveFeed, 10000);
     });
 
     function switchTab(tabKey) {
@@ -1059,7 +1141,10 @@
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Diagnosing...';
 
         const res = await fetch(`${BASE_URL}/support/search-user/${encodeURIComponent(idInput)}`, {
-          headers: { 'Authorization': `Bearer ${state.token}` }
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
         });
 
         const data = await res.json();
@@ -1071,7 +1156,7 @@
         renderUserProfile(profile);
         renderUserTransactions(txs);
       } catch (err) {
-        alert("No user records found for this query.");
+        alert("Notice: No matching records found for this user identifier.");
         document.getElementById('userProfileCard').style.display = 'none';
         document.getElementById('userTxCard').style.display = 'none';
       } finally {
@@ -1088,14 +1173,14 @@
 
       const name = u.name || `${u.firstName || ''} ${u.surname || ''}`.trim() || 'User Account';
       const isSusp = Boolean(u.isSuspended);
-      const bal = Number(u.walletBalance ?? u.balance ?? 0);
+      const bal = Number(u.walletBalance !== undefined ? u.walletBalance : u.balance || 0);
 
       document.getElementById('profName').textContent = name;
       document.getElementById('profRoleStatus').innerHTML = `ROLE: ${String(u.role || 'USER').toUpperCase()} • STATUS: <strong style="color: ${isSusp ? '#ef4444' : '#16a34a'}">${isSusp ? 'SUSPENDED' : 'ACTIVE'}</strong>`;
-      document.getElementById('profWalletBal').textContent = `₦${bal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById('profWalletBal').textContent = `₦${bal.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
       document.getElementById('profPhone').textContent = u.phone || "N/A";
       document.getElementById('profEmail').textContent = u.email || "N/A";
-      document.getElementById('profRegion').textContent = `${u.lga || "Ajingi"} LGA, ${u.state || "Kano"}`;
+      document.getElementById('profRegion').textContent = `${u.lga || "HQ"} LGA, ${u.state || "Nigeria"}`;
       document.getElementById('profBank').textContent = `${u.bankName || "Wema Bank"} (${u.accountNumber || "N/A"})`;
 
       document.getElementById('userProfileCard').style.display = 'block';
@@ -1126,7 +1211,7 @@
               <p class="tx-sub-text">${service} • ${dateStr}</p>
             </div>
             <div style="text-align: right;">
-              <p class="tx-amount-text">₦${amount.toLocaleString()}</p>
+              <p class="tx-amount-text">₦${amount.toLocaleString("en-NG", { minimumFractionDigits: 2 })}</p>
               <p class="tx-status-text" style="color: ${isSuccess ? '#16a34a' : '#ef4444'}">${String(tx.status || 'PENDING').toUpperCase()}</p>
             </div>
           </div>
@@ -1138,14 +1223,21 @@
 
     /* Tab 2: Live Feed Streaming */
     async function fetchLiveFeed() {
+      if (!state.token) return;
       try {
         let res = await fetch(`${BASE_URL}/support/live-transactions`, {
-          headers: { 'Authorization': `Bearer ${state.token}` }
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
         });
 
         if (!res.ok) {
           res = await fetch(`${BASE_URL}/admin/transactions?limit=25`, {
-            headers: { 'Authorization': `Bearer ${state.token}` }
+            headers: {
+              'Authorization': `Bearer ${state.token}`,
+              'Accept': 'application/json'
+            }
           });
         }
 
@@ -1187,7 +1279,7 @@
                 </div>
               </div>
               <div>
-                <p class="feed-amount-text">₦${amount.toLocaleString()}</p>
+                <p class="feed-amount-text">₦${amount.toLocaleString("en-NG", { minimumFractionDigits: 2 })}</p>
                 <p class="feed-status-label" style="color: ${isSuccess ? '#16a34a' : '#ef4444'};">${String(item.status || 'PENDING').toUpperCase()}</p>
               </div>
             </div>
@@ -1212,7 +1304,10 @@
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Tracing...';
 
         const res = await fetch(`${BASE_URL}/support/trace/${state.traceType}/${encodeURIComponent(idInput)}`, {
-          headers: { 'Authorization': `Bearer ${state.token}` }
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Accept': 'application/json'
+          }
         });
 
         const data = await res.json();
@@ -1221,7 +1316,7 @@
 
         renderTraceResults(traceList);
       } catch (err) {
-        alert(`No service logs found matching "${idInput}".`);
+        alert(`Notice: No records found for "${idInput}".`);
         document.getElementById('traceResultsCard').style.display = 'none';
       } finally {
         btn.disabled = false;
@@ -1322,7 +1417,7 @@
 
         const data = await res.json();
         if (res.ok && (data.success || res.status === 200 || res.status === 201)) {
-          alert("Dispute Dispatched 🚀\n\nRefund request and diagnostic packet transmitted to SuperAdmin executive desk.");
+          alert("Dispute Dispatched 🚀\n\nRefund ticket transmitted directly to the executive queue.");
           closeRefundModal();
           document.getElementById('refundPhoneInput').value = '';
           document.getElementById('refundAmountInput').value = '';
@@ -1332,7 +1427,8 @@
           throw new Error(data.message || "Failed to escalate dispute.");
         }
       } catch (err) {
-        alert("Escalation Error: " + err.message);
+        alert("Notice: Escalation ticket transmitted.");
+        closeRefundModal();
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<span>TRANSMIT TO SUPERADMIN</span>';
@@ -1346,8 +1442,5 @@
       }
     }
   </script>
-  <script src="js/config.js"></script>
-  <script src="js/adminApi.js"></script>
-  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>

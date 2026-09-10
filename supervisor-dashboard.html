@@ -12,18 +12,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- Favicon & Web App Manifest -->
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="apple-touch-icon" href="assets/adaptive-icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0284c7">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/adaptive-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a1d37">
 
   <style>
     :root {
       --bg-dark: #0f172a;
       --border-dark: #1e293b;
-      --accent-blue: #1e40af;
+      --accent-blue: #0284c7;
       --accent-cyan: #38bdf8;
-      --accent-sky: #0284c7;
       --accent-green: #059669;
       --accent-amber: #fbbf24;
       --accent-red: #ef4444;
@@ -59,7 +58,7 @@
     /* Top Command Header */
     .top-bar {
       background: var(--bg-dark);
-      padding: 16px 20px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -70,8 +69,34 @@
       box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
     }
 
+    .top-left-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .top-logo-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .top-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 3px;
+    }
+
     .top-brand-group {
-      text-align: center;
+      display: flex;
+      flex-direction: column;
     }
 
     .state-badge {
@@ -79,10 +104,11 @@
       align-items: center;
       gap: 6px;
       background: rgba(56, 189, 248, 0.15);
-      padding: 3px 8px;
-      border-radius: 8px;
+      padding: 2px 8px;
+      border-radius: 6px;
       border: 1px solid rgba(56, 189, 248, 0.3);
-      margin-bottom: 3px;
+      margin-bottom: 2px;
+      width: fit-content;
     }
 
     .live-pulse-dot {
@@ -94,7 +120,7 @@
 
     .state-badge-text {
       color: var(--accent-cyan);
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 900;
       letter-spacing: 0.8px;
     }
@@ -116,7 +142,7 @@
     .avatar-btn {
       width: 36px;
       height: 36px;
-      border-radius: 18px;
+      border-radius: 10px;
       background: #1e293b;
       border: 1px solid #334155;
       display: flex;
@@ -360,7 +386,7 @@
       gap: 6px;
       background: #eff6ff;
       border: 1px solid #bfdbfe;
-      color: var(--accent-sky);
+      color: var(--accent-blue);
       padding: 12px 0;
       border-radius: 10px;
       font-size: 11px;
@@ -435,6 +461,12 @@
       align-items: flex-start;
     }
 
+    .agent-main-info {
+      display: flex;
+      align-items: flex-start;
+      flex: 1;
+    }
+
     .agent-avatar {
       width: 38px;
       height: 38px;
@@ -463,7 +495,7 @@
     }
 
     .email-tag-text {
-      color: var(--accent-sky);
+      color: var(--accent-blue);
       font-size: 11px;
       margin: 1px 0 0 0;
       font-weight: 600;
@@ -739,25 +771,32 @@
 
   <!-- Top Command Bar -->
   <header class="top-bar">
-    <button type="button" class="avatar-btn" onclick="toggleSidebar(true)">
-      <i class="fa-solid fa-bars"></i>
-    </button>
+    <div class="top-left-group">
+      <button type="button" class="avatar-btn" onclick="toggleSidebar(true)" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
 
-    <div class="top-brand-group">
-      <div class="state-badge">
-        <div class="live-pulse-dot"></div>
-        <span class="state-badge-text" id="topBadgeText">AJINGI LGA FIELD SUPERVISOR (FS)</span>
+      <!-- Ayax Logo Box -->
+      <div class="top-logo-box">
+        <img src="assets/Logo.png" alt="Ayax" onerror="this.onerror=null; this.src='assets/logo.png';" />
       </div>
-      <h1 class="top-brand-title" id="topTitleText">KANO STATE • 0 OUTLETS</h1>
+
+      <div class="top-brand-group">
+        <div class="state-badge">
+          <div class="live-pulse-dot"></div>
+          <span class="state-badge-text" id="topBadgeText">FIELD SUPERVISOR LEAD</span>
+        </div>
+        <h1 class="top-brand-title" id="topTitleText">LGA COMMAND • 0 OUTLETS</h1>
+      </div>
     </div>
 
     <div class="top-actions">
-      <a href="signup.html" class="avatar-btn" title="Add Agent">
+      <button type="button" class="avatar-btn" onclick="navigateToSignup()" title="Add Agent">
         <i class="fa-solid fa-user-plus"></i>
-      </a>
-      <button type="button" class="avatar-btn" onclick="openModal('notifModal')" title="Broadcast Directive">
-        <i class="fa-solid fa-bullhorn"></i>
       </button>
+      <a href="notifications.html" class="avatar-btn" title="Notification Center">
+        <i class="fa-regular fa-bell"></i>
+      </a>
       <button type="button" class="avatar-btn logout-btn" onclick="handleLogout()" title="Logout">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
       </button>
@@ -792,7 +831,7 @@
       <div class="exec-header-row-dark">
         <div>
           <div class="exec-badge-text-dark">STATE MANAGER TARGET ALLOCATION</div>
-          <h2 class="exec-title-text-dark" id="myTargetMonthTitle">SEPTEMBER 2026 QUOTA PROGRESS</h2>
+          <h2 class="exec-title-text-dark" id="myTargetMonthTitle">TARGET QUOTA PROGRESS</h2>
         </div>
         <div class="live-tracking-badge">
           <div class="live-pulse-dot"></div>
@@ -830,7 +869,7 @@
 
         <div class="exec-metric-box-dark">
           <div class="exec-metric-label-dark" style="color: #a78bfa;">TOTAL TEAM FLOAT</div>
-          <div class="exec-metric-value-dark" id="metricFloatVal">₦0</div>
+          <div class="exec-metric-value-dark" id="metricFloatVal">₦0.00</div>
           <div class="exec-progress-bar-bg-dark">
             <div class="exec-progress-bar-fill" style="width: 100%; background: #a78bfa;"></div>
           </div>
@@ -936,7 +975,7 @@
 
       <div class="history-card-highlight">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <strong id="histCurrentMonthTitle" style="font-size: 13.5px; color: #0f172a;">SEPTEMBER 2026 (CURRENT)</strong>
+          <strong id="histCurrentMonthTitle" style="font-size: 13.5px; color: #0f172a;">CURRENT CYCLE</strong>
           <span style="background: #eff6ff; color: var(--accent-blue); padding: 3px 8px; border-radius: 6px; font-size: 9.5px; font-weight: 900; border: 1px solid #bfdbfe;">ACTIVE</span>
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11.5px;">
@@ -969,20 +1008,20 @@
     <div class="sidebar-drawer" onclick="event.stopPropagation()">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 14px; margin-bottom: 12px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 38px; height: 38px; border-radius: 10px; background: #eff6ff; display: flex; justify-content: center; align-items: center; border: 1px solid #bfdbfe; color: var(--accent-blue);">
-            <i class="fa-solid fa-user-tie"></i>
+          <div class="top-logo-box" style="width: 38px; height: 38px;">
+            <img src="assets/Logo.png" alt="Ayax" onerror="this.onerror=null; this.src='assets/logo.png';" />
           </div>
           <div>
             <h3 style="margin: 0; font-size: 14px; font-weight: 900;" id="sidebarName">Field Supervisor</h3>
-            <span style="font-size: 10.5px; color: var(--accent-blue); font-weight: 700;" id="sidebarJurisdiction">Ajingi LGA Field Lead</span>
+            <span style="font-size: 10.5px; color: var(--accent-blue); font-weight: 700;" id="sidebarJurisdiction">LGA Field Lead</span>
           </div>
         </div>
-        <button onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer;">&times;</button>
+        <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer;">&times;</button>
       </div>
 
       <div style="background: #f8fafc; border-radius: 10px; padding: 10px; border: 1px solid var(--border-light); margin-bottom: 12px; font-size: 11px;">
         <div>📞 Phone: <strong id="sidebarPhone">-</strong></div>
-        <div style="margin-top: 3px;">✉️ Email: <strong id="sidebarEmail" style="color: var(--accent-sky);">-</strong></div>
+        <div style="margin-top: 3px;">✉️ Email: <strong id="sidebarEmail" style="color: var(--accent-blue);">-</strong></div>
         <div style="margin-top: 3px;">📍 Jurisdiction: <strong id="sidebarRegion">-</strong></div>
       </div>
 
@@ -994,7 +1033,13 @@
         <i class="fa-solid fa-ticket" style="color: var(--accent-green);"></i> Copy Referral Code
       </a>
       <a class="nav-item" onclick="toggleSidebar(false); openModal('notifModal');">
-        <i class="fa-solid fa-bullhorn" style="color: var(--accent-sky);"></i> Broadcast to Outlets
+        <i class="fa-solid fa-bullhorn" style="color: var(--accent-cyan);"></i> Broadcast to Outlets
+      </a>
+      <a href="home.html" class="nav-item">
+        <i class="fa-solid fa-house" style="color: var(--accent-blue);"></i> Customer Portal
+      </a>
+      <a href="notifications.html" class="nav-item">
+        <i class="fa-regular fa-bell" style="color: var(--accent-amber);"></i> Notification Center
       </a>
 
       <button type="button" onclick="handleLogout()" style="margin-top: auto; display: flex; align-items: center; gap: 8px; padding: 14px 10px; border: none; border-top: 1px solid var(--border-light); background: none; color: #dc2626; font-size: 13px; font-weight: 800; cursor: pointer;">
@@ -1008,7 +1053,7 @@
     <div class="modal-card">
       <div class="modal-header-row">
         <div>
-          <h2 class="modal-title" id="inspectAgentName">Retail Agent</h2>
+          <h2 class="modal-card-title" id="inspectAgentName">Retail Agent</h2>
           <p class="modal-card-subtitle" id="inspectAgentContact">📞 - • ✉️ -</p>
         </div>
         <button type="button" class="btn-modal-close" onclick="closeModal('inspectModal')">&times;</button>
@@ -1017,7 +1062,7 @@
       <div style="display: flex; background: #eff6ff; border-radius: 12px; padding: 12px; border: 1px solid #bfdbfe; margin-bottom: 12px;">
         <div style="flex: 1; text-align: center;">
           <span style="font-size: 10px; font-weight: 700; color: var(--accent-blue);">Wallet Balance</span>
-          <div style="font-size: 16px; font-weight: 900; color: var(--accent-green); margin-top: 2px;" id="inspectAgentWallet">₦0</div>
+          <div style="font-size: 16px; font-weight: 900; color: var(--accent-green); margin-top: 2px;" id="inspectAgentWallet">₦0.00</div>
         </div>
         <div style="width: 1px; background: #bfdbfe;"></div>
         <div style="flex: 1; text-align: center;">
@@ -1042,7 +1087,7 @@
     <div class="modal-card">
       <div class="modal-header-row">
         <div>
-          <h2 class="modal-title">Broadcast LGA Directive</h2>
+          <h2 class="modal-card-title">Broadcast LGA Directive</h2>
           <p class="modal-card-subtitle" id="notifModalSub">Send alert to all retail agents in LGA</p>
         </div>
         <button type="button" class="btn-modal-close" onclick="closeModal('notifModal')">&times;</button>
@@ -1086,7 +1131,7 @@
         dataGoal: 0,
         airtimeGoal: 0,
         agentGoal: 10,
-        currentMonth: "September 2026",
+        currentMonth: "Current Cycle",
         dataSold: 0,
         airtimeSold: 0
       },
@@ -1095,15 +1140,19 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       if (!state.token) {
-        alert("Session expired. Please login.");
         window.location.href = "index.html";
         return;
       }
       fetchDashboardData();
+      setInterval(fetchDashboardData, 15000);
     });
 
     async function fetchDashboardData() {
-      const headers = { 'Authorization': `Bearer ${state.token}` };
+      if (!state.token) return;
+      const headers = {
+        'Authorization': `Bearer ${state.token}`,
+        'Accept': 'application/json'
+      };
 
       try {
         const [dashRes, targetRes, agentsRes, logsRes, histRes] = await Promise.allSettled([
@@ -1121,7 +1170,6 @@
 
         const dashData = (dashRes.status === 'fulfilled' && dashRes.value) ? (dashRes.value.data || dashRes.value) : {};
 
-        // Merge and resolve agents uniquely
         let combinedAgents = [];
         if (Array.isArray(dashData.agents)) combinedAgents.push(...dashData.agents);
         if (agentsRes.status === 'fulfilled' && agentsRes.value) {
@@ -1136,7 +1184,6 @@
         });
         state.agents = Array.from(uniqueMap.values());
 
-        // Resolve logs & target history
         if (logsRes.status === 'fulfilled' && logsRes.value) {
           state.activityLogs = logsRes.value.logs || logsRes.value.data?.logs || (Array.isArray(logsRes.value) ? logsRes.value : []) || dashData.activityLogs || [];
         }
@@ -1145,7 +1192,6 @@
           state.targetHistoryList = histRes.value.history || histRes.value.data || (Array.isArray(histRes.value) ? histRes.value : []) || dashData.targetHistory || [];
         }
 
-        // Supervisor Profile resolution
         const currentPhone = String(dashData.phone || storedUser.phone || "").trim();
         const currentName = dashData.name || storedUser.name || `${dashData.firstName || storedUser.firstName || "Field"} ${dashData.surname || storedUser.surname || "Supervisor"}`.trim();
         const currentLga = dashData.lga || storedUser.lga || "Ajingi";
@@ -1162,7 +1208,6 @@
           referralCode: cleanRefCode
         };
 
-        // Targets resolution
         const t1 = dashData.myTarget || {};
         const t2 = dashData.targets || {};
         const t3 = (targetRes.status === 'fulfilled' && targetRes.value) ? (targetRes.value.targets || targetRes.value.data?.targets || targetRes.value.data || {}) : {};
@@ -1175,33 +1220,31 @@
           dataGoal: Number(t1.dataGoal || t2.dataGoal || t3.dataGoal || t4.dataGoal || dashData.dataGoal || 0),
           airtimeGoal: Number(t1.airtimeGoal || t2.airtimeGoal || t3.airtimeGoal || t4.airtimeGoal || dashData.airtimeGoal || 0),
           agentGoal: Number(t1.agentGoal || t2.agentGoal || t3.agentGoal || t4.agentGoal || dashData.agentGoal || 10),
-          currentMonth: t1.currentMonth || t2.currentMonth || t3.currentMonth || t4.currentMonth || "September 2026",
+          currentMonth: t1.currentMonth || t2.currentMonth || t3.currentMonth || t4.currentMonth || "Current Cycle",
           dataSold: totalDataSold,
           airtimeSold: totalAirtimeSold
         };
 
         updateUI();
       } catch (err) {
-        console.warn("Supervisor Dashboard Sync Warning:", err);
+        console.warn("Supervisor Sync Notice:", err.message);
       }
     }
 
     function updateUI() {
-      // Top header updates
-      document.getElementById('topBadgeText').textContent = `${state.profile.lga.toUpperCase()} LGA FIELD SUPERVISOR (FS)`;
-      document.getElementById('topTitleText').textContent = `${state.profile.state.toUpperCase()} STATE • ${state.agents.length} OUTLETS`;
+      document.getElementById('topBadgeText').textContent = `${state.profile.lga.toUpperCase()} LGA SUPERVISOR`;
+      document.getElementById('topTitleText').textContent = `${state.profile.state.toUpperCase()} • ${state.agents.length} OUTLETS`;
       document.getElementById('tabLabelAgents').textContent = `Outlets (${state.agents.length})`;
       document.getElementById('refCodeDisplay').textContent = state.profile.referralCode;
       document.getElementById('registerAgentActionLabel').textContent = `+ REGISTER AGENT (${state.agents.length}/${state.myTarget.agentGoal})`;
 
-      // Executive target progress numbers
       document.getElementById('myTargetMonthTitle').textContent = `${state.myTarget.currentMonth.toUpperCase()} QUOTA PROGRESS`;
       document.getElementById('metricDataVal').textContent = `${state.myTarget.dataSold} / ${state.myTarget.dataGoal} GB`;
       document.getElementById('metricAirtimeVal').textContent = `₦${state.myTarget.airtimeSold.toLocaleString()} / ₦${state.myTarget.airtimeGoal.toLocaleString()}`;
       document.getElementById('metricAgentVal').textContent = `${state.agents.length} / ${state.myTarget.agentGoal}`;
 
       const totalFloat = state.agents.reduce((acc, curr) => acc + Number(curr.walletBalance || curr.balance || 0), 0);
-      document.getElementById('metricFloatVal').textContent = `₦${totalFloat.toLocaleString()}`;
+      document.getElementById('metricFloatVal').textContent = `₦${totalFloat.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
 
       const dataProg = state.myTarget.dataGoal > 0 ? Math.min(Math.round((state.myTarget.dataSold / state.myTarget.dataGoal) * 100), 100) : 0;
       const airProg = state.myTarget.airtimeGoal > 0 ? Math.min(Math.round((state.myTarget.airtimeSold / state.myTarget.airtimeGoal) * 100), 100) : 0;
@@ -1214,7 +1257,6 @@
       document.getElementById('metricAgentBar').style.width = `${agentProg}%`;
       document.getElementById('metricAgentPercent').textContent = `${agentProg}% Outlets Registered`;
 
-      // Overview Tab (Tab 2)
       document.getElementById('perfDataFill').style.width = `${dataProg}%`;
       document.getElementById('perfDataText').textContent = `${state.myTarget.dataSold} GB sold out of ${state.myTarget.dataGoal} GB assigned target (${dataProg}%).`;
       document.getElementById('perfAirtimeFill').style.width = `${airProg}%`;
@@ -1222,13 +1264,11 @@
       document.getElementById('perfAgentFill').style.width = `${agentProg}%`;
       document.getElementById('perfAgentText').textContent = `${state.agents.length} out of ${state.myTarget.agentGoal} retail agents onboarded (${agentProg}%).`;
 
-      // History Tab (Tab 3)
       document.getElementById('histCurrentMonthTitle').textContent = `${state.myTarget.currentMonth.toUpperCase()} (CURRENT)`;
       document.getElementById('histCurrentData').textContent = `${state.myTarget.dataGoal} GB`;
       document.getElementById('histCurrentAirtime').textContent = `₦${state.myTarget.airtimeGoal.toLocaleString()}`;
       document.getElementById('histCurrentAgent').textContent = `${state.myTarget.agentGoal} Outlets`;
 
-      // Sidebar info
       document.getElementById('sidebarName').textContent = state.profile.name;
       document.getElementById('sidebarJurisdiction').textContent = `${state.profile.lga} LGA Field Lead`;
       document.getElementById('sidebarPhone').textContent = state.profile.phone || "N/A";
@@ -1306,7 +1346,7 @@
               </div>
 
               <div style="text-align: right;">
-                <h4 class="agent-sales-text">₦${floatBal.toLocaleString()}</h4>
+                <h4 class="agent-sales-text">₦${floatBal.toLocaleString("en-NG", { minimumFractionDigits: 2 })}</h4>
                 <p class="agent-sales-sub">Float Balance</p>
               </div>
             </div>
@@ -1361,7 +1401,7 @@
 
       wrap.innerHTML = state.targetHistoryList.map(h => `
         <div class="history-card">
-          <strong style="font-size: 13px; color: #0f172a;">${h.month || h.currentMonth || "Previous Month"}</strong>
+          <strong style="font-size: 13px; color: #0f172a;">${h.month || h.currentMonth || "Previous Cycle"}</strong>
           <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: #475569;">
             <span>Data Goal: <strong>${h.dataGoal || 0} GB</strong></span>
             <span>Airtime Goal: <strong>₦${Number(h.airtimeGoal || 0).toLocaleString()}</strong></span>
@@ -1392,7 +1432,7 @@
 
       document.getElementById('inspectAgentName').textContent = ag.name || 'Retail Agent';
       document.getElementById('inspectAgentContact').textContent = `📞 ${ag.phone || 'N/A'} • ✉️ ${ag.email || 'N/A'}`;
-      document.getElementById('inspectAgentWallet').textContent = `₦${Number(ag.walletBalance || ag.balance || 0).toLocaleString()}`;
+      document.getElementById('inspectAgentWallet').textContent = `₦${Number(ag.walletBalance || ag.balance || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
       document.getElementById('inspectAgentDataSold').textContent = `${ag.dataVolumeSold || ag.dataSold || 0} GB`;
       document.getElementById('inspectAgentDataGoal').textContent = `${Number(ag.targets?.dataGoal || ag.dataGoal || 0)} GB`;
       document.getElementById('inspectAgentAirtimeGoal').textContent = `₦${Number(ag.targets?.airtimeGoal || ag.airtimeGoal || 0).toLocaleString()}`;
@@ -1403,7 +1443,7 @@
 
     function copyReferralCode() {
       navigator.clipboard.writeText(state.profile.referralCode).then(() => {
-        alert(`Copied 📋\n\nReferral Code: ${state.profile.referralCode} copied to clipboard.`);
+        alert(`Referral Code: ${state.profile.referralCode} copied to clipboard.`);
       });
     }
 
@@ -1436,7 +1476,7 @@
       const message = document.getElementById('notifMessageInput').value.trim();
 
       if (!title || !message) {
-        alert("Validation Error: Directive Title and Message Body are required.");
+        alert("Please provide both title and directive message.");
         return;
       }
 
@@ -1461,7 +1501,7 @@
 
         const data = await res.json();
         if (res.ok && (data.success || res.status === 200)) {
-          alert(`Directive Dispatched 🚀\n\nAlert sent to all agents in ${state.profile.lga} LGA.`);
+          alert(`Directive Dispatched: Alert delivered to ${state.profile.lga} LGA agents.`);
           closeModal('notifModal');
           document.getElementById('notifTitleInput').value = '';
           document.getElementById('notifMessageInput').value = '';
@@ -1469,7 +1509,8 @@
           throw new Error(data.message || "Failed to broadcast directive.");
         }
       } catch (err) {
-        alert("Broadcast Error: " + err.message);
+        alert("Broadcast Notice: " + err.message);
+        closeModal('notifModal');
       } finally {
         btn.disabled = false;
       }
@@ -1482,8 +1523,5 @@
       }
     }
   </script>
-  <script src="js/config.js"></script>
-  <script src="js/adminApi.js"></script>
-  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>
