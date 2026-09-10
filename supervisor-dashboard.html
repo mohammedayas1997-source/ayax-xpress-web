@@ -38,7 +38,6 @@
     * {
       box-sizing: border-box;
       text-decoration: none !important;
-      -webkit-text-decoration-line: none !important;
       outline: none !important;
     }
 
@@ -376,6 +375,11 @@
       font-weight: 900;
       cursor: pointer;
       border: none;
+      transition: all 0.2s;
+    }
+
+    .action-btn-full:hover {
+      background: #0369a1;
     }
 
     .action-btn-secondary {
@@ -586,52 +590,6 @@
       cursor: pointer;
     }
 
-    /* Performance Cards */
-    .performance-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-      border: 1px solid var(--border-light);
-    }
-
-    /* History Cards */
-    .history-card-highlight {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 10px;
-      border: 1.5px solid var(--accent-cyan);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-    }
-
-    .history-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 8px;
-      border: 1px solid var(--border-light);
-    }
-
-    /* Log Card */
-    .log-card {
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 8px;
-      border: 1px solid var(--border-light);
-    }
-
-    /* Empty Feed */
-    .empty-feed {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 14px;
-      text-align: center;
-      border: 1px solid var(--border-light);
-      color: #94a3b8;
-    }
-
     /* Modals */
     .modal-overlay {
       display: none;
@@ -791,7 +749,8 @@
     </div>
 
     <div class="top-actions">
-      <button type="button" class="avatar-btn" onclick="navigateToSignup()" title="Add Agent">
+      <!-- Direct Register Agent Modal Trigger -->
+      <button type="button" class="avatar-btn" onclick="openModal('registerAgentModal')" title="Register Agent Directly">
         <i class="fa-solid fa-user-plus"></i>
       </button>
       <a href="notifications.html" class="avatar-btn" title="Notification Center">
@@ -887,7 +846,7 @@
           </div>
           <div>
             <h3 class="referral-card-title">Supervisor Referral Code</h3>
-            <p class="referral-card-sub">Auto-binds agent to your LGA supervision during Signup</p>
+            <p class="referral-card-sub">Auto-binds agent to your LGA supervision</p>
           </div>
         </div>
         <button type="button" class="copy-ref-btn" onclick="copyReferralCode()">
@@ -899,7 +858,7 @@
 
     <!-- Section 3: Summary Actions -->
     <div class="action-row-container">
-      <button type="button" class="action-btn-full" onclick="navigateToSignup()">
+      <button type="button" class="action-btn-full" onclick="openModal('registerAgentModal')">
         <i class="fa-solid fa-user-plus"></i>
         <span id="registerAgentActionLabel">+ REGISTER AGENT (0/10)</span>
       </button>
@@ -926,7 +885,7 @@
     <section id="tabContentAgents">
       <div class="section-header-row">
         <span class="section-header-label" id="agentSectionLabel">GRASSROOT RETAIL OUTLETS & TARGETS (0)</span>
-        <button type="button" class="action-pill-btn" onclick="navigateToSignup()">
+        <button type="button" class="action-pill-btn" onclick="openModal('registerAgentModal')">
           <i class="fa-solid fa-user-plus"></i> + ADD AGENT
         </button>
       </div>
@@ -1003,6 +962,45 @@
 
   </main>
 
+  <!-- ================= MODAL: REGISTER AGENT DIRECTLY ================= -->
+  <div class="modal-overlay" id="registerAgentModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Register Retail Agent</h2>
+          <p class="modal-card-subtitle" id="agentModalSubtitle">Auto-binds under your LGA command</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('registerAgentModal')">&times;</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); handleDirectRegisterAgent();">
+        <label class="form-field-label">AGENT FULL NAME *</label>
+        <input type="text" id="regAgentName" class="text-input-style" placeholder="e.g. Aliyu Sani" required />
+
+        <div style="display: flex; gap: 8px;">
+          <div style="flex: 1;">
+            <label class="form-field-label">PHONE NUMBER (LOGIN) *</label>
+            <input type="tel" id="regAgentPhone" class="text-input-style" placeholder="08012345678" required />
+          </div>
+          <div style="flex: 1;">
+            <label class="form-field-label">LGA OUTLET LOCATION *</label>
+            <input type="text" id="regAgentLga" class="text-input-style" required />
+          </div>
+        </div>
+
+        <label class="form-field-label">STORE / OUTLET ADDRESS</label>
+        <input type="text" id="regAgentAddress" class="text-input-style" placeholder="e.g. Shop 4 Commercial Street" />
+
+        <label class="form-field-label">TEMPORARY PASSWORD *</label>
+        <input type="text" id="regAgentPassword" class="text-input-style" value="Ayax@12345" required />
+
+        <button type="submit" class="primary-action-btn" id="btnSubmitRegisterAgent">
+          AUTHORIZE & REGISTER AGENT
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Sidebar Drawer -->
   <div class="sidebar-overlay" id="sidebarDrawer" onclick="toggleSidebar(false)">
     <div class="sidebar-drawer" onclick="event.stopPropagation()">
@@ -1026,8 +1024,8 @@
       </div>
 
       <div style="color: #64748b; font-size: 9.5px; font-weight: 900; letter-spacing: 1px; margin-bottom: 6px;">COMMAND ACTIONS</div>
-      <a class="nav-item" onclick="toggleSidebar(false); navigateToSignup();">
-        <i class="fa-solid fa-user-plus" style="color: var(--accent-blue);"></i> Register New Agent
+      <a class="nav-item" onclick="toggleSidebar(false); openModal('registerAgentModal');">
+        <i class="fa-solid fa-user-plus" style="color: var(--accent-blue);"></i> Register New Agent Directly
       </a>
       <a class="nav-item" onclick="toggleSidebar(false); copyReferralCode();">
         <i class="fa-solid fa-ticket" style="color: var(--accent-green);"></i> Copy Referral Code
@@ -1237,6 +1235,8 @@
       document.getElementById('tabLabelAgents').textContent = `Outlets (${state.agents.length})`;
       document.getElementById('refCodeDisplay').textContent = state.profile.referralCode;
       document.getElementById('registerAgentActionLabel').textContent = `+ REGISTER AGENT (${state.agents.length}/${state.myTarget.agentGoal})`;
+      document.getElementById('agentModalSubtitle').textContent = `Registered under ${state.profile.lga} LGA (${state.profile.name})`;
+      document.getElementById('regAgentLga').value = state.profile.lga;
 
       document.getElementById('myTargetMonthTitle').textContent = `${state.myTarget.currentMonth.toUpperCase()} QUOTA PROGRESS`;
       document.getElementById('metricDataVal').textContent = `${state.myTarget.dataSold} / ${state.myTarget.dataGoal} GB`;
@@ -1447,18 +1447,6 @@
       });
     }
 
-    function navigateToSignup() {
-      const params = new URLSearchParams({
-        role: "agent",
-        referralCode: state.profile.referralCode,
-        referredBy: state.profile.referralCode,
-        supervisorId: state.profile.referralCode,
-        state: state.profile.state,
-        lga: state.profile.lga
-      });
-      window.location.href = `signup.html?${params.toString()}`;
-    }
-
     function openModal(id) {
       document.getElementById(id).style.display = 'flex';
     }
@@ -1469,6 +1457,96 @@
 
     function toggleSidebar(open) {
       document.getElementById('sidebarDrawer').style.display = open ? 'block' : 'none';
+    }
+
+    // =========================================================================
+    // RAJISTAR AGENT TARE DA TABBATAR DA CEWA SUPERVISOR YA TSAYA A DASHBOARD DINSA
+    // =========================================================================
+    async function handleDirectRegisterAgent() {
+      const name = document.getElementById('regAgentName').value.trim();
+      const phone = document.getElementById('regAgentPhone').value.trim();
+      const lga = document.getElementById('regAgentLga').value.trim();
+      const address = document.getElementById('regAgentAddress').value.trim();
+      const password = document.getElementById('regAgentPassword').value.trim();
+
+      if (!name || !phone || !password) {
+        alert("Please provide full name, phone number, and password.");
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmitRegisterAgent');
+      btn.disabled = true;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering Agent...';
+
+      const payload = {
+        name,
+        fullName: name,
+        firstName: name.split(' ')[0],
+        surname: name.split(' ').slice(1).join(' ') || 'Agent',
+        phone,
+        email: `${phone}@ayaxdata.online`,
+        password,
+        role: "agent",
+        state: state.profile.state,
+        lga: lga || state.profile.lga,
+        address: address || `${lga || state.profile.lga} Commercial Outlet`,
+        referralCode: state.profile.referralCode,
+        referredBy: state.profile.referralCode,
+        supervisorId: state.profile.phone || state.profile.referralCode
+      };
+
+      const endpoints = [
+        `${BASE_URL}/supervisor/register-agent`,
+        `${BASE_URL}/supervisor/agents/create`,
+        `${BASE_URL}/auth/register`
+      ];
+
+      let registeredSuccess = false;
+      let lastMsg = "";
+
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${state.token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          const resData = await res.json();
+          if (res.ok && (resData.success || res.status === 200 || res.status === 201)) {
+            registeredSuccess = true;
+            
+            // RUFE MODAL KUMA SHARE AKWATINAN RUBUTU
+            closeModal('registerAgentModal');
+            document.getElementById('regAgentName').value = '';
+            document.getElementById('regAgentPhone').value = '';
+            document.getElementById('regAgentAddress').value = '';
+
+            // SANARWA TA NASARA: SUPERVISOR YANA NAN A DASHBOARD DINSA BA TARE DA YA FITA BA!
+            alert(`Nasara! An yi wa Agent ${name} rajista lafiya a karkashin ${payload.lga} LGA.`);
+
+            // Daukako sabbin jerin agents ba tare da canza login ba
+            fetchDashboardData();
+            break;
+          } else {
+            lastMsg = resData.message || "Failed to register agent.";
+          }
+        } catch (e) {
+          lastMsg = e.message;
+        }
+      }
+
+      if (!registeredSuccess) {
+        alert("Registration Notice: " + lastMsg);
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = originalText;
     }
 
     async function handleBroadcastToAgents() {
