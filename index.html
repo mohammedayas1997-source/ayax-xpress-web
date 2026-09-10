@@ -49,7 +49,7 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Top Navy Wrapper */
+    /* Top Navy Section */
     .top-navy-wrapper {
       background: linear-gradient(180deg, #061224 0%, #0a1d37 60%, #0c2445 100%);
       color: #ffffff;
@@ -76,14 +76,11 @@
       text-decoration: none;
     }
 
-    /* =========================================
-       FARIN BACKGROUND NA LOGO A NAVBAR
-       ========================================= */
     .nav-logo-box {
       width: 44px;
       height: 44px;
       border-radius: 12px;
-      background: #ffffff; /* Farin Background */
+      background: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -423,14 +420,11 @@
       margin-bottom: 22px;
     }
 
-    /* =========================================
-       FARIN BACKGROUND NA LOGO A MODAL
-       ========================================= */
     .modal-logo-box {
       width: 68px;
       height: 68px;
       border-radius: 20px;
-      background: #ffffff; /* Farin Background */
+      background: #ffffff;
       margin: 0 auto 12px auto;
       display: flex;
       justify-content: center;
@@ -616,7 +610,6 @@
   <div class="top-navy-wrapper">
     <nav class="navbar">
       <a href="index.html" class="brand-group">
-        <!-- Farin Background Na Logo -->
         <div class="nav-logo-box">
           <img
             id="navLogoImg"
@@ -674,7 +667,6 @@
     </div>
 
     <div class="services-grid">
-      <!-- Buy Data -->
       <div class="service-card">
         <div class="service-icon-box" style="background: #e0f2fe; color: #0284c7;">
           <i class="fa-solid fa-wifi"></i>
@@ -683,7 +675,6 @@
         <p>Affordable SME, CG & Gifting data across MTN, Airtel, Glo & 9mobile delivered instantly.</p>
       </div>
 
-      <!-- Airtime -->
       <div class="service-card">
         <div class="service-icon-box" style="background: #dcfce7; color: #16a34a;">
           <i class="fa-solid fa-phone"></i>
@@ -692,7 +683,6 @@
         <p>Instant airtime recharge with exclusive bonus discounts for personal lines and retail agents.</p>
       </div>
 
-      <!-- Identity Verification (NIN / BVN) -->
       <div class="service-card">
         <div class="service-icon-box" style="background: #ede9fe; color: #7c3aed;">
           <i class="fa-solid fa-id-card"></i>
@@ -701,7 +691,6 @@
         <p>Real-time NIN validation, modification requests, vNIN lookup, and BVN verification logs.</p>
       </div>
 
-      <!-- Bills & Utilities -->
       <div class="service-card">
         <div class="service-icon-box" style="background: #fef3c7; color: #d97706;">
           <i class="fa-solid fa-bolt"></i>
@@ -730,7 +719,6 @@
       <button type="button" class="close-modal-btn" onclick="closeLoginModal()">&times;</button>
 
       <section class="header-section">
-        <!-- Farin Background Na Logo a Modal -->
         <div class="modal-logo-box">
           <img
             id="modalLogoImg"
@@ -871,39 +859,71 @@
     document.getElementById('identifierInput').addEventListener('input', hideError);
     document.getElementById('passwordInput').addEventListener('input', hideError);
 
+    // =========================================================================
+    // COMPLETE AYAX HIERARCHY ROUTER (PREVENTS 404 FOR ALL ROLES)
+    // =========================================================================
     function routeUserByRole(rawRole, rawIdentifier = "") {
       const role = String(rawRole || "").trim().toLowerCase();
       const identifier = String(rawIdentifier).trim().toLowerCase();
 
+      // 1. SuperAdmin Console
       if (
         role === "superadmin" ||
         identifier === "mohammed.ayas@ayaxdata.online" ||
         identifier === "09033738409"
       ) {
-        window.location.href = "superadmin-dashboard.html";
+        window.location.replace("superadmin-dashboard.html");
         return;
       }
 
+      // 2. Operations Admin Console
       if (
         role === "admin" ||
+        role === "operations_admin" ||
         identifier === "mohammed@ayaxdata.online" ||
         identifier === "admin@ayaxdata.online" ||
         identifier === "08011112222"
       ) {
-        window.location.href = "admin-dashboard.html";
+        window.location.replace("admin-dashboard.html");
         return;
       }
 
-      if (role === "supervisor" || role === "field_supervisor") {
-        window.location.href = "supervisor-dashboard.html";
+      // 3. LSD / NSD (National Sales Director / Super Leader)
+      if (
+        role === "lsd" ||
+        role === "nsd" ||
+        role === "super_leader" ||
+        role === "national_sales_director" ||
+        identifier === "nsd@ayaxdata.online" ||
+        identifier === "08099990000"
+      ) {
+        window.location.replace("nsd-dashboard.html");
         return;
       }
 
-      if (role === "agent") {
-        window.location.href = "agent-dashboard.html";
+      // 4. Leader / Lida / State Manager
+      if (
+        role === "leader" ||
+        role === "lida" ||
+        role === "state_leader" ||
+        role === "state_manager"
+      ) {
+        window.location.replace("leader-dashboard.html");
         return;
       }
 
+      // 5. ACM / Supervisor / Area Command Manager
+      if (
+        role === "acm" ||
+        role === "supervisor" ||
+        role === "area_command_manager" ||
+        role === "field_supervisor"
+      ) {
+        window.location.replace("supervisor-dashboard.html");
+        return;
+      }
+
+      // 6. Support Desk
       if (
         role === "support" ||
         role === "customer_service" ||
@@ -911,11 +931,18 @@
         identifier === "08077778888" ||
         identifier === "09033738400"
       ) {
-        window.location.href = "support-dashboard.html";
+        window.location.replace("support-dashboard.html");
         return;
       }
 
-      window.location.href = "home.html";
+      // 7. Agent / Retail Outlets
+      if (role === "agent" || role === "reseller") {
+        window.location.replace("agent-dashboard.html");
+        return;
+      }
+
+      // 8. Normal Customer Dashboard
+      window.location.replace("home.html");
     }
 
     async function handleLogin() {
