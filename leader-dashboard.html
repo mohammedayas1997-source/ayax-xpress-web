@@ -1167,41 +1167,69 @@
     async function handleAppointSupervisorSubmit() {
       const btn = document.getElementById('btnAppointSupervisorSubmit');
       btn.disabled = true;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
 
-      try {
-        const payload = {
-          name: document.getElementById('appointName').value.trim(),
-          phone: document.getElementById('appointPhone').value.trim(),
-          lga: document.getElementById('appointLga').value.trim(),
-          email: document.getElementById('appointEmail').value.trim() || undefined,
-          password: document.getElementById('appointPassword').value.trim(),
-          state: state.myState,
-          role: 'supervisor'
-        };
+      const payload = {
+        name: document.getElementById('appointName').value.trim(),
+        fullName: document.getElementById('appointName').value.trim(),
+        phone: document.getElementById('appointPhone').value.trim(),
+        lga: document.getElementById('appointLga').value.trim(),
+        email: document.getElementById('appointEmail').value.trim() || `${document.getElementById('appointPhone').value.trim()}@ayaxdata.online`,
+        password: document.getElementById('appointPassword').value.trim(),
+        state: state.myState || "Kano",
+        role: 'supervisor'
+      };
 
-        const res = await fetch(`${BASE_URL}/admin/users/create`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
+      // Jerin ainihin hanyoyin da backend ya tanadar wa State Manager (Leader)
+      const targetEndpoints = [
+        `${BASE_URL}/leader/appoint-supervisor`,
+        `${BASE_URL}/leader/create-supervisor`,
+        `${BASE_URL}/leader/supervisors/create`,
+        `${BASE_URL}/supervisors/create`
+      ];
 
-        const data = await res.json();
-        if (res.ok && (data.success || res.status === 200 || res.status === 201)) {
-          alert(`Field Supervisor Appointed Successfully for ${payload.lga} LGA!`);
-          closeModal('appointSupervisorModal');
-          fetchLeaderDashboard();
-        } else {
-          throw new Error(data.message || "Could not appoint supervisor.");
+      let success = false;
+      let lastErrorMessage = "";
+
+      for (const endpoint of targetEndpoints) {
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${state.token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await res.json();
+
+          if (res.ok && (data.success || res.status === 200 || res.status === 201)) {
+            success = true;
+            alert(`Field Supervisor Appointed Successfully for ${payload.lga} LGA!`);
+            closeModal('appointSupervisorModal');
+            document.getElementById('appointName').value = '';
+            document.getElementById('appointPhone').value = '';
+            document.getElementById('appointLga').value = '';
+            document.getElementById('appointEmail').value = '';
+            fetchLeaderDashboard();
+            break;
+          } else {
+            lastErrorMessage = data.message || "Failed to authorize appointment.";
+          }
+        } catch (err) {
+          lastErrorMessage = err.message;
         }
-      } catch (e) {
-        alert("Appoint Notice: " + e.message);
-        closeModal('appointSupervisorModal');
-      } finally {
-        btn.disabled = false;
       }
+
+      if (!success) {
+        alert("Appoint Notice: " + lastErrorMessage);
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = originalText;
     }
 
     async function handleBroadcastSubmit() {
