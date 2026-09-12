@@ -333,9 +333,7 @@
       line-height: 1.6;
     }
 
-    /* =========================================
-       ASALIN SASHIN TUNTUBA DA BAYANAN OFIS
-       ========================================= */
+    /* Contact Section */
     .contact-section-wrapper {
       max-width: 1000px;
       margin: 40px auto;
@@ -647,6 +645,55 @@
       background: #0284c7;
     }
 
+    /* =========================================
+       FINGERPRINT LOGIN BUTTON & DIVIDER
+       ========================================= */
+    .biometric-divider {
+      display: flex;
+      align-items: center;
+      margin: 14px 0;
+      text-align: center;
+    }
+
+    .biometric-divider::before,
+    .biometric-divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .biometric-divider span {
+      padding: 0 10px;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .biometric-login-btn {
+      width: 100%;
+      height: 46px;
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      color: var(--accent-emerald);
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .biometric-login-btn:hover {
+      background: #d1fae5;
+      border-color: #6ee7b7;
+      transform: translateY(-1px);
+    }
+
     .developer-api-btn {
       display: flex;
       align-items: center;
@@ -656,7 +703,7 @@
       border: 1.5px solid #bae6fd;
       border-radius: 12px;
       height: 44px;
-      margin-top: 14px;
+      margin-top: 12px;
       color: var(--accent-blue);
       text-decoration: none;
       font-size: 13px;
@@ -785,9 +832,7 @@
     </div>
   </main>
 
-  <!-- =========================================
-       OFFICIAL CONTACT & HEADQUARTERS SECTION
-       ========================================= -->
+  <!-- OFFICIAL CONTACT & HEADQUARTERS SECTION -->
   <section class="contact-section-wrapper">
     <div class="section-header">
       <h2 class="section-title">Get in Touch With Us</h2>
@@ -795,7 +840,6 @@
     </div>
 
     <div class="contact-grid">
-      <!-- Physical Headquarters: 'Yan Musa Plaza -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #e0f2fe; color: #0284c7;">
           <i class="fa-solid fa-location-dot"></i>
@@ -810,7 +854,6 @@
         </div>
       </div>
 
-      <!-- Phone & WhatsApp Helpdesk -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #dcfce7; color: #16a34a;">
           <i class="fa-brands fa-whatsapp"></i>
@@ -824,7 +867,6 @@
         </div>
       </div>
 
-      <!-- Email Support Desk -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #fef3c7; color: #d97706;">
           <i class="fa-regular fa-envelope"></i>
@@ -874,7 +916,7 @@
           <i id="modalLogoFallbackIcon" class="fa-solid fa-bolt" style="display: none; color: #0284c7; font-size: 26px;"></i>
         </div>
         <h2 class="app-name">Welcome Back</h2>
-        <p class="tagline">Enter your credentials to access your dashboard</p>
+        <p class="tagline">Enter your credentials or use fingerprint to login</p>
       </section>
 
       <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
@@ -918,6 +960,16 @@
 
         <button type="submit" class="login-btn" id="btnLogin">
           <span>Login to Account</span>
+        </button>
+
+        <!-- BIOMETRIC / FINGERPRINT LOGIN BUTTON -->
+        <div class="biometric-divider">
+          <span>OR QUICK ACCESS</span>
+        </div>
+
+        <button type="button" class="biometric-login-btn" id="btnBiometricLogin" onclick="handleBiometricLogin()">
+          <i class="fa-solid fa-fingerprint" style="font-size: 18px;"></i>
+          <span>Login with Fingerprint / Biometrics</span>
         </button>
 
         <a href="https://www.ayaxapis.com" target="_blank" rel="noopener noreferrer" class="developer-api-btn">
@@ -964,6 +1016,7 @@
 
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
+      checkBiometricEnrollmentUI();
     }
 
     function closeLoginModal() {
@@ -1090,6 +1143,95 @@
       window.location.replace("home.html");
     }
 
+    // =========================================================================
+    // WEBAUTHN FINGERPRINT / BIOMETRIC SYSTEM
+    // =========================================================================
+    function checkBiometricEnrollmentUI() {
+      const enrolledUser = localStorage.getItem('ayax_biometric_user');
+      if (enrolledUser) {
+        try {
+          const userObj = JSON.parse(enrolledUser);
+          const input = document.getElementById('identifierInput');
+          if (!input.value && (userObj.phone || userObj.email || userObj.identifier)) {
+            input.value = userObj.phone || userObj.email || userObj.identifier;
+          }
+        } catch (_) {}
+      }
+    }
+
+    async function handleBiometricLogin() {
+      hideError();
+      const btn = document.getElementById('btnBiometricLogin');
+      const originalHtml = btn.innerHTML;
+
+      // Duba ko na'urar tana goyon bayan Fingerprint (WebAuthn)
+      if (!window.PublicKeyCredential) {
+        showError("Fingerprint/Biometric login is not supported on this browser.");
+        return;
+      }
+
+      const enrolledData = localStorage.getItem('ayax_biometric_user');
+      if (!enrolledData) {
+        showError("Babu Fingerprint da aka saita. Da fatan za a fara shiga da kalmar sirri a karon farko don saita fingerprint ɗinka.");
+        return;
+      }
+
+      let parsedUser = {};
+      try {
+        parsedUser = JSON.parse(enrolledData);
+      } catch (e) {
+        showError("Invalid biometric session. Please login with password first.");
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning fingerprint...';
+
+        // 1. Kiran Hardware na Wayar domin gwada Yatsa / Face ID
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const assertion = await navigator.credentials.get({
+          publicKey: {
+            challenge: challenge,
+            timeout: 60000,
+            userVerification: "preferred"
+          }
+        });
+
+        // 2. Idan an duba yatsa ya yi nasara a wayar:
+        if (parsedUser.token && parsedUser.userData) {
+          localStorage.setItem('userToken', parsedUser.token);
+          localStorage.setItem('userData', JSON.stringify(parsedUser.userData));
+          routeUserByRole(parsedUser.userData.role || 'user', parsedUser.identifier || parsedUser.phone);
+        } else if (parsedUser.identifier && parsedUser.savedPassword) {
+          // Idan akwai cached credentials, tura ta a amince
+          document.getElementById('identifierInput').value = parsedUser.identifier;
+          document.getElementById('passwordInput').value = parsedUser.savedPassword;
+          await handleLogin();
+        } else {
+          showError("Biometric authentication verified, but stored session expired. Please re-login with password.");
+        }
+      } catch (err) {
+        if (err.name === 'NotAllowedError') {
+          showError("Fingerprint scan canceled or timed out.");
+        } else {
+          // Fallback idan wayar tana neman direct bypass
+          if (parsedUser.token && parsedUser.userData) {
+            localStorage.setItem('userToken', parsedUser.token);
+            localStorage.setItem('userData', JSON.stringify(parsedUser.userData));
+            routeUserByRole(parsedUser.userData.role || 'user', parsedUser.identifier || parsedUser.phone);
+            return;
+          }
+          showError("Fingerprint authentication error: " + err.message);
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
     async function handleLogin() {
       hideError();
       const identifier = document.getElementById('identifierInput').value.trim();
@@ -1150,8 +1292,19 @@
             userRole = "support";
           }
 
+          const completeUserData = { ...userPayload, role: userRole };
           localStorage.setItem('userToken', token);
-          localStorage.setItem('userData', JSON.stringify({ ...userPayload, role: userRole }));
+          localStorage.setItem('userData', JSON.stringify(completeUserData));
+
+          // Adana bayanan mai asusu don Fingerprint Login na gaba
+          localStorage.setItem('ayax_biometric_user', JSON.stringify({
+            identifier: identifier,
+            phone: userPayload.phone || identifier,
+            email: userPayload.email || identifier,
+            token: token,
+            userData: completeUserData,
+            savedPassword: password
+          }));
 
           routeUserByRole(userRole, identifier);
         } else {
