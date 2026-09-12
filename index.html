@@ -333,7 +333,7 @@
       line-height: 1.6;
     }
 
-    /* Contact Section */
+    /* Official Contact Section */
     .contact-section-wrapper {
       max-width: 1000px;
       margin: 40px auto;
@@ -645,9 +645,7 @@
       background: #0284c7;
     }
 
-    /* =========================================
-       FINGERPRINT LOGIN BUTTON & DIVIDER
-       ========================================= */
+    /* Biometric Login Styles */
     .biometric-divider {
       display: flex;
       align-items: center;
@@ -840,6 +838,7 @@
     </div>
 
     <div class="contact-grid">
+      <!-- Physical Headquarters: 'Yan Musa Plaza -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #e0f2fe; color: #0284c7;">
           <i class="fa-solid fa-location-dot"></i>
@@ -854,6 +853,7 @@
         </div>
       </div>
 
+      <!-- Phone & WhatsApp Helpdesk -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #dcfce7; color: #16a34a;">
           <i class="fa-brands fa-whatsapp"></i>
@@ -867,6 +867,7 @@
         </div>
       </div>
 
+      <!-- Email Support Desk -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #fef3c7; color: #d97706;">
           <i class="fa-regular fa-envelope"></i>
@@ -916,7 +917,7 @@
           <i id="modalLogoFallbackIcon" class="fa-solid fa-bolt" style="display: none; color: #0284c7; font-size: 26px;"></i>
         </div>
         <h2 class="app-name">Welcome Back</h2>
-        <p class="tagline">Enter your credentials or use fingerprint to login</p>
+        <p class="tagline">Enter your credentials or use biometric login</p>
       </section>
 
       <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
@@ -1164,7 +1165,6 @@
       const btn = document.getElementById('btnBiometricLogin');
       const originalHtml = btn.innerHTML;
 
-      // Duba ko na'urar tana goyon bayan Fingerprint (WebAuthn)
       if (!window.PublicKeyCredential) {
         showError("Fingerprint/Biometric login is not supported on this browser.");
         return;
@@ -1172,7 +1172,7 @@
 
       const enrolledData = localStorage.getItem('ayax_biometric_user');
       if (!enrolledData) {
-        showError("Babu Fingerprint da aka saita. Da fatan za a fara shiga da kalmar sirri a karon farko don saita fingerprint ɗinka.");
+        showError("No biometric profile found on this device. Please login with password first to register your biometric access.");
         return;
       }
 
@@ -1180,19 +1180,18 @@
       try {
         parsedUser = JSON.parse(enrolledData);
       } catch (e) {
-        showError("Invalid biometric session. Please login with password first.");
+        showError("Invalid biometric session. Please login with your password first.");
         return;
       }
 
       try {
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning fingerprint...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning biometric credential...';
 
-        // 1. Kiran Hardware na Wayar domin gwada Yatsa / Face ID
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
 
-        const assertion = await navigator.credentials.get({
+        await navigator.credentials.get({
           publicKey: {
             challenge: challenge,
             timeout: 60000,
@@ -1200,31 +1199,28 @@
           }
         });
 
-        // 2. Idan an duba yatsa ya yi nasara a wayar:
         if (parsedUser.token && parsedUser.userData) {
           localStorage.setItem('userToken', parsedUser.token);
           localStorage.setItem('userData', JSON.stringify(parsedUser.userData));
           routeUserByRole(parsedUser.userData.role || 'user', parsedUser.identifier || parsedUser.phone);
         } else if (parsedUser.identifier && parsedUser.savedPassword) {
-          // Idan akwai cached credentials, tura ta a amince
           document.getElementById('identifierInput').value = parsedUser.identifier;
           document.getElementById('passwordInput').value = parsedUser.savedPassword;
           await handleLogin();
         } else {
-          showError("Biometric authentication verified, but stored session expired. Please re-login with password.");
+          showError("Biometric authentication verified, but session expired. Please login with password.");
         }
       } catch (err) {
         if (err.name === 'NotAllowedError') {
-          showError("Fingerprint scan canceled or timed out.");
+          showError("Biometric authentication canceled or timed out.");
         } else {
-          // Fallback idan wayar tana neman direct bypass
           if (parsedUser.token && parsedUser.userData) {
             localStorage.setItem('userToken', parsedUser.token);
             localStorage.setItem('userData', JSON.stringify(parsedUser.userData));
             routeUserByRole(parsedUser.userData.role || 'user', parsedUser.identifier || parsedUser.phone);
             return;
           }
-          showError("Fingerprint authentication error: " + err.message);
+          showError("Biometric authentication error: " + err.message);
         }
       } finally {
         btn.disabled = false;
@@ -1296,7 +1292,7 @@
           localStorage.setItem('userToken', token);
           localStorage.setItem('userData', JSON.stringify(completeUserData));
 
-          // Adana bayanan mai asusu don Fingerprint Login na gaba
+          // Save biometric profile for next quick login
           localStorage.setItem('ayax_biometric_user', JSON.stringify({
             identifier: identifier,
             phone: userPayload.phone || identifier,
