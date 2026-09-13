@@ -16,6 +16,10 @@
   <link rel="apple-touch-icon" href="assets/adaptive-icon.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a1d37">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Ayax Xpress">
 
   <style>
     :root {
@@ -119,7 +123,29 @@
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+    }
+
+    /* PWA Install Button in Header */
+    .btn-nav-install {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: #10b981;
+      color: #ffffff;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-nav-install:hover {
+      background: #059669;
+      transform: translateY(-1px);
     }
 
     .btn-nav-api {
@@ -731,9 +757,136 @@
     .signup-text:hover {
       text-decoration: underline;
     }
+
+    /* ============================================================
+       FLOATING PWA INSTALL BANNER (BOTTOM OF SCREEN)
+       ============================================================ */
+    .pwa-install-banner {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 480px;
+      background: #061224;
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      border-radius: 18px;
+      padding: 14px 16px;
+      box-shadow: 0 12px 35px rgba(6, 18, 36, 0.6);
+      z-index: 999;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: bannerSlideUp 0.3s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    @keyframes bannerSlideUp {
+      from { transform: translate(-50%, 40px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    .pwa-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .pwa-banner-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .pwa-banner-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 3px;
+    }
+
+    .pwa-banner-text h4 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .pwa-banner-text p {
+      margin: 2px 0 0 0;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .pwa-banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-pwa-install {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .btn-pwa-install:hover {
+      background: #059669;
+    }
+
+    .btn-pwa-dismiss {
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .btn-pwa-dismiss:hover {
+      color: #cbd5e1;
+    }
   </style>
 </head>
 <body>
+
+  <!-- FLOATING PWA INSTALL PROMPT -->
+  <div class="pwa-install-banner" id="pwaInstallBanner">
+    <div class="pwa-banner-left">
+      <div class="pwa-banner-icon">
+        <img src="assets/Logo.png" alt="Ayax App" onerror="this.onerror=null; this.src='assets/logo.png';" />
+      </div>
+      <div class="pwa-banner-text">
+        <h4>Install Ayax Xpress</h4>
+        <p id="pwaBannerSubtitle">Get faster access right on your home screen</p>
+      </div>
+    </div>
+    <div class="pwa-banner-actions">
+      <button type="button" class="btn-pwa-install" id="btnPwaAction" onclick="triggerPwaInstall()">
+        <i class="fa-solid fa-download"></i>
+        <span>Install App</span>
+      </button>
+      <button type="button" class="btn-pwa-dismiss" onclick="dismissPwaBanner()">&times;</button>
+    </div>
+  </div>
 
   <!-- TOP NAVY SECTION -->
   <div class="top-navy-wrapper">
@@ -754,6 +907,12 @@
         </div>
       </a>
       <div class="nav-actions">
+        <!-- Top Nav Install Button -->
+        <button type="button" class="btn-nav-install" id="btnNavInstall" onclick="triggerPwaInstall()">
+          <i class="fa-solid fa-download"></i>
+          <span>Install</span>
+        </button>
+
         <a href="https://www.ayaxapis.com" target="_blank" rel="noopener noreferrer" class="btn-nav-api" title="Developer API Integration">
           <i class="fa-solid fa-code"></i>
           <span>APIs</span>
@@ -1015,6 +1174,96 @@
       }
     }
 
+    /* ============================================================
+       PWA INSTALLATION ENGINE & BANNER TRIGGER
+       ============================================================ */
+    let deferredPrompt = null;
+
+    // 1. Register Service Worker don ba da damar Install
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+          // Fallback idan babu sw.js a root
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+      });
+    }
+
+    // 2. Kama Prompt na Browser na asali (Chrome / Android / Edge)
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      // Nuna maɓallan install nan take
+      showInstallUI();
+    });
+
+    // 3. Duba ko iOS ne (Safari ba ya amfani da beforeinstallprompt)
+    function checkIsIos() {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(userAgent);
+    }
+
+    function isInStandaloneMode() {
+      return ('standalone' in window.navigator) && window.navigator.standalone;
+    }
+
+    function showInstallUI() {
+      // Idan riga an riga an yi installing ba za a nuna ba
+      if (window.matchMedia('(display-mode: standalone)').matches || isInStandaloneMode()) {
+        return;
+      }
+
+      // Duba ko mai amfani ya riga ya rufe shi a wannan zaman
+      if (sessionStorage.getItem('pwa_dismissed') === 'true') {
+        return;
+      }
+
+      const banner = document.getElementById('pwaInstallBanner');
+      const navBtn = document.getElementById('btnNavInstall');
+      if (banner) banner.style.display = 'flex';
+      if (navBtn) navBtn.style.display = 'inline-flex';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Idan a iOS ne kuma ba a cikin app yake ba, nuna banner
+      if (checkIsIos() && !isInStandaloneMode()) {
+        const sub = document.getElementById('pwaBannerSubtitle');
+        if (sub) sub.textContent = 'Tap "Share" then "Add to Home Screen"';
+        showInstallUI();
+      }
+    });
+
+    async function triggerPwaInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          dismissPwaBanner();
+        }
+        deferredPrompt = null;
+      } else if (checkIsIos()) {
+        alert('To install Ayax Xpress on your iPhone/iPad:\n\n1. Tap the Share button (square with arrow up) at the bottom of Safari.\n2. Scroll down and tap "Add to Home Screen".');
+      } else {
+        alert('To install:\nTap your browser menu (3 dots at top right) and select "Install app" or "Add to Home screen".');
+      }
+    }
+
+    function dismissPwaBanner() {
+      const banner = document.getElementById('pwaInstallBanner');
+      if (banner) banner.style.display = 'none';
+      sessionStorage.setItem('pwa_dismissed', 'true');
+    }
+
+    window.addEventListener('appinstalled', () => {
+      dismissPwaBanner();
+      const navBtn = document.getElementById('btnNavInstall');
+      if (navBtn) navBtn.style.display = 'none';
+    });
+
+    /* ============================================================
+       MODAL & LOGIN ACTIONS
+       ============================================================ */
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
       checkBiometricEnrollmentUI();
