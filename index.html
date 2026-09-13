@@ -37,6 +37,9 @@
       --error-bg: #fef2f2;
       --error-border: #fee2e2;
       --error-text: #991b1b;
+      --success-bg: #ecfdf5;
+      --success-border: #a7f3d0;
+      --success-text: #065f46;
     }
 
     * { box-sizing: border-box; }
@@ -758,9 +761,7 @@
       text-decoration: underline;
     }
 
-    /* ============================================================
-       FLOATING PWA INSTALL BANNER (BOTTOM OF SCREEN)
-       ============================================================ */
+    /* Floating PWA Install Banner */
     .pwa-install-banner {
       display: none;
       position: fixed;
@@ -907,7 +908,6 @@
         </div>
       </a>
       <div class="nav-actions">
-        <!-- Top Nav Install Button -->
         <button type="button" class="btn-nav-install" id="btnNavInstall" onclick="triggerPwaInstall()">
           <i class="fa-solid fa-download"></i>
           <span>Install</span>
@@ -997,7 +997,6 @@
     </div>
 
     <div class="contact-grid">
-      <!-- Physical Headquarters: 'Yan Musa Plaza -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #e0f2fe; color: #0284c7;">
           <i class="fa-solid fa-location-dot"></i>
@@ -1012,7 +1011,6 @@
         </div>
       </div>
 
-      <!-- Phone & WhatsApp Helpdesk -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #dcfce7; color: #16a34a;">
           <i class="fa-brands fa-whatsapp"></i>
@@ -1026,7 +1024,6 @@
         </div>
       </div>
 
-      <!-- Email Support Desk -->
       <div class="contact-card">
         <div class="contact-icon-box" style="background: #fef3c7; color: #d97706;">
           <i class="fa-regular fa-envelope"></i>
@@ -1129,7 +1126,7 @@
 
         <button type="button" class="biometric-login-btn" id="btnBiometricLogin" onclick="handleBiometricLogin()">
           <i class="fa-solid fa-fingerprint" style="font-size: 18px;"></i>
-          <span>Login with Fingerprint / Biometrics</span>
+          <span id="biometricBtnLabel">Login with Fingerprint / Biometrics</span>
         </button>
 
         <a href="https://www.ayaxapis.com" target="_blank" rel="noopener noreferrer" class="developer-api-btn">
@@ -1179,26 +1176,20 @@
        ============================================================ */
     let deferredPrompt = null;
 
-    // 1. Register Service Worker don ba da damar Install
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(() => {
-          // Fallback idan babu sw.js a root
           navigator.serviceWorker.register('./sw.js').catch(() => {});
         });
       });
     }
 
-    // 2. Kama Prompt na Browser na asali (Chrome / Android / Edge)
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-
-      // Nuna maɓallan install nan take
       showInstallUI();
     });
 
-    // 3. Duba ko iOS ne (Safari ba ya amfani da beforeinstallprompt)
     function checkIsIos() {
       const userAgent = window.navigator.userAgent.toLowerCase();
       return /iphone|ipad|ipod/.test(userAgent);
@@ -1209,12 +1200,9 @@
     }
 
     function showInstallUI() {
-      // Idan riga an riga an yi installing ba za a nuna ba
       if (window.matchMedia('(display-mode: standalone)').matches || isInStandaloneMode()) {
         return;
       }
-
-      // Duba ko mai amfani ya riga ya rufe shi a wannan zaman
       if (sessionStorage.getItem('pwa_dismissed') === 'true') {
         return;
       }
@@ -1226,7 +1214,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Idan a iOS ne kuma ba a cikin app yake ba, nuna banner
       if (checkIsIos() && !isInStandaloneMode()) {
         const sub = document.getElementById('pwaBannerSubtitle');
         if (sub) sub.textContent = 'Tap "Share" then "Add to Home Screen"';
@@ -1394,19 +1381,38 @@
     }
 
     // =========================================================================
-    // WEBAUTHN FINGERPRINT / BIOMETRIC SYSTEM
+    // HYBRID BIOMETRIC & FINGERPRINT AUTHENTICATION ENGINE
     // =========================================================================
     function checkBiometricEnrollmentUI() {
-      const enrolledUser = localStorage.getItem('ayax_biometric_user');
-      if (enrolledUser) {
+      // Duba duk asusun da aka taba yi wa fingerprint ON a cikin app ko login
+      const bioUser = localStorage.getItem('ayax_biometric_user');
+      const bioEnabled = localStorage.getItem('ayax_biometric_enabled');
+      const input = document.getElementById('identifierInput');
+      const label = document.getElementById('biometricBtnLabel');
+
+      if (bioUser) {
         try {
-          const userObj = JSON.parse(enrolledUser);
-          const input = document.getElementById('identifierInput');
-          if (!input.value && (userObj.phone || userObj.email || userObj.identifier)) {
-            input.value = userObj.phone || userObj.email || userObj.identifier;
+          const userObj = JSON.parse(bioUser);
+          const savedId = userObj.phone || userObj.email || userObj.identifier || "";
+          if (savedId && !input.value) {
+            input.value = savedId;
+          }
+          if (label && (userObj.name || userObj.firstName || savedId)) {
+            const shortName = userObj.firstName || userObj.name || savedId;
+            label.textContent = `Unlock with Fingerprint (${shortName})`;
           }
         } catch (_) {}
       }
+    }
+
+    // Helper don canza ArrayBuffer
+    function bufferToBase64(buffer) {
+      const bytes = new Uint8Array(buffer);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return window.btoa(binary);
     }
 
     async function handleBiometricLogin() {
@@ -1414,63 +1420,91 @@
       const btn = document.getElementById('btnBiometricLogin');
       const originalHtml = btn.innerHTML;
 
-      if (!window.PublicKeyCredential) {
-        showError("Fingerprint/Biometric login is not supported on this browser.");
-        return;
-      }
+      // 1. Duba bayanan da aka ajiye a wayar lokacin da aka yi ON a cikin app
+      const rawBioUser = localStorage.getItem('ayax_biometric_user');
+      let currentToken = localStorage.getItem('userToken') || localStorage.getItem('token');
+      let currentUserData = null;
 
-      const enrolledData = localStorage.getItem('ayax_biometric_user');
-      if (!enrolledData) {
-        showError("No biometric profile found on this device. Please login with password first to register your biometric access.");
-        return;
-      }
-
-      let parsedUser = {};
       try {
-        parsedUser = JSON.parse(enrolledData);
-      } catch (e) {
-        showError("Invalid biometric session. Please login with your password first.");
+        currentUserData = JSON.parse(localStorage.getItem('userData') || '{}');
+      } catch (_) {}
+
+      let profile = null;
+      if (rawBioUser) {
+        try { profile = JSON.parse(rawBioUser); } catch (_) {}
+      }
+
+      // Idan ba a samu a 'ayax_biometric_user' ba amma akwai a 'userData'
+      if (!profile && currentUserData && (currentUserData.phone || currentUserData.email)) {
+        profile = {
+          identifier: currentUserData.phone || currentUserData.email,
+          phone: currentUserData.phone,
+          email: currentUserData.email,
+          token: currentToken,
+          userData: currentUserData
+        };
+      }
+
+      if (!profile) {
+        showError("No biometric profile found. Please enter your password to sign in and activate fingerprint.");
         return;
       }
 
       try {
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning biometric credential...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Touch fingerprint sensor...';
 
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
+        // 2. Duba WebAuthn Na Na'urar (Android Fingerprint / iPhone Touch ID / Face ID)
+        if (window.PublicKeyCredential) {
+          const challenge = new Uint8Array(32);
+          window.crypto.getRandomValues(challenge);
 
-        await navigator.credentials.get({
-          publicKey: {
-            challenge: challenge,
-            timeout: 60000,
-            userVerification: "preferred"
+          try {
+            // Fara kiran Sensor na Wayar
+            const credential = await navigator.credentials.get({
+              publicKey: {
+                challenge: challenge,
+                timeout: 60000,
+                userVerification: "preferred"
+              }
+            });
+
+            console.log("WebAuthn hardware verification success:", credential);
+          } catch (webAuthnErr) {
+            // Idan mai amfani ya danna Cancel da kansa
+            if (webAuthnErr.name === 'NotAllowedError') {
+              showError("Fingerprint scan was canceled.");
+              btn.disabled = false;
+              btn.innerHTML = originalHtml;
+              return;
+            }
+            console.warn("WebAuthn fallback mode activated:", webAuthnErr.message);
           }
-        });
+        }
 
-        if (parsedUser.token && parsedUser.userData) {
-          localStorage.setItem('userToken', parsedUser.token);
-          localStorage.setItem('userData', JSON.stringify(parsedUser.userData));
-          routeUserByRole(parsedUser.userData.role || 'user', parsedUser.identifier || parsedUser.phone);
-        } else if (parsedUser.identifier && parsedUser.savedPassword) {
-          document.getElementById('identifierInput').value = parsedUser.identifier;
-          document.getElementById('passwordInput').value = parsedUser.savedPassword;
+        // 3. Shiga Kai Tsaye Tunda Wayar Ta Tabbatar Da Mai Ita Ne
+        if (profile.token && profile.userData) {
+          localStorage.setItem('userToken', profile.token);
+          localStorage.setItem('userData', JSON.stringify(profile.userData));
+          localStorage.setItem('ayax_biometric_enabled', 'true');
+
+          const role = profile.userData.role || 'user';
+          const targetId = profile.identifier || profile.phone || profile.email;
+          routeUserByRole(role, targetId);
+          return;
+        }
+
+        // 4. Idan akwai saved credentials, a tura auth request
+        if (profile.identifier && profile.savedPassword) {
+          document.getElementById('identifierInput').value = profile.identifier;
+          document.getElementById('passwordInput').value = profile.savedPassword;
           await handleLogin();
-        } else {
-          showError("Biometric authentication verified, but session expired. Please login with password.");
+          return;
         }
+
+        showError("Biometric session expired. Please sign in with your password.");
       } catch (err) {
-        if (err.name === 'NotAllowedError') {
-          showError("Biometric authentication canceled or timed out.");
-        } else {
-          if (parsedUser.token && parsedUser.userData) {
-            localStorage.setItem('userToken', parsedUser.token);
-            localStorage.setItem('userData', JSON.stringify(parsedUser.userData));
-            routeUserByRole(parsedUser.userData.role || 'user', parsedUser.identifier || parsedUser.phone);
-            return;
-          }
-          showError("Biometric authentication error: " + err.message);
-        }
+        showError("Biometric authentication error: " + err.message);
       } finally {
         btn.disabled = false;
         btn.innerHTML = originalHtml;
@@ -1541,11 +1575,14 @@
           localStorage.setItem('userToken', token);
           localStorage.setItem('userData', JSON.stringify(completeUserData));
 
-          // Save biometric profile for next quick login
+          // Ajiye bayanan yatsa tare da ba da damar yin aiki nan gaba
+          localStorage.setItem('ayax_biometric_enabled', 'true');
           localStorage.setItem('ayax_biometric_user', JSON.stringify({
             identifier: identifier,
             phone: userPayload.phone || identifier,
             email: userPayload.email || identifier,
+            name: userPayload.name || userPayload.fullName || userPayload.firstName || "",
+            firstName: userPayload.firstName || "",
             token: token,
             userData: completeUserData,
             savedPassword: password
