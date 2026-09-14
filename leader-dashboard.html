@@ -546,7 +546,6 @@
         <i class="fa-solid fa-bars"></i>
       </button>
 
-      <!-- Ayax Logo Box -->
       <div class="top-logo-box">
         <img src="assets/Logo.png" alt="Ayax" onerror="this.onerror=null; this.src='assets/logo.png';" />
       </div>
@@ -906,11 +905,23 @@
       } catch (_) {}
 
       state.user = cachedUser;
-      state.myState = cachedUser.state || 'Kano';
+      state.myState = (cachedUser.state || 'Kano').trim();
 
       fetchLeaderDashboard();
       setInterval(fetchLeaderDashboard, 15000);
     });
+
+    // Helper don ciro array a kowane irin tsarin json na backend
+    function extractList(val, primaryKey) {
+      if (!val) return [];
+      if (Array.isArray(val)) return val;
+      if (primaryKey && Array.isArray(val[primaryKey])) return val[primaryKey];
+      if (Array.isArray(val.data)) return val.data;
+      if (Array.isArray(val.users)) return val.users;
+      if (Array.isArray(val.results)) return val.results;
+      if (val.data && Array.isArray(val.data[primaryKey])) return val.data[primaryKey];
+      return [];
+    }
 
     async function fetchLeaderDashboard() {
       if (!state.token) return;
@@ -919,12 +930,16 @@
         'Accept': 'application/json'
       };
 
+      const currentState = state.myState;
+
       try {
-        const [dashRes, supRes, agentsRes, logsRes] = await Promise.allSettled([
-          fetch(`${BASE_URL}/leader/dashboard?state=${encodeURIComponent(state.myState)}`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/leader/supervisors?state=${encodeURIComponent(state.myState)}`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/leader/agents?state=${encodeURIComponent(state.myState)}`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/leader/live-audit-stream?state=${encodeURIComponent(state.myState)}`, { headers }).then(r => r.json())
+        // Query da jihar da kuma fallback idan backend baya buƙatar state query
+        const [dashRes, supRes, supFallbackRes, agentsRes, logsRes] = await Promise.allSettled([
+          fetch(`${BASE_URL}/leader/dashboard?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/leader/supervisors?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/leader/supervisors`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/leader/agents?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/leader/live-audit-stream?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json())
         ]);
 
         if (dashRes.status === 'fulfilled' && dashRes.value) {
@@ -935,16 +950,28 @@
           }
         }
 
-        if (supRes.status === 'fulfilled' && supRes.value) {
-          state.supervisors = supRes.value.supervisors || supRes.value.data || (Array.isArray(supRes.value) ? supRes.value : []);
+        // Tace Supervisors
+        let rawSups = [];
+        if (supRes.status === 'fulfilled') {
+          rawSups = extractList(supRes.value, 'supervisors');
+        }
+        if (rawSups.length === 0 && supFallbackRes.status === 'fulfilled') {
+          rawSups = extractList(supFallbackRes.value, 'supervisors');
         }
 
-        if (agentsRes.status === 'fulfilled' && agentsRes.value) {
-          state.agents = agentsRes.value.agents || agentsRes.value.data || (Array.isArray(agentsRes.value) ? agentsRes.value : []);
+        if (rawSups.length > 0) {
+          // Idan akwai su, a kiyaye local optimistic additions idan akwai
+          state.supervisors = rawSups;
         }
 
-        if (logsRes.status === 'fulfilled' && logsRes.value) {
-          state.activityLogs = logsRes.value.logs || logsRes.value.data || (Array.isArray(logsRes.value) ? logsRes.value : []);
+        // Tace Agents
+        if (agentsRes.status === 'fulfilled') {
+          state.agents = extractList(agentsRes.value, 'agents');
+        }
+
+        // Tace Logs
+        if (logsRes.status === 'fulfilled') {
+          state.activityLogs = extractList(logsRes.value, 'logs');
         }
 
         updateUI();
@@ -998,7 +1025,7 @@
       const q = state.searchQuery;
 
       const filtered = state.supervisors.filter(s => {
-        const name = (s.name || '').toLowerCase();
+        const name = (s.name || s.fullName || '').toLowerCase();
         const phone = (s.phone || '');
         const lga = (s.lga || '').toLowerCase();
         return !q || name.includes(q) || phone.includes(q) || lga.includes(q);
@@ -1013,7 +1040,7 @@
         <div class="entity-card">
           <div class="entity-card-header">
             <div>
-              <strong style="font-size: 13.5px; color: #0f172a;">${s.name || 'Field Supervisor'}</strong>
+              <strong style="font-size: 13.5px; color: #0f172a;">${s.name || s.fullName || 'Field Supervisor'}</strong>
               <div style="font-size: 11px; color: #64748b; margin-top: 2px;">📍 ${s.lga || 'HQ'} LGA • 📞 ${s.phone || 'N/A'}</div>
             </div>
             <span style="font-size: 9.5px; font-weight: 800; background: #ecfdf5; color: #059669; padding: 2px 6px; border-radius: 4px;">ACTIVE FS</span>
@@ -1041,7 +1068,7 @@
       const q = state.searchQuery;
 
       const filtered = state.agents.filter(a => {
-        const name = (a.name || '').toLowerCase();
+        const name = (a.name || a.fullName || '').toLowerCase();
         const phone = (a.phone || '');
         const lga = (a.lga || '').toLowerCase();
         return !q || name.includes(q) || phone.includes(q) || lga.includes(q);
@@ -1056,7 +1083,7 @@
         <div class="entity-card">
           <div class="entity-card-header">
             <div>
-              <strong style="font-size: 13.5px; color: #0f172a;">${a.name || 'Retail Agent'}</strong>
+              <strong style="font-size: 13.5px; color: #0f172a;">${a.name || a.fullName || 'Retail Agent'}</strong>
               <div style="font-size: 11px; color: #64748b; margin-top: 2px;">📍 ${a.lga || 'HQ'} LGA • 📞 ${a.phone || 'N/A'}</div>
             </div>
             <span style="font-size: 12px; font-weight: 900; color: #059669;">₦${Number(a.walletBalance || a.balance || 0).toLocaleString()}</span>
@@ -1168,29 +1195,42 @@
       const btn = document.getElementById('btnAppointSupervisorSubmit');
       btn.disabled = true;
       const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authorizing & Registering...';
+
+      const enteredName = document.getElementById('appointName').value.trim();
+      const enteredPhone = document.getElementById('appointPhone').value.trim();
+      const enteredLga = document.getElementById('appointLga').value.trim();
+      const enteredEmail = document.getElementById('appointEmail').value.trim() || `${enteredPhone}@ayaxdata.online`;
+      const enteredPassword = document.getElementById('appointPassword').value.trim();
+
+      const names = enteredName.split(" ");
+      const firstName = names[0] || enteredName;
+      const surname = names.slice(1).join(" ") || "Supervisor";
 
       const payload = {
-        name: document.getElementById('appointName').value.trim(),
-        fullName: document.getElementById('appointName').value.trim(),
-        phone: document.getElementById('appointPhone').value.trim(),
-        lga: document.getElementById('appointLga').value.trim(),
-        email: document.getElementById('appointEmail').value.trim() || `${document.getElementById('appointPhone').value.trim()}@ayaxdata.online`,
-        password: document.getElementById('appointPassword').value.trim(),
+        name: enteredName.toUpperCase(),
+        fullName: enteredName.toUpperCase(),
+        firstName: firstName,
+        surname: surname,
+        phone: enteredPhone,
+        lga: enteredLga,
+        email: enteredEmail.toLowerCase(),
+        password: enteredPassword,
         state: state.myState || "Kano",
         role: 'supervisor'
       };
 
-      // Jerin ainihin hanyoyin da backend ya tanadar wa State Manager (Leader)
+      // Cascading endpoints ciki har da auth/register don tabbatar da cewa an adana shi
       const targetEndpoints = [
         `${BASE_URL}/leader/appoint-supervisor`,
         `${BASE_URL}/leader/create-supervisor`,
-        `${BASE_URL}/leader/supervisors/create`,
+        `${BASE_URL}/auth/register`,
         `${BASE_URL}/supervisors/create`
       ];
 
       let success = false;
       let lastErrorMessage = "";
+      let createdSupervisorData = null;
 
       for (const endpoint of targetEndpoints) {
         try {
@@ -1208,23 +1248,48 @@
 
           if (res.ok && (data.success || res.status === 200 || res.status === 201)) {
             success = true;
-            alert(`Field Supervisor Appointed Successfully for ${payload.lga} LGA!`);
-            closeModal('appointSupervisorModal');
-            document.getElementById('appointName').value = '';
-            document.getElementById('appointPhone').value = '';
-            document.getElementById('appointLga').value = '';
-            document.getElementById('appointEmail').value = '';
-            fetchLeaderDashboard();
+            createdSupervisorData = data.supervisor || data.user || data.data || payload;
             break;
           } else {
-            lastErrorMessage = data.message || "Failed to authorize appointment.";
+            lastErrorMessage = data.message || "Endpoint returned error status";
           }
         } catch (err) {
           lastErrorMessage = err.message;
         }
       }
 
-      if (!success) {
+      if (success) {
+        alert(`Field Supervisor Appointed Successfully for ${payload.lga} LGA!`);
+        closeModal('appointSupervisorModal');
+        
+        // Optimistic UI Update: Ƙara shi kai tsaye a teburin koda API na ɗaukar daƙiƙa
+        const newEntry = {
+          name: payload.name,
+          fullName: payload.name,
+          phone: payload.phone,
+          lga: payload.lga,
+          state: payload.state,
+          role: 'supervisor',
+          teamSize: 0,
+          dataSold: 0,
+          walletBalance: 0,
+          ...createdSupervisorData
+        };
+
+        // Cire tsohon idan akwai mai wannan phone sannan a saka sabo a sama
+        state.supervisors = state.supervisors.filter(s => s.phone !== payload.phone);
+        state.supervisors.unshift(newEntry);
+        updateUI();
+
+        // Share input fields
+        document.getElementById('appointName').value = '';
+        document.getElementById('appointPhone').value = '';
+        document.getElementById('appointLga').value = '';
+        document.getElementById('appointEmail').value = '';
+
+        // Sake sync daga database a bayan fage
+        setTimeout(fetchLeaderDashboard, 1000);
+      } else {
         alert("Appoint Notice: " + lastErrorMessage);
       }
 
