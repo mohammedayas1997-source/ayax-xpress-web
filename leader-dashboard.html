@@ -911,15 +911,14 @@
       setInterval(fetchLeaderDashboard, 15000);
     });
 
-    // Helper don ciro array a kowane irin tsarin json na backend
     function extractList(val, primaryKey) {
       if (!val) return [];
       if (Array.isArray(val)) return val;
       if (primaryKey && Array.isArray(val[primaryKey])) return val[primaryKey];
       if (Array.isArray(val.data)) return val.data;
+      if (val.data && Array.isArray(val.data[primaryKey])) return val.data[primaryKey];
       if (Array.isArray(val.users)) return val.users;
       if (Array.isArray(val.results)) return val.results;
-      if (val.data && Array.isArray(val.data[primaryKey])) return val.data[primaryKey];
       return [];
     }
 
@@ -933,8 +932,8 @@
       const currentState = state.myState;
 
       try {
-        // Query da jihar da kuma fallback idan backend baya buƙatar state query
-        const [dashRes, supRes, supFallbackRes, agentsRes, logsRes] = await Promise.allSettled([
+        // Kira dukkan endpoints masu alaka a lokaci guda
+        const [dashRes, supStateRes, supNoStateRes, agentsRes, logsRes] = await Promise.allSettled([
           fetch(`${BASE_URL}/leader/dashboard?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
           fetch(`${BASE_URL}/leader/supervisors?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
           fetch(`${BASE_URL}/leader/supervisors`, { headers }).then(r => r.json()),
@@ -942,34 +941,58 @@
           fetch(`${BASE_URL}/leader/live-audit-stream?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json())
         ]);
 
+        let retrievedSupervisors = [];
+
+        // 1. Ciro Supervisors daga /leader/dashboard (wanda ke dauke da su kai tsaye a ciki)
         if (dashRes.status === 'fulfilled' && dashRes.value) {
           const d = dashRes.value.data || dashRes.value;
-          if (d.targets) {
-            state.myQuotas.dataGoal = Number(d.targets.dataGoal || 10000);
-            state.myQuotas.airtimeGoal = Number(d.targets.airtimeGoal || 500000);
+
+          if (d.targets || d.myTargets) {
+            const tg = d.myTargets || d.targets;
+            state.myQuotas.dataGoal = Number(tg.dataGoal || 10000);
+            state.myQuotas.airtimeGoal = Number(tg.airtimeGoal || 500000);
+          }
+
+          // Duba ko akwai supervisors a cikin dashboard response
+          if (Array.isArray(d.supervisors) && d.supervisors.length > 0) {
+            retrievedSupervisors = d.supervisors;
+          } else if (Array.isArray(dashRes.value.supervisors) && dashRes.value.supervisors.length > 0) {
+            retrievedSupervisors = dashRes.value.supervisors;
           }
         }
 
-        // Tace Supervisors
-        let rawSups = [];
-        if (supRes.status === 'fulfilled') {
-          rawSups = extractList(supRes.value, 'supervisors');
-        }
-        if (rawSups.length === 0 && supFallbackRes.status === 'fulfilled') {
-          rawSups = extractList(supFallbackRes.value, 'supervisors');
+        // 2. Idan ba a samu a dashboard ba, a duba /leader/supervisors?state=...
+        if (retrievedSupervisors.length === 0 && supStateRes.status === 'fulfilled') {
+          retrievedSupervisors = extractList(supStateRes.value, 'supervisors');
         }
 
-        if (rawSups.length > 0) {
-          // Idan akwai su, a kiyaye local optimistic additions idan akwai
-          state.supervisors = rawSups;
+        // 3. Idan har yanzu ba a samu ba, a duba na mara state parameter
+        if (retrievedSupervisors.length === 0 && supNoStateRes.status === 'fulfilled') {
+          retrievedSupervisors = extractList(supNoStateRes.value, 'supervisors');
         }
 
-        // Tace Agents
+        // 4. Sabunta supervisors list ba tare da goge wanda aka kara da hannu ba
+        if (retrievedSupervisors.length > 0) {
+          const existingMap = new Map();
+          retrievedSupervisors.forEach(s => existingMap.set(String(s.phone || s._id), s));
+
+          // A kiyaye supervisors din da aka yi wa rajista a wannan session
+          state.supervisors.forEach(localS => {
+            const key = String(localS.phone || localS._id);
+            if (!existingMap.has(key)) {
+              existingMap.set(key, localS);
+            }
+          });
+
+          state.supervisors = Array.from(existingMap.values());
+        }
+
+        // 5. Tace Agents
         if (agentsRes.status === 'fulfilled') {
           state.agents = extractList(agentsRes.value, 'agents');
         }
 
-        // Tace Logs
+        // 6. Tace Logs
         if (logsRes.status === 'fulfilled') {
           state.activityLogs = extractList(logsRes.value, 'logs');
         }
@@ -1220,10 +1243,9 @@
         role: 'supervisor'
       };
 
-      // Cascading endpoints ciki har da auth/register don tabbatar da cewa an adana shi
       const targetEndpoints = [
-        `${BASE_URL}/leader/appoint-supervisor`,
         `${BASE_URL}/leader/create-supervisor`,
+        `${BASE_URL}/leader/appoint-supervisor`,
         `${BASE_URL}/auth/register`,
         `${BASE_URL}/supervisors/create`
       ];
@@ -1261,8 +1283,7 @@
       if (success) {
         alert(`Field Supervisor Appointed Successfully for ${payload.lga} LGA!`);
         closeModal('appointSupervisorModal');
-        
-        // Optimistic UI Update: Ƙara shi kai tsaye a teburin koda API na ɗaukar daƙiƙa
+
         const newEntry = {
           name: payload.name,
           fullName: payload.name,
@@ -1276,19 +1297,17 @@
           ...createdSupervisorData
         };
 
-        // Cire tsohon idan akwai mai wannan phone sannan a saka sabo a sama
-        state.supervisors = state.supervisors.filter(s => s.phone !== payload.phone);
+        // Cire tsohon idan yana ciki sannan a saka sabon a saman list nan take
+        state.supervisors = state.supervisors.filter(s => String(s.phone) !== String(payload.phone));
         state.supervisors.unshift(newEntry);
         updateUI();
 
-        // Share input fields
         document.getElementById('appointName').value = '';
         document.getElementById('appointPhone').value = '';
         document.getElementById('appointLga').value = '';
         document.getElementById('appointEmail').value = '';
 
-        // Sake sync daga database a bayan fage
-        setTimeout(fetchLeaderDashboard, 1000);
+        setTimeout(fetchLeaderDashboard, 1500);
       } else {
         alert("Appoint Notice: " + lastErrorMessage);
       }
