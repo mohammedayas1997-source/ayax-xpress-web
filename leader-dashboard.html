@@ -2,1361 +2,904 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>State Manager Directorate | Ayax Xpress</title>
-
-  <!-- Google Fonts & FontAwesome -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>State Operations Desk - Ayax Data Xpress</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Favicon & Web App Manifest -->
-  <link rel="icon" type="image/png" href="assets/favicon.png">
-  <link rel="apple-touch-icon" href="assets/adaptive-icon.png">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0a1d37">
-
   <style>
-    :root {
-      --bg-dark: #0f172a;
-      --card-dark: #1e293b;
-      --border-dark: #334155;
-      --accent-blue: #0284c7;
-      --accent-cyan: #38bdf8;
-      --accent-green: #059669;
-      --accent-amber: #fbbf24;
-      --accent-red: #ef4444;
-      --text-white: #ffffff;
-      --text-dark: #0f172a;
-      --text-muted: #64748b;
-      --bg-light: #f8fafc;
-      --card-bg: #ffffff;
-      --border-light: #e2e8f0;
-      --border-input: #cbd5e1;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #f8fafc; color: #0f172a; min-height: 100vh; overflow-x: hidden; }
 
-    * {
-      box-sizing: border-box;
-      text-decoration: none !important;
-      outline: none !important;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100%;
-      background-color: var(--bg-light);
-      color: var(--text-dark);
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow-x: hidden;
-      overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* Top Command Bar */
+    /* Top Bar */
     .top-bar {
-      background: var(--bg-dark);
-      padding: 12px 20px;
+      background-color: #0f172a;
+      padding: 18px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
       position: sticky;
       top: 0;
-      z-index: 100;
-      border-bottom: 1px solid #1e293b;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+      z-index: 40;
     }
-
-    .top-left-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .top-logo-box {
+    .top-left { display: flex; align-items: center; gap: 14px; }
+    .icon-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #fff;
       width: 38px;
       height: 38px;
-      border-radius: 10px;
-      background: #ffffff;
+      border-radius: 50%;
       display: flex;
-      justify-content: center;
       align-items: center;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.2s;
     }
-
-    .top-logo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 2px;
-    }
-
-    .top-brand-group {
-      display: flex;
-      flex-direction: column;
-    }
-
+    .icon-btn:hover { background: #334155; }
     .state-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       background: rgba(56, 189, 248, 0.15);
-      padding: 2px 8px;
-      border-radius: 6px;
       border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 3px 8px;
+      border-radius: 8px;
       margin-bottom: 2px;
-      width: fit-content;
     }
+    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #38bdf8; margin-right: 6px; }
+    .state-badge-text { color: #38bdf8; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; }
+    .top-brand-title { color: #fff; font-size: 13.5px; font-weight: 900; }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn-gold { border-color: #fbbf24 !important; background: rgba(251, 191, 36, 0.15) !important; color: #fbbf24 !important; }
+    .btn-danger { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.15) !important; color: #ef4444 !important; }
 
-    .live-pulse-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 3px;
-      background: var(--accent-cyan);
-    }
-
-    .state-badge-text {
-      color: var(--accent-cyan);
-      font-size: 8.5px;
-      font-weight: 900;
-      letter-spacing: 0.8px;
-    }
-
-    .top-brand-title {
-      color: var(--text-white);
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.5px;
-      margin: 0;
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .avatar-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #1e293b;
-      border: 1px solid var(--border-dark);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: var(--accent-cyan);
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-
-    .avatar-btn:hover {
-      background: #334155;
-    }
-
-    .logout-btn {
-      border-color: var(--accent-red);
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--accent-red);
-    }
-
-    /* Main Navigation Tabs */
+    /* Nav Bar */
     .main-nav-bar {
       display: flex;
-      background: #ffffff;
-      border-bottom: 1px solid var(--border-light);
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
       padding: 0 16px;
-      overflow-x: auto;
-      white-space: nowrap;
     }
-
-    .main-nav-tab {
+    .nav-tab {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 14px 12px;
+      padding: 14px 8px;
       border-bottom: 2px solid transparent;
-      color: var(--text-muted);
-      font-size: 12px;
+      color: #64748b;
+      font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
-      background: none;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      transition: all 0.2s;
+      transition: 0.2s;
     }
+    .nav-tab.active { border-bottom-color: #1e40af; color: #1e40af; font-weight: 900; }
 
-    .main-nav-tab.active {
-      border-bottom-color: var(--accent-blue);
-      color: var(--accent-blue);
-      font-weight: 900;
-    }
+    /* Main Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 14px 16px 120px; }
 
-    /* Container Layout */
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 14px 16px 80px 16px;
-    }
-
-    /* Target Command Banner */
-    .target-dispatch-banner {
-      background: #ffffff;
+    /* Executive Target Card */
+    .executive-card-dark {
+      background: #0f172a;
       border-radius: 14px;
       padding: 16px;
-      border: 1px solid var(--border-light);
-      border-left: 5px solid var(--accent-blue);
+      border: 1px solid #1e293b;
+      border-left: 5px solid #38bdf8;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       margin-bottom: 14px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     }
+    .exec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .exec-badge-text { color: #94a3b8; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; }
+    .exec-title { color: #fff; font-size: 14px; font-weight: 900; margin-top: 2px; }
+    .auto-split-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #0284c7;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+    }
+    .exec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+    .exec-metric-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .exec-metric-label { font-size: 10px; font-weight: 800; margin-bottom: 2px; }
+    .exec-metric-val { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+    .progress-bar { height: 6px; background: #334155; border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
+    .progress-fill { height: 100%; border-radius: 3px; }
+    .exec-sub { color: #94a3b8; font-size: 10px; font-weight: 700; }
 
-    .target-icon-box {
-      width: 40px;
-      height: 40px;
+    /* Command Banner */
+    .command-banner {
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid #1e40af;
+      margin-bottom: 14px;
+    }
+    .banner-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .banner-icon {
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
       background: #eff6ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       border: 1px solid #bfdbfe;
-      color: var(--accent-blue);
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .target-banner-title {
-      color: #0f172a;
-      font-size: 14px;
-      font-weight: 900;
-      margin: 0;
-    }
-
-    .target-banner-sub {
-      color: #64748b;
-      font-size: 11px;
-      margin: 2px 0 0 0;
-    }
-
-    .target-banner-action-row {
       display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      border-top: 1px solid #f1f5f9;
-      padding-top: 12px;
+      align-items: center;
+      justify-content: center;
+      color: #1e40af;
+      font-size: 16px;
     }
-
-    .target-btn {
+    .banner-title { color: #0f172a; font-size: 14px; font-weight: 900; }
+    .banner-sub { color: #64748b; font-size: 11.5px; }
+    .banner-actions {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 10px;
+    }
+    .btn-banner {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 10px 0;
+      padding: 10px;
       border-radius: 8px;
       font-size: 11px;
       font-weight: 900;
       cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.2s;
+      border: none;
     }
+    .btn-banner-primary { background: #1e40af; color: #fff; }
+    .btn-banner-sec { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .btn-banner-tert { background: #eff6ff; color: #0284c7; border: 1px solid #bfdbfe; }
 
-    .target-btn-primary { background: var(--accent-blue); color: #ffffff; }
-    .target-btn-secondary { background: #eff6ff; border-color: #bfdbfe; color: var(--accent-blue); }
-
-    /* Telemetry Cards */
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    @media (min-width: 768px) {
-      .metric-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
+    /* Telemetry Metrics */
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 14px; }
     .metric-card {
       background: #0f172a;
+      border: 1px solid #1e293b;
+      border-left: 4px solid #38bdf8;
       border-radius: 14px;
       padding: 14px;
-      border: 1px solid #1e293b;
-      border-left: 4.5px solid var(--accent-cyan);
     }
-
-    .metric-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .metric-label-dark {
-      font-size: 11px;
-      font-weight: 800;
-      color: #94a3b8;
-    }
-
-    .metric-value-dark {
-      font-size: 18px;
-      font-weight: 900;
-      margin: 4px 0;
-      color: #ffffff;
-    }
-
-    .metric-sub-dark {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--accent-cyan);
-    }
+    .metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .metric-title { font-size: 11px; font-weight: 800; color: #94a3b8; }
+    .metric-number { font-size: 19px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+    .metric-desc { font-size: 10.5px; font-weight: 700; color: #38bdf8; }
 
     /* Search Bar */
-    .search-bar {
+    .search-box {
       display: flex;
       align-items: center;
-      background: #ffffff;
-      padding: 0 14px;
+      background: #fff;
+      border: 1px solid #cbd5e1;
       border-radius: 10px;
+      padding: 0 14px;
       height: 44px;
-      border: 1px solid var(--border-input);
       margin-bottom: 14px;
     }
-
-    .search-input {
+    .search-box input {
       flex: 1;
-      height: 100%;
-      border: none !important;
-      background: transparent;
-      outline: none !important;
+      border: none;
+      outline: none;
       font-size: 12.5px;
-      color: var(--text-dark);
-      font-family: inherit;
+      color: #0f172a;
+      margin-left: 8px;
     }
 
-    /* Cards Grid */
-    .cards-grid-container {
-      display: grid;
-      grid-template-columns: repeat(1, 1fr);
-      gap: 12px;
-    }
-
-    @media (min-width: 640px) {
-      .cards-grid-container {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .cards-grid-container {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .entity-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 14px;
-      border: 1px solid var(--border-light);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
-    }
-
-    .entity-card-header {
+    /* Section Header */
+    .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
-
-    .entity-card-action-grid {
+    .section-title { color: #475569; font-size: 11.5px; font-weight: 900; letter-spacing: 0.8px; }
+    .action-pill-btn {
       display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      border-top: 1px solid #f1f5f9;
-      padding-top: 8px;
+      align-items: center;
+      gap: 5px;
+      background: #1e40af;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
     }
 
-    .action-btn-sm {
-      flex: 1;
+    /* Supervisor Card */
+    .sup-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .sup-card-top { display: flex; justify-content: space-between; align-items: center; }
+    .sup-info { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .sup-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #1e40af;
+    }
+    .sup-name { font-size: 14px; font-weight: 800; color: #0f172a; }
+    .sup-meta { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .sup-ref { font-size: 11px; color: #475569; margin-top: 1px; }
+    .sup-email { font-size: 11px; color: #0284c7; font-weight: 600; margin-top: 1px; }
+    .stats-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .summary-box-label { font-size: 9px; font-weight: 700; color: #64748b; }
+    .summary-box-value { font-size: 12px; font-weight: 900; margin-top: 2px; }
+    .sup-action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      margin-top: 10px;
+    }
+    .btn-action-outline {
+      display: flex;
+      align-items: center;
       gap: 4px;
-      padding: 6px 0;
+      padding: 5px 8px;
       border-radius: 6px;
-      font-size: 10px;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 700;
       cursor: pointer;
       border: 1px solid transparent;
+      background: transparent;
     }
+    .btn-pill-blue { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; font-weight: 800; }
+    .btn-danger-text { color: #dc2626; }
 
-    /* Modal Framework */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.7);
-      z-index: 1000;
-      justify-content: center;
+    /* Agent Card */
+    .agent-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 10px;
+    }
+    .agent-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .agent-name { font-size: 14px; font-weight: 800; color: #0f172a; }
+    .agent-loc { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .agent-float { font-size: 14px; font-weight: 900; color: #059669; text-align: right; }
+    .agent-sup-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 8px;
+      margin-top: 8px;
+    }
+    .agent-sup-title { color: #1e40af; font-size: 10px; font-weight: 900; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+    .agent-sup-text { font-size: 11px; color: #475569; margin: 2px 0; }
+    .agent-quotas {
+      display: flex;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .agent-actions {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      padding: 16px;
-      backdrop-filter: blur(4px);
+      border-top: 1px solid #f1f5f9;
+      padding-top: 8px;
+      margin-top: 8px;
     }
 
+    /* LGA Matrix */
+    .lga-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+    .lga-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .lga-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .lga-title { font-size: 13.5px; font-weight: 800; color: #0f172a; }
+    .lga-badge { padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 800; }
+    .badge-green { background: #ecfdf5; color: #059669; }
+    .badge-red { background: #fef2f2; color: #dc2626; }
+
+    /* Audit Log */
+    .log-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 8px;
+    }
+    .log-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .log-badge { background: #eff6ff; color: #1e40af; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
+    .log-time { color: #94a3b8; font-size: 10px; }
+    .log-desc { font-size: 12px; font-weight: 600; color: #0f172a; margin-bottom: 3px; }
+    .log-actor { color: #64748b; font-size: 10px; }
+
+    /* Report Button */
+    .report-btn {
+      width: 100%;
+      background: #1e40af;
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
     .modal-card {
-      background: #ffffff;
+      background: #fff;
       border-radius: 20px;
       padding: 20px;
       width: 100%;
-      max-width: 520px;
+      max-width: 650px;
       max-height: 90vh;
       overflow-y: auto;
-      border: 1px solid var(--border-input);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      border: 1px solid #cbd5e1;
     }
-
-    .modal-header-row {
+    .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
-      border-bottom: 1px solid var(--border-light);
+      border-bottom: 1px solid #e2e8f0;
       padding-bottom: 10px;
+      margin-bottom: 14px;
     }
-
-    .modal-card-title {
-      color: var(--text-dark);
-      font-size: 15px;
-      font-weight: 900;
-      margin: 0;
-    }
-
-    .modal-card-subtitle {
-      color: var(--text-muted);
-      font-size: 11px;
-      margin: 2px 0 0 0;
-    }
-
-    .btn-modal-close {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
-
-    .form-field-label {
-      color: var(--accent-blue);
-      font-size: 10.5px;
-      font-weight: 900;
-      letter-spacing: 0.8px;
-      margin: 10px 0 4px 0;
-      display: block;
-    }
-
-    .text-input-style {
+    .modal-title { font-size: 15px; font-weight: 900; color: #0f172a; }
+    .modal-sub { font-size: 11.5px; color: #64748b; margin-top: 2px; }
+    .form-group { margin-bottom: 12px; }
+    .form-label { font-size: 10.5px; font-weight: 900; color: #1e40af; letter-spacing: 0.8px; margin-bottom: 6px; display: block; }
+    .input-box {
       width: 100%;
       background: #f8fafc;
-      border: 1px solid var(--border-input);
+      border: 1px solid #cbd5e1;
       border-radius: 10px;
       padding: 0 12px;
       height: 44px;
-      color: var(--text-dark);
       font-size: 13px;
       font-weight: 600;
-      margin-bottom: 10px;
-      font-family: inherit;
+      outline: none;
     }
-
-    .primary-action-btn {
+    .btn-submit {
       width: 100%;
-      height: 48px;
-      background: var(--accent-blue);
-      color: #ffffff;
+      background: #1e40af;
+      color: #fff;
       border: none;
+      padding: 14px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 900;
-      letter-spacing: 0.6px;
       cursor: pointer;
-      margin-top: 14px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .primary-action-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
+      margin-top: 16px;
     }
 
     /* Drawer Sidebar */
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.6);
-      z-index: 1000;
-    }
-
     .sidebar-drawer {
-      position: absolute;
-      top: 0; left: 0; bottom: 0;
-      width: 310px;
-      background: #ffffff;
+      position: fixed;
+      top: 0; left: -320px; bottom: 0;
+      width: 320px;
+      background: #fff;
+      border-right: 1px solid #e2e8f0;
+      z-index: 60;
+      transition: 0.3s;
       padding: 20px 16px;
       display: flex;
       flex-direction: column;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     }
-
-    .nav-item {
+    .sidebar-drawer.active { left: 0; }
+    .sidebar-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 55;
+      display: none;
+    }
+    .sidebar-overlay.active { display: block; }
+    .nav-drawer-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 12px;
+      padding: 10px;
       border-radius: 10px;
       color: #334155;
       font-size: 12.5px;
       font-weight: 700;
-      margin-bottom: 3px;
+      text-decoration: none;
       cursor: pointer;
+      margin-bottom: 3px;
     }
-
-    .nav-item:hover, .nav-item.active {
-      background: #eff6ff;
-      color: var(--accent-blue);
-    }
+    .nav-drawer-item:hover, .nav-drawer-item.active { background: #eff6ff; color: #1e40af; }
   </style>
 </head>
 <body>
 
-  <!-- Top Command Bar -->
+  <!-- Top Bar -->
   <header class="top-bar">
-    <div class="top-left-group">
-      <button type="button" class="avatar-btn" onclick="toggleSidebar(true)" title="Menu">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-
-      <div class="top-logo-box">
-        <img src="assets/Logo.png" alt="Ayax" onerror="this.onerror=null; this.src='assets/logo.png';" />
-      </div>
-
-      <div class="top-brand-group">
+    <div class="top-left">
+      <button class="icon-btn" onclick="toggleSidebar(true)"><i class="fa-solid fa-bars"></i></button>
+      <div>
         <div class="state-badge">
-          <div class="live-pulse-dot"></div>
-          <span class="state-badge-text" id="topBadgeText">STATE MANAGER COMMAND</span>
+          <div class="pulse-dot"></div>
+          <span class="state-badge-text" id="topStateBadge">KANO STATE MANAGER (SM)</span>
         </div>
-        <h1 class="top-brand-title" id="topTitleText">KANO STATE DIRECTORATE</h1>
+        <div class="top-brand-title" id="topLgaTitle">44 LGAS COMMAND DESK</div>
       </div>
     </div>
-
     <div class="top-actions">
-      <button type="button" class="avatar-btn" onclick="openModal('appointSupervisorModal')" title="Appoint Supervisor">
-        <i class="fa-solid fa-user-plus"></i>
-      </button>
-      <button type="button" class="avatar-btn" onclick="openModal('broadcastModal')" title="Broadcast Directive">
-        <i class="fa-solid fa-bullhorn"></i>
-      </button>
-      <a href="notifications.html" class="avatar-btn" title="Notifications">
-        <i class="fa-regular fa-bell"></i>
-      </a>
-      <button type="button" class="avatar-btn logout-btn" onclick="handleLogout()" title="Logout">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-      </button>
+      <button class="icon-btn btn-gold" onclick="openSmartTarget('supervisor')" title="Auto-Split"><i class="fa-solid fa-bullseye"></i></button>
+      <button class="icon-btn" onclick="openModal('transferModal')" title="Transfer Agents"><i class="fa-solid fa-people-arrows"></i></button>
+      <button class="icon-btn" onclick="openModal('enrollModal')" title="Enroll Supervisor"><i class="fa-solid fa-user-plus"></i></button>
+      <button class="icon-btn" onclick="openModal('notifModal')" title="Broadcast Notice"><i class="fa-solid fa-bullhorn"></i></button>
+      <button class="icon-btn btn-danger" onclick="handleLogout()" title="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
     </div>
   </header>
 
-  <!-- Main Navigation Tabs -->
-  <nav class="main-nav-bar">
-    <button type="button" class="main-nav-tab active" id="tabBtnSupervisors" onclick="switchMainTab('supervisors')">
-      <i class="fa-solid fa-user-tie"></i>
-      <span id="tabLabelSupervisors">Supervisors (0)</span>
-    </button>
-    <button type="button" class="main-nav-tab" id="tabBtnAgents" onclick="switchMainTab('agents')">
-      <i class="fa-solid fa-store"></i>
-      <span id="tabLabelAgents">Retail Outlets (0)</span>
-    </button>
-    <button type="button" class="main-nav-tab" id="tabBtnQuotas" onclick="switchMainTab('quotas')">
-      <i class="fa-solid fa-bullseye"></i>
-      <span>Targets & Quotas</span>
-    </button>
-    <button type="button" class="main-nav-tab" id="tabBtnAudit" onclick="switchMainTab('audit')">
-      <i class="fa-solid fa-chart-line"></i>
-      <span>Audit Stream</span>
-    </button>
-  </nav>
+  <!-- Navigation Tabs -->
+  <div class="main-nav-bar">
+    <div class="nav-tab active" id="tabBtn-supervisors" onclick="switchTab('supervisors')">
+      <i class="fa-solid fa-user-tie"></i> Supervisors (<span id="supCountNav">0</span>)
+    </div>
+    <div class="nav-tab" id="tabBtn-agents" onclick="switchTab('agents')">
+      <i class="fa-solid fa-users"></i> Agents (<span id="agentCountNav">0</span>)
+    </div>
+    <div class="nav-tab" id="tabBtn-lgas" onclick="switchTab('lgas')">
+      <i class="fa-solid fa-map-location-dot"></i> LGAs (<span id="lgaCountNav">44</span>)
+    </div>
+    <div class="nav-tab" id="tabBtn-history" onclick="switchTab('history')">
+      <i class="fa-solid fa-chart-line"></i> Logs
+    </div>
+  </div>
 
-  <!-- Main Container -->
-  <main class="container">
+  <!-- Content Container -->
+  <div class="container">
 
-    <!-- Target Command Desk Banner -->
-    <section class="target-dispatch-banner">
-      <div style="display: flex; align-items: center;">
-        <div class="target-icon-box">
-          <i class="fa-solid fa-bullseye"></i>
+    <!-- Executive Target Overview -->
+    <div class="executive-card-dark">
+      <div class="exec-header">
+        <div>
+          <div class="exec-badge-text">OFFICIAL NSD STATE QUOTA ALLOCATION</div>
+          <div class="exec-title" id="targetMonthTitle">AUGUST 2026 TARGET MATRIX</div>
         </div>
-        <div style="margin-left: 12px; flex: 1;">
-          <h2 class="target-banner-title">State Leadership & Target Dispatch</h2>
-          <p class="target-banner-sub">
-            Assign LGA Field Supervisor goals, track regional data volume, and deploy field directives
-          </p>
-        </div>
-      </div>
-
-      <div class="target-banner-action-row">
-        <button type="button" class="target-btn target-btn-primary" onclick="openModal('deployTargetModal')">
-          <i class="fa-solid fa-crosshairs"></i>
-          <span>DEPLOY QUOTAS TO SUPERVISORS</span>
-        </button>
-        <button type="button" class="target-btn target-btn-secondary" onclick="openModal('appointSupervisorModal')">
-          <i class="fa-solid fa-user-plus"></i>
-          <span>APPOINT LGA SUPERVISOR</span>
+        <button class="auto-split-btn" onclick="openSmartTarget('supervisor')">
+          <i class="fa-solid fa-calculator"></i> AUTO-SPLIT QUOTA
         </button>
       </div>
-    </section>
 
-    <!-- State Telemetry Section -->
-    <section>
-      <div class="metric-grid">
-        <div class="metric-card">
-          <div class="metric-card-header">
-            <span class="metric-label-dark">LGA Supervisors</span>
-            <i class="fa-solid fa-user-tie" style="color: var(--accent-cyan);"></i>
-          </div>
-          <div class="metric-value-dark" id="statSupervisorsVal">0</div>
-          <div class="metric-sub-dark">Active Field Leads</div>
+      <div class="exec-grid">
+        <div class="exec-metric-box">
+          <div class="exec-metric-label" style="color: #38bdf8;">DATA QUOTA (GB)</div>
+          <div class="exec-metric-val" id="dataQuotaVal">0 / 0 GB</div>
+          <div class="progress-bar"><div class="progress-fill" id="dataProgressFill" style="width: 0%; background: #38bdf8;"></div></div>
+          <div class="exec-sub" id="dataPercentSub">0% Completed</div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-card-header">
-            <span class="metric-label-dark">State Retail Outlets</span>
-            <i class="fa-solid fa-store" style="color: #34d399;"></i>
-          </div>
-          <div class="metric-value-dark" id="statAgentsVal">0</div>
-          <div class="metric-sub-dark">Vending Terminals</div>
+        <div class="exec-metric-box">
+          <div class="exec-metric-label" style="color: #fbbf24;">AIRTIME SALES (₦)</div>
+          <div class="exec-metric-val" id="airtimeQuotaVal">₦0 / ₦0</div>
+          <div class="progress-bar"><div class="progress-fill" id="airtimeProgressFill" style="width: 0%; background: #fbbf24;"></div></div>
+          <div class="exec-sub" id="airtimePercentSub">0% Completed</div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-card-header">
-            <span class="metric-label-dark">State Data Volume</span>
-            <i class="fa-solid fa-wifi" style="color: #a78bfa;"></i>
-          </div>
-          <div class="metric-value-dark" id="statDataVal">0 GB</div>
-          <div class="metric-sub-dark" id="statDataQuotaSub">Target: 0 GB</div>
+        <div class="exec-metric-box">
+          <div class="exec-metric-label" style="color: #34d399;">NEW AGENTS TARGET</div>
+          <div class="exec-metric-val" id="agentQuotaVal">0 / 50</div>
+          <div class="exec-sub">Registered Retail Outlets</div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-card-header">
-            <span class="metric-label-dark">Total Float Reserves</span>
-            <i class="fa-solid fa-wallet" style="color: var(--accent-amber);"></i>
-          </div>
-          <div class="metric-value-dark" id="statFloatVal">₦0.00</div>
-          <div class="metric-sub-dark">State Team Float</div>
+        <div class="exec-metric-box">
+          <div class="exec-metric-label" style="color: #2dd4bf;">SUPERVISORS TARGET</div>
+          <div class="exec-metric-val" id="supQuotaVal">0 / 44</div>
+          <div class="exec-sub">LGA Network Leads</div>
         </div>
       </div>
-    </section>
+    </div>
+
+    <!-- Target Command Banner -->
+    <div class="command-banner">
+      <div class="banner-top">
+        <div class="banner-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <div>
+          <div class="banner-title">State Quota Command Desk</div>
+          <div class="banner-sub">System calculates & splits quota automatically to Supervisors and child Agents</div>
+        </div>
+      </div>
+      <div class="banner-actions">
+        <button class="btn-banner btn-banner-primary" onclick="openSmartTarget('supervisor')"><i class="fa-solid fa-user-tie"></i> AUTO-SPLIT SUPERVISORS</button>
+        <button class="btn-banner btn-banner-sec" onclick="openSmartTarget('agent')"><i class="fa-solid fa-users"></i> AUTO-SPLIT AGENTS</button>
+        <button class="btn-banner btn-banner-tert" onclick="openCustomTarget()"><i class="fa-solid fa-map-pin"></i> TARGET LGAS</button>
+      </div>
+    </div>
+
+    <!-- Telemetry Section -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-header"><span class="metric-title">Field Supervisors</span><i class="fa-solid fa-user-tie" style="color: #38bdf8;"></i></div>
+        <div class="metric-number" id="statsSupCount">0</div>
+        <div class="metric-desc" id="statsLgaCount">Across 0 LGAs</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-header"><span class="metric-title">Retail Agents</span><i class="fa-solid fa-users" style="color: #34d399;"></i></div>
+        <div class="metric-number" id="statsAgentCount">0</div>
+        <div class="metric-desc">Active Resellers</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-header"><span class="metric-title">Data Delivered</span><i class="fa-solid fa-server" style="color: #a78bfa;"></i></div>
+        <div class="metric-number" id="statsDataSold">0 GB</div>
+        <div class="metric-desc">Retail Data Volume</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-header"><span class="metric-title">Airtime Sales</span><i class="fa-solid fa-phone" style="color: #fbbf24;"></i></div>
+        <div class="metric-number" id="statsAirtimeSold">₦0</div>
+        <div class="metric-desc">Gross VTU Volume</div>
+      </div>
+    </div>
 
     <!-- Search Bar -->
-    <div class="search-bar">
-      <i class="fa-solid fa-magnifying-glass" style="color: #64748b; margin-right: 8px;"></i>
-      <input
-        type="text"
-        id="searchFilterInput"
-        class="search-input"
-        placeholder="Search Supervisor name, LGA, Phone, or Outlet..."
-        oninput="handleSearch()"
-      />
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass" style="color: #64748b;"></i>
+      <input type="text" id="searchInput" placeholder="Search Supervisors, Agents, or LGA..." oninput="handleSearch(this.value)">
     </div>
 
-    <!-- TAB 1: SUPERVISORS -->
-    <section id="tabContentSupervisors">
-      <div class="cards-grid-container" id="supervisorsListContainer">
-        <!-- Injected via JavaScript -->
-      </div>
-    </section>
-
-    <!-- TAB 2: AGENTS -->
-    <section id="tabContentAgents" style="display: none;">
-      <div class="cards-grid-container" id="agentsListContainer">
-        <!-- Injected via JavaScript -->
-      </div>
-    </section>
-
-    <!-- TAB 3: QUOTAS & PROGRESS -->
-    <section id="tabContentQuotas" style="display: none;">
-      <div id="quotasOverviewContainer">
-        <!-- Injected via JavaScript -->
-      </div>
-    </section>
-
-    <!-- TAB 4: AUDIT STREAM -->
-    <section id="tabContentAudit" style="display: none;">
-      <div id="auditLogsContainer">
-        <!-- Injected via JavaScript -->
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Sidebar Drawer -->
-  <div class="sidebar-overlay" id="sidebarDrawer" onclick="toggleSidebar(false)">
-    <div class="sidebar-drawer" onclick="event.stopPropagation()">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 14px; margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div class="top-logo-box" style="width: 34px; height: 34px;">
-            <img src="assets/Logo.png" alt="Ayax" onerror="this.onerror=null; this.src='assets/logo.png';" />
-          </div>
-          <div>
-            <h3 style="margin: 0; font-size: 15px; font-weight: 900;">State Directorate</h3>
-            <span style="font-size: 10px; color: var(--accent-blue); font-weight: 700;" id="sidebarStateName">State Command Lead</span>
-          </div>
+    <!-- Tab 1: Supervisors -->
+    <div id="tabContent-supervisors">
+      <div class="section-header">
+        <div class="section-title">FIELD SUPERVISORS DIRECTORY (<span id="supListCount">0</span>)</div>
+        <div style="display: flex; gap: 6px;">
+          <button class="action-pill-btn" style="background: #0284c7;" onclick="openModal('transferModal')"><i class="fa-solid fa-people-arrows"></i> TRANSFER</button>
+          <button class="action-pill-btn" onclick="openModal('enrollModal')"><i class="fa-solid fa-user-plus"></i> ENROLL FS</button>
         </div>
-        <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer;">&times;</button>
       </div>
-
-      <div style="color: #64748b; font-size: 9.5px; font-weight: 900; letter-spacing: 1px; margin: 12px 0 6px 4px;">NAVIGATION PANELS</div>
-      <a class="nav-item active" onclick="switchMainTab('supervisors'); toggleSidebar(false);">
-        <i class="fa-solid fa-user-tie" style="color: var(--accent-blue);"></i> Field Supervisors
-      </a>
-      <a class="nav-item" onclick="switchMainTab('agents'); toggleSidebar(false);">
-        <i class="fa-solid fa-store" style="color: var(--accent-green);"></i> Retail Outlets
-      </a>
-      <a class="nav-item" onclick="switchMainTab('quotas'); toggleSidebar(false);">
-        <i class="fa-solid fa-bullseye" style="color: var(--accent-amber);"></i> Quotas & Performance
-      </a>
-      <a class="nav-item" onclick="switchMainTab('audit'); toggleSidebar(false);">
-        <i class="fa-solid fa-chart-line" style="color: var(--accent-cyan);"></i> Live Audit Feed
-      </a>
-
-      <div style="color: #64748b; font-size: 9.5px; font-weight: 900; letter-spacing: 1px; margin: 16px 0 6px 4px;">PORTALS & ACTIONS</div>
-      <a href="home.html" class="nav-item">
-        <i class="fa-solid fa-house" style="color: var(--accent-blue);"></i> Customer Portal
-      </a>
-      <a href="notifications.html" class="nav-item">
-        <i class="fa-regular fa-bell" style="color: var(--accent-amber);"></i> Notifications Center
-      </a>
-      <a class="nav-item" onclick="toggleSidebar(false); openModal('deployTargetModal');">
-        <i class="fa-solid fa-bullseye" style="color: var(--accent-blue);"></i> Deploy LGA Quotas
-      </a>
-      <a class="nav-item" onclick="toggleSidebar(false); openModal('appointSupervisorModal');">
-        <i class="fa-solid fa-user-plus" style="color: var(--accent-green);"></i> Appoint Field Supervisor
-      </a>
-      <a class="nav-item" onclick="toggleSidebar(false); openModal('broadcastModal');">
-        <i class="fa-solid fa-bullhorn" style="color: var(--accent-cyan);"></i> Broadcast Directive
-      </a>
-
-      <button type="button" onclick="handleLogout()" style="margin-top: auto; display: flex; align-items: center; gap: 8px; padding: 14px 10px; border: none; border-top: 1px solid var(--border-light); background: none; color: #dc2626; font-size: 13px; font-weight: 800; cursor: pointer;">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Exit State Manager Session
-      </button>
+      <div id="supervisorsFeed"></div>
     </div>
+
+    <!-- Tab 2: Agents -->
+    <div id="tabContent-agents" style="display: none;">
+      <div class="section-header">
+        <div class="section-title">GRASSROOT RETAIL AGENTS (<span id="agentListCount">0</span>)</div>
+      </div>
+      <div id="agentsFeed"></div>
+    </div>
+
+    <!-- Tab 3: LGAs -->
+    <div id="tabContent-lgas" style="display: none;">
+      <div class="section-header">
+        <div class="section-title">LOCAL GOVERNMENTS DEPLOYMENT MATRIX</div>
+        <button class="action-pill-btn" onclick="openModal('enrollModal')"><i class="fa-solid fa-user-plus"></i> ENROLL FS</button>
+      </div>
+      <div class="lga-grid" id="lgasFeed"></div>
+    </div>
+
+    <!-- Tab 4: Logs -->
+    <div id="tabContent-history" style="display: none;">
+      <div class="section-header">
+        <div class="section-title">REAL-TIME FIELD OPERATIONS LOG</div>
+        <span style="color: #059669; font-size: 11px; font-weight: 800;">LIVE STREAM</span>
+      </div>
+      <div id="logsFeed"></div>
+    </div>
+
+    <!-- Full Report CSV Button -->
+    <button class="report-btn" onclick="generateReport()"><i class="fa-solid fa-file-arrow-down"></i> GENERATE STATE AUDIT REPORT (CSV)</button>
+
   </div>
 
-  <!-- MODAL 1: DEPLOY TARGETS TO SUPERVISORS -->
-  <div class="modal-overlay" id="deployTargetModal">
-    <div class="modal-card">
-      <div class="modal-header-row">
-        <div>
-          <h2 class="modal-card-title">Deploy Quotas to LGA Supervisors</h2>
-          <p class="modal-card-subtitle">Set monthly performance targets for LGA field leaders</p>
-        </div>
-        <button type="button" class="btn-modal-close" onclick="closeModal('deployTargetModal')">&times;</button>
+  <!-- Sidebar Overlay & Drawer -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
+  <aside class="sidebar-drawer" id="sidebarDrawer">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 12px;">
+      <div>
+        <h4 style="font-size: 15px; font-weight: 900; color: #0f172a;" id="drawerStateText">Kano State</h4>
+        <span style="font-size: 11px; color: #1e40af; font-weight: 700;">State Operations Hub</span>
       </div>
+      <button class="icon-btn" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
+    </div>
 
-      <form onsubmit="event.preventDefault(); handleDeployTargetSubmit();">
-        <label class="form-field-label">TARGET SUPERVISOR PHONE / ID *</label>
-        <input type="text" id="targetSupervisorInput" class="text-input-style" placeholder="e.g. 08012345678 or 'ALL'" required />
+    <div style="flex: 1; overflow-y: auto;">
+      <div style="font-size: 10px; font-weight: 900; color: #64748b; margin: 12px 0 6px;">OPERATIONS NAVIGATION</div>
+      <div class="nav-drawer-item" onclick="switchTab('supervisors'); toggleSidebar(false);"><i class="fa-solid fa-user-tie"></i> Field Supervisors</div>
+      <div class="nav-drawer-item" onclick="switchTab('agents'); toggleSidebar(false);"><i class="fa-solid fa-users"></i> Grassroot Agents</div>
+      <div class="nav-drawer-item" onclick="switchTab('lgas'); toggleSidebar(false);"><i class="fa-solid fa-map-location-dot"></i> LGAs Matrix</div>
+      <div class="nav-drawer-item" onclick="switchTab('history'); toggleSidebar(false);"><i class="fa-solid fa-chart-line"></i> Audit Live Stream</div>
 
-        <div style="display: flex; gap: 8px;">
-          <div style="flex: 1;">
-            <label class="form-field-label">DATA GOAL (GB) *</label>
-            <input type="number" id="targetDataGoal" class="text-input-style" value="2000" required />
-          </div>
-          <div style="flex: 1;">
-            <label class="form-field-label">AIRTIME GOAL (₦) *</label>
-            <input type="number" id="targetAirtimeGoal" class="text-input-style" value="150000" required />
-          </div>
-        </div>
+      <div style="font-size: 10px; font-weight: 900; color: #64748b; margin: 16px 0 6px;">COMMAND ACTIONS</div>
+      <div class="nav-drawer-item" onclick="openModal('transferModal'); toggleSidebar(false);"><i class="fa-solid fa-people-arrows"></i> Reassign Agents (Transfer)</div>
+      <div class="nav-drawer-item" onclick="openSmartTarget('supervisor'); toggleSidebar(false);"><i class="fa-solid fa-bullseye"></i> Auto-Split to Supervisors</div>
+      <div class="nav-drawer-item" onclick="openSmartTarget('agent'); toggleSidebar(false);"><i class="fa-solid fa-users"></i> Auto-Split to Agents</div>
+      <div class="nav-drawer-item" onclick="openModal('enrollModal'); toggleSidebar(false);"><i class="fa-solid fa-user-plus"></i> Appoint Field Supervisor</div>
+      <div class="nav-drawer-item" onclick="openModal('notifModal'); toggleSidebar(false);"><i class="fa-solid fa-bullhorn"></i> Broadcast Directive</div>
+    </div>
 
-        <div style="display: flex; gap: 8px;">
-          <div style="flex: 1;">
-            <label class="form-field-label">AGENT RECRUITMENT GOAL</label>
-            <input type="number" id="targetAgentGoal" class="text-input-style" value="15" required />
-          </div>
-          <div style="flex: 1;">
-            <label class="form-field-label">TARGET CYCLE</label>
-            <input type="text" id="targetMonth" class="text-input-style" value="September 2026" required />
-          </div>
-        </div>
+    <button style="display: flex; align-items: center; gap: 8px; border: none; background: none; color: #dc2626; font-weight: 800; font-size: 13px; cursor: pointer; padding: 12px 0; border-top: 1px solid #e2e8f0;" onclick="handleLogout()">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Exit Manager Session
+    </button>
+  </aside>
 
-        <button type="submit" class="primary-action-btn" id="btnDeployTargetSubmit">
-          AUTHORIZE & DEPLOY TARGET
-        </button>
+  <!-- Enroll Supervisor Modal -->
+  <div class="modal-overlay" id="enrollModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div><h3 class="modal-title">Appoint Field Supervisor (FS)</h3><div class="modal-sub">Create user profile & deploy LGA coordinator</div></div>
+        <button class="icon-btn" onclick="closeModal('enrollModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="handleEnroll(event)">
+        <div class="form-group"><label class="form-label">SELECT LOCAL GOVERNMENT AREA (LGA)</label><input class="input-box" id="newSupLga" required></div>
+        <div class="form-group"><label class="form-label">SUPERVISOR FULL NAME</label><input class="input-box" id="newSupName" placeholder="e.g. Aliyu Mohammed" required></div>
+        <div class="form-group"><label class="form-label">PHONE NUMBER (LOGIN USERNAME)</label><input class="input-box" id="newSupPhone" placeholder="e.g. 08031234567" required></div>
+        <div class="form-group"><label class="form-label">EMAIL ADDRESS</label><input class="input-box" id="newSupEmail" placeholder="e.g. supervisor@ayaxdata.online"></div>
+        <div class="form-group"><label class="form-label">LOGIN PASSWORD</label><input class="input-box" id="newSupPassword" value="Password123@"></div>
+        <button type="submit" class="btn-submit">AUTHORIZE APPOINTMENT & CREATE ACCOUNT</button>
       </form>
     </div>
   </div>
 
-  <!-- MODAL 2: APPOINT LGA FIELD SUPERVISOR -->
-  <div class="modal-overlay" id="appointSupervisorModal">
+  <!-- Broadcast Modal -->
+  <div class="modal-overlay" id="notifModal">
     <div class="modal-card">
-      <div class="modal-header-row">
-        <div>
-          <h2 class="modal-card-title">Appoint Field Supervisor (FS)</h2>
-          <p class="modal-card-subtitle">Assign LGA coordinator under your state</p>
-        </div>
-        <button type="button" class="btn-modal-close" onclick="closeModal('appointSupervisorModal')">&times;</button>
+      <div class="modal-header">
+        <div><h3 class="modal-title">Broadcast State Directive</h3><div class="modal-sub">Push real-time alert across the state</div></div>
+        <button class="icon-btn" onclick="closeModal('notifModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
-      <form onsubmit="event.preventDefault(); handleAppointSupervisorSubmit();">
-        <label class="form-field-label">FULL LEGAL NAME (SUNAYE BIYU KO UKU) *</label>
-        <input type="text" id="appointName" class="text-input-style" placeholder="e.g. Ibrahim Bello Garba" required />
-
-        <div style="display: flex; gap: 8px;">
-          <div style="flex: 1;">
-            <label class="form-field-label">PHONE NUMBER (LOGIN) *</label>
-            <input type="tel" id="appointPhone" class="text-input-style" placeholder="08012345678" required />
-          </div>
-          <div style="flex: 1;">
-            <label class="form-field-label">LGA JURISDICTION *</label>
-            <input type="text" id="appointLga" class="text-input-style" placeholder="e.g. Ajingi" required />
-          </div>
-        </div>
-
-        <label class="form-field-label">EMAIL ADDRESS</label>
-        <input type="email" id="appointEmail" class="text-input-style" placeholder="supervisor@ayaxdata.online" />
-
-        <label class="form-field-label">TEMPORARY PASSWORD *</label>
-        <input type="text" id="appointPassword" class="text-input-style" value="Ibrahim@12345" required />
-
-        <button type="submit" class="primary-action-btn" id="btnAppointSupervisorSubmit">
-          AUTHORIZE & CREATE FIELD SUPERVISOR
-        </button>
+      <form onsubmit="handleBroadcast(event)">
+        <div class="form-group"><label class="form-label">DIRECTIVE TITLE</label><input class="input-box" id="notifTitle" required></div>
+        <div class="form-group"><label class="form-label">DIRECTIVE BODY</label><textarea class="input-box" id="notifMessage" style="height: 80px; padding: 10px;" required></textarea></div>
+        <button type="submit" class="btn-submit">DISPATCH DIRECTIVE</button>
       </form>
     </div>
   </div>
 
-  <!-- MODAL 3: BROADCAST DIRECTIVE -->
-  <div class="modal-overlay" id="broadcastModal">
+  <!-- Transfer Agents Modal -->
+  <div class="modal-overlay" id="transferModal">
     <div class="modal-card">
-      <div class="modal-header-row">
-        <div>
-          <h2 class="modal-card-title">Broadcast State Directive</h2>
-          <p class="modal-card-subtitle">Push alert to all supervisors & agents in state</p>
-        </div>
-        <button type="button" class="btn-modal-close" onclick="closeModal('broadcastModal')">&times;</button>
+      <div class="modal-header">
+        <div><h3 class="modal-title">Reassign Agent Network</h3><div class="modal-sub">Transfer agents to a new active supervisor</div></div>
+        <button class="icon-btn" onclick="closeModal('transferModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
-      <form onsubmit="event.preventDefault(); handleBroadcastSubmit();">
-        <label class="form-field-label">DIRECTIVE TITLE *</label>
-        <input type="text" id="broadcastTitle" class="text-input-style" placeholder="e.g. State-wide Telecom Acceleration" required />
-
-        <label class="form-field-label">DIRECTIVE MESSAGE *</label>
-        <textarea id="broadcastBody" class="text-input-style" style="height: 90px; padding: 10px; resize: none;" placeholder="Type announcement to your state field network..." required></textarea>
-
-        <button type="submit" class="primary-action-btn" id="btnBroadcastSubmit">
-          DISPATCH STATE DIRECTIVE
-        </button>
+      <form onsubmit="handleTransfer(event)">
+        <div class="form-group"><label class="form-label">SOURCE SUPERVISOR (CURRENT)</label><input class="input-box" id="transSource" placeholder="Current supervisor ID"></div>
+        <div class="form-group"><label class="form-label">DESTINATION SUPERVISOR (NEW LEAD)</label><input class="input-box" id="transTarget" placeholder="New supervisor ID" required></div>
+        <button type="submit" class="btn-submit">REASSIGN ENTIRE TEAM NOW</button>
       </form>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="js/config.js"></script>
   <script>
-    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
-      ? CONFIG.BASE_URL
-      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+    const BASE_URL = "https://ayax-data-xpress-server.onrender.com/api/v1";
+    let managerState = "Kano";
+    let supervisors = [];
+    let agents = [];
+    let logs = [];
+    let myTargets = {};
 
-    let state = {
-      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
-      user: null,
-      supervisors: [],
-      agents: [],
-      activityLogs: [],
-      searchQuery: '',
-      myState: 'Kano',
-      myQuotas: {
-        dataGoal: 10000,
-        dataSold: 0,
-        airtimeGoal: 500000,
-        airtimeSold: 0,
-        supervisorGoal: 10,
-        agentGoal: 50
-      }
-    };
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if (!state.token) {
-        window.location.href = "index.html";
-        return;
-      }
-
-      let cachedUser = {};
-      try {
-        cachedUser = JSON.parse(localStorage.getItem('userData') || '{}');
-      } catch (_) {}
-
-      state.user = cachedUser;
-      state.myState = (cachedUser.state || 'Kano').trim();
-
-      fetchLeaderDashboard();
-      setInterval(fetchLeaderDashboard, 15000);
-    });
-
-    function extractList(val, primaryKey) {
-      if (!val) return [];
-      if (Array.isArray(val)) return val;
-      if (primaryKey && Array.isArray(val[primaryKey])) return val[primaryKey];
-      if (Array.isArray(val.data)) return val.data;
-      if (val.data && Array.isArray(val.data[primaryKey])) return val.data[primaryKey];
-      if (Array.isArray(val.users)) return val.users;
-      if (Array.isArray(val.results)) return val.results;
-      return [];
+    function toggleSidebar(open) {
+      document.getElementById("sidebarDrawer").classList.toggle("active", open);
+      document.getElementById("sidebarOverlay").classList.toggle("active", open);
     }
 
-    async function fetchLeaderDashboard() {
-      if (!state.token) return;
-      const headers = {
-        'Authorization': `Bearer ${state.token}`,
-        'Accept': 'application/json'
-      };
+    function switchTab(tab) {
+      document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+      document.getElementById(`tabBtn-${tab}`).classList.add("active");
+      ["supervisors", "agents", "lgas", "history"].forEach(t => {
+        document.getElementById(`tabContent-${t}`).style.display = (t === tab) ? "block" : "none";
+      });
+    }
 
-      const currentState = state.myState;
+    function openModal(id) { document.getElementById(id).classList.add("active"); }
+    function closeModal(id) { document.getElementById(id).classList.remove("active"); }
+
+    async function loadDashboard() {
+      const token = localStorage.getItem("userToken");
+      if (!token) { window.location.href = "/login.html"; return; }
+      const headers = { Authorization: `Bearer ${token}` };
 
       try {
-        const [dashRes, supStateRes, supNoStateRes, agentsRes, logsRes] = await Promise.allSettled([
-          fetch(`${BASE_URL}/leader/dashboard?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/leader/supervisors?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/leader/supervisors`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/leader/agents?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/leader/live-audit-stream?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json())
+        const [dRes, aRes, lRes, tRes] = await Promise.all([
+          fetch(`${BASE_URL}/leader/dashboard`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/leader/agents-stream`, { headers }).then(r => r.json()).catch(() => ({ agents: [] })),
+          fetch(`${BASE_URL}/leader/live-audit-stream`, { headers }).then(r => r.json()).catch(() => ({ logs: [] })),
+          fetch(`${BASE_URL}/leader/my-state-target`, { headers }).then(r => r.json()).catch(() => ({}))
         ]);
 
-        let retrievedSupervisors = [];
+        const data = dRes.data || dRes || {};
+        supervisors = Array.isArray(data.supervisors) ? data.supervisors : [];
+        agents = Array.isArray(aRes.agents) ? aRes.agents : (data.agents || []);
+        logs = Array.isArray(lRes.logs) ? lRes.logs : (data.activityLogs || []);
+        myTargets = tRes.targets || tRes.data || {};
 
-        if (dashRes.status === 'fulfilled' && dashRes.value) {
-          const d = dashRes.value.data || dashRes.value;
+        document.getElementById("supCountNav").innerText = supervisors.length;
+        document.getElementById("agentCountNav").innerText = agents.length;
+        document.getElementById("supListCount").innerText = supervisors.length;
+        document.getElementById("agentListCount").innerText = agents.length;
 
-          if (d.targets || d.myTargets) {
-            const tg = d.myTargets || d.targets;
-            state.myQuotas.dataGoal = Number(tg.dataGoal || 10000);
-            state.myQuotas.airtimeGoal = Number(tg.airtimeGoal || 500000);
-          }
+        // Metrics
+        document.getElementById("statsSupCount").innerText = supervisors.length;
+        document.getElementById("statsAgentCount").innerText = agents.length;
+        document.getElementById("statsDataSold").innerText = (data.networkStats?.overallDataSold || 0) + " GB";
+        document.getElementById("statsAirtimeSold").innerText = "₦" + Number(data.networkStats?.overallAirtimeSold || 0).toLocaleString();
 
-          if (Array.isArray(d.supervisors) && d.supervisors.length > 0) {
-            retrievedSupervisors = d.supervisors;
-          } else if (Array.isArray(dashRes.value.supervisors) && dashRes.value.supervisors.length > 0) {
-            retrievedSupervisors = dashRes.value.supervisors;
-          }
-        }
+        // Targets
+        const dGoal = myTargets.dataGoal || 0;
+        const dSold = data.networkStats?.overallDataSold || 0;
+        const dProg = dGoal > 0 ? Math.min(Math.round((dSold / dGoal) * 100), 100) : 0;
+        document.getElementById("dataQuotaVal").innerText = `${dSold} / ${dGoal} GB`;
+        document.getElementById("dataProgressFill").style.width = `${dProg}%`;
+        document.getElementById("dataPercentSub").innerText = `${dProg}% Completed`;
 
-        if (retrievedSupervisors.length === 0 && supStateRes.status === 'fulfilled') {
-          retrievedSupervisors = extractList(supStateRes.value, 'supervisors');
-        }
-
-        if (retrievedSupervisors.length === 0 && supNoStateRes.status === 'fulfilled') {
-          retrievedSupervisors = extractList(supNoStateRes.value, 'supervisors');
-        }
-
-        if (retrievedSupervisors.length > 0) {
-          const existingMap = new Map();
-          retrievedSupervisors.forEach(s => existingMap.set(String(s.phone || s._id), s));
-
-          state.supervisors.forEach(localS => {
-            const key = String(localS.phone || localS._id);
-            if (!existingMap.has(key)) {
-              existingMap.set(key, localS);
-            }
-          });
-
-          state.supervisors = Array.from(existingMap.values());
-        }
-
-        if (agentsRes.status === 'fulfilled') {
-          state.agents = extractList(agentsRes.value, 'agents');
-        }
-
-        if (logsRes.status === 'fulfilled') {
-          state.activityLogs = extractList(logsRes.value, 'logs');
-        }
-
-        updateUI();
-      } catch (e) {
-        console.warn("State Manager Sync Notice:", e.message);
+        renderSupervisors(supervisors);
+        renderAgents(agents);
+      } catch (err) {
+        console.error("Fetch error:", err);
       }
     }
 
-    function updateUI() {
-      const stateUpper = String(state.myState).toUpperCase();
-      document.getElementById('topBadgeText').textContent = `${stateUpper} STATE MANAGER`;
-      document.getElementById('topTitleText').textContent = `${stateUpper} DIRECTORATE`;
-      document.getElementById('sidebarStateName').textContent = `${stateUpper} State Directorate`;
-
-      const totalDataSold = state.agents.reduce((acc, a) => acc + Number(a.dataVolumeSold || a.dataSold || 0), 0);
-      const totalAirtimeSold = state.agents.reduce((acc, a) => acc + Number(a.airtimeSold || 0), 0);
-      const totalFloat = state.agents.reduce((acc, a) => acc + Number(a.walletBalance || a.balance || 0), 0);
-
-      document.getElementById('statSupervisorsVal').textContent = state.supervisors.length;
-      document.getElementById('statAgentsVal').textContent = state.agents.length;
-      document.getElementById('statDataVal').textContent = `${totalDataSold.toLocaleString()} GB`;
-      document.getElementById('statDataQuotaSub').textContent = `Target: ${state.myQuotas.dataGoal.toLocaleString()} GB`;
-      document.getElementById('statFloatVal').textContent = `₦${totalFloat.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
-
-      document.getElementById('tabLabelSupervisors').textContent = `Supervisors (${state.supervisors.length})`;
-      document.getElementById('tabLabelAgents').textContent = `Retail Outlets (${state.agents.length})`;
-
-      renderSupervisorsList();
-      renderAgentsList();
-      renderQuotasOverview(totalDataSold, totalAirtimeSold);
-      renderAuditLogs();
-    }
-
-    function switchMainTab(tab) {
-      ['supervisors', 'agents', 'quotas', 'audit'].forEach(t => {
-        const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
-        const content = document.getElementById(`tabContent${t.charAt(0).toUpperCase() + t.slice(1)}`);
-        if (btn) btn.classList.toggle('active', t === tab);
-        if (content) content.style.display = t === tab ? 'block' : 'none';
-      });
-    }
-
-    function handleSearch() {
-      state.searchQuery = document.getElementById('searchFilterInput').value.toLowerCase().trim();
-      renderSupervisorsList();
-      renderAgentsList();
-    }
-
-    function renderSupervisorsList() {
-      const container = document.getElementById('supervisorsListContainer');
-      const q = state.searchQuery;
-
-      const filtered = state.supervisors.filter(s => {
-        const name = (s.name || s.fullName || '').toLowerCase();
-        const phone = (s.phone || '');
-        const lga = (s.lga || '').toLowerCase();
-        return !q || name.includes(q) || phone.includes(q) || lga.includes(q);
-      });
-
-      if (filtered.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1;">No Field Supervisors registered matching your query.</div>';
-        return;
-      }
-
-      container.innerHTML = filtered.map(s => `
-        <div class="entity-card">
-          <div class="entity-card-header">
-            <div>
-              <strong style="font-size: 13.5px; color: #0f172a;">${s.name || s.fullName || 'Field Supervisor'}</strong>
-              <div style="font-size: 11px; color: #64748b; margin-top: 2px;">📍 ${s.lga || 'HQ'} LGA • 📞 ${s.phone || 'N/A'}</div>
+    function renderSupervisors(list) {
+      const feed = document.getElementById("supervisorsFeed");
+      feed.innerHTML = list.map(s => `
+        <div class="sup-card">
+          <div class="sup-card-top">
+            <div class="sup-info">
+              <div class="sup-avatar"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <div class="sup-name">${s.name || "Supervisor"}</div>
+                <div class="sup-meta">📍 ${s.lga || "LGA"} • 📞 ${s.phone}</div>
+                <div class="sup-ref">🆔 ID/Ref: <strong style="color:#1e40af;">${s.referralCode || s.referralId || "AYX-FS"}</strong></div>
+                <div class="sup-email">✉️ ${s.email || "N/A"}</div>
+              </div>
             </div>
-            <span style="font-size: 9.5px; font-weight: 800; background: #ecfdf5; color: #059669; padding: 2px 6px; border-radius: 4px;">ACTIVE FS</span>
           </div>
-
-          <div style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: 8px; padding: 8px; margin-top: 8px; display: flex; justify-content: space-between; font-size: 11px;">
-            <span>Team Outlets: <strong>${s.teamSize || s.agentsCount || 0}</strong></span>
-            <span>Data Sold: <strong style="color: var(--accent-blue);">${s.dataSold || 0} GB</strong></span>
-          </div>
-
-          <div class="entity-card-action-grid">
-            <button type="button" class="action-btn-sm" style="background: #eff6ff; color: var(--accent-blue);" onclick="openSupervisorTargetModal('${s.phone || s._id}')">
-              <i class="fa-solid fa-bullseye"></i> Set Quota
-            </button>
-            <a href="tel:${s.phone}" class="action-btn-sm" style="background: #eff6ff; color: var(--accent-sky);">
-              <i class="fa-solid fa-phone"></i> Call
-            </a>
+          <div class="stats-summary-grid">
+            <div><div class="summary-box-label">Data Target</div><div class="summary-box-value" style="color:#1e40af;">${s.dataGoal || 0} GB</div></div>
+            <div><div class="summary-box-label">Airtime Target</div><div class="summary-box-value" style="color:#d97706;">₦${Number(s.airtimeGoal || 0).toLocaleString()}</div></div>
+            <div><div class="summary-box-label">New Agents Goal</div><div class="summary-box-value" style="color:#059669;">${s.agentGoal || 10}</div></div>
+            <div><div class="summary-box-label">Team Size</div><div class="summary-box-value" style="color:#0284c7;">${s.teamSize || 0}</div></div>
           </div>
         </div>
-      `).join('');
+      `).join("");
     }
 
-    function renderAgentsList() {
-      const container = document.getElementById('agentsListContainer');
-      const q = state.searchQuery;
-
-      const filtered = state.agents.filter(a => {
-        const name = (a.name || a.fullName || '').toLowerCase();
-        const phone = (a.phone || '');
-        const lga = (a.lga || '').toLowerCase();
-        return !q || name.includes(q) || phone.includes(q) || lga.includes(q);
-      });
-
-      if (filtered.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1;">No Retail Outlets active matching your search.</div>';
-        return;
-      }
-
-      container.innerHTML = filtered.map(a => `
-        <div class="entity-card">
-          <div class="entity-card-header">
+    function renderAgents(list) {
+      const feed = document.getElementById("agentsFeed");
+      feed.innerHTML = list.map(a => `
+        <div class="agent-card">
+          <div class="agent-top">
             <div>
-              <strong style="font-size: 13.5px; color: #0f172a;">${a.name || a.fullName || 'Retail Agent'}</strong>
-              <div style="font-size: 11px; color: #64748b; margin-top: 2px;">📍 ${a.lga || 'HQ'} LGA • 📞 ${a.phone || 'N/A'}</div>
+              <div class="agent-name">${a.name || "Agent"}</div>
+              <div class="agent-loc">📍 ${a.lga || "LGA"} • 📞 ${a.phone}</div>
             </div>
-            <span style="font-size: 12px; font-weight: 900; color: #059669;">₦${Number(a.walletBalance || a.balance || 0).toLocaleString()}</span>
-          </div>
-
-          <div style="font-size: 11px; color: #475569; margin-top: 6px;">
-            Data Volume Dispensed: <strong style="color: var(--accent-blue);">${a.dataVolumeSold || a.dataSold || 0} GB</strong>
-          </div>
-
-          <div class="entity-card-action-grid">
-            <a href="tel:${a.phone}" class="action-btn-sm" style="background: #eff6ff; color: var(--accent-sky);">
-              <i class="fa-solid fa-phone"></i> Call Agent
-            </a>
+            <div>
+              <div class="agent-float">₦${Number(a.walletBalance || a.balance || 0).toLocaleString()}</div>
+            </div>
           </div>
         </div>
-      `).join('');
+      `).join("");
     }
 
-    function renderQuotasOverview(dataSold, airtimeSold) {
-      const container = document.getElementById('quotasOverviewContainer');
-      const dataProg = state.myQuotas.dataGoal > 0 ? Math.min(Math.round((dataSold / state.myQuotas.dataGoal) * 100), 100) : 0;
-      const airProg = state.myQuotas.airtimeGoal > 0 ? Math.min(Math.round((airtimeSold / state.myQuotas.airtimeGoal) * 100), 100) : 0;
-
-      container.innerHTML = `
-        <div class="entity-card" style="margin-bottom: 12px;">
-          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 800;">State Data Target Quota (Assigned by NSD)</h4>
-          <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-bottom: 6px;">
-            <div style="height: 8px; border-radius: 4px; width: ${dataProg}%; background: var(--accent-blue);"></div>
-          </div>
-          <p style="margin: 0; font-size: 12px; color: #64748b;">${dataSold.toLocaleString()} GB dispensed out of ${state.myQuotas.dataGoal.toLocaleString()} GB assigned target (${dataProg}%).</p>
-        </div>
-
-        <div class="entity-card" style="margin-bottom: 12px;">
-          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 800;">State Airtime Target Quota</h4>
-          <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-bottom: 6px;">
-            <div style="height: 8px; border-radius: 4px; width: ${airProg}%; background: var(--accent-amber);"></div>
-          </div>
-          <p style="margin: 0; font-size: 12px; color: #64748b;">₦${airtimeSold.toLocaleString()} vended out of ₦${state.myQuotas.airtimeGoal.toLocaleString()} assigned quota (${airProg}%).</p>
-        </div>
-      `;
+    async function handleEnroll(e) {
+      e.preventDefault();
+      const token = localStorage.getItem("userToken");
+      const res = await fetch(`${BASE_URL}/leader/create-supervisor`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("newSupName").value,
+          phone: document.getElementById("newSupPhone").value,
+          email: document.getElementById("newSupEmail").value,
+          password: document.getElementById("newSupPassword").value,
+          lga: document.getElementById("newSupLga").value,
+          state: managerState,
+          role: "supervisor"
+        })
+      });
+      const d = await res.json();
+      if(d.success) { alert("Enrolled successfully!"); closeModal("enrollModal"); loadDashboard(); }
+      else alert(d.message || "Failed");
     }
 
-    function renderAuditLogs() {
-      const container = document.getElementById('auditLogsContainer');
-      if (state.activityLogs.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #64748b;">No live stream audit logs recorded yet.</div>';
-        return;
-      }
-
-      container.innerHTML = state.activityLogs.map(log => `
-        <div class="entity-card" style="margin-bottom: 8px;">
-          <div style="display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8;">
-            <span style="font-weight: 800; color: var(--accent-blue);">${log.category || 'STATE_ACTION'}</span>
-            <span>${log.createdAt ? new Date(log.createdAt).toLocaleTimeString() : 'Live'}</span>
-          </div>
-          <p style="margin: 4px 0; font-size: 12px; font-weight: 600; color: #0f172a;">${log.details || log.action || 'State field operation recorded.'}</p>
-        </div>
-      `).join('');
+    async function handleBroadcast(e) {
+      e.preventDefault();
+      const token = localStorage.getItem("userToken");
+      await fetch(`${BASE_URL}/notifications/send`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: document.getElementById("notifTitle").value,
+          message: document.getElementById("notifMessage").value,
+          category: "STATE_DIRECTIVE",
+          state: managerState
+        })
+      });
+      alert("Dispatched!");
+      closeModal("notifModal");
     }
 
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    function toggleSidebar(open) { document.getElementById('sidebarDrawer').style.display = open ? 'block' : 'none'; }
-
-    function openSupervisorTargetModal(supId) {
-      document.getElementById('targetSupervisorInput').value = supId;
-      openModal('deployTargetModal');
-    }
-
-    async function handleDeployTargetSubmit() {
-      const btn = document.getElementById('btnDeployTargetSubmit');
-      btn.disabled = true;
-
-      try {
-        const payload = {
-          supervisorId: document.getElementById('targetSupervisorInput').value.trim(),
-          dataGoal: Number(document.getElementById('targetDataGoal').value),
-          airtimeGoal: Number(document.getElementById('targetAirtimeGoal').value),
-          agentGoal: Number(document.getElementById('targetAgentGoal').value),
-          month: document.getElementById('targetMonth').value.trim()
-        };
-
-        const res = await fetch(`${BASE_URL}/leader/assign-target`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-        if (res.ok && (data.success || res.status === 200)) {
-          alert("LGA Supervisor Quota Deployed 🎯");
-          closeModal('deployTargetModal');
-          fetchLeaderDashboard();
-        } else {
-          throw new Error(data.message || "Failed to deploy target.");
-        }
-      } catch (e) {
-        alert("Target Notice: " + e.message);
-        closeModal('deployTargetModal');
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    // INGANNTACCEN AIKIN YIN RAJISTAR SABON SUPERVISOR (ZERO FAILURE DISPATCH)
-    async function handleAppointSupervisorSubmit() {
-      const btn = document.getElementById('btnAppointSupervisorSubmit');
-      btn.disabled = true;
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authorizing & Registering...';
-
-      const enteredName = document.getElementById('appointName').value.trim();
-      const enteredPhone = document.getElementById('appointPhone').value.replace(/[^0-9+]/g, "").trim();
-      const enteredLga = document.getElementById('appointLga').value.trim();
-      const enteredEmail = (document.getElementById('appointEmail').value.trim() || `${enteredPhone.replace(/[^0-9]/g, "")}@ayaxdata.online`).toLowerCase();
-      const enteredPassword = document.getElementById('appointPassword').value.trim();
-
-      if (!enteredPhone || !enteredName) {
-        alert("Please enter full name and phone number.");
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-        return;
-      }
-
-      // Tace Sunaye don gamsar da Dokar MongoDB Schema
-      const nameParts = enteredName.split(/\s+/).filter(Boolean);
-      const firstName = nameParts[0] || "Field";
-      const surname = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "Supervisor";
-      const fullDisplayName = `${firstName} ${surname}`.toUpperCase().trim();
-
-      const payload = {
-        name: fullDisplayName,
-        fullName: fullDisplayName,
-        firstName: firstName,
-        surname: surname,
-        phone: enteredPhone,
-        lga: enteredLga || "Ajingi",
-        email: enteredEmail,
-        password: enteredPassword || "Ibrahim@12345",
-        state: state.myState || "Kano",
-        role: 'supervisor'
-      };
-
-      const targetEndpoints = [
-        `${BASE_URL}/leader/create-supervisor`,
-        `${BASE_URL}/leader/appoint-supervisor`,
-        `${BASE_URL}/auth/register`
-      ];
-
-      let success = false;
-      let lastErrorMessage = "";
-      let createdSupervisorData = null;
-
-      for (const endpoint of targetEndpoints) {
-        try {
-          const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${state.token}`,
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
-
-          const data = await res.json();
-
-          if (res.ok && (data.success || res.status === 200 || res.status === 201)) {
-            success = true;
-            createdSupervisorData = data.supervisor || data.user || data.data || payload;
-            break;
-          } else {
-            lastErrorMessage = data.message || `Endpoint ${endpoint} returned error.`;
-          }
-        } catch (err) {
-          lastErrorMessage = err.message;
-        }
-      }
-
-      if (success) {
-        alert(`Field Supervisor (${fullDisplayName}) Appointed Successfully for ${payload.lga} LGA!`);
-        closeModal('appointSupervisorModal');
-
-        const newEntry = {
-          name: fullDisplayName,
-          fullName: fullDisplayName,
-          firstName: firstName,
-          surname: surname,
-          phone: payload.phone,
-          lga: payload.lga,
-          state: payload.state,
-          role: 'supervisor',
-          teamSize: 0,
-          dataSold: 0,
-          walletBalance: 0,
-          ...createdSupervisorData
-        };
-
-        state.supervisors = state.supervisors.filter(s => String(s.phone) !== String(payload.phone));
-        state.supervisors.unshift(newEntry);
-        updateUI();
-
-        document.getElementById('appointName').value = '';
-        document.getElementById('appointPhone').value = '';
-        document.getElementById('appointLga').value = '';
-        document.getElementById('appointEmail').value = '';
-
-        setTimeout(fetchLeaderDashboard, 1500);
-      } else {
-        alert("Appoint Notice: " + lastErrorMessage);
-      }
-
-      btn.disabled = false;
-      btn.innerHTML = originalText;
-    }
-
-    async function handleBroadcastSubmit() {
-      const btn = document.getElementById('btnBroadcastSubmit');
-      btn.disabled = true;
-
-      try {
-        const res = await fetch(`${BASE_URL}/notifications/send`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            title: document.getElementById('broadcastTitle').value.trim(),
-            message: document.getElementById('broadcastBody').value.trim(),
-            category: "STATE_DIRECTIVE",
-            state: state.myState
-          })
-        });
-
-        const data = await res.json();
-        if (res.ok && data.success) {
-          alert("State Directive Dispatched 🚀");
-          closeModal('broadcastModal');
-        } else {
-          throw new Error(data.message || "Failed to broadcast directive.");
-        }
-      } catch (e) {
-        alert("Broadcast Notice: " + e.message);
-        closeModal('broadcastModal');
-      } finally {
-        btn.disabled = false;
-      }
+    async function handleTransfer(e) {
+      e.preventDefault();
+      const token = localStorage.getItem("userToken");
+      const res = await fetch(`${BASE_URL}/supervisors/transfer-all-agents`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          oldSupervisorId: document.getElementById("transSource").value,
+          newSupervisorId: document.getElementById("transTarget").value
+        })
+      });
+      const d = await res.json();
+      if(d.success) { alert("Transferred successfully!"); closeModal("transferModal"); loadDashboard(); }
+      else alert(d.message || "Failed");
     }
 
     function handleLogout() {
-      if (confirm("Terminate State Manager session?")) {
-        localStorage.clear();
-        window.location.href = "index.html";
-      }
+      localStorage.clear();
+      window.location.href = "/login.html";
     }
+
+    function generateReport() {
+      const token = localStorage.getItem("userToken");
+      window.open(`${BASE_URL}/leader/download-full-report?token=${token}`);
+    }
+
+    loadDashboard();
+    setInterval(loadDashboard, 15000);
   </script>
 </body>
 </html>
