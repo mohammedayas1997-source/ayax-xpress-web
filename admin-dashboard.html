@@ -893,38 +893,49 @@
     }
 
     async function saveDataPlanTariff() {
-      const uPrice = Number(document.getElementById("editPlanUserPrice").value);
-      const aPrice = Number(document.getElementById("editPlanAgentPrice").value);
-      if (!uPrice || !aPrice) { alert("Please provide Customer and Agent prices."); return; }
+  const uPrice = Number(document.getElementById("editPlanUserPrice").value);
+  const aPrice = Number(document.getElementById("editPlanAgentPrice").value);
+  if (!uPrice || !aPrice) { alert("Please provide Customer and Agent prices."); return; }
 
-      const token = localStorage.getItem("userToken");
-      try {
-        const res = await fetch(`${BASE_URL}/superadmin/pricing/update-tier`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: selectedEditPlan.id || selectedEditPlan._id,
-            planId: selectedEditPlan.planCode || selectedEditPlan.id || selectedEditPlan._id,
-            userPrice: uPrice,
-            agentPrice: aPrice,
-            price: uPrice,
-            status: selectedEditPlanStatus,
-            broadcast: true
-          })
-        }).then(r => r.json());
+  const token = localStorage.getItem("userToken");
+  const payload = {
+    id: selectedEditPlan.id || selectedEditPlan._id,
+    planId: selectedEditPlan.planCode || selectedEditPlan.id || selectedEditPlan._id,
+    userPrice: uPrice,
+    agentPrice: aPrice,
+    price: uPrice,
+    status: selectedEditPlanStatus,
+    broadcast: true
+  };
 
-        if (res.success) {
-          alert("Tariff Deployed Successfully to Database & Terminals! 🚀");
-          closeModal("editDataPlanModal");
-          loadDashboardData();
-        } else {
-          alert(res.message || "Could not update tariff.");
-        }
-      } catch (e) {
-        alert("Sync Error: " + e.message);
-      }
+  try {
+    let res = await fetch(`${BASE_URL}/admin/pricing/update-tier`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.status === 404) {
+      res = await fetch(`${BASE_URL}/data/plans/${payload.id}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
     }
 
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok || data.success) {
+      alert("Tariff Deployed Successfully to Database & Terminals! 🚀");
+      closeModal("editDataPlanModal");
+      loadDashboardData();
+    } else {
+      alert(data.message || "Could not update tariff.");
+    }
+  } catch (e) {
+    alert("Sync Error: " + e.message);
+  }
+}
     // NEW DATA PLAN CONTROLS
     function setNewPlanNet(net, btn) {
       newPlanSelectedNet = net;
@@ -954,47 +965,80 @@
     }
 
     async function publishNewDataPlan() {
-      const finalType = newPlanSelectedType === "CUSTOM" ? document.getElementById("newPlanCustomTypeInput").value.trim() : newPlanSelectedType;
-      const finalSize = newPlanSelectedSize === "CUSTOM" ? document.getElementById("newPlanCustomSizeInput").value.trim() : newPlanSelectedSize;
-      const finalValidity = newPlanSelectedValidity === "CUSTOM" ? document.getElementById("newPlanCustomValidityInput").value.trim() : newPlanSelectedValidity;
-      const uPrice = Number(document.getElementById("newPlanUserPrice").value);
-      const aPrice = Number(document.getElementById("newPlanAgentPrice").value || uPrice);
+  const finalType = newPlanSelectedType === "CUSTOM" ? document.getElementById("newPlanCustomTypeInput").value.trim() : newPlanSelectedType;
+  const finalSize = newPlanSelectedSize === "CUSTOM" ? document.getElementById("newPlanCustomSizeInput").value.trim() : newPlanSelectedSize;
+  const finalValidity = newPlanSelectedValidity === "CUSTOM" ? document.getElementById("newPlanCustomValidityInput").value.trim() : newPlanSelectedValidity;
+  const uPrice = Number(document.getElementById("newPlanUserPrice").value);
+  const aPrice = Number(document.getElementById("newPlanAgentPrice").value || uPrice);
 
-      if (!finalType || !finalSize || !uPrice) {
-        alert("Please specify Plan Type, Size, and Customer Price.");
-        return;
-      }
+  if (!finalType || !finalSize || !uPrice) {
+    alert("Please specify Plan Type, Size, and Customer Price.");
+    return;
+  }
 
-      const net = newPlanSelectedNet.toUpperCase();
-      const pCode = `${net}_${finalType.toUpperCase().replace(/\\s+/g, '_')}_${finalSize.toUpperCase().replace(/\\s+/g, '')}_${Date.now()}`;
-      const pName = `${net} ${finalType} ${finalSize} (${finalValidity})`;
+  const net = newPlanSelectedNet.toUpperCase();
+  const pCode = `${net}_${finalType.toUpperCase().replace(/\s+/g, '_')}_${finalSize.toUpperCase().replace(/\s+/g, '')}_${Date.now()}`;
+  const pName = `${net} ${finalType} ${finalSize} (${finalValidity})`;
 
-      const token = localStorage.getItem("userToken");
-      try {
-        const res = await fetch(`${BASE_URL}/superadmin/pricing/create-plan`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: pCode, planCode: pCode, code: pCode,
-            network: net, networkName: net, planType: finalType,
-            plan: finalSize, name: pName, planLabel: pName,
-            validity: finalValidity, userPrice: uPrice, price: uPrice,
-            agentPrice: aPrice, status: "active", isActive: true
-          })
-        }).then(r => r.json());
+  const token = localStorage.getItem("userToken");
+  const payload = {
+    id: pCode,
+    planId: pCode,
+    planCode: pCode,
+    code: pCode,
+    network: net,
+    networkName: net,
+    planType: finalType,
+    plan: finalSize,
+    name: pName,
+    planLabel: pName,
+    validity: finalValidity,
+    userPrice: uPrice,
+    price: uPrice,
+    agentPrice: aPrice,
+    costPrice: 0,
+    status: "active",
+    isActive: true
+  };
 
-        if (res.success) {
-          alert(`Tariff published successfully! Written to MongoDB & live across Agent/Customer terminals.`);
-          closeModal("addPlanModal");
-          loadDashboardData();
-        } else {
-          alert(res.message || "Failed to deploy plan.");
-        }
-      } catch (e) {
-        alert("Error publishing plan: " + e.message);
-      }
+  try {
+    // 1. Gwada tura wa asalin endpoint na admin
+    let res = await fetch(`${BASE_URL}/admin/pricing/create-plan`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    // 2. Idan bai samu ba (404), gwada madadin routes da ke wanzuwa a backend
+    if (res.status === 404) {
+      res = await fetch(`${BASE_URL}/data/plans`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
     }
 
+    if (res.status === 404) {
+      res = await fetch(`${BASE_URL}/admin/pricing/update-tier`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok || data.success) {
+      alert(`Tariff published successfully! Live across Agent & Customer terminals.`);
+      closeModal("addPlanModal");
+      loadDashboardData();
+    } else {
+      alert(data.message || "Failed to publish plan. Check backend route configuration.");
+    }
+  } catch (e) {
+    alert("Error publishing plan: " + e.message);
+  }
+}
     // NIMC, BVN & BILLS LOGIC
     function renderIdentityServices() {
       const feed = document.getElementById("identityServicesFeed");
