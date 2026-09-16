@@ -337,6 +337,7 @@
       border-radius: 12px;
       padding: 12px;
       border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     .lga-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
     .lga-title { font-size: 13.5px; font-weight: 800; color: #0f172a; }
@@ -481,9 +482,9 @@
       <div>
         <div class="state-badge">
           <div class="pulse-dot"></div>
-          <span class="state-badge-text" id="topStateBadge">KANO STATE MANAGER (SM)</span>
+          <span class="state-badge-text" id="topStateBadge">STATE MANAGER (SM)</span>
         </div>
-        <div class="top-brand-title" id="topLgaTitle">44 LGAS COMMAND DESK</div>
+        <div class="top-brand-title" id="topLgaTitle">LGAS COMMAND DESK</div>
       </div>
     </div>
     <div class="top-actions">
@@ -504,7 +505,7 @@
       <i class="fa-solid fa-users"></i> Agents (<span id="agentCountNav">0</span>)
     </div>
     <div class="nav-tab" id="tabBtn-lgas" onclick="switchTab('lgas')">
-      <i class="fa-solid fa-map-location-dot"></i> LGAs (<span id="lgaCountNav">44</span>)
+      <i class="fa-solid fa-map-location-dot"></i> LGAs (<span id="lgaCountNav">0</span>)
     </div>
     <div class="nav-tab" id="tabBtn-history" onclick="switchTab('history')">
       <i class="fa-solid fa-chart-line"></i> Logs
@@ -549,7 +550,7 @@
 
         <div class="exec-metric-box">
           <div class="exec-metric-label" style="color: #2dd4bf;">SUPERVISORS TARGET</div>
-          <div class="exec-metric-val" id="supQuotaVal">0 / 44</div>
+          <div class="exec-metric-val" id="supQuotaVal">0 / 0</div>
           <div class="exec-sub">LGA Network Leads</div>
         </div>
       </div>
@@ -567,7 +568,7 @@
       <div class="banner-actions">
         <button class="btn-banner btn-banner-primary" onclick="openSmartTarget('supervisor')"><i class="fa-solid fa-user-tie"></i> AUTO-SPLIT SUPERVISORS</button>
         <button class="btn-banner btn-banner-sec" onclick="openSmartTarget('agent')"><i class="fa-solid fa-users"></i> AUTO-SPLIT AGENTS</button>
-        <button class="btn-banner btn-banner-tert" onclick="openCustomTarget()"><i class="fa-solid fa-map-pin"></i> TARGET LGAS</button>
+        <button class="btn-banner btn-banner-tert" onclick="switchTab('lgas')"><i class="fa-solid fa-map-pin"></i> TARGET LGAS</button>
       </div>
     </div>
 
@@ -649,7 +650,7 @@
   <aside class="sidebar-drawer" id="sidebarDrawer">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 12px;">
       <div>
-        <h4 style="font-size: 15px; font-weight: 900; color: #0f172a;" id="drawerStateText">Kano State</h4>
+        <h4 style="font-size: 15px; font-weight: 900; color: #0f172a;" id="drawerStateText">State Hub</h4>
         <span style="font-size: 11px; color: #1e40af; font-weight: 700;">State Operations Hub</span>
       </div>
       <button class="icon-btn" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
@@ -683,7 +684,10 @@
         <button class="icon-btn" onclick="closeModal('enrollModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <form onsubmit="handleEnroll(event)">
-        <div class="form-group"><label class="form-label">SELECT LOCAL GOVERNMENT AREA (LGA)</label><input class="input-box" id="newSupLga" required></div>
+        <div class="form-group">
+          <label class="form-label">SELECT LOCAL GOVERNMENT AREA (LGA)</label>
+          <select class="input-box" id="newSupLga" required></select>
+        </div>
         <div class="form-group"><label class="form-label">SUPERVISOR FULL NAME</label><input class="input-box" id="newSupName" placeholder="e.g. Aliyu Mohammed" required></div>
         <div class="form-group"><label class="form-label">PHONE NUMBER (LOGIN USERNAME)</label><input class="input-box" id="newSupPhone" placeholder="e.g. 08031234567" required></div>
         <div class="form-group"><label class="form-label">EMAIL ADDRESS</label><input class="input-box" id="newSupEmail" placeholder="e.g. supervisor@ayaxdata.online"></div>
@@ -724,8 +728,50 @@
   </div>
 
   <script>
+    // --- 1. OFFICIAL NIGERIA GEODATA MAP FOR ALL 36 STATES + FCT ---
+    const NIGERIA_STATES_LGAS = {
+      "Abia": ["Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala Ngwa North", "Isiala Ngwa South", "Isuikwuato", "Obi Ngwa", "Ohafia", "Osisioma", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu Nneochi"],
+      "Adamawa": ["Demsa", "Fufure", "Ganye", "Gayuk", "Gombi", "Grie", "Hong", "Jada", "Lamurde", "Madagali", "Maiha", "Mayo Belwa", "Michika", "Mubi North", "Mubi South", "Numan", "Shelleng", "Song", "Toungo", "Yola North", "Yola South"],
+      "Akwa Ibom": ["Abak", "Eastern Obolo", "Eket", "Esit Eket", "Essien Udim", "Etim Ekpo", "Etinan", "Ibeno", "Ibesikpo Asutan", "Ibiono-Ibom", "Ika", "Ikono", "Ikot Abasi", "Ikot Ekpene", "Ini", "Itu", "Mbo", "Mkpat-Enin", "Nsit-Atai", "Nsit-Ibom", "Nsit-Ubium", "Obot Akara", "Okobo", "Onna", "Oron", "Oruk Anam", "Udung-Uko", "Ukanafun", "Uruan", "Urue-Offong/Oruko", "Uyo"],
+      "Anambra": ["Aguata", "Anambra East", "Anambra West", "Anaocha", "Awka North", "Awka South", "Ayamelum", "Dunukofia", "Ekwusigo", "Idemili North", "Idemili South", "Ihiala", "Njikoka", "Nnewi North", "Nnewi South", "Ogbaru", "Onitsha North", "Onitsha South", "Orumba North", "Orumba South", "Oyi"],
+      "Bauchi": ["Alkaleri", "Bauchi", "Bogoro", "Damban", "Darazo", "Dass", "Gamawa", "Ganjuwa", "Giade", "Itas/Gadau", "Jama'are", "Katagum", "Kirfi", "Misau", "Ningi", "Shira", "Tafawa Balewa", "Toro", "Warji", "Zaki"],
+      "Bayelsa": ["Brass", "Ekeremor", "Kolokuma/Opokuma", "Nembe", "Ogbia", "Sagbama", "Southern Ijaw", "Yenagoa"],
+      "Benue": ["Agatu", "Apa", "Ado", "Buruku", "Gboko", "Guma", "Gwer East", "Gwer West", "Katsina-Ala", "Konshisha", "Kwande", "Logo", "Makurdi", "Obi", "Ogbadibo", "Ohimini", "Oju", "Okpokwu", "Oturkpo", "Tarka", "Ukum", "Ushongo", "Vandeikya"],
+      "Borno": ["Abadam", "Askira/Uba", "Bama", "Bayo", "Biu", "Chibok", "Damboa", "Dikwa", "Gubio", "Guzamala", "Gwoza", "Hawul", "Jere", "Kaga", "Kala/Balge", "Konduga", "Kukawa", "Kwaya Kusar", "Mafa", "Magumeri", "Maiduguri", "Marte", "Mobbar", "Monguno", "Ngala", "Nganzai", "Shani"],
+      "Cross River": ["Abi", "Akamkpa", "Akpabuyo", "Bakassi", "Bekwarra", "Biase", "Boki", "Calabar Municipal", "Calabar South", "Etung", "Ikom", "Obanliku", "Obubra", "Obudu", "Odukpani", "Ogoja", "Yakuur", "Yala"],
+      "Delta": ["Aniocha North", "Aniocha South", "Bomadi", "Burutu", "Ethiope East", "Ethiope West", "Ika North East", "Ika South", "Isoko North", "Isoko South", "Ndokwa East", "Ndokwa West", "Okpe", "Oshimili North", "Oshimili South", "Patani", "Sapele", "Udu", "Ughelli North", "Ughelli South", "Ukwuani", "Uvwie", "Warri North", "Warri South", "Warri South West"],
+      "Ebonyi": ["Abakaliki", "Afikpo North", "Afikpo South", "Ebonyi", "Ezza North", "Ezza South", "Ikwo", "Ishielu", "Ivo", "Izzi", "Ohaozara", "Ohaukwu", "Onicha"],
+      "Edo": ["Akoko-Edo", "Egor", "Esan Central", "Esan North-East", "Esan South-East", "Esan West", "Etsako Central", "Etsako East", "Etsako West", "Igueben", "Ikpoba Okha", "Orhionmwon", "Oredo", "Ovia North-East", "Ovia South-West", "Owan East", "Owan West", "Uhunmwonde"],
+      "Ekiti": ["Ado Ekiti", "Efon", "Ekiti East", "Ekiti South-West", "Ekiti West", "Emure", "Gbonyin", "Ido Osi", "Ijero", "Ikole", "Ilejemeje", "Irepodun/Ifelodun", "Ise/Orun", "Moba", "Oye"],
+      "Enugu": ["Aninri", "Awgu", "Enugu East", "Enugu North", "Enugu South", "Ezeagu", "Igbo Etiti", "Igbo Eze North", "Igbo Eze South", "Isi Uzo", "Nkanu East", "Nkanu West", "Nsukka", "Oji River", "Udenu", "Udi", "Uzo Uwani"],
+      "FCT": ["Abaji", "Bwari", "Gwagwalada", "Kuje", "Kwali", "Municipal Area Council"],
+      "Gombe": ["Akko", "Balanga", "Billiri", "Dukku", "Funakaye", "Gombe", "Kaltungo", "Kwami", "Nafada", "Shongom", "Yamaltu/Deba"],
+      "Imo": ["Aboh Mbaise", "Ahiazu Mbaise", "Ehime Mbano", "Ezinihitte", "Ideato North", "Ideato South", "Ihitte/Uboma", "Ikeduru", "Isiala Mbano", "Isu", "Mbaitoli", "Ngor Okpala", "Njaba", "Nkwerre", "Nwangele", "Obowo", "Oguta", "Ohaji/Egbema", "Okigwe", "Orlu", "Orsu", "Oru East", "Oru West", "Owerri Municipal", "Owerri North", "Owerri West", "Unuimo"],
+      "Jigawa": ["Auyo", "Babura", "Biriniwa", "Birnin Kudu", "Buji", "Dutse", "Gagarawa", "Garki", "Gumel", "Guri", "Gwaram", "Gwiwa", "Hadejia", "Jahun", "Kafin Hausa", "Kazaure", "Kiri Kasama", "Kiyawa", "Kaugama", "Maigatari", "Malam Madori", "Miga", "Ringim", "Roni", "Sule Tankarkar", "Taura", "Yankwashi"],
+      "Kaduna": ["Birnin Gwari", "Chikun", "Giwa", "Igabi", "Ikara", "Jaba", "Jema'a", "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru", "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"],
+      "Kano": ["Ajingi", "Albasu", "Bagwai", "Bebeji", "Bichi", "Bunkure", "Dala", "Dambatta", "Dawakin Kudu", "Dawakin Tofa", "Doguwa", "Fagge", "Gabasawa", "Garko", "Garun Mallam", "Gaya", "Gezawa", "Gwale", "Gwarzo", "Kabo", "Kano Municipal", "Karaye", "Kibiya", "Kiru", "Kumbotso", "Kunchi", "Kura", "Madobi", "Makoda", "Minjibir", "Nasarawa", "Rano", "Rimin Gado", "Rogo", "Shanono", "Sumaila", "Takai", "Tarauni", "Tofa", "Tsanyawa", "Tudun Wada", "Ungogo", "Warawa", "Wudil"],
+      "Katsina": ["Bakori", "Batagarawa", "Batsari", "Baure", "Bindawa", "Charanchi", "Dandume", "Danja", "Dan Musa", "Daura", "Dutsin Ma", "Faskari", "Funtua", "Ingawa", "Jibia", "Kafur", "Kaita", "Kankara", "Kankia", "Katsina", "Kurfi", "Kusada", "Mai'Adua", "Malumfashi", "Mani", "Mashi", "Matazu", "Musawa", "Rimi", "Sabuwa", "Safana", "Sandamu", "Zango"],
+      "Kebbi": ["Aleiro", "Arewa Dandi", "Argungu", "Augie", "Bagudo", "Birnin Kebbi", "Bunza", "Dandi", "Fakai", "Gwandu", "Jega", "Kalgo", "Koko/Besse", "Maiyama", "Ngaski", "Sakaba", "Shanga", "Suru", "Danko/Wasagu", "Yauri", "Zuru"],
+      "Kogi": ["Adavi", "Ajaokuta", "Ankpa", "Bassa", "Dekina", "Ibaji", "Idah", "Igalamela Odolu", "Ijumu", "Kabba/Bunu", "Kogi", "Lokoja", "Mopa Muro", "Ofu", "Ogori/Magongo", "Okehi", "Okene", "Olamaboro", "Omala", "Yagba East", "Yagba West"],
+      "Kwara": ["Asa", "Baruten", "Edu", "Ekiti", "Ifelodun", "Ilorin East", "Ilorin South", "Ilorin West", "Irepodun", "Isin", "Kaiama", "Moro", "Offa", "Oke Ero", "Oyun", "Pategi"],
+      "Lagos": ["Agege", "Ajeromi-Ifelodun", "Alimosho", "Amuwo-Odofin", "Apapa", "Badagry", "Epe", "Eti Osa", "Ibeju-Lekki", "Ifako-Ijaiye", "Ikeja", "Ikorodu", "Kosofe", "Lagos Island", "Lagos Mainland", "Mushin", "Ojo", "Oshodi-Isolo", "Shomolu", "Surulere"],
+      "Nasarawa": ["Akwanga", "Awe", "Doma", "Karu", "Keana", "Keffi", "Kokona", "Lafia", "Nasarawa", "Nasarawa Egon", "Obi", "Toto", "Wamba"],
+      "Niger": ["Agaie", "Agwara", "Bida", "Borgu", "Bosso", "Chanchaga", "Edati", "Gbako", "Gurara", "Katcha", "Kontagora", "Lapai", "Lavun", "Magama", "Mariga", "Mashegu", "Mokwa", "Moya", "Paikoro", "Rafi", "Rijau", "Shiroro", "Suleja", "Tafa", "Wushishi"],
+      "Ogun": ["Abeokuta North", "Abeokuta South", "Ado-Odo/Ota", "Egbado North", "Egbado South", "Ewekoro", "Ifo", "Ijebu East", "Ijebu North", "Ijebu North East", "Ijebu Ode", "Ikenne", "Imeko Afon", "Ipokia", "Obafemi Owode", "Odeda", "Odogbolu", "Ogun Waterside", "Remo North", "Shagamu"],
+      "Ondo": ["Akoko North-East", "Akoko North-West", "Akoko South-West", "Akoko South-East", "Akure North", "Akure South", "Ese Odo", "Idanre", "Ifedore", "Ilaje", "Ile Oluji/Okeigbo", "Irele", "Odigbo", "Okitipupa", "Ondo East", "Ondo West", "Ose", "Owo"],
+      "Osun": ["Atakunmosa East", "Atakunmosa West", "Aiyedaade", "Aiyedire", "Boluwaduro", "Boripe", "Ede North", "Ede South", "Ife Central", "Ife East", "Ife North", "Ife South", "Egbedore", "Ejigbo", "Ifedayo", "Ifelodun", "Ila", "Ilesa East", "Ilesa West", "Irepodun", "Irewole", "Isokan", "Iwo", "Obokun", "Odo Otin", "Ola Oluwa", "Olorunda", "Oriade", "Orolu", "Osogbo"],
+      "Oyo": ["Afijio", "Akinyele", "Atiba", "Atisbo", "Egbeda", "Ibadan North", "Ibadan North-East", "Ibadan North-West", "Ibadan South-East", "Ibadan South-West", "Ibarapa Central", "Ibarapa East", "Ibarapa North", "Ido", "Irepo", "Iseyin", "Itesiwaju", "Iwajowa", "Ibarapa", "Ogbomosho North", "Ogbomosho South", "Ogo Oluwa", "Olorunsogo", "Oluyole", "Ona Ara", "Orelope", "Ori Ire", "Oyo East", "Oyo West", "Saki East", "Saki West", "Surulere"],
+      "Plateau": ["Bokkos", "Barkin Ladi", "Bassa", "Jos East", "Jos North", "Jos South", "Kanam", "Kanke", "Langtang South", "Langtang North", "Mangu", "Mikang", "Pankshin", "Qua'an Pan", "Riyom", "Shendam", "Wase"],
+      "Rivers": ["Abua/Odual", "Ahoada East", "Ahoada West", "Akuku-Toru", "Andoni", "Asari-Toru", "Bonny", "Degema", "Eleme", "Emuoha", "Etche", "Gokana", "Ikwerre", "Oyigbo", "Khana", "Obio/Akpor", "Ogba/Egbema/Ndoni", "Ogu/Bolo", "Okrika", "Omuma", "Opobo/Nkoro", "Portharcourt", "Tai"],
+      "Sokoto": ["Binji", "Bodinga", "Dange Shuni", "Gada", "Goronyo", "Gudu", "Gawabawa", "Illela", "Isa", "Kebbe", "Kware", "Rabah", "Sabon Birni", "Shagari", "Silame", "Sokoto North", "Sokoto South", "Tambuwal", "Tangaza", "Tureta", "Wamako", "Wurno", "Yabo"],
+      "Taraba": ["Ardo Kola", "Bali", "Donga", "Gashaka", "Gassol", "Ibi", "Jalingo", "Karim Lamido", "Kumi", "Lau", "Sardauna", "Takum", "Ussa", "Wukari", "Yorro", "Zing"],
+      "Yobe": ["Bade", "Bursari", "Damaturu", "Fika", "Fune", "Geidam", "Gujba", "Gulani", "Jakusko", "Karasuwa", "Machina", "Nangere", "Nguru", "Potiskum", "Tarmuwa", "Yunusari", "Yusufari"],
+      "Zamfara": ["Anka", "Bakura", "Birnin Magaji/Kiyaw", "Bukkuyum", "Bungudu", "Gummi", "Gusau", "Isa", "Kaura Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Zurmi"]
+    };
+
     const BASE_URL = "https://ayax-data-xpress-server.onrender.com/api/v1";
-    let managerState = "Kano";
+    let managerState = "Zamfara";
+    let currentLgaList = NIGERIA_STATES_LGAS["Zamfara"] || [];
     let supervisors = [];
     let agents = [];
     let logs = [];
@@ -742,89 +788,128 @@
       ["supervisors", "agents", "lgas", "history"].forEach(t => {
         document.getElementById(`tabContent-${t}`).style.display = (t === tab) ? "block" : "none";
       });
+      if (tab === "lgas") {
+        renderLgas();
+      }
     }
 
     function openModal(id) { document.getElementById(id).classList.add("active"); }
     function closeModal(id) { document.getElementById(id).classList.remove("active"); }
 
-    async function loadDashboard() {
-  const token = localStorage.getItem("userToken");
-  const storedUserData = localStorage.getItem("userData");
-
-  if (!token) {
-    window.location.href = "/login.html";
-    return;
-  }
-
-  // 1. Ɗauko ainihin jihar mai shiga daga userData
-  if (storedUserData) {
-    try {
-      const user = JSON.parse(storedUserData);
-      if (user.state) {
-        managerState = user.state.trim();
+    function updateLgaSelectOptions() {
+      const select = document.getElementById("newSupLga");
+      if (select) {
+        select.innerHTML = currentLgaList.map(lga => `<option value="${lga}">${lga}</option>`).join("");
       }
-    } catch (e) {
-      console.error("Error parsing userData:", e);
-    }
-  }
-
-  // 2. Sabunta dukkan rubutun allon su nuna ainihin Jiharka a take
-  const upperState = managerState.toUpperCase();
-  document.getElementById("topStateBadge").innerText = `${upperState} STATE MANAGER (SM)`;
-  document.getElementById("drawerStateText").innerText = `${managerState} State`;
-
-  const headers = { Authorization: `Bearer ${token}` };
-
-  try {
-    const [dRes, aRes, lRes, tRes] = await Promise.all([
-      fetch(`${BASE_URL}/leader/dashboard`, { headers }).then(r => r.json()).catch(() => ({})),
-      fetch(`${BASE_URL}/leader/agents-stream`, { headers }).then(r => r.json()).catch(() => ({ agents: [] })),
-      fetch(`${BASE_URL}/leader/live-audit-stream`, { headers }).then(r => r.json()).catch(() => ({ logs: [] })),
-      fetch(`${BASE_URL}/leader/my-state-target`, { headers }).then(r => r.json()).catch(() => ({}))
-    ]);
-
-    const data = dRes.data || dRes || {};
-
-    // Idan backend ya mayar da ainihin jihar a cikin response
-    if (data.state || data.managerState) {
-      managerState = data.state || data.managerState;
-      document.getElementById("topStateBadge").innerText = `${managerState.toUpperCase()} STATE MANAGER (SM)`;
-      document.getElementById("drawerStateText").innerText = `${managerState} State`;
     }
 
-    supervisors = Array.isArray(data.supervisors) ? data.supervisors : [];
-    agents = Array.isArray(aRes.agents) ? aRes.agents : (data.agents || []);
-    logs = Array.isArray(lRes.logs) ? lRes.logs : (data.activityLogs || []);
-    myTargets = tRes.targets || tRes.data || {};
+    async function loadDashboard() {
+      const token = localStorage.getItem("userToken");
+      const storedUserData = localStorage.getItem("userData");
 
-    document.getElementById("supCountNav").innerText = supervisors.length;
-    document.getElementById("agentCountNav").innerText = agents.length;
-    document.getElementById("supListCount").innerText = supervisors.length;
-    document.getElementById("agentListCount").innerText = agents.length;
+      if (!token) {
+        window.location.href = "/login.html";
+        return;
+      }
 
-    // Metrics
-    document.getElementById("statsSupCount").innerText = supervisors.length;
-    document.getElementById("statsAgentCount").innerText = agents.length;
-    document.getElementById("statsDataSold").innerText = (data.networkStats?.overallDataSold || 0) + " GB";
-    document.getElementById("statsAirtimeSold").innerText = "₦" + Number(data.networkStats?.overallAirtimeSold || 0).toLocaleString();
+      // 1. Dauko ainihin Jihar mai shiga daga LocalStorage
+      if (storedUserData) {
+        try {
+          const user = JSON.parse(storedUserData);
+          if (user.state && user.state.trim() !== "") {
+            managerState = user.state.trim();
+          }
+        } catch (e) {
+          console.error("Error parsing userData:", e);
+        }
+      }
 
-    // Targets
-    const dGoal = myTargets.dataGoal || 0;
-    const dSold = data.networkStats?.overallDataSold || 0;
-    const dProg = dGoal > 0 ? Math.min(Math.round((dSold / dGoal) * 100), 100) : 0;
-    document.getElementById("dataQuotaVal").innerText = `${dSold} / ${dGoal} GB`;
-    document.getElementById("dataProgressFill").style.width = `${dProg}%`;
-    document.getElementById("dataPercentSub").innerText = `${dProg}% Completed`;
+      const headers = { Authorization: `Bearer ${token}` };
 
-    renderSupervisors(supervisors);
-    renderAgents(agents);
-  } catch (err) {
-    console.error("Fetch error:", err);
-  }
-}
+      try {
+        const [dRes, aRes, lRes, tRes] = await Promise.all([
+          fetch(`${BASE_URL}/leader/dashboard`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/leader/agents-stream`, { headers }).then(r => r.json()).catch(() => ({ agents: [] })),
+          fetch(`${BASE_URL}/leader/live-audit-stream`, { headers }).then(r => r.json()).catch(() => ({ logs: [] })),
+          fetch(`${BASE_URL}/leader/my-state-target`, { headers }).then(r => r.json()).catch(() => ({}))
+        ]);
+
+        const data = dRes.data || dRes || {};
+
+        // 2. Idan backend ya dawo da ainihin jihar mai shiga, sabunta ta
+        const serverState = data.state || data.managerState || data.leaderState;
+        if (serverState && serverState.trim() !== "") {
+          managerState = serverState.trim();
+        }
+
+        // 3. Lissafa kananan hukumomin ainihin Jihar
+        currentLgaList = NIGERIA_STATES_LGAS[managerState] || NIGERIA_STATES_LGAS["Zamfara"] || [];
+        const stateLgaCount = currentLgaList.length;
+
+        // 4. Sabunta dukkan Headers da Lambobin LGAs a Allon
+        const upperState = managerState.toUpperCase();
+        document.getElementById("topStateBadge").innerText = `${upperState} STATE MANAGER (SM)`;
+        document.getElementById("topLgaTitle").innerText = `${stateLgaCount} LGAS COMMAND DESK`;
+        document.getElementById("drawerStateText").innerText = `${managerState} State`;
+        document.getElementById("lgaCountNav").innerText = stateLgaCount;
+
+        updateLgaSelectOptions();
+
+        supervisors = Array.isArray(data.supervisors) ? data.supervisors : [];
+        agents = Array.isArray(aRes.agents) ? aRes.agents : (data.agents || []);
+        logs = Array.isArray(lRes.logs) ? lRes.logs : (data.activityLogs || []);
+        myTargets = tRes.targets || tRes.data || {};
+
+        document.getElementById("supCountNav").innerText = supervisors.length;
+        document.getElementById("agentCountNav").innerText = agents.length;
+        document.getElementById("supListCount").innerText = supervisors.length;
+        document.getElementById("agentListCount").innerText = agents.length;
+
+        // Metrics
+        const uniqueLgasWithSup = new Set(supervisors.map(s => s.lga).filter(Boolean)).size;
+        document.getElementById("statsSupCount").innerText = supervisors.length;
+        document.getElementById("statsLgaCount").innerText = `Across ${uniqueLgasWithSup} of ${stateLgaCount} LGAs`;
+        document.getElementById("statsAgentCount").innerText = agents.length;
+        document.getElementById("statsDataSold").innerText = (data.networkStats?.overallDataSold || 0) + " GB";
+        document.getElementById("statsAirtimeSold").innerText = "₦" + Number(data.networkStats?.overallAirtimeSold || 0).toLocaleString();
+
+        // Targets
+        const dGoal = myTargets.dataGoal || 0;
+        const dSold = data.networkStats?.overallDataSold || 0;
+        const dProg = dGoal > 0 ? Math.min(Math.round((dSold / dGoal) * 100), 100) : 0;
+        document.getElementById("dataQuotaVal").innerText = `${dSold} / ${dGoal} GB`;
+        document.getElementById("dataProgressFill").style.width = `${dProg}%`;
+        document.getElementById("dataPercentSub").innerText = `${dProg}% Completed`;
+
+        const aGoal = myTargets.airtimeGoal || 0;
+        const aSold = data.networkStats?.overallAirtimeSold || 0;
+        const aProg = aGoal > 0 ? Math.min(Math.round((aSold / aGoal) * 100), 100) : 0;
+        document.getElementById("airtimeQuotaVal").innerText = `₦${Number(aSold).toLocaleString()} / ₦${Number(aGoal).toLocaleString()}`;
+        document.getElementById("airtimeProgressFill").style.width = `${aProg}%`;
+        document.getElementById("airtimePercentSub").innerText = `${aProg}% Completed`;
+
+        document.getElementById("agentQuotaVal").innerText = `${agents.length} / ${myTargets.agentGoal || 50}`;
+        document.getElementById("supQuotaVal").innerText = `${supervisors.length} / ${myTargets.supervisorGoal || stateLgaCount}`;
+
+        if (myTargets.currentMonth) {
+          document.getElementById("targetMonthTitle").innerText = `${myTargets.currentMonth.toUpperCase()} TARGET MATRIX`;
+        }
+
+        renderSupervisors(supervisors);
+        renderAgents(agents);
+        renderLgas();
+        renderLogs(logs);
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
+    }
 
     function renderSupervisors(list) {
       const feed = document.getElementById("supervisorsFeed");
+      if (!list || list.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No field supervisors found in this region.</div>`;
+        return;
+      }
       feed.innerHTML = list.map(s => `
         <div class="sup-card">
           <div class="sup-card-top">
@@ -842,7 +927,7 @@
             <div><div class="summary-box-label">Data Target</div><div class="summary-box-value" style="color:#1e40af;">${s.dataGoal || 0} GB</div></div>
             <div><div class="summary-box-label">Airtime Target</div><div class="summary-box-value" style="color:#d97706;">₦${Number(s.airtimeGoal || 0).toLocaleString()}</div></div>
             <div><div class="summary-box-label">New Agents Goal</div><div class="summary-box-value" style="color:#059669;">${s.agentGoal || 10}</div></div>
-            <div><div class="summary-box-label">Team Size</div><div class="summary-box-value" style="color:#0284c7;">${s.teamSize || 0}</div></div>
+            <div><div class="summary-box-label">Team Size</div><div class="summary-box-value" style="color:#0284c7;">${s.teamSize || s.agentsCount || 0}</div></div>
           </div>
         </div>
       `).join("");
@@ -850,6 +935,10 @@
 
     function renderAgents(list) {
       const feed = document.getElementById("agentsFeed");
+      if (!list || list.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No agents recorded in this region.</div>`;
+        return;
+      }
       feed.innerHTML = list.map(a => `
         <div class="agent-card">
           <div class="agent-top">
@@ -863,6 +952,73 @@
           </div>
         </div>
       `).join("");
+    }
+
+    function renderLgas() {
+      const feed = document.getElementById("lgasFeed");
+      if (!feed) return;
+      feed.innerHTML = currentLgaList.map(lgaName => {
+        const supsInLga = supervisors.filter(s => s.lga && s.lga.toLowerCase() === lgaName.toLowerCase());
+        const agentsInLga = agents.filter(a => a.lga && a.lga.toLowerCase() === lgaName.toLowerCase());
+        const totalLgaData = supsInLga.reduce((acc, curr) => acc + Number(curr.teamPerformance || curr.dataSold || 0), 0);
+
+        return `
+          <div class="lga-card">
+            <div class="lga-header">
+              <span class="lga-title">${lgaName}</span>
+              <span class="lga-badge ${supsInLga.length > 0 ? 'badge-green' : 'badge-red'}">
+                ${supsInLga.length} FS
+              </span>
+            </div>
+            <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-top: 4px;">
+              👥 ${supsInLga.length} Supervisor(s) Active
+            </div>
+            <div style="font-size: 10.5px; color: #64748b; margin-top: 2px;">
+              ${agentsInLga.length} Agents • ${totalLgaData} GB Sold
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderLogs(list) {
+      const feed = document.getElementById("logsFeed");
+      if (!feed) return;
+      if (!list || list.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No real-time audit logs recorded yet.</div>`;
+        return;
+      }
+      feed.innerHTML = list.map(log => `
+        <div class="log-card">
+          <div class="log-top">
+            <span class="log-badge">${log.category || 'FIELD_ACTION'}</span>
+            <span class="log-time">${log.createdAt ? new Date(log.createdAt).toLocaleTimeString() : 'Live'}</span>
+          </div>
+          <div class="log-desc">${log.details || log.action || 'Field operation recorded.'}</div>
+          <div class="log-actor">Actor: ${log.user?.phone || log.actorRole || 'State Desk'}</div>
+        </div>
+      `).join("");
+    }
+
+    function handleSearch(query) {
+      const q = String(query || "").toLowerCase().trim();
+      if (!q) {
+        renderSupervisors(supervisors);
+        renderAgents(agents);
+        return;
+      }
+      const filteredSups = supervisors.filter(s =>
+        (s.name || "").toLowerCase().includes(q) ||
+        (s.phone || "").includes(q) ||
+        (s.lga || "").toLowerCase().includes(q)
+      );
+      const filteredAgs = agents.filter(a =>
+        (a.name || "").toLowerCase().includes(q) ||
+        (a.phone || "").includes(q) ||
+        (a.lga || "").toLowerCase().includes(q)
+      );
+      renderSupervisors(filteredSups);
+      renderAgents(filteredAgs);
     }
 
     async function handleEnroll(e) {
@@ -882,8 +1038,8 @@
         })
       });
       const d = await res.json();
-      if(d.success) { alert("Enrolled successfully!"); closeModal("enrollModal"); loadDashboard(); }
-      else alert(d.message || "Failed");
+      if(d.success) { alert("Supervisor enrolled successfully!"); closeModal("enrollModal"); loadDashboard(); }
+      else alert(d.message || "Failed to enroll supervisor");
     }
 
     async function handleBroadcast(e) {
@@ -899,7 +1055,7 @@
           state: managerState
         })
       });
-      alert("Dispatched!");
+      alert("Directive Dispatched!");
       closeModal("notifModal");
     }
 
@@ -916,7 +1072,7 @@
       });
       const d = await res.json();
       if(d.success) { alert("Transferred successfully!"); closeModal("transferModal"); loadDashboard(); }
-      else alert(d.message || "Failed");
+      else alert(d.message || "Failed to transfer agents");
     }
 
     function handleLogout() {
