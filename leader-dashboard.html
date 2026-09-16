@@ -748,49 +748,80 @@
     function closeModal(id) { document.getElementById(id).classList.remove("active"); }
 
     async function loadDashboard() {
-      const token = localStorage.getItem("userToken");
-      if (!token) { window.location.href = "/login.html"; return; }
-      const headers = { Authorization: `Bearer ${token}` };
+  const token = localStorage.getItem("userToken");
+  const storedUserData = localStorage.getItem("userData");
 
-      try {
-        const [dRes, aRes, lRes, tRes] = await Promise.all([
-          fetch(`${BASE_URL}/leader/dashboard`, { headers }).then(r => r.json()).catch(() => ({})),
-          fetch(`${BASE_URL}/leader/agents-stream`, { headers }).then(r => r.json()).catch(() => ({ agents: [] })),
-          fetch(`${BASE_URL}/leader/live-audit-stream`, { headers }).then(r => r.json()).catch(() => ({ logs: [] })),
-          fetch(`${BASE_URL}/leader/my-state-target`, { headers }).then(r => r.json()).catch(() => ({}))
-        ]);
+  if (!token) {
+    window.location.href = "/login.html";
+    return;
+  }
 
-        const data = dRes.data || dRes || {};
-        supervisors = Array.isArray(data.supervisors) ? data.supervisors : [];
-        agents = Array.isArray(aRes.agents) ? aRes.agents : (data.agents || []);
-        logs = Array.isArray(lRes.logs) ? lRes.logs : (data.activityLogs || []);
-        myTargets = tRes.targets || tRes.data || {};
-
-        document.getElementById("supCountNav").innerText = supervisors.length;
-        document.getElementById("agentCountNav").innerText = agents.length;
-        document.getElementById("supListCount").innerText = supervisors.length;
-        document.getElementById("agentListCount").innerText = agents.length;
-
-        // Metrics
-        document.getElementById("statsSupCount").innerText = supervisors.length;
-        document.getElementById("statsAgentCount").innerText = agents.length;
-        document.getElementById("statsDataSold").innerText = (data.networkStats?.overallDataSold || 0) + " GB";
-        document.getElementById("statsAirtimeSold").innerText = "₦" + Number(data.networkStats?.overallAirtimeSold || 0).toLocaleString();
-
-        // Targets
-        const dGoal = myTargets.dataGoal || 0;
-        const dSold = data.networkStats?.overallDataSold || 0;
-        const dProg = dGoal > 0 ? Math.min(Math.round((dSold / dGoal) * 100), 100) : 0;
-        document.getElementById("dataQuotaVal").innerText = `${dSold} / ${dGoal} GB`;
-        document.getElementById("dataProgressFill").style.width = `${dProg}%`;
-        document.getElementById("dataPercentSub").innerText = `${dProg}% Completed`;
-
-        renderSupervisors(supervisors);
-        renderAgents(agents);
-      } catch (err) {
-        console.error("Fetch error:", err);
+  // 1. Ɗauko ainihin jihar mai shiga daga userData
+  if (storedUserData) {
+    try {
+      const user = JSON.parse(storedUserData);
+      if (user.state) {
+        managerState = user.state.trim();
       }
+    } catch (e) {
+      console.error("Error parsing userData:", e);
     }
+  }
+
+  // 2. Sabunta dukkan rubutun allon su nuna ainihin Jiharka a take
+  const upperState = managerState.toUpperCase();
+  document.getElementById("topStateBadge").innerText = `${upperState} STATE MANAGER (SM)`;
+  document.getElementById("drawerStateText").innerText = `${managerState} State`;
+
+  const headers = { Authorization: `Bearer ${token}` };
+
+  try {
+    const [dRes, aRes, lRes, tRes] = await Promise.all([
+      fetch(`${BASE_URL}/leader/dashboard`, { headers }).then(r => r.json()).catch(() => ({})),
+      fetch(`${BASE_URL}/leader/agents-stream`, { headers }).then(r => r.json()).catch(() => ({ agents: [] })),
+      fetch(`${BASE_URL}/leader/live-audit-stream`, { headers }).then(r => r.json()).catch(() => ({ logs: [] })),
+      fetch(`${BASE_URL}/leader/my-state-target`, { headers }).then(r => r.json()).catch(() => ({}))
+    ]);
+
+    const data = dRes.data || dRes || {};
+
+    // Idan backend ya mayar da ainihin jihar a cikin response
+    if (data.state || data.managerState) {
+      managerState = data.state || data.managerState;
+      document.getElementById("topStateBadge").innerText = `${managerState.toUpperCase()} STATE MANAGER (SM)`;
+      document.getElementById("drawerStateText").innerText = `${managerState} State`;
+    }
+
+    supervisors = Array.isArray(data.supervisors) ? data.supervisors : [];
+    agents = Array.isArray(aRes.agents) ? aRes.agents : (data.agents || []);
+    logs = Array.isArray(lRes.logs) ? lRes.logs : (data.activityLogs || []);
+    myTargets = tRes.targets || tRes.data || {};
+
+    document.getElementById("supCountNav").innerText = supervisors.length;
+    document.getElementById("agentCountNav").innerText = agents.length;
+    document.getElementById("supListCount").innerText = supervisors.length;
+    document.getElementById("agentListCount").innerText = agents.length;
+
+    // Metrics
+    document.getElementById("statsSupCount").innerText = supervisors.length;
+    document.getElementById("statsAgentCount").innerText = agents.length;
+    document.getElementById("statsDataSold").innerText = (data.networkStats?.overallDataSold || 0) + " GB";
+    document.getElementById("statsAirtimeSold").innerText = "₦" + Number(data.networkStats?.overallAirtimeSold || 0).toLocaleString();
+
+    // Targets
+    const dGoal = myTargets.dataGoal || 0;
+    const dSold = data.networkStats?.overallDataSold || 0;
+    const dProg = dGoal > 0 ? Math.min(Math.round((dSold / dGoal) * 100), 100) : 0;
+    document.getElementById("dataQuotaVal").innerText = `${dSold} / ${dGoal} GB`;
+    document.getElementById("dataProgressFill").style.width = `${dProg}%`;
+    document.getElementById("dataPercentSub").innerText = `${dProg}% Completed`;
+
+    renderSupervisors(supervisors);
+    renderAgents(agents);
+  } catch (err) {
+    console.error("Fetch error:", err);
+  }
+}
 
     function renderSupervisors(list) {
       const feed = document.getElementById("supervisorsFeed");
