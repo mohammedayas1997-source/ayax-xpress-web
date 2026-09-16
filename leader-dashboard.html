@@ -816,8 +816,8 @@
       </div>
 
       <form onsubmit="event.preventDefault(); handleAppointSupervisorSubmit();">
-        <label class="form-field-label">FULL LEGAL NAME *</label>
-        <input type="text" id="appointName" class="text-input-style" placeholder="e.g. Aminu Kano" required />
+        <label class="form-field-label">FULL LEGAL NAME (SUNAYE BIYU KO UKU) *</label>
+        <input type="text" id="appointName" class="text-input-style" placeholder="e.g. Ibrahim Bello Garba" required />
 
         <div style="display: flex; gap: 8px;">
           <div style="flex: 1;">
@@ -834,7 +834,7 @@
         <input type="email" id="appointEmail" class="text-input-style" placeholder="supervisor@ayaxdata.online" />
 
         <label class="form-field-label">TEMPORARY PASSWORD *</label>
-        <input type="text" id="appointPassword" class="text-input-style" value="Ayax@12345" required />
+        <input type="text" id="appointPassword" class="text-input-style" value="Ibrahim@12345" required />
 
         <button type="submit" class="primary-action-btn" id="btnAppointSupervisorSubmit">
           AUTHORIZE & CREATE FIELD SUPERVISOR
@@ -932,7 +932,6 @@
       const currentState = state.myState;
 
       try {
-        // Kira dukkan endpoints masu alaka a lokaci guda
         const [dashRes, supStateRes, supNoStateRes, agentsRes, logsRes] = await Promise.allSettled([
           fetch(`${BASE_URL}/leader/dashboard?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
           fetch(`${BASE_URL}/leader/supervisors?state=${encodeURIComponent(currentState)}`, { headers }).then(r => r.json()),
@@ -943,7 +942,6 @@
 
         let retrievedSupervisors = [];
 
-        // 1. Ciro Supervisors daga /leader/dashboard (wanda ke dauke da su kai tsaye a ciki)
         if (dashRes.status === 'fulfilled' && dashRes.value) {
           const d = dashRes.value.data || dashRes.value;
 
@@ -953,7 +951,6 @@
             state.myQuotas.airtimeGoal = Number(tg.airtimeGoal || 500000);
           }
 
-          // Duba ko akwai supervisors a cikin dashboard response
           if (Array.isArray(d.supervisors) && d.supervisors.length > 0) {
             retrievedSupervisors = d.supervisors;
           } else if (Array.isArray(dashRes.value.supervisors) && dashRes.value.supervisors.length > 0) {
@@ -961,22 +958,18 @@
           }
         }
 
-        // 2. Idan ba a samu a dashboard ba, a duba /leader/supervisors?state=...
         if (retrievedSupervisors.length === 0 && supStateRes.status === 'fulfilled') {
           retrievedSupervisors = extractList(supStateRes.value, 'supervisors');
         }
 
-        // 3. Idan har yanzu ba a samu ba, a duba na mara state parameter
         if (retrievedSupervisors.length === 0 && supNoStateRes.status === 'fulfilled') {
           retrievedSupervisors = extractList(supNoStateRes.value, 'supervisors');
         }
 
-        // 4. Sabunta supervisors list ba tare da goge wanda aka kara da hannu ba
         if (retrievedSupervisors.length > 0) {
           const existingMap = new Map();
           retrievedSupervisors.forEach(s => existingMap.set(String(s.phone || s._id), s));
 
-          // A kiyaye supervisors din da aka yi wa rajista a wannan session
           state.supervisors.forEach(localS => {
             const key = String(localS.phone || localS._id);
             if (!existingMap.has(key)) {
@@ -987,12 +980,10 @@
           state.supervisors = Array.from(existingMap.values());
         }
 
-        // 5. Tace Agents
         if (agentsRes.status === 'fulfilled') {
           state.agents = extractList(agentsRes.value, 'agents');
         }
 
-        // 6. Tace Logs
         if (logsRes.status === 'fulfilled') {
           state.activityLogs = extractList(logsRes.value, 'logs');
         }
@@ -1214,6 +1205,7 @@
       }
     }
 
+    // INGANNTACCEN AIKIN YIN RAJISTAR SABON SUPERVISOR (ZERO FAILURE DISPATCH)
     async function handleAppointSupervisorSubmit() {
       const btn = document.getElementById('btnAppointSupervisorSubmit');
       btn.disabled = true;
@@ -1221,24 +1213,33 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authorizing & Registering...';
 
       const enteredName = document.getElementById('appointName').value.trim();
-      const enteredPhone = document.getElementById('appointPhone').value.trim();
+      const enteredPhone = document.getElementById('appointPhone').value.replace(/[^0-9+]/g, "").trim();
       const enteredLga = document.getElementById('appointLga').value.trim();
-      const enteredEmail = document.getElementById('appointEmail').value.trim() || `${enteredPhone}@ayaxdata.online`;
+      const enteredEmail = (document.getElementById('appointEmail').value.trim() || `${enteredPhone.replace(/[^0-9]/g, "")}@ayaxdata.online`).toLowerCase();
       const enteredPassword = document.getElementById('appointPassword').value.trim();
 
-      const names = enteredName.split(" ");
-      const firstName = names[0] || enteredName;
-      const surname = names.slice(1).join(" ") || "Supervisor";
+      if (!enteredPhone || !enteredName) {
+        alert("Please enter full name and phone number.");
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        return;
+      }
+
+      // Tace Sunaye don gamsar da Dokar MongoDB Schema
+      const nameParts = enteredName.split(/\s+/).filter(Boolean);
+      const firstName = nameParts[0] || "Field";
+      const surname = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "Supervisor";
+      const fullDisplayName = `${firstName} ${surname}`.toUpperCase().trim();
 
       const payload = {
-        name: enteredName.toUpperCase(),
-        fullName: enteredName.toUpperCase(),
+        name: fullDisplayName,
+        fullName: fullDisplayName,
         firstName: firstName,
         surname: surname,
         phone: enteredPhone,
-        lga: enteredLga,
-        email: enteredEmail.toLowerCase(),
-        password: enteredPassword,
+        lga: enteredLga || "Ajingi",
+        email: enteredEmail,
+        password: enteredPassword || "Ibrahim@12345",
         state: state.myState || "Kano",
         role: 'supervisor'
       };
@@ -1246,8 +1247,7 @@
       const targetEndpoints = [
         `${BASE_URL}/leader/create-supervisor`,
         `${BASE_URL}/leader/appoint-supervisor`,
-        `${BASE_URL}/auth/register`,
-        `${BASE_URL}/supervisors/create`
+        `${BASE_URL}/auth/register`
       ];
 
       let success = false;
@@ -1273,7 +1273,7 @@
             createdSupervisorData = data.supervisor || data.user || data.data || payload;
             break;
           } else {
-            lastErrorMessage = data.message || "Endpoint returned error status";
+            lastErrorMessage = data.message || `Endpoint ${endpoint} returned error.`;
           }
         } catch (err) {
           lastErrorMessage = err.message;
@@ -1281,12 +1281,14 @@
       }
 
       if (success) {
-        alert(`Field Supervisor Appointed Successfully for ${payload.lga} LGA!`);
+        alert(`Field Supervisor (${fullDisplayName}) Appointed Successfully for ${payload.lga} LGA!`);
         closeModal('appointSupervisorModal');
 
         const newEntry = {
-          name: payload.name,
-          fullName: payload.name,
+          name: fullDisplayName,
+          fullName: fullDisplayName,
+          firstName: firstName,
+          surname: surname,
           phone: payload.phone,
           lga: payload.lga,
           state: payload.state,
@@ -1297,7 +1299,6 @@
           ...createdSupervisorData
         };
 
-        // Cire tsohon idan yana ciki sannan a saka sabon a saman list nan take
         state.supervisors = state.supervisors.filter(s => String(s.phone) !== String(payload.phone));
         state.supervisors.unshift(newEntry);
         updateUI();
