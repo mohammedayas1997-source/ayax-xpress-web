@@ -129,7 +129,6 @@
       gap: 10px;
     }
 
-    /* PWA Install Button in Header */
     .btn-nav-install {
       display: none;
       align-items: center;
@@ -1295,7 +1294,7 @@
     document.getElementById('passwordInput').addEventListener('input', hideError);
 
     // =========================================================================
-    // COMPLETE AYAX HIERARCHY ROUTER (PREVENTS 404 FOR ALL ROLES)
+    // GYARAN ROUTER: FIELD SUPERVISOR YA ZO KAFIN STATE MANAGER
     // =========================================================================
     function routeUserByRole(rawRole, rawIdentifier = "") {
       const role = String(rawRole || "").trim().toLowerCase();
@@ -1336,7 +1335,18 @@
         return;
       }
 
-      // 4. Leader / Lida / State Manager
+      // 4. FIELD SUPERVISOR (Dole ne ya zo kafin Leader domin kar a tura shi leader dashboard)
+      if (
+        role === "supervisor" ||
+        role === "field_supervisor" ||
+        role === "acm" ||
+        role === "area_command_manager"
+      ) {
+        window.location.replace("supervisor-dashboard.html");
+        return;
+      }
+
+      // 5. State Manager / Leader
       if (
         role === "leader" ||
         role === "lida" ||
@@ -1344,17 +1354,6 @@
         role === "state_manager"
       ) {
         window.location.replace("leader-dashboard.html");
-        return;
-      }
-
-      // 5. ACM / Supervisor / Area Command Manager
-      if (
-        role === "acm" ||
-        role === "supervisor" ||
-        role === "area_command_manager" ||
-        role === "field_supervisor"
-      ) {
-        window.location.replace("supervisor-dashboard.html");
         return;
       }
 
@@ -1370,7 +1369,7 @@
         return;
       }
 
-      // 7. Agent / Retail Outlets
+      // 7. Retail Agent
       if (role === "agent" || role === "reseller") {
         window.location.replace("agent-dashboard.html");
         return;
@@ -1396,7 +1395,6 @@
             input.value = savedId;
           }
           
-          // An cire lambar waya daga jikin button. Sunan mutum kadai ake sawa idan yana nan.
           const personName = (userObj.name || userObj.fullName || userObj.firstName || "").trim();
           const cleanName = personName ? personName.split(' ')[0] : "";
           
