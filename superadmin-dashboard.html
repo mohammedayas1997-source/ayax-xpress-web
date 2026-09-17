@@ -608,6 +608,92 @@
       text-align: right;
     }
 
+    /* Super Plan Card (Tariffs) */
+    .super-plan-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-dark);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    .super-plan-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .plan-badge-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .plan-pill {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .super-plan-title {
+      color: #f8fafc;
+      font-size: 14px;
+      font-weight: 900;
+      margin-top: 4px;
+    }
+
+    .super-plan-edit-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--accent-cyan);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .clean-pricing-row {
+      display: flex;
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      align-items: center;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .clean-price-box {
+      flex: 1;
+      text-align: center;
+    }
+
+    .clean-price-label {
+      color: var(--text-dim);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .clean-price-value {
+      color: #f8fafc;
+      font-size: 15px;
+      font-weight: 900;
+      margin-top: 2px;
+    }
+
+    .clean-price-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border-subtle);
+    }
+
     /* Bulk Refund Queue */
     .bulk-refund-toolbar {
       display: flex;
@@ -797,7 +883,7 @@
       border-radius: 20px;
       padding: 22px;
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
       max-height: 90vh;
       overflow-y: auto;
       border: 1px solid var(--border-subtle);
@@ -1110,6 +1196,10 @@
     </div>
 
     <div class="top-actions">
+      <button type="button" class="avatar-btn" onclick="openActionModal('add_plan')" title="Deploy New Data Tariff">
+        <i class="fa-solid fa-wifi"></i>
+      </button>
+
       <button type="button" class="avatar-btn" onclick="openActionModal('transfer')" title="Reassign Agent Network">
         <i class="fa-solid fa-people-arrows"></i>
       </button>
@@ -1133,6 +1223,10 @@
     <button type="button" class="main-nav-tab active" id="tabBtnOverview" onclick="switchMainTab('overview')">
       <i class="fa-solid fa-table-cells-large"></i>
       <span>Overview</span>
+    </button>
+    <button type="button" class="main-nav-tab" id="tabBtnPricing" onclick="switchMainTab('pricing')">
+      <i class="fa-solid fa-wifi"></i>
+      <span id="tabLabelPricing">Tariffs & Plans</span>
     </button>
     <button type="button" class="main-nav-tab" id="tabBtnHierarchy" onclick="switchMainTab('sm_hierarchy')">
       <i class="fa-solid fa-crown"></i>
@@ -1220,7 +1314,33 @@
       </div>
     </section>
 
-    <!-- ================= TAB 2: SM & NSD HIERARCHY ================= -->
+    <!-- ================= TAB 2: DATA TARIFFS & PLANS (NEW) ================= -->
+    <section id="tabContentPricing" style="display: none;">
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-header-label">DATA TARIFF MATRIX (GATEWAYS, CUSTOMER & AGENT)</h2>
+          <p class="section-header-sub">Live database tariffs configured across customer terminals and retail agents</p>
+        </div>
+        <button type="button" class="category-tab active" onclick="openAddPlanModal()">
+          <i class="fa-solid fa-circle-plus"></i> PUBLISH NEW PLAN
+        </button>
+      </div>
+
+      <!-- Telecom Network Filter Tabs -->
+      <div class="filter-tabs-scroll" id="pricingNetFilterTabs">
+        <button type="button" class="category-tab active" onclick="filterTariffNetwork('ALL', this)">ALL NETWORKS</button>
+        <button type="button" class="category-tab" onclick="filterTariffNetwork('MTN', this)">MTN</button>
+        <button type="button" class="category-tab" onclick="filterTariffNetwork('AIRTEL', this)">AIRTEL</button>
+        <button type="button" class="category-tab" onclick="filterTariffNetwork('GLO', this)">GLO</button>
+        <button type="button" class="category-tab" onclick="filterTariffNetwork('9MOBILE', this)">9MOBILE</button>
+      </div>
+
+      <div id="superadminPlansFeed">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: SM & NSD HIERARCHY ================= -->
     <section id="tabContentHierarchy" style="display: none;">
       <div class="section-header-row">
         <div>
@@ -1239,7 +1359,7 @@
       <div id="smListContainer"></div>
     </section>
 
-    <!-- ================= TAB 3: USER DIRECTORY ================= -->
+    <!-- ================= TAB 4: USER DIRECTORY ================= -->
     <section id="tabContentUsers" style="display: none;">
       <div class="section-header-row">
         <div>
@@ -1281,7 +1401,7 @@
       <div id="usersListContainer"></div>
     </section>
 
-    <!-- ================= TAB 4: BATCH REFUND QUEUE ================= -->
+    <!-- ================= TAB 5: BATCH REFUND QUEUE ================= -->
     <section id="tabContentRefunds" style="display: none;">
       <!-- Bulk Toolbar -->
       <div class="bulk-refund-toolbar">
@@ -1304,7 +1424,7 @@
       <div id="refundsListContainer"></div>
     </section>
 
-    <!-- ================= TAB 5: AUDIT LOG ================= -->
+    <!-- ================= TAB 6: AUDIT LOG ================= -->
     <section id="tabContentHistory" style="display: none;">
       <div class="section-header-row">
         <h2 class="section-header-label">ALL COMPANY TRANSACTIONS & AUDIT STREAM</h2>
@@ -1338,6 +1458,10 @@
           <div class="nav-icon-box" style="background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan);"><i class="fa-solid fa-table-cells-large"></i></div>
           <span>Overview & State Targets</span>
         </div>
+        <div class="nav-item" onclick="switchMainTab('pricing'); toggleSidebar(false);">
+          <div class="nav-icon-box" style="background: rgba(2, 132, 199, 0.2); color: #38bdf8;"><i class="fa-solid fa-wifi"></i></div>
+          <span>Data Tariff Manager</span>
+        </div>
         <div class="nav-item" onclick="switchMainTab('sm_hierarchy'); toggleSidebar(false);">
           <div class="nav-icon-box" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);"><i class="fa-solid fa-crown"></i></div>
           <span>SM & NSD Hierarchy</span>
@@ -1366,6 +1490,10 @@
         </a>
 
         <div class="sidebar-category">CREATION & REASSIGNMENT</div>
+        <div class="nav-item" onclick="openActionModal('add_plan')">
+          <div class="nav-icon-box" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);"><i class="fa-solid fa-circle-plus"></i></div>
+          <span>Publish Data Tariff</span>
+        </div>
         <div class="nav-item" onclick="openActionModal('transfer')">
           <div class="nav-icon-box" style="background: rgba(0, 240, 255, 0.15); color: var(--accent-cyan);"><i class="fa-solid fa-people-arrows"></i></div>
           <span>Reassign Agent Network</span>
@@ -1403,6 +1531,155 @@
       <button type="button" class="sidebar-logout-btn" onclick="handleLogout()">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
         <span>Logout Session</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: EDIT / DELETE DATA PLAN ================= -->
+  <div class="modal-overlay" id="editDataPlanModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Edit Plan Tariff & Details</h2>
+          <p class="modal-card-subtitle" id="editPlanSubtitle">Live Gateway Plan Adjustment</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('editDataPlanModal')">&times;</button>
+      </div>
+
+      <label class="form-field-label">ACTIVE STATUS</label>
+      <div class="pill-grid">
+        <button type="button" class="pill-btn active" id="planStatusActiveBtn" onclick="setPlanStatusEdit('active')">ACTIVE</button>
+        <button type="button" class="pill-btn" id="planStatusDisabledBtn" onclick="setPlanStatusEdit('disabled')">DISABLED</button>
+      </div>
+
+      <label class="form-field-label">PROVIDER OFFICIAL PLAN ID (AL-IHSAN ID) *</label>
+      <input type="text" id="editPlanId" class="text-input-style" placeholder="e.g. 140, 27, 262" required />
+
+      <label class="form-field-label">CATEGORY / PLAN TYPE</label>
+      <div class="pill-grid" id="editPlanTypePills">
+        <button type="button" class="pill-btn" onclick="setEditPlanType('DC', this)">DC</button>
+        <button type="button" class="pill-btn" onclick="setEditPlanType('CG', this)">CG</button>
+        <button type="button" class="pill-btn" onclick="setEditPlanType('SME', this)">SME</button>
+        <button type="button" class="pill-btn" onclick="setEditPlanType('SME2', this)">SME2</button>
+        <button type="button" class="pill-btn" onclick="setEditPlanType('GIFTING', this)">GIFTING</button>
+        <button type="button" class="pill-btn" onclick="setEditPlanType('AWOOF', this)">AWOOF</button>
+        <button type="button" class="pill-btn" onclick="setEditPlanType('DATASHARE', this)">DATASHARE</button>
+        <button type="button" class="pill-btn" onclick="setEditPlanType('CUSTOM', this)">CUSTOM (Manual)</button>
+      </div>
+      <input type="text" id="editPlanCustomTypeInput" class="text-input-style" placeholder="Type custom plan category..." style="display: none;" />
+
+      <label class="form-field-label">DISPLAY NAME / VOLUME *</label>
+      <input type="text" id="editPlanName" class="text-input-style" placeholder="e.g. 1.0 GB / 2.0 GB" required />
+
+      <label class="form-field-label">VALIDITY (DURATION)</label>
+      <input type="text" id="editPlanValidity" class="text-input-style" placeholder="e.g. 30 Days, 7 Days, 1 Day" />
+
+      <div style="display: flex; gap: 8px;">
+        <div style="flex: 1;">
+          <label class="form-field-label">CUSTOMER PRICE (₦) *</label>
+          <input type="number" id="editPlanUserPrice" class="text-input-style" required />
+        </div>
+        <div style="flex: 1;">
+          <label class="form-field-label">AGENT PRICE (₦) *</label>
+          <input type="number" id="editPlanAgentPrice" class="text-input-style" required />
+        </div>
+      </div>
+
+      <button type="button" class="primary-action-btn" onclick="saveDataPlanTariff()">
+        <span>SAVE & DEPLOY DATA TARIFF</span>
+      </button>
+
+      <button type="button" style="width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 12px; height: 44px; font-size: 11.5px; font-weight: 900; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="deleteDataPlan()">
+        <i class="fa-solid fa-trash-can"></i> DELETE PLAN PERMANENTLY
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PUBLISH NEW DATA TARIFF (WITH PRESETS & MANUAL) ================= -->
+  <div class="modal-overlay" id="addPlanModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h2 class="modal-card-title">Publish New Data Tariff</h2>
+          <p class="modal-card-subtitle">Automatic Fast Presets or Manual Configuration</p>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('addPlanModal')">&times;</button>
+      </div>
+
+      <!-- 1. Telecom Network -->
+      <label class="form-field-label">1. SELECT TELECOM NETWORK</label>
+      <div class="pill-grid" id="newPlanNetPills">
+        <button type="button" class="pill-btn active" onclick="setNewPlanNet('MTN', this)">MTN</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanNet('AIRTEL', this)">AIRTEL</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanNet('GLO', this)">GLO</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanNet('9MOBILE', this)">9MOBILE</button>
+      </div>
+
+      <!-- 2. Quick Presets from Al-Ihsan -->
+      <div style="background: #0f2a24; border: 1px solid #059669; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <span class="form-field-label" style="color: #34d399; margin-top: 0;">⚡ AUTOMATIC PRESET (Tap to auto-fill Plan ID, Category & Prices)</span>
+        <div class="pill-grid" id="superadminPresetPills" style="margin-bottom: 0;">
+          <!-- Injected via JavaScript based on chosen Network -->
+        </div>
+      </div>
+
+      <!-- 3. Plan Category -->
+      <label class="form-field-label">2. PLAN CATEGORY / TYPE</label>
+      <div class="pill-grid" id="newPlanTypePills">
+        <button type="button" class="pill-btn active" onclick="setNewPlanType('DC', this)">DC</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanType('CG', this)">CG</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanType('SME', this)">SME</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanType('SME2', this)">SME2</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanType('GIFTING', this)">GIFTING</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanType('AWOOF', this)">AWOOF</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanType('DATASHARE', this)">DATASHARE</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanType('CUSTOM', this)">CUSTOM (Manual)</button>
+      </div>
+      <input type="text" id="newPlanCustomTypeInput" class="text-input-style" placeholder="Type custom plan category (e.g. Night Plan, Weekend Boost)..." style="display: none;" />
+
+      <!-- 4. Gateway Plan ID -->
+      <label class="form-field-label">3. GATEWAY PLAN ID (AL-IHSAN PROVIDER ID) *</label>
+      <input type="text" id="newPlanIdInput" class="text-input-style" placeholder="e.g. 140 (MTN DC 1GB), 27 (MTN CG 1GB), 262 (Airtel CG)" required />
+
+      <!-- 5. Plan Volume / Size -->
+      <label class="form-field-label">4. PLAN VOLUME (SIZE)</label>
+      <div class="pill-grid" id="newPlanSizePills">
+        <button type="button" class="pill-btn" onclick="setNewPlanSize('500 MB', this)">500 MB</button>
+        <button type="button" class="pill-btn active" onclick="setNewPlanSize('1.0 GB', this)">1.0 GB</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanSize('1.5 GB', this)">1.5 GB</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanSize('2.0 GB', this)">2.0 GB</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanSize('3.0 GB', this)">3.0 GB</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanSize('5.0 GB', this)">5.0 GB</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanSize('10.0 GB', this)">10.0 GB</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanSize('CUSTOM', this)">CUSTOM (Manual)</button>
+      </div>
+      <input type="text" id="newPlanCustomSizeInput" class="text-input-style" placeholder="Type custom volume (e.g. 750 MB, 15.0 GB)..." style="display: none;" />
+
+      <!-- 6. Validity Duration -->
+      <label class="form-field-label">5. VALIDITY DURATION</label>
+      <div class="pill-grid" id="newPlanValidityPills">
+        <button type="button" class="pill-btn" onclick="setNewPlanValidity('1 Day', this)">1 Day</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanValidity('2 Days', this)">2 Days</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanValidity('7 Days', this)">7 Days</button>
+        <button type="button" class="pill-btn active" onclick="setNewPlanValidity('30 Days', this)">30 Days</button>
+        <button type="button" class="pill-btn" onclick="setNewPlanValidity('CUSTOM', this)">CUSTOM (Manual)</button>
+      </div>
+      <input type="text" id="newPlanCustomValidityInput" class="text-input-style" placeholder="Type custom duration (e.g. 14 Days, 60 Days)..." style="display: none;" />
+
+      <!-- 7. Pricing -->
+      <div style="display: flex; gap: 8px;">
+        <div style="flex: 1;">
+          <label class="form-field-label">CUSTOMER PRICE (₦) *</label>
+          <input type="number" id="newPlanUserPrice" class="text-input-style" placeholder="e.g. 230" required />
+        </div>
+        <div style="flex: 1;">
+          <label class="form-field-label">AGENT PRICE (₦) *</label>
+          <input type="number" id="newPlanAgentPrice" class="text-input-style" placeholder="e.g. 210" required />
+        </div>
+      </div>
+
+      <button type="button" class="primary-action-btn" onclick="publishNewDataPlan()">
+        <span>PUBLISH TARIFF TO DATABASE & APP</span>
       </button>
     </div>
   </div>
@@ -1727,14 +2004,54 @@
       "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
     ];
 
+    // OFFICIAL AL-IHSAN DATA PLANS (ACCURATE PRESETS)
+    const SUPERADMIN_ALIHSAN_PRESETS = {
+      MTN: [
+        { label: "1.0GB DC (30D)", id: "140", type: "DC", size: "1.0 GB", validity: "30 Days", uPrice: 230, aPrice: 210 },
+        { label: "1.5GB DC (30D)", id: "133", type: "DC", size: "1.5 GB", validity: "30 Days", uPrice: 340, aPrice: 320 },
+        { label: "2.0GB DC (30D)", id: "134", type: "DC", size: "2.0 GB", validity: "30 Days", uPrice: 440, aPrice: 415 },
+        { label: "3.0GB DC (30D)", id: "135", type: "DC", size: "3.0 GB", validity: "30 Days", uPrice: 650, aPrice: 620 },
+        { label: "5.0GB DC (30D)", id: "136", type: "DC", size: "5.0 GB", validity: "30 Days", uPrice: 1050, aPrice: 1000 },
+        { label: "500MB CG (30D)", id: "26", type: "CG", size: "500 MB", validity: "30 Days", uPrice: 350, aPrice: 330 },
+        { label: "1.0GB CG (30D)", id: "27", type: "CG", size: "1.0 GB", validity: "30 Days", uPrice: 450, aPrice: 425 },
+        { label: "2.0GB CG (30D)", id: "28", type: "CG", size: "2.0 GB", validity: "30 Days", uPrice: 900, aPrice: 860 },
+        { label: "5.0GB CG (30D)", id: "38", type: "CG", size: "5.0 GB", validity: "30 Days", uPrice: 2100, aPrice: 2000 },
+        { label: "500MB SME", id: "17", type: "SME", size: "500 MB", validity: "1 Day", uPrice: 290, aPrice: 270 },
+        { label: "1.0GB SME2", id: "112", type: "SME2", size: "1.0 GB", validity: "1 Day", uPrice: 270, aPrice: 250 },
+        { label: "1.0GB DataShare", id: "151", type: "DATASHARE", size: "1.0 GB", validity: "30 Days", uPrice: 280, aPrice: 260 }
+      ],
+      AIRTEL: [
+        { label: "1.2GB CG (7D)", id: "262", type: "CG", size: "1.2 GB", validity: "7 Days", uPrice: 280, aPrice: 260 },
+        { label: "1.5GB CG (7D)", id: "240", type: "CG", size: "1.5 GB", validity: "7 Days", uPrice: 620, aPrice: 590 },
+        { label: "6.5GB CG (14D)", id: "263", type: "CG", size: "6.5 GB", validity: "14 Days", uPrice: 1350, aPrice: 1280 },
+        { label: "1.0GB SME (7D)", id: "200", type: "SME", size: "1.0 GB", validity: "7 Days", uPrice: 350, aPrice: 330 },
+        { label: "2.0GB SME (30D)", id: "253", type: "SME", size: "2.0 GB", validity: "30 Days", uPrice: 750, aPrice: 700 },
+        { label: "3.0GB SME (30D)", id: "255", type: "SME", size: "3.0 GB", validity: "30 Days", uPrice: 2150, aPrice: 2050 },
+        { label: "2.0GB Awoof (2D)", id: "157", type: "AWOOF", size: "2.0 GB", validity: "2 Days", uPrice: 400, aPrice: 375 },
+        { label: "3.0GB Awoof (7D)", id: "158", type: "AWOOF", size: "3.0 GB", validity: "7 Days", uPrice: 630, aPrice: 595 },
+        { label: "4.0GB Awoof (30D)", id: "159", type: "AWOOF", size: "4.0 GB", validity: "30 Days", uPrice: 1200, aPrice: 1140 },
+        { label: "10GB Awoof (30D)", id: "160", type: "AWOOF", size: "10.0 GB", validity: "30 Days", uPrice: 2300, aPrice: 2200 }
+      ],
+      GLO: [
+        { label: "1.0GB Gifting", id: "28", type: "GIFTING", size: "1.0 GB", validity: "30 Days", uPrice: 480, aPrice: 450 },
+        { label: "2.0GB Gifting", id: "29", type: "GIFTING", size: "2.0 GB", validity: "30 Days", uPrice: 950, aPrice: 900 }
+      ],
+      "9MOBILE": [
+        { label: "500MB Gifting", id: "45", type: "GIFTING", size: "500 MB", validity: "30 Days", uPrice: 550, aPrice: 510 },
+        { label: "1.5GB Gifting", id: "11", type: "GIFTING", size: "1.5 GB", validity: "30 Days", uPrice: 1000, aPrice: 950 }
+      ]
+    };
+
     let state = {
       token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
       stats: null,
       recentTx: [],
       allUsersList: [],
+      allPlansList: [],
       pendingRefundsList: [],
       selectedRefundIds: [],
       activeMainTab: 'overview',
+      tariffNetFilter: 'ALL',
       userRoleFilter: 'all',
       userSearchQuery: '',
       inspectedEntity: null,
@@ -1744,7 +2061,13 @@
       selectedRole: 'agent',
       notifAudience: 'all',
       notifCategory: 'ADMIN_BROADCAST',
-      transferType: 'bulk'
+      transferType: 'bulk',
+      selectedEditPlan: null,
+      selectedEditPlanStatus: 'active',
+      newPlanSelectedNet: 'MTN',
+      newPlanSelectedType: 'DC',
+      newPlanSelectedSize: '1.0 GB',
+      newPlanSelectedValidity: '30 Days'
     };
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -1764,11 +2087,13 @@
       };
 
       try {
-        const [overviewRes, txRes, usersRes, refundsRes] = await Promise.allSettled([
+        const [overviewRes, txRes, usersRes, refundsRes, superPlansRes, dataPlansRes] = await Promise.allSettled([
           fetch(`${BASE_URL}/superadmin/overview`, { headers }).then(r => r.json()),
           fetch(`${BASE_URL}/superadmin/transactions?limit=150`, { headers }).then(r => r.json()),
           fetch(`${BASE_URL}/superadmin/users?limit=400`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/superadmin/refund-requests`, { headers }).then(r => r.json())
+          fetch(`${BASE_URL}/superadmin/refund-requests`, { headers }).then(r => r.json()),
+          fetch(`${BASE_URL}/superadmin/plans`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()).catch(() => ({}))
         ]);
 
         if (overviewRes.status === 'fulfilled' && overviewRes.value) {
@@ -1789,6 +2114,17 @@
         if (refundsRes.status === 'fulfilled' && refundsRes.value) {
           const d = refundsRes.value.requests || refundsRes.value.data || refundsRes.value.transactions || [];
           state.pendingRefundsList = Array.isArray(d) ? d : [];
+        }
+
+        let loadedPlans = [];
+        if (superPlansRes.status === 'fulfilled' && (superPlansRes.value?.plans || superPlansRes.value?.data)) {
+          loadedPlans = superPlansRes.value.plans || superPlansRes.value.data || [];
+        } else if (dataPlansRes.status === 'fulfilled' && (dataPlansRes.value?.plans || dataPlansRes.value?.data)) {
+          loadedPlans = dataPlansRes.value.plans || dataPlansRes.value.data || [];
+        }
+
+        if (Array.isArray(loadedPlans) && loadedPlans.length > 0) {
+          state.allPlansList = loadedPlans;
         }
 
         updateUI();
@@ -1814,10 +2150,12 @@
 
       document.getElementById('tabLabelUsers').textContent = `Directory (${state.allUsersList.length})`;
       document.getElementById('tabLabelRefunds').textContent = `Refunds (${state.pendingRefundsList.length})`;
+      document.getElementById('tabLabelPricing').textContent = `Tariffs (${state.allPlansList.length})`;
       document.getElementById('refundQueueCount').textContent = `${state.pendingRefundsList.length} ACTION REQUIRED`;
       document.getElementById('txCountBadge').textContent = `${state.recentTx.length} TRANSACTIONS`;
 
       renderStatesGrid();
+      renderTariffPlans();
       renderHierarchyLists();
       renderUsersList();
       renderRefundsList();
@@ -1826,10 +2164,22 @@
 
     function switchMainTab(tab) {
       state.activeMainTab = tab;
-      const tabs = ['overview', 'sm_hierarchy', 'users', 'refunds', 'history'];
+      const tabs = ['overview', 'pricing', 'sm_hierarchy', 'users', 'refunds', 'history'];
       tabs.forEach(t => {
-        const btn = document.getElementById(t === 'overview' ? 'tabBtnOverview' : t === 'sm_hierarchy' ? 'tabBtnHierarchy' : t === 'users' ? 'tabBtnUsers' : t === 'refunds' ? 'tabBtnRefunds' : 'tabBtnHistory');
-        const content = document.getElementById(t === 'overview' ? 'tabContentOverview' : t === 'sm_hierarchy' ? 'tabContentHierarchy' : t === 'users' ? 'tabContentUsers' : t === 'refunds' ? 'tabContentRefunds' : 'tabContentHistory');
+        const btn = document.getElementById(
+          t === 'overview' ? 'tabBtnOverview' :
+          t === 'pricing' ? 'tabBtnPricing' :
+          t === 'sm_hierarchy' ? 'tabBtnHierarchy' :
+          t === 'users' ? 'tabBtnUsers' :
+          t === 'refunds' ? 'tabBtnRefunds' : 'tabBtnHistory'
+        );
+        const content = document.getElementById(
+          t === 'overview' ? 'tabContentOverview' :
+          t === 'pricing' ? 'tabContentPricing' :
+          t === 'sm_hierarchy' ? 'tabContentHierarchy' :
+          t === 'users' ? 'tabContentUsers' :
+          t === 'refunds' ? 'tabContentRefunds' : 'tabContentHistory'
+        );
         if (btn) btn.classList.toggle('active', t === tab);
         if (content) content.style.display = t === tab ? 'block' : 'none';
       });
@@ -1895,7 +2245,349 @@
       }).join('');
     }
 
-    /* 2. Hierarchy Lists */
+    /* 2. Tariffs & Plans Rendering */
+    function filterTariffNetwork(net, el) {
+      state.tariffNetFilter = net;
+      document.querySelectorAll('#pricingNetFilterTabs .category-tab').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      renderTariffPlans();
+    }
+
+    function renderTariffPlans() {
+      const feed = document.getElementById('superadminPlansFeed');
+      const filtered = state.allPlansList.filter(p => {
+        const net = String(p.network || p.networkName || "MTN").toUpperCase();
+        return state.tariffNetFilter === "ALL" || net === state.tariffNetFilter;
+      });
+
+      if (filtered.length === 0) {
+        feed.innerHTML = '<div class="empty-feed"><i class="fa-solid fa-wifi" style="font-size: 36px; color: #475569; margin-bottom: 8px;"></i><p style="color: #64748b; font-size: 13px; margin: 0;">No active tariffs found. Click "Publish New Plan" to add.</p></div>';
+        return;
+      }
+
+      feed.innerHTML = filtered.map(plan => {
+        const planName = plan.plan || plan.name || plan.planLabel || plan.size || "Data Bundle";
+        const netName = String(plan.network || plan.networkName || "MTN").toUpperCase();
+        const planType = String(plan.planType || plan.type || "DC").toUpperCase();
+        const validity = plan.validity || "30 Days";
+        const userPrice = plan.userPrice || plan.price || 0;
+        const agentPrice = plan.agentPrice || plan.userPrice || plan.price || 0;
+        const status = String(plan.status || (plan.isActive ? "active" : "disabled")).toLowerCase();
+        const planId = plan.planId || plan.planCode || plan.id || plan._id;
+
+        return `
+          <div class="super-plan-card">
+            <div class="super-plan-card-top">
+              <div>
+                <div class="plan-badge-row">
+                  <span class="plan-pill" style="background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan);">${netName}</span>
+                  <span class="plan-pill" style="background: #1e293b; color: #cbd5e1;">${planType}</span>
+                  <span class="plan-pill" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">ID: ${planId || 'N/A'}</span>
+                  <span class="plan-pill" style="background: ${status === 'disabled' ? '#7f1d1d' : 'rgba(16, 185, 129, 0.15)'}; color: ${status === 'disabled' ? '#fca5a5' : '#10b981'};">
+                    ${status.toUpperCase()}
+                  </span>
+                </div>
+                <div class="super-plan-title">${netName} ${planName} (${validity})</div>
+              </div>
+              <button type="button" class="super-plan-edit-btn" onclick="openEditPlan('${planId}')">
+                <i class="fa-solid fa-sliders"></i> Edit Tariff
+              </button>
+            </div>
+
+            <div class="clean-pricing-row">
+              <div class="clean-price-box">
+                <div class="clean-price-label">Customer Price</div>
+                <div class="clean-price-value">₦${Number(userPrice).toLocaleString()}</div>
+              </div>
+              <div class="clean-price-divider"></div>
+              <div class="clean-price-box">
+                <div class="clean-price-label">Retail Agent Price</div>
+                <div class="clean-price-value" style="color: var(--accent-cyan);">₦${Number(agentPrice).toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openEditPlan(id) {
+      state.selectedEditPlan = state.allPlansList.find(p => String(p.planId || p.planCode || p.id || p._id) === String(id));
+      if (!state.selectedEditPlan) return;
+
+      const planName = state.selectedEditPlan.plan || state.selectedEditPlan.name || state.selectedEditPlan.planLabel || state.selectedEditPlan.size || "";
+      const netName = String(state.selectedEditPlan.network || state.selectedEditPlan.networkName || "MTN").toUpperCase();
+      const planType = String(state.selectedEditPlan.planType || state.selectedEditPlan.type || "DC").toUpperCase();
+
+      document.getElementById('editPlanSubtitle').innerText = `${netName} - ${planName} (Gateway ID: ${state.selectedEditPlan.planId || state.selectedEditPlan.planCode || id})`;
+      document.getElementById('editPlanId').value = state.selectedEditPlan.planId || state.selectedEditPlan.planCode || id;
+      document.getElementById('editPlanName').value = planName;
+      document.getElementById('editPlanValidity').value = state.selectedEditPlan.validity || "30 Days";
+      document.getElementById('editPlanUserPrice').value = state.selectedEditPlan.userPrice || state.selectedEditPlan.price || 0;
+      document.getElementById('editPlanAgentPrice').value = state.selectedEditPlan.agentPrice || state.selectedEditPlan.userPrice || state.selectedEditPlan.price || 0;
+
+      setEditPlanType(planType);
+
+      const currentStatus = String(state.selectedEditPlan.status || (state.selectedEditPlan.isActive ? "active" : "disabled")).toLowerCase();
+      setPlanStatusEdit(currentStatus);
+      openModal('editDataPlanModal');
+    }
+
+    function setEditPlanType(type, btn) {
+      document.querySelectorAll('#editPlanTypePills .pill-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText.includes(type));
+      });
+      if (btn) {
+        document.querySelectorAll('#editPlanTypePills .pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+      const customInput = document.getElementById('editPlanCustomTypeInput');
+      if (type === "CUSTOM") {
+        customInput.style.display = 'block';
+      } else {
+        customInput.style.display = 'none';
+        customInput.value = type;
+      }
+    }
+
+    function setPlanStatusEdit(status) {
+      state.selectedEditPlanStatus = status;
+      document.getElementById('planStatusActiveBtn').classList.toggle('active', status === 'active');
+      document.getElementById('planStatusDisabledBtn').classList.toggle('active', status === 'disabled');
+    }
+
+    async function saveDataPlanTariff() {
+      const targetId = document.getElementById('editPlanId').value.trim();
+      const newName = document.getElementById('editPlanName').value.trim();
+      const newValidity = document.getElementById('editPlanValidity').value.trim() || "30 Days";
+      const uPrice = Number(document.getElementById('editPlanUserPrice').value);
+      const aPrice = Number(document.getElementById('editPlanAgentPrice').value || uPrice);
+
+      let finalType = document.getElementById('editPlanCustomTypeInput').value.trim() || "DC";
+      const activeTypePill = document.querySelector('#editPlanTypePills .pill-btn.active');
+      if (activeTypePill && !activeTypePill.innerText.includes("CUSTOM")) {
+        finalType = activeTypePill.innerText.trim();
+      }
+
+      if (!targetId || !newName || !uPrice) {
+        alert("Please provide Gateway Plan ID, Display Name, and Customer Price.");
+        return;
+      }
+
+      const token = state.token;
+      const oldId = state.selectedEditPlan.id || state.selectedEditPlan._id || state.selectedEditPlan.planId || state.selectedEditPlan.planCode;
+
+      const payload = {
+        id: oldId,
+        planId: targetId,
+        planCode: targetId,
+        code: targetId,
+        name: newName,
+        plan: newName,
+        planLabel: newName,
+        planType: finalType,
+        validity: newValidity,
+        userPrice: uPrice,
+        agentPrice: aPrice,
+        price: uPrice,
+        status: state.selectedEditPlanStatus,
+        isActive: state.selectedEditPlanStatus === 'active',
+        broadcast: true
+      };
+
+      try {
+        let res = await fetch(`${BASE_URL}/superadmin/pricing/update-tier`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/admin/pricing/update-tier`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok || data.success) {
+          alert("Tariff Updated Successfully! Synced across Agent and User portals. 🚀");
+          closeModal('editDataPlanModal');
+          fetchMasterTelemetry();
+        } else {
+          alert(data.message || "Failed to update tariff.");
+        }
+      } catch (e) {
+        alert("Sync Error: " + e.message);
+      }
+    }
+
+    async function deleteDataPlan() {
+      if (!state.selectedEditPlan) return;
+      const planName = state.selectedEditPlan.plan || state.selectedEditPlan.name || "this plan";
+      if (!confirm(`Are you sure you want to PERMANENTLY REMOVE "${planName}"? It will be deleted from all terminals.`)) {
+        return;
+      }
+
+      const token = state.token;
+      const targetId = state.selectedEditPlan.id || state.selectedEditPlan._id || state.selectedEditPlan.planId || state.selectedEditPlan.planCode;
+
+      try {
+        let res = await fetch(`${BASE_URL}/superadmin/pricing/delete-plan/${targetId}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+        });
+
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/data/plans/${targetId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok || data.success) {
+          alert(`"${planName}" has been deleted.`);
+          closeModal('editDataPlanModal');
+          fetchMasterTelemetry();
+        } else {
+          alert(data.message || "Could not delete plan.");
+        }
+      } catch (e) {
+        alert("Delete Notice: " + e.message);
+      }
+    }
+
+    /* Automatic Presets for New Data Tariff */
+    function openAddPlanModal() {
+      renderSuperadminPresets(state.newPlanSelectedNet);
+      openModal('addPlanModal');
+    }
+
+    function renderSuperadminPresets(net) {
+      const container = document.getElementById('superadminPresetPills');
+      const presets = SUPERADMIN_ALIHSAN_PRESETS[net] || [];
+
+      if (presets.length === 0) {
+        container.innerHTML = `<span style="font-size:11px; color:#6ee7b7;">No presets available for ${net}. Enter details manually below.</span>`;
+        return;
+      }
+
+      container.innerHTML = presets.map((p, idx) => `
+        <button type="button" class="pill-btn" onclick="applySuperadminPreset('${net}', ${idx}, this)" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: #059669;">
+          ⚡ ${p.label} (ID: ${p.id})
+        </button>
+      `).join('');
+    }
+
+    function applySuperadminPreset(net, idx, btn) {
+      const preset = SUPERADMIN_ALIHSAN_PRESETS[net][idx];
+      if (!preset) return;
+
+      document.querySelectorAll('#superadminPresetPills .pill-btn').forEach(b => b.style.background = 'rgba(16, 185, 129, 0.2)');
+      btn.style.background = '#059669';
+
+      document.getElementById('newPlanIdInput').value = preset.id;
+      setNewPlanType(preset.type, Array.from(document.querySelectorAll('#newPlanTypePills .pill-btn')).find(b => b.innerText.includes(preset.type)));
+      setNewPlanSize(preset.size, Array.from(document.querySelectorAll('#newPlanSizePills .pill-btn')).find(b => b.innerText.includes(preset.size)));
+      setNewPlanValidity(preset.validity, Array.from(document.querySelectorAll('#newPlanValidityPills .pill-btn')).find(b => b.innerText.includes(preset.validity)));
+      document.getElementById('newPlanUserPrice').value = preset.uPrice;
+      document.getElementById('newPlanAgentPrice').value = preset.aPrice;
+    }
+
+    function setNewPlanNet(net, btn) {
+      state.newPlanSelectedNet = net;
+      document.querySelectorAll('#newPlanNetPills .pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderSuperadminPresets(net);
+    }
+
+    function setNewPlanType(type, btn) {
+      state.newPlanSelectedType = type;
+      document.querySelectorAll('#newPlanTypePills .pill-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.getElementById('newPlanCustomTypeInput').style.display = (type === 'CUSTOM') ? 'block' : 'none';
+    }
+
+    function setNewPlanSize(size, btn) {
+      state.newPlanSelectedSize = size;
+      document.querySelectorAll('#newPlanSizePills .pill-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.getElementById('newPlanCustomSizeInput').style.display = (size === 'CUSTOM') ? 'block' : 'none';
+    }
+
+    function setNewPlanValidity(validity, btn) {
+      state.newPlanSelectedValidity = validity;
+      document.querySelectorAll('#newPlanValidityPills .pill-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.getElementById('newPlanCustomValidityInput').style.display = (validity === 'CUSTOM') ? 'block' : 'none';
+    }
+
+    async function publishNewDataPlan() {
+      const finalType = state.newPlanSelectedType === 'CUSTOM' ? document.getElementById('newPlanCustomTypeInput').value.trim() : state.newPlanSelectedType;
+      const finalSize = state.newPlanSelectedSize === 'CUSTOM' ? document.getElementById('newPlanCustomSizeInput').value.trim() : state.newPlanSelectedSize;
+      const finalValidity = state.newPlanSelectedValidity === 'CUSTOM' ? document.getElementById('newPlanCustomValidityInput').value.trim() : state.newPlanSelectedValidity;
+      const planIdVal = document.getElementById('newPlanIdInput').value.trim();
+      const uPrice = Number(document.getElementById('newPlanUserPrice').value);
+      const aPrice = Number(document.getElementById('newPlanAgentPrice').value || uPrice);
+
+      if (!planIdVal || !finalType || !finalSize || !uPrice) {
+        alert("Please specify Gateway Plan ID, Plan Type, Size, and Customer Price.");
+        return;
+      }
+
+      const net = state.newPlanSelectedNet.toUpperCase();
+      const pName = `${net} ${finalType} ${finalSize} (${finalValidity})`;
+
+      const token = state.token;
+      const payload = {
+        id: planIdVal,
+        planId: planIdVal,
+        planCode: planIdVal,
+        code: planIdVal,
+        network: net,
+        networkName: net,
+        planType: finalType,
+        plan: finalSize,
+        name: pName,
+        planLabel: pName,
+        validity: finalValidity,
+        userPrice: uPrice,
+        price: uPrice,
+        agentPrice: aPrice,
+        status: "active",
+        isActive: true
+      };
+
+      try {
+        let res = await fetch(`${BASE_URL}/superadmin/pricing/create-plan`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/admin/pricing/create-plan`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok || data.success) {
+          alert(`Tariff published successfully! Written to MongoDB & deployed to User/Agent terminals. 🚀`);
+          closeModal('addPlanModal');
+          fetchMasterTelemetry();
+        } else {
+          alert(data.message || "Failed to deploy plan.");
+        }
+      } catch (e) {
+        alert("Error publishing plan: " + e.message);
+      }
+    }
+
+    /* 3. Hierarchy Lists */
     function renderHierarchyLists() {
       const nsdWrap = document.getElementById('nsdListContainer');
       const smWrap = document.getElementById('smListContainer');
@@ -1970,7 +2662,7 @@
       }
     }
 
-    /* 3. Directory */
+    /* 4. Directory */
     function setUserFilterRole(role, el) {
       state.userRoleFilter = role;
       document.querySelectorAll('#roleFilterTabs .category-tab').forEach(t => t.classList.remove('active'));
@@ -2034,7 +2726,7 @@
       }).join('');
     }
 
-    /* 4. Batch Refunds */
+    /* 5. Batch Refunds */
     function toggleSelectAllRefunds() {
       if (state.selectedRefundIds.length === state.pendingRefundsList.length && state.pendingRefundsList.length > 0) {
         state.selectedRefundIds = [];
@@ -2169,7 +2861,7 @@
       }
     }
 
-    /* 5. Audit History */
+    /* 6. Audit History */
     function renderTxHistory() {
       const container = document.getElementById('txHistoryContainer');
 
@@ -2215,6 +2907,7 @@
     function openActionModal(actionKey) {
       toggleSidebar(false);
       switch (actionKey) {
+        case "add_plan": openAddPlanModal(); break;
         case "create_user": openModal('createUserModal'); break;
         case "transfer": openModal('transferModal'); break;
         case "notify": openModal('notificationModal'); break;
@@ -2256,8 +2949,8 @@
             <h4 class="inspector-section-heading">STATE PERFORMANCE & TARGET METRICS</h4>
             <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Data Sales: <strong style="color: var(--accent-cyan);">${entity.achievedDataGB} GB</strong> / ${entity.targetDataGB} GB Goal</p>
             <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Airtime Sales Target: <strong style="color: var(--accent-emerald);">₦${Number(entity.targetAirtime).toLocaleString()}</strong></p>
-            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Retail Agents: <strong style="color: #c084fc;">${entity.agentsCount}</strong> Active / ${entity.agentsGoal} Recruited Goal</p>
-            <p style="margin: 3px 0; font-size: 11.5px; color: #cbd5e1;">Field Supervisors: <strong style="color: var(--accent-amber);">${entity.supervisorsCount}</strong> Assigned</p>
+            <p style="margin: 3px 0; font-size: 11.5px; color: #c084fc;">Retail Agents: <strong style="color: #c084fc;">${entity.agentsCount}</strong> Active / ${entity.agentsGoal} Recruited Goal</p>
+            <p style="margin: 3px 0; font-size: 11.5px; color: var(--accent-amber);">Field Supervisors: <strong style="color: var(--accent-amber);">${entity.supervisorsCount}</strong> Assigned</p>
           </div>
 
           ${entity.assignedSm ? `

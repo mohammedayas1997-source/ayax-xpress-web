@@ -141,7 +141,7 @@
       border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     .super-plan-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-    .plan-badge-row { display: flex; gap: 6px; align-items: center; margin-bottom: 4px; }
+    .plan-badge-row { display: flex; gap: 6px; align-items: center; margin-bottom: 4px; flex-wrap: wrap; }
     .plan-pill { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 900; }
     .super-plan-title { color: #0f172a; font-size: 14px; font-weight: 900; }
     .super-plan-edit-btn {
@@ -421,7 +421,7 @@
     <div id="tabContent-pricing" style="display: none;">
       <div class="section-header-row">
         <span class="section-header-label">DATA BUNDLE LIVE TARIFFS (CUSTOMER & AGENT)</span>
-        <button class="add-plan-header-btn" onclick="openModal('addPlanModal')"><i class="fa-solid fa-circle-plus"></i> New Plan</button>
+        <button class="add-plan-header-btn" onclick="openAddPlanModal()"><i class="fa-solid fa-circle-plus"></i> New Plan</button>
       </div>
 
       <div class="filter-scroll" id="networkFilterScroll">
@@ -449,7 +449,6 @@
         </button>
       </div>
 
-      <!-- Filter Pills don sauƙin zaɓi -->
       <div class="filter-scroll" id="identityFilterScroll" style="margin-bottom: 12px;">
         <button class="filter-badge active" onclick="filterIdentityCategory('ALL', this)">ALL SERVICES</button>
         <button class="filter-badge" onclick="filterIdentityCategory('VALIDATION', this)">NIN VALIDATIONS (7)</button>
@@ -571,8 +570,27 @@
         <button class="selector-pill" id="planStatusDisabledBtn" onclick="setPlanStatusEdit('disabled')">DISABLED</button>
       </div>
 
+      <label class="form-field-label">Provider Official Plan ID (Al-Ihsan / Gateway ID)</label>
+      <input type="text" class="form-input" id="editPlanId" placeholder="e.g. 27, 140, 262">
+
+      <label class="form-field-label">Plan Type (Category)</label>
+      <div class="selector-pills-row" id="editPlanTypePills">
+        <button class="selector-pill" onclick="setEditPlanType('DC', this)">DC</button>
+        <button class="selector-pill" onclick="setEditPlanType('CG', this)">CG</button>
+        <button class="selector-pill" onclick="setEditPlanType('SME', this)">SME</button>
+        <button class="selector-pill" onclick="setEditPlanType('SME2', this)">SME2</button>
+        <button class="selector-pill" onclick="setEditPlanType('GIFTING', this)">GIFTING</button>
+        <button class="selector-pill" onclick="setEditPlanType('AWOOF', this)">AWOOF</button>
+        <button class="selector-pill" onclick="setEditPlanType('DATASHARE', this)">DATASHARE</button>
+        <button class="selector-pill" onclick="setEditPlanType('CUSTOM', this)">CUSTOM (Manual Type)</button>
+      </div>
+      <input type="text" class="form-input" id="editPlanCustomTypeInput" placeholder="Manual Type Category..." style="display:none;">
+
       <label class="form-field-label">Plan Display Name / Volume</label>
       <input type="text" class="form-input" id="editPlanName" placeholder="e.g. 1.0 GB / 2.0 GB">
+
+      <label class="form-field-label">Validity (Duration)</label>
+      <input type="text" class="form-input" id="editPlanValidity" placeholder="e.g. 30 Days, 7 Days, 1 Day">
 
       <label class="form-field-label">Customer Selling Price (₦)</label>
       <input type="number" class="form-input" id="editPlanUserPrice">
@@ -588,15 +606,19 @@
     </div>
   </div>
 
-  <!-- MODAL 2: PUBLISH NEW DATA TARIFF -->
+  <!-- MODAL 2: PUBLISH NEW DATA TARIFF (WITH AUTOMATIC PRESETS & MANUAL OPTIONS) -->
   <div class="modal-overlay" id="addPlanModal">
     <div class="modal-card">
       <div class="modal-header-row">
-        <h3 class="modal-title">Publish New Data Tariff</h3>
+        <div>
+          <h3 class="modal-title">Publish New Data Tariff</h3>
+          <div class="modal-sub">Fast Automatic Presets or Manual Configuration</div>
+        </div>
         <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('addPlanModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <label class="form-field-label">Select Telecom Network</label>
+      <!-- 1. Telecom Network -->
+      <label class="form-field-label">1. Select Telecom Network</label>
       <div class="selector-pills-row" id="newPlanNetPills">
         <button class="selector-pill active" onclick="setNewPlanNet('MTN', this)">MTN</button>
         <button class="selector-pill" onclick="setNewPlanNet('AIRTEL', this)">AIRTEL</button>
@@ -604,43 +626,65 @@
         <button class="selector-pill" onclick="setNewPlanNet('9MOBILE', this)">9MOBILE</button>
       </div>
 
-      <label class="form-field-label">Select Plan Type</label>
-      <div class="selector-pills-row" id="newPlanTypePills">
-        <button class="selector-pill active" onclick="setNewPlanType('SME', this)">SME</button>
-        <button class="selector-pill" onclick="setNewPlanType('Corporate Gifting', this)">Corporate Gifting</button>
-        <button class="selector-pill" onclick="setNewPlanType('Gifting', this)">Gifting</button>
-        <button class="selector-pill" onclick="setNewPlanType('Direct', this)">Direct</button>
-        <button class="selector-pill" onclick="setNewPlanType('CUSTOM', this)">CUSTOM</button>
+      <!-- 2. Automatic Quick Presets from Al-Ihsan -->
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px; margin-bottom: 12px;">
+        <span class="form-field-label" style="color: #166534; margin-bottom: 4px;">⚡ AUTOMATIC QUICK PRESET (Tap to auto-fill Plan ID, Category & Prices)</span>
+        <div class="selector-pills-row" id="presetPillsRow" style="margin-bottom: 0;">
+          <!-- Dynamically populated based on chosen Network -->
+        </div>
       </div>
-      <input type="text" class="form-input" id="newPlanCustomTypeInput" style="display: none;" placeholder="Type custom plan type (e.g. Special Night / Weekend)">
 
-      <label class="form-field-label">Select Plan Volume (Size)</label>
+      <!-- 3. Plan Type Selection -->
+      <label class="form-field-label">2. Select Plan Category / Type</label>
+      <div class="selector-pills-row" id="newPlanTypePills">
+        <button class="selector-pill active" onclick="setNewPlanType('DC', this)">DC</button>
+        <button class="selector-pill" onclick="setNewPlanType('CG', this)">CG</button>
+        <button class="selector-pill" onclick="setNewPlanType('SME', this)">SME</button>
+        <button class="selector-pill" onclick="setNewPlanType('SME2', this)">SME2</button>
+        <button class="selector-pill" onclick="setNewPlanType('GIFTING', this)">GIFTING</button>
+        <button class="selector-pill" onclick="setNewPlanType('AWOOF', this)">AWOOF</button>
+        <button class="selector-pill" onclick="setNewPlanType('DATASHARE', this)">DATASHARE</button>
+        <button class="selector-pill" onclick="setNewPlanType('CUSTOM', this)">CUSTOM (Type Manually)</button>
+      </div>
+      <input type="text" class="form-input" id="newPlanCustomTypeInput" style="display: none;" placeholder="Type custom plan type (e.g. Night Plan, Weekend Boost)">
+
+      <!-- 4. Plan ID (Auto or Manual input) -->
+      <label class="form-field-label">3. Gateway Plan ID (Al-Ihsan Provider ID) *</label>
+      <input type="text" class="form-input" id="newPlanIdInput" placeholder="e.g. 140 (MTN DC 1GB), 27 (MTN CG 1GB), 262 (Airtel CG)">
+
+      <!-- 5. Plan Volume / Size -->
+      <label class="form-field-label">4. Plan Volume (Size)</label>
       <div class="selector-pills-row" id="newPlanSizePills">
+        <button class="selector-pill" onclick="setNewPlanSize('500 MB', this)">500 MB</button>
         <button class="selector-pill active" onclick="setNewPlanSize('1.0 GB', this)">1.0 GB</button>
+        <button class="selector-pill" onclick="setNewPlanSize('1.5 GB', this)">1.5 GB</button>
         <button class="selector-pill" onclick="setNewPlanSize('2.0 GB', this)">2.0 GB</button>
         <button class="selector-pill" onclick="setNewPlanSize('3.0 GB', this)">3.0 GB</button>
         <button class="selector-pill" onclick="setNewPlanSize('5.0 GB', this)">5.0 GB</button>
         <button class="selector-pill" onclick="setNewPlanSize('10.0 GB', this)">10.0 GB</button>
-        <button class="selector-pill" onclick="setNewPlanSize('CUSTOM', this)">CUSTOM</button>
+        <button class="selector-pill" onclick="setNewPlanSize('CUSTOM', this)">CUSTOM (Type Manually)</button>
       </div>
-      <input type="text" class="form-input" id="newPlanCustomSizeInput" style="display: none;" placeholder="Type custom volume (e.g. 750 MB / 15.0 GB / 25.0 GB)">
+      <input type="text" class="form-input" id="newPlanCustomSizeInput" style="display: none;" placeholder="Type custom volume (e.g. 750 MB, 15.0 GB, 25.0 GB)">
 
-      <label class="form-field-label">Select Validity Duration</label>
+      <!-- 6. Validity Duration -->
+      <label class="form-field-label">5. Validity Duration</label>
       <div class="selector-pills-row" id="newPlanValidityPills">
         <button class="selector-pill" onclick="setNewPlanValidity('1 Day', this)">1 Day</button>
+        <button class="selector-pill" onclick="setNewPlanValidity('2 Days', this)">2 Days</button>
         <button class="selector-pill" onclick="setNewPlanValidity('7 Days', this)">7 Days</button>
         <button class="selector-pill active" onclick="setNewPlanValidity('30 Days', this)">30 Days</button>
-        <button class="selector-pill" onclick="setNewPlanValidity('CUSTOM', this)">CUSTOM</button>
+        <button class="selector-pill" onclick="setNewPlanValidity('CUSTOM', this)">CUSTOM (Type Manually)</button>
       </div>
-      <input type="text" class="form-input" id="newPlanCustomValidityInput" style="display: none;" placeholder="Type custom validity (e.g. 60 Days / 90 Days)">
+      <input type="text" class="form-input" id="newPlanCustomValidityInput" style="display: none;" placeholder="Type custom duration (e.g. 14 Days, 60 Days)">
 
-      <label class="form-field-label">Customer Selling Price (₦)</label>
-      <input type="number" class="form-input" id="newPlanUserPrice" placeholder="e.g. 285">
+      <!-- 7. Pricing Inputs -->
+      <label class="form-field-label">6. Customer Selling Price (₦) *</label>
+      <input type="number" class="form-input" id="newPlanUserPrice" placeholder="e.g. 230">
 
-      <label class="form-field-label">Retail Agent Wholesale Price (₦)</label>
-      <input type="number" class="form-input" id="newPlanAgentPrice" placeholder="e.g. 265">
+      <label class="form-field-label">7. Retail Agent Wholesale Price (₦) *</label>
+      <input type="number" class="form-input" id="newPlanAgentPrice" placeholder="e.g. 210">
 
-      <button class="submit-form-btn" onclick="publishNewDataPlan()">PUBLISH TO DATABASE & CUSTOMERS</button>
+      <button class="submit-form-btn" onclick="publishNewDataPlan()">PUBLISH TARIFF TO DATABASE & APP</button>
     </div>
   </div>
 
@@ -791,114 +835,58 @@
     let activeNetFilter = "ALL";
     let activeIdentityCategoryFilter = "ALL";
 
-    let identityServicesList = [
-      // --- A. NIN VALIDATION SERVICES (DAGA AINIHIN SHAFIN VALIDATION) ---
-      {
-        serviceCategory: "validation",
-        serviceKey: "no_record",
-        name: "No Record Found",
-        desc: "NIN clearing and profile re-linking for no record errors",
-        userPrice: 1300,
-        agentPrice: 1100,
-      },
-      {
-        serviceCategory: "validation",
-        serviceKey: "sim_val",
-        name: "SIM Validation",
-        desc: "Telecom and SIM registration line validation",
-        userPrice: 1300,
-        agentPrice: 1100,
-      },
-      {
-        serviceCategory: "validation",
-        serviceKey: "vnin_val",
-        name: "vNIN Validation",
-        desc: "Virtual NIN 16-digit verification and validation",
-        userPrice: 1300,
-        agentPrice: 1100,
-      },
-      {
-        serviceCategory: "validation",
-        serviceKey: "update_record",
-        name: "Update Records Validation",
-        desc: "NIMC database record synchronization and update",
-        userPrice: 1300,
-        agentPrice: 1100,
-      },
-      {
-        serviceCategory: "validation",
-        serviceKey: "bank_val",
-        name: "Bank Validation",
-        desc: "CBN / Commercial bank account and BVN-NIN tie validation",
-        userPrice: 1300,
-        agentPrice: 1100,
-      },
-      {
-        serviceCategory: "validation",
-        serviceKey: "mod_val",
-        name: "Modification Validation",
-        desc: "Validation clearance after name/DOB modification",
-        userPrice: 1700,
-        agentPrice: 1500,
-      },
-      {
-        serviceCategory: "validation",
-        serviceKey: "photo_error",
-        name: "Photographic Error",
-        desc: "NIMC portrait biometric photographic resolution",
-        userPrice: 1400,
-        agentPrice: 1200,
-      },
+    // OFFICIAL AL-IHSAN PLAN PRESETS (FOR AUTOMATIC FILLING)
+    const ALIHSAN_PRESETS = {
+      MTN: [
+        { label: "1.0GB DC (30D)", id: "140", type: "DC", size: "1.0 GB", validity: "30 Days", uPrice: 230, aPrice: 210 },
+        { label: "1.5GB DC (30D)", id: "133", type: "DC", size: "1.5 GB", validity: "30 Days", uPrice: 340, aPrice: 320 },
+        { label: "2.0GB DC (30D)", id: "134", type: "DC", size: "2.0 GB", validity: "30 Days", uPrice: 440, aPrice: 415 },
+        { label: "3.0GB DC (30D)", id: "135", type: "DC", size: "3.0 GB", validity: "30 Days", uPrice: 650, aPrice: 620 },
+        { label: "5.0GB DC (30D)", id: "136", type: "DC", size: "5.0 GB", validity: "30 Days", uPrice: 1050, aPrice: 1000 },
+        { label: "500MB CG (30D)", id: "26", type: "CG", size: "500 MB", validity: "30 Days", uPrice: 350, aPrice: 330 },
+        { label: "1.0GB CG (30D)", id: "27", type: "CG", size: "1.0 GB", validity: "30 Days", uPrice: 450, aPrice: 425 },
+        { label: "2.0GB CG (30D)", id: "28", type: "CG", size: "2.0 GB", validity: "30 Days", uPrice: 900, aPrice: 860 },
+        { label: "5.0GB CG (30D)", id: "38", type: "CG", size: "5.0 GB", validity: "30 Days", uPrice: 2100, aPrice: 2000 },
+        { label: "500MB SME", id: "17", type: "SME", size: "500 MB", validity: "1 Day", uPrice: 290, aPrice: 270 },
+        { label: "1.0GB SME2", id: "112", type: "SME2", size: "1.0 GB", validity: "1 Day", uPrice: 270, aPrice: 250 },
+        { label: "1.0GB DataShare", id: "151", type: "DATASHARE", size: "1.0 GB", validity: "30 Days", uPrice: 280, aPrice: 260 }
+      ],
+      AIRTEL: [
+        { label: "1.2GB CG (7D)", id: "262", type: "CG", size: "1.2 GB", validity: "7 Days", uPrice: 280, aPrice: 260 },
+        { label: "1.5GB CG (7D)", id: "240", type: "CG", size: "1.5 GB", validity: "7 Days", uPrice: 620, aPrice: 590 },
+        { label: "6.5GB CG (14D)", id: "263", type: "CG", size: "6.5 GB", validity: "14 Days", uPrice: 1350, aPrice: 1280 },
+        { label: "1.0GB SME (7D)", id: "200", type: "SME", size: "1.0 GB", validity: "7 Days", uPrice: 350, aPrice: 330 },
+        { label: "2.0GB SME (30D)", id: "253", type: "SME", size: "2.0 GB", validity: "30 Days", uPrice: 750, aPrice: 700 },
+        { label: "3.0GB SME (30D)", id: "255", type: "SME", size: "3.0 GB", validity: "30 Days", uPrice: 2150, aPrice: 2050 },
+        { label: "2.0GB Awoof (2D)", id: "157", type: "AWOOF", size: "2.0 GB", validity: "2 Days", uPrice: 400, aPrice: 375 },
+        { label: "3.0GB Awoof (7D)", id: "158", type: "AWOOF", size: "3.0 GB", validity: "7 Days", uPrice: 630, aPrice: 595 },
+        { label: "4.0GB Awoof (30D)", id: "159", type: "AWOOF", size: "4.0 GB", validity: "30 Days", uPrice: 1200, aPrice: 1140 },
+        { label: "10GB Awoof (30D)", id: "160", type: "AWOOF", size: "10.0 GB", validity: "30 Days", uPrice: 2300, aPrice: 2200 }
+      ],
+      GLO: [
+        { label: "1.0GB Gifting", id: "28", type: "GIFTING", size: "1.0 GB", validity: "30 Days", uPrice: 480, aPrice: 450 },
+        { label: "2.0GB Gifting", id: "29", type: "GIFTING", size: "2.0 GB", validity: "30 Days", uPrice: 950, aPrice: 900 }
+      ],
+      "9MOBILE": [
+        { label: "500MB Gifting", id: "45", type: "GIFTING", size: "500 MB", validity: "30 Days", uPrice: 550, aPrice: 510 },
+        { label: "1.5GB Gifting", id: "11", type: "GIFTING", size: "1.5 GB", validity: "30 Days", uPrice: 1000, aPrice: 950 }
+      ]
+    };
 
-      // --- B. NIMC REPRINT & SEARCH CHANNELS ---
-      {
-        serviceCategory: "nimc",
-        serviceKey: "nin",
-        name: "NIN Number Search",
-        desc: "Direct verification using national identity number",
-        userPrice: 150,
-        agentPrice: 100,
-      },
-      {
-        serviceCategory: "nimc",
-        serviceKey: "phone",
-        name: "Phone Number Search",
-        desc: "Fetch identity profile linked to SIM number",
-        userPrice: 200,
-        agentPrice: 150,
-      },
-      {
-        serviceCategory: "nimc",
-        serviceKey: "trackingId",
-        name: "Tracking ID Search",
-        desc: "Retrieve slip with NIMC enrollment tracking code",
-        userPrice: 150,
-        agentPrice: 100,
-      },
-      {
-        serviceCategory: "nimc",
-        serviceKey: "standardSlip",
-        name: "Standard NIN Slip",
-        desc: "Official full details identification printable slip",
-        userPrice: 300,
-        agentPrice: 200,
-      },
-      {
-        serviceCategory: "nimc",
-        serviceKey: "premiumCard",
-        name: "Premium ID Card Slip",
-        desc: "Wallet plastic-sized ready-to-laminate NIN card",
-        userPrice: 400,
-        agentPrice: 300,
-      },
-      {
-        serviceCategory: "nimc",
-        serviceKey: "basicSlip",
-        name: "Basic Identification Slip",
-        desc: "Concise confirmation paper format slip",
-        userPrice: 150,
-        agentPrice: 100,
-      }
+    let identityServicesList = [
+      { serviceCategory: "validation", serviceKey: "no_record", name: "No Record Found", desc: "NIN profile re-linking", userPrice: 1300, agentPrice: 1100 },
+      { serviceCategory: "validation", serviceKey: "sim_val", name: "SIM Validation", desc: "Telecom and line validation", userPrice: 1300, agentPrice: 1100 },
+      { serviceCategory: "validation", serviceKey: "vnin_val", name: "vNIN Validation", desc: "Virtual NIN verification", userPrice: 1300, agentPrice: 1100 },
+      { serviceCategory: "validation", serviceKey: "update_record", name: "Update Records Validation", desc: "NIMC database synchronization", userPrice: 1300, agentPrice: 1100 },
+      { serviceCategory: "validation", serviceKey: "bank_val", name: "Bank Validation", desc: "CBN account / BVN-NIN tie", userPrice: 1300, agentPrice: 1100 },
+      { serviceCategory: "validation", serviceKey: "mod_val", name: "Modification Validation", desc: "Clearance after DOB/Name changes", userPrice: 1700, agentPrice: 1500 },
+      { serviceCategory: "validation", serviceKey: "photo_error", name: "Photographic Error", desc: "NIMC portrait biometrics", userPrice: 1400, agentPrice: 1200 },
+      { serviceCategory: "nimc", serviceKey: "nin", name: "NIN Number Search", desc: "Direct NIN profile lookup", userPrice: 150, agentPrice: 100 },
+      { serviceCategory: "nimc", serviceKey: "phone", name: "Phone Number Search", desc: "Identity linked to phone", userPrice: 200, agentPrice: 150 },
+      { serviceCategory: "nimc", serviceKey: "trackingId", name: "Tracking ID Search", desc: "NIMC enrollment code search", userPrice: 150, agentPrice: 100 },
+      { serviceCategory: "nimc", serviceKey: "standardSlip", name: "Standard NIN Slip", desc: "Official full identification slip", userPrice: 300, agentPrice: 200 },
+      { serviceCategory: "nimc", serviceKey: "premiumCard", name: "Premium ID Card Slip", desc: "Plastic laminated sized card", userPrice: 400, agentPrice: 300 },
+      { serviceCategory: "nimc", serviceKey: "basicSlip", name: "Basic Identification Slip", desc: "Concise paper format slip", userPrice: 150, agentPrice: 100 }
     ];
 
     let selectedEditPlan = null;
@@ -907,7 +895,7 @@
     let selectedNewIdentityCat = "validation";
 
     let newPlanSelectedNet = "MTN";
-    let newPlanSelectedType = "SME";
+    let newPlanSelectedType = "DC";
     let newPlanSelectedSize = "1.0 GB";
     let newPlanSelectedValidity = "30 Days";
 
@@ -995,21 +983,16 @@
           renderRefunds(pendingRefundsList);
         }
 
-        // Sync Live Prices for NIN Validation & NIMC
         if (ninPricesRes.status === "fulfilled" && ninPricesRes.value?.prices) {
           const np = ninPricesRes.value.prices;
           identityServicesList.forEach(item => {
-            if (np[item.serviceKey] !== undefined) {
-              item.userPrice = Number(np[item.serviceKey]);
-            }
+            if (np[item.serviceKey] !== undefined) item.userPrice = Number(np[item.serviceKey]);
           });
         }
         if (nimcPricesRes.status === "fulfilled" && nimcPricesRes.value?.prices) {
           const mp = nimcPricesRes.value.prices;
           identityServicesList.forEach(item => {
-            if (mp[item.serviceKey] !== undefined) {
-              item.userPrice = Number(mp[item.serviceKey]);
-            }
+            if (mp[item.serviceKey] !== undefined) item.userPrice = Number(mp[item.serviceKey]);
           });
         }
 
@@ -1034,12 +1017,12 @@
       feed.innerHTML = filtered.map(plan => {
         const planName = plan.plan || plan.name || plan.planLabel || plan.size || "Data Bundle";
         const netName = String(plan.network || plan.networkName || "MTN").toUpperCase();
-        const planType = String(plan.planType || plan.type || "SME").toUpperCase();
+        const planType = String(plan.planType || plan.type || "DC").toUpperCase();
         const validity = plan.validity || "30 Days";
         const userPrice = plan.userPrice || plan.price || 0;
         const agentPrice = plan.agentPrice || plan.userPrice || plan.price || 0;
         const status = String(plan.status || (plan.isActive ? "active" : "disabled")).toLowerCase();
-        const planId = plan.id || plan._id || plan.planId || plan.planCode;
+        const planId = plan.planId || plan.planCode || plan.id || plan._id;
 
         return `
           <div class="super-plan-card">
@@ -1048,6 +1031,7 @@
                 <div class="plan-badge-row">
                   <span class="plan-pill" style="background:#e0f2fe; color:#0284c7;">${netName}</span>
                   <span class="plan-pill" style="background:#f1f5f9; color:#475569;">${planType}</span>
+                  <span class="plan-pill" style="background:#fef3c7; color:#b45309;">ID: ${planId || 'N/A'}</span>
                   <span class="plan-pill" style="background:${status === 'disabled' ? '#ffe4e6' : '#dcfce7'}; color:${status === 'disabled' ? '#e11d48' : '#16a34a'};">
                     ${status.toUpperCase()}
                   </span>
@@ -1055,7 +1039,7 @@
                 <div class="super-plan-title">${netName} ${planName} (${validity})</div>
               </div>
               <button class="super-plan-edit-btn" onclick="openEditPlan('${planId}')">
-                <i class="fa-solid fa-sliders"></i> Edit Prices
+                <i class="fa-solid fa-sliders"></i> Edit Details
               </button>
             </div>
 
@@ -1084,20 +1068,43 @@
     }
 
     function openEditPlan(id) {
-      selectedEditPlan = pricingList.find(p => String(p.id || p._id || p.planId || p.planCode) === String(id));
+      selectedEditPlan = pricingList.find(p => String(p.planId || p.planCode || p.id || p._id) === String(id));
       if (!selectedEditPlan) return;
 
       const planName = selectedEditPlan.plan || selectedEditPlan.name || selectedEditPlan.planLabel || selectedEditPlan.size || "";
       const netName = String(selectedEditPlan.network || selectedEditPlan.networkName || "MTN").toUpperCase();
+      const planType = String(selectedEditPlan.planType || selectedEditPlan.type || "DC").toUpperCase();
 
-      document.getElementById("editPlanSubtitle").innerText = `${netName} - ${planName}`;
+      document.getElementById("editPlanSubtitle").innerText = `${netName} - ${planName} (ID: ${selectedEditPlan.planId || selectedEditPlan.planCode || id})`;
+      document.getElementById("editPlanId").value = selectedEditPlan.planId || selectedEditPlan.planCode || id;
       document.getElementById("editPlanName").value = planName;
+      document.getElementById("editPlanValidity").value = selectedEditPlan.validity || "30 Days";
       document.getElementById("editPlanUserPrice").value = selectedEditPlan.userPrice || selectedEditPlan.price || 0;
       document.getElementById("editPlanAgentPrice").value = selectedEditPlan.agentPrice || selectedEditPlan.userPrice || selectedEditPlan.price || 0;
       
+      // Sync Type Pills
+      setEditPlanType(planType);
+
       const currentStatus = String(selectedEditPlan.status || (selectedEditPlan.isActive ? "active" : "disabled")).toLowerCase();
       setPlanStatusEdit(currentStatus);
       openModal("editDataPlanModal");
+    }
+
+    function setEditPlanType(type, btn) {
+      document.querySelectorAll("#editPlanTypePills .selector-pill").forEach(b => {
+        b.classList.toggle("active", b.innerText.includes(type));
+      });
+      if (btn) {
+        document.querySelectorAll("#editPlanTypePills .selector-pill").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+      const customInput = document.getElementById("editPlanCustomTypeInput");
+      if (type === "CUSTOM") {
+        customInput.style.display = "block";
+      } else {
+        customInput.style.display = "none";
+        customInput.value = type;
+      }
     }
 
     function setPlanStatusEdit(status) {
@@ -1107,24 +1114,41 @@
     }
 
     async function saveDataPlanTariff() {
+      const targetId = document.getElementById("editPlanId").value.trim();
       const newName = document.getElementById("editPlanName").value.trim();
+      const newValidity = document.getElementById("editPlanValidity").value.trim() || "30 Days";
       const uPrice = Number(document.getElementById("editPlanUserPrice").value);
-      const aPrice = Number(document.getElementById("editPlanAgentPrice").value);
-      if (!uPrice || !aPrice) { alert("Please provide Customer and Agent prices."); return; }
+      const aPrice = Number(document.getElementById("editPlanAgentPrice").value || uPrice);
+
+      let finalType = document.getElementById("editPlanCustomTypeInput").value.trim() || "DC";
+      const activeTypePill = document.querySelector("#editPlanTypePills .selector-pill.active");
+      if (activeTypePill && !activeTypePill.innerText.includes("CUSTOM")) {
+        finalType = activeTypePill.innerText.trim();
+      }
+
+      if (!targetId || !newName || !uPrice) {
+        alert("Please provide Plan ID, Plan Display Name, and Customer price.");
+        return;
+      }
 
       const token = localStorage.getItem("userToken");
-      const targetId = selectedEditPlan.id || selectedEditPlan._id || selectedEditPlan.planId || selectedEditPlan.planCode;
+      const oldId = selectedEditPlan.id || selectedEditPlan._id || selectedEditPlan.planId || selectedEditPlan.planCode;
 
       const payload = {
-        id: targetId,
+        id: oldId,
         planId: targetId,
+        planCode: targetId,
+        code: targetId,
         name: newName,
         plan: newName,
         planLabel: newName,
+        planType: finalType,
+        validity: newValidity,
         userPrice: uPrice,
         agentPrice: aPrice,
         price: uPrice,
         status: selectedEditPlanStatus,
+        isActive: selectedEditPlanStatus === "active",
         broadcast: true
       };
 
@@ -1192,31 +1216,77 @@
       }
     }
 
-    // NEW DATA PLAN CONTROLS
+    // AUTOMATIC PRESET LOGIC & CONTROLS FOR NEW PLANS
+    function openAddPlanModal() {
+      renderPresetChips(newPlanSelectedNet);
+      openModal('addPlanModal');
+    }
+
+    function renderPresetChips(net) {
+      const container = document.getElementById("presetPillsRow");
+      const presets = ALIHSAN_PRESETS[net] || [];
+
+      if (presets.length === 0) {
+        container.innerHTML = `<span style="font-size:11px; color:#15803d;">No presets available for ${net}. Enter details manually below.</span>`;
+        return;
+      }
+
+      container.innerHTML = presets.map((p, idx) => `
+        <button class="selector-pill" onclick="applyQuickPreset('${net}', ${idx}, this)" style="background:#dcfce7; color:#166534; border-color:#86efac; font-weight:800;">
+          ⚡ ${p.label} (ID: ${p.id})
+        </button>
+      `).join("");
+    }
+
+    function applyQuickPreset(net, index, btn) {
+      const preset = ALIHSAN_PRESETS[net][index];
+      if (!preset) return;
+
+      document.querySelectorAll("#presetPillsRow .selector-pill").forEach(b => b.style.background = "#dcfce7");
+      btn.style.background = "#86efac";
+
+      // 1. Auto-fill Gateway Plan ID
+      document.getElementById("newPlanIdInput").value = preset.id;
+
+      // 2. Select Type
+      setNewPlanType(preset.type, Array.from(document.querySelectorAll("#newPlanTypePills .selector-pill")).find(b => b.innerText.includes(preset.type)));
+
+      // 3. Select Size
+      setNewPlanSize(preset.size, Array.from(document.querySelectorAll("#newPlanSizePills .selector-pill")).find(b => b.innerText.includes(preset.size)));
+
+      // 4. Select Validity
+      setNewPlanValidity(preset.validity, Array.from(document.querySelectorAll("#newPlanValidityPills .selector-pill")).find(b => b.innerText.includes(preset.validity)));
+
+      // 5. Fill Suggested Prices
+      document.getElementById("newPlanUserPrice").value = preset.uPrice;
+      document.getElementById("newPlanAgentPrice").value = preset.aPrice;
+    }
+
     function setNewPlanNet(net, btn) {
       newPlanSelectedNet = net;
       document.querySelectorAll("#newPlanNetPills .selector-pill").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      renderPresetChips(net);
     }
 
     function setNewPlanType(type, btn) {
       newPlanSelectedType = type;
       document.querySelectorAll("#newPlanTypePills .selector-pill").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      if (btn) btn.classList.add("active");
       document.getElementById("newPlanCustomTypeInput").style.display = (type === "CUSTOM") ? "block" : "none";
     }
 
     function setNewPlanSize(size, btn) {
       newPlanSelectedSize = size;
       document.querySelectorAll("#newPlanSizePills .selector-pill").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      if (btn) btn.classList.add("active");
       document.getElementById("newPlanCustomSizeInput").style.display = (size === "CUSTOM") ? "block" : "none";
     }
 
     function setNewPlanValidity(validity, btn) {
       newPlanSelectedValidity = validity;
       document.querySelectorAll("#newPlanValidityPills .selector-pill").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      if (btn) btn.classList.add("active");
       document.getElementById("newPlanCustomValidityInput").style.display = (validity === "CUSTOM") ? "block" : "none";
     }
 
@@ -1224,23 +1294,24 @@
       const finalType = newPlanSelectedType === "CUSTOM" ? document.getElementById("newPlanCustomTypeInput").value.trim() : newPlanSelectedType;
       const finalSize = newPlanSelectedSize === "CUSTOM" ? document.getElementById("newPlanCustomSizeInput").value.trim() : newPlanSelectedSize;
       const finalValidity = newPlanSelectedValidity === "CUSTOM" ? document.getElementById("newPlanCustomValidityInput").value.trim() : newPlanSelectedValidity;
+      const planIdVal = document.getElementById("newPlanIdInput").value.trim();
       const uPrice = Number(document.getElementById("newPlanUserPrice").value);
       const aPrice = Number(document.getElementById("newPlanAgentPrice").value || uPrice);
 
-      if (!finalType || !finalSize || !uPrice) {
-        alert("Please specify Plan Type, Size, and Customer Price.");
+      if (!planIdVal || !finalType || !finalSize || !uPrice) {
+        alert("Please specify Gateway Plan ID, Plan Type, Size, and Customer Price.");
         return;
       }
 
       const net = newPlanSelectedNet.toUpperCase();
-      const pCode = `${net}_${finalType.toUpperCase().replace(/\s+/g, '_')}_${finalSize.toUpperCase().replace(/\s+/g, '')}_${Date.now()}`;
       const pName = `${net} ${finalType} ${finalSize} (${finalValidity})`;
 
       const token = localStorage.getItem("userToken");
       const payload = {
-        id: pCode,
-        planCode: pCode,
-        code: pCode,
+        id: planIdVal,
+        planId: planIdVal,
+        planCode: planIdVal,
+        code: planIdVal,
         network: net,
         networkName: net,
         planType: finalType,
@@ -1401,14 +1472,12 @@
       };
 
       try {
-        // 1. Tura zuwa babban tebur na SuperAdmin
         await fetch(`${BASE_URL}/superadmin/pricing/set-global`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }).catch(() => {});
 
-        // 2. Idan na NIN Validation ne, tura zuwa asalin endpoint dinsa don ya canza a shafin verification kai tsaye
         if (isValidation) {
           await fetch(`${BASE_URL}/admin/nin/update-price`, {
             method: "POST",
