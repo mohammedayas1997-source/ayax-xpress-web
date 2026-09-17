@@ -435,20 +435,30 @@
       <div id="dataPlansFeed"></div>
     </div>
 
-    <!-- TAB 7: NIMC VERIFICATION PRICING DESK -->
-<div id="tabContent-identity_pricing" style="display: none;">
-  <div class="section-header-row">
-    <div>
-      <span class="section-header-label">NIMC VERIFICATION & SLIP PRICING MATRIX</span>
-      <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Direct live synchronization to Customer & Agent NIMC search screens.</div>
-    </div>
-    <button class="add-plan-header-btn" onclick="openCreateIdentityModal()">
-      <i class="fa-solid fa-circle-plus"></i> Add Service
-    </button>
-  </div>
+    <!-- TAB 7: NIMC, VALIDATION & IDENTITY SERVICES PRICING -->
+    <div id="tabContent-identity_pricing" style="display: none;">
+      <div class="section-header-row">
+        <div>
+          <span class="section-header-label">NIMC, VALIDATION & IDENTITY TARIFF MATRIX</span>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+            Synchronizes live prices to Customer, Agent, and NIN Verification Service portals.
+          </div>
+        </div>
+        <button class="add-plan-header-btn" onclick="openCreateIdentityModal()">
+          <i class="fa-solid fa-circle-plus"></i> Add Service
+        </button>
+      </div>
 
-  <div id="identityServicesFeed"></div>
-</div>
+      <!-- Filter Pills don sauƙin zaɓi -->
+      <div class="filter-scroll" id="identityFilterScroll" style="margin-bottom: 12px;">
+        <button class="filter-badge active" onclick="filterIdentityCategory('ALL', this)">ALL SERVICES</button>
+        <button class="filter-badge" onclick="filterIdentityCategory('VALIDATION', this)">NIN VALIDATIONS (7)</button>
+        <button class="filter-badge" onclick="filterIdentityCategory('NIMC', this)">NIMC SLIPS & SEARCH</button>
+        <button class="filter-badge" onclick="filterIdentityCategory('BVN', this)">BVN DESK</button>
+      </div>
+
+      <div id="identityServicesFeed"></div>
+    </div>
 
     <!-- TAB 8: DIRECTIVES & TARGETS -->
     <div id="tabContent-targets" style="display: none;">
@@ -634,67 +644,74 @@
     </div>
   </div>
 
- <!-- MODAL A: EDIT / DELETE IDENTITY TARIFF -->
-<div class="modal-overlay" id="editIdentityModal">
-  <div class="modal-card">
-    <div class="modal-header-row">
-      <div>
-        <h3 class="modal-title">Edit Verification Tariff</h3>
-        <div class="modal-sub" id="editIdentitySubtitle">Gateway Channel</div>
+  <!-- MODAL A: EDIT / DELETE IDENTITY TARIFF -->
+  <div class="modal-overlay" id="editIdentityModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h3 class="modal-title">Edit Verification Tariff</h3>
+          <div class="modal-sub" id="editIdentitySubtitle">Gateway Channel</div>
+        </div>
+        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('editIdentityModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
-      <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('editIdentityModal')">
-        <i class="fa-solid fa-xmark"></i>
+
+      <label class="form-field-label">Service Channel Name</label>
+      <input type="text" class="form-input" id="editIdentityName" placeholder="e.g. Standard NIN Slip">
+
+      <label class="form-field-label">Customer Retail Price (₦)</label>
+      <input type="number" class="form-input" id="editIdentityUserPrice">
+
+      <label class="form-field-label">Retail Agent Wholesale Price (₦)</label>
+      <input type="number" class="form-input" id="editIdentityAgentPrice">
+
+      <button class="submit-form-btn" onclick="saveIdentityTariff()">SAVE & DEPLOY TO NIMC TERMINALS</button>
+
+      <button type="button" style="width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 10px; height: 42px; font-size: 12px; font-weight: 900; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="deleteIdentityTariff()">
+        <i class="fa-solid fa-trash-can"></i> DELETE THIS SERVICE
       </button>
     </div>
-
-    <label class="form-field-label">Service Channel Name</label>
-    <input type="text" class="form-input" id="editIdentityName" placeholder="e.g. Standard NIN Slip">
-
-    <label class="form-field-label">Customer Retail Price (₦)</label>
-    <input type="number" class="form-input" id="editIdentityUserPrice">
-
-    <label class="form-field-label">Retail Agent Wholesale Price (₦)</label>
-    <input type="number" class="form-input" id="editIdentityAgentPrice">
-
-    <button class="submit-form-btn" onclick="saveIdentityTariff()">SAVE & DEPLOY TO NIMC TERMINALS</button>
-
-    <button type="button" style="width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 10px; height: 42px; font-size: 12px; font-weight: 900; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="deleteIdentityTariff()">
-      <i class="fa-solid fa-trash-can"></i> DELETE THIS SERVICE
-    </button>
   </div>
-</div>
 
-<!-- MODAL B: ADD NEW VERIFICATION SERVICE -->
-<div class="modal-overlay" id="createIdentityModal">
-  <div class="modal-card">
-    <div class="modal-header-row">
-      <div>
-        <h3 class="modal-title">Create Verification Channel</h3>
-        <div class="modal-sub">Add custom NIMC / Identity lookup service</div>
+  <!-- MODAL B: ADD NEW VERIFICATION SERVICE -->
+  <div class="modal-overlay" id="createIdentityModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h3 class="modal-title">Create Verification Channel</h3>
+          <div class="modal-sub">Add custom NIMC / Identity lookup service</div>
+        </div>
+        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('createIdentityModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
-      <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('createIdentityModal')">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+
+      <label class="form-field-label">Service Unique Key (e.g. vnin_val, bank_val, no_record)</label>
+      <input type="text" class="form-input" id="newIdentityKey" placeholder="e.g. sim_val">
+
+      <label class="form-field-label">Service Category</label>
+      <div class="selector-pills-row" id="newIdentityCatPills">
+        <button class="selector-pill active" onclick="setNewIdentityCategory('validation', this)">Validation</button>
+        <button class="selector-pill" onclick="setNewIdentityCategory('nimc', this)">NIMC Slip / Search</button>
+        <button class="selector-pill" onclick="setNewIdentityCategory('bvn', this)">BVN Desk</button>
+      </div>
+
+      <label class="form-field-label">Service Title</label>
+      <input type="text" class="form-input" id="newIdentityName" placeholder="e.g. SIM Registration Validation">
+
+      <label class="form-field-label">Channel Description</label>
+      <input type="text" class="form-input" id="newIdentityDesc" placeholder="e.g. NIMC official telecom and line clearance">
+
+      <label class="form-field-label">Customer Selling Price (₦)</label>
+      <input type="number" class="form-input" id="newIdentityUserPrice" placeholder="e.g. 1300">
+
+      <label class="form-field-label">Retail Agent Wholesale Price (₦)</label>
+      <input type="number" class="form-input" id="newIdentityAgentPrice" placeholder="e.g. 1100">
+
+      <button class="submit-form-btn" onclick="publishNewIdentityService()">AUTHORIZE & PUBLISH CHANNEL</button>
     </div>
-
-    <label class="form-field-label">Service Unique Key (e.g. vnin_search, bvn_advance)</label>
-    <input type="text" class="form-input" id="newIdentityKey" placeholder="e.g. vnin">
-
-    <label class="form-field-label">Service Title</label>
-    <input type="text" class="form-input" id="newIdentityName" placeholder="e.g. Virtual NIN Verification">
-
-    <label class="form-field-label">Channel Description</label>
-    <input type="text" class="form-input" id="newIdentityDesc" placeholder="e.g. 16-digit alphanumeric VNIN lookup">
-
-    <label class="form-field-label">Customer Selling Price (₦)</label>
-    <input type="number" class="form-input" id="newIdentityUserPrice" placeholder="e.g. 200">
-
-    <label class="form-field-label">Retail Agent Wholesale Price (₦)</label>
-    <input type="number" class="form-input" id="newIdentityAgentPrice" placeholder="e.g. 150">
-
-    <button class="submit-form-btn" onclick="publishNewIdentityService()">AUTHORIZE & PUBLISH CHANNEL</button>
   </div>
-</div>
 
   <!-- MODAL 4: TRANSFER AGENTS -->
   <div class="modal-overlay" id="transferModal">
@@ -772,68 +789,122 @@
     let selectedRefundIds = [];
     let activeRoleFilter = "all";
     let activeNetFilter = "ALL";
+    let activeIdentityCategoryFilter = "ALL";
 
-    // NIMC, BVN & Utility List
     let identityServicesList = [
-  {
-    serviceCategory: "nimc",
-    serviceKey: "nin",
-    name: "NIN Number Search",
-    placeholder: "Enter 11-digit NIN",
-    desc: "Direct verification using national identity number",
-    userPrice: 150,
-    agentPrice: 100,
-  },
-  {
-    serviceCategory: "nimc",
-    serviceKey: "phone",
-    name: "Phone Number Search",
-    placeholder: "Enter Linked Phone Number",
-    desc: "Fetch identity profile linked to SIM number",
-    userPrice: 200,
-    agentPrice: 150,
-  },
-  {
-    serviceCategory: "nimc",
-    serviceKey: "trackingId",
-    name: "Tracking ID Search",
-    placeholder: "Enter NIMC Tracking ID",
-    desc: "Retrieve slip with NIMC enrollment tracking code",
-    userPrice: 150,
-    agentPrice: 100,
-  },
-  {
-    serviceCategory: "nimc",
-    serviceKey: "standardSlip",
-    name: "Standard NIN Slip",
-    placeholder: "Enter 11-digit NIN or Tracking ID",
-    desc: "Official full details identification printable slip",
-    userPrice: 300,
-    agentPrice: 200,
-  },
-  {
-    serviceCategory: "nimc",
-    serviceKey: "premiumCard",
-    name: "Premium ID Card Slip",
-    placeholder: "Enter 11-digit NIN",
-    desc: "Wallet plastic-sized ready-to-laminate NIN card",
-    userPrice: 400,
-    agentPrice: 300,
-  },
-  {
-    serviceCategory: "nimc",
-    serviceKey: "basicSlip",
-    name: "Basic Identification Slip",
-    placeholder: "Enter 11-digit NIN",
-    desc: "Concise confirmation paper format slip",
-    userPrice: 150,
-    agentPrice: 100,
-  }
-];
+      // --- A. NIN VALIDATION SERVICES (DAGA AINIHIN SHAFIN VALIDATION) ---
+      {
+        serviceCategory: "validation",
+        serviceKey: "no_record",
+        name: "No Record Found",
+        desc: "NIN clearing and profile re-linking for no record errors",
+        userPrice: 1300,
+        agentPrice: 1100,
+      },
+      {
+        serviceCategory: "validation",
+        serviceKey: "sim_val",
+        name: "SIM Validation",
+        desc: "Telecom and SIM registration line validation",
+        userPrice: 1300,
+        agentPrice: 1100,
+      },
+      {
+        serviceCategory: "validation",
+        serviceKey: "vnin_val",
+        name: "vNIN Validation",
+        desc: "Virtual NIN 16-digit verification and validation",
+        userPrice: 1300,
+        agentPrice: 1100,
+      },
+      {
+        serviceCategory: "validation",
+        serviceKey: "update_record",
+        name: "Update Records Validation",
+        desc: "NIMC database record synchronization and update",
+        userPrice: 1300,
+        agentPrice: 1100,
+      },
+      {
+        serviceCategory: "validation",
+        serviceKey: "bank_val",
+        name: "Bank Validation",
+        desc: "CBN / Commercial bank account and BVN-NIN tie validation",
+        userPrice: 1300,
+        agentPrice: 1100,
+      },
+      {
+        serviceCategory: "validation",
+        serviceKey: "mod_val",
+        name: "Modification Validation",
+        desc: "Validation clearance after name/DOB modification",
+        userPrice: 1700,
+        agentPrice: 1500,
+      },
+      {
+        serviceCategory: "validation",
+        serviceKey: "photo_error",
+        name: "Photographic Error",
+        desc: "NIMC portrait biometric photographic resolution",
+        userPrice: 1400,
+        agentPrice: 1200,
+      },
+
+      // --- B. NIMC REPRINT & SEARCH CHANNELS ---
+      {
+        serviceCategory: "nimc",
+        serviceKey: "nin",
+        name: "NIN Number Search",
+        desc: "Direct verification using national identity number",
+        userPrice: 150,
+        agentPrice: 100,
+      },
+      {
+        serviceCategory: "nimc",
+        serviceKey: "phone",
+        name: "Phone Number Search",
+        desc: "Fetch identity profile linked to SIM number",
+        userPrice: 200,
+        agentPrice: 150,
+      },
+      {
+        serviceCategory: "nimc",
+        serviceKey: "trackingId",
+        name: "Tracking ID Search",
+        desc: "Retrieve slip with NIMC enrollment tracking code",
+        userPrice: 150,
+        agentPrice: 100,
+      },
+      {
+        serviceCategory: "nimc",
+        serviceKey: "standardSlip",
+        name: "Standard NIN Slip",
+        desc: "Official full details identification printable slip",
+        userPrice: 300,
+        agentPrice: 200,
+      },
+      {
+        serviceCategory: "nimc",
+        serviceKey: "premiumCard",
+        name: "Premium ID Card Slip",
+        desc: "Wallet plastic-sized ready-to-laminate NIN card",
+        userPrice: 400,
+        agentPrice: 300,
+      },
+      {
+        serviceCategory: "nimc",
+        serviceKey: "basicSlip",
+        name: "Basic Identification Slip",
+        desc: "Concise confirmation paper format slip",
+        userPrice: 150,
+        agentPrice: 100,
+      }
+    ];
 
     let selectedEditPlan = null;
     let selectedEditPlanStatus = "active";
     let selectedEditIdentity = null;
+    let selectedNewIdentityCat = "validation";
 
     let newPlanSelectedNet = "MTN";
     let newPlanSelectedType = "SME";
@@ -875,12 +946,14 @@
       const headers = { Authorization: `Bearer ${token}` };
 
       try {
-        const [statsRes, usersRes, superPlansRes, dataPlansRes, refundsRes] = await Promise.allSettled([
+        const [statsRes, usersRes, superPlansRes, dataPlansRes, refundsRes, ninPricesRes, nimcPricesRes] = await Promise.allSettled([
           fetch(`${BASE_URL}/admin/dashboard-stats`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/admin/users?limit=150`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/superadmin/plans`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()).catch(() => ({})),
-          fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json()).catch(() => ({}))
+          fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/nin/prices`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/nimc/prices`, { headers }).then(r => r.json()).catch(() => ({}))
         ]);
 
         if (statsRes.status === "fulfilled" && statsRes.value) {
@@ -920,6 +993,24 @@
           document.getElementById("statsRefundsVal").innerText = pendingRefundsList.length;
           document.getElementById("refundTabCount").innerText = pendingRefundsList.length;
           renderRefunds(pendingRefundsList);
+        }
+
+        // Sync Live Prices for NIN Validation & NIMC
+        if (ninPricesRes.status === "fulfilled" && ninPricesRes.value?.prices) {
+          const np = ninPricesRes.value.prices;
+          identityServicesList.forEach(item => {
+            if (np[item.serviceKey] !== undefined) {
+              item.userPrice = Number(np[item.serviceKey]);
+            }
+          });
+        }
+        if (nimcPricesRes.status === "fulfilled" && nimcPricesRes.value?.prices) {
+          const mp = nimcPricesRes.value.prices;
+          identityServicesList.forEach(item => {
+            if (mp[item.serviceKey] !== undefined) {
+              item.userPrice = Number(mp[item.serviceKey]);
+            }
+          });
         }
 
         renderIdentityServices();
@@ -1192,187 +1283,247 @@
       }
     }
 
+    // NIMC, BVN & VALIDATION CONTROLS
+    function filterIdentityCategory(cat, btn) {
+      activeIdentityCategoryFilter = cat;
+      document.querySelectorAll("#identityFilterScroll .filter-badge").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      renderIdentityServices();
+    }
+
     function renderIdentityServices() {
-  const feed = document.getElementById("identityServicesFeed");
-  if (!identityServicesList || identityServicesList.length === 0) {
-    feed.innerHTML = `<div style="text-align:center; padding:24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No verification channels registered.</div>`;
-    return;
-  }
+      const feed = document.getElementById("identityServicesFeed");
+      if (!identityServicesList || identityServicesList.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding:24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No verification channels registered.</div>`;
+        return;
+      }
 
-  feed.innerHTML = identityServicesList.map(svc => `
-    <div class="super-plan-card">
-      <div class="super-plan-card-top">
-        <div>
-          <div class="plan-badge-row">
-            <span class="plan-pill" style="background:#e0f2fe; color:#0284c7;">${String(svc.serviceCategory || 'NIMC').toUpperCase()}</span>
-            <span class="plan-pill" style="background:#ecfdf5; color:#059669;">KEY: ${svc.serviceKey}</span>
+      const filtered = identityServicesList.filter(svc => {
+        const cat = String(svc.serviceCategory || "nimc").toUpperCase();
+        if (activeIdentityCategoryFilter === "ALL") return true;
+        return cat === activeIdentityCategoryFilter;
+      });
+
+      if (!filtered || filtered.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding:24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No services matching ${activeIdentityCategoryFilter}.</div>`;
+        return;
+      }
+
+      feed.innerHTML = filtered.map(svc => {
+        const isVal = String(svc.serviceCategory).toLowerCase() === "validation";
+        const badgeBg = isVal ? "#fef3c7" : "#e0f2fe";
+        const badgeColor = isVal ? "#b45309" : "#0284c7";
+        const badgeText = isVal ? "NIN VALIDATION" : String(svc.serviceCategory || 'NIMC').toUpperCase();
+
+        return `
+          <div class="super-plan-card" style="${isVal ? 'border-left: 4px solid #f59e0b;' : ''}">
+            <div class="super-plan-card-top">
+              <div>
+                <div class="plan-badge-row">
+                  <span class="plan-pill" style="background:${badgeBg}; color:${badgeColor};">${badgeText}</span>
+                  <span class="plan-pill" style="background:#ecfdf5; color:#059669;">KEY: ${svc.serviceKey}</span>
+                </div>
+                <div class="super-plan-title">${svc.name}</div>
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">${svc.desc || 'Government verified gateway channel'}</div>
+              </div>
+              <button class="super-plan-edit-btn" onclick="openEditIdentity('${svc.serviceKey}')">
+                <i class="fa-solid fa-pen-to-square"></i> Set Price
+              </button>
+            </div>
+
+            <div class="clean-pricing-row">
+              <div class="clean-price-box">
+                <div class="clean-price-label">Customer Price</div>
+                <div class="clean-price-value">₦${Number(svc.userPrice || svc.amount || 0).toLocaleString()}</div>
+              </div>
+              <div class="clean-price-divider"></div>
+              <div class="clean-price-box">
+                <div class="clean-price-label">Agent Cost</div>
+                <div class="clean-price-value" style="color:#0284c7;">₦${Number(svc.agentPrice || svc.userPrice || 0).toLocaleString()}</div>
+              </div>
+            </div>
           </div>
-          <div class="super-plan-title">${svc.name}</div>
-          <div style="font-size:11px; color:#64748b; margin-top:2px;">${svc.desc || 'NIMC verified lookup channel'}</div>
-        </div>
-        <button class="super-plan-edit-btn" onclick="openEditIdentity('${svc.serviceKey}')">
-          <i class="fa-solid fa-pen-to-square"></i> Set Price
-        </button>
-      </div>
+        `;
+      }).join("");
+    }
 
-      <div class="clean-pricing-row">
-        <div class="clean-price-box">
-          <div class="clean-price-label">Customer Fee</div>
-          <div class="clean-price-value">₦${Number(svc.userPrice || svc.amount || 0).toLocaleString()}</div>
-        </div>
-        <div class="clean-price-divider"></div>
-        <div class="clean-price-box">
-          <div class="clean-price-label">Agent Cost</div>
-          <div class="clean-price-value" style="color:#0284c7;">₦${Number(svc.agentPrice || svc.userPrice || 0).toLocaleString()}</div>
-        </div>
-      </div>
-    </div>
-  `).join("");
-}
+    function openEditIdentity(key) {
+      selectedEditIdentity = identityServicesList.find(s => s.serviceKey === key);
+      if (!selectedEditIdentity) return;
 
-function openEditIdentity(key) {
-  selectedEditIdentity = identityServicesList.find(s => s.serviceKey === key);
-  if (!selectedEditIdentity) return;
+      document.getElementById("editIdentitySubtitle").innerText = `${selectedEditIdentity.name} (Key: ${selectedEditIdentity.serviceKey})`;
+      document.getElementById("editIdentityName").value = selectedEditIdentity.name || "";
+      document.getElementById("editIdentityUserPrice").value = selectedEditIdentity.userPrice || selectedEditIdentity.amount || 0;
+      document.getElementById("editIdentityAgentPrice").value = selectedEditIdentity.agentPrice || selectedEditIdentity.userPrice || 0;
+      openModal("editIdentityModal");
+    }
 
-  document.getElementById("editIdentitySubtitle").innerText = `${selectedEditIdentity.name} (Key: ${selectedEditIdentity.serviceKey})`;
-  document.getElementById("editIdentityName").value = selectedEditIdentity.name || "";
-  document.getElementById("editIdentityUserPrice").value = selectedEditIdentity.userPrice || selectedEditIdentity.amount || 0;
-  document.getElementById("editIdentityAgentPrice").value = selectedEditIdentity.agentPrice || selectedEditIdentity.userPrice || 0;
-  openModal("editIdentityModal");
-}
+    function openCreateIdentityModal() {
+      document.getElementById("newIdentityKey").value = "";
+      document.getElementById("newIdentityName").value = "";
+      document.getElementById("newIdentityDesc").value = "";
+      document.getElementById("newIdentityUserPrice").value = "";
+      document.getElementById("newIdentityAgentPrice").value = "";
+      setNewIdentityCategory('validation', document.querySelector("#newIdentityCatPills .selector-pill"));
+      openModal("createIdentityModal");
+    }
 
-function openCreateIdentityModal() {
-  document.getElementById("newIdentityKey").value = "";
-  document.getElementById("newIdentityName").value = "";
-  document.getElementById("newIdentityDesc").value = "";
-  document.getElementById("newIdentityUserPrice").value = "";
-  document.getElementById("newIdentityAgentPrice").value = "";
-  openModal("createIdentityModal");
-}
+    function setNewIdentityCategory(cat, btn) {
+      selectedNewIdentityCat = cat;
+      document.querySelectorAll("#newIdentityCatPills .selector-pill").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+    }
 
-async function saveIdentityTariff() {
-  const newName = document.getElementById("editIdentityName").value.trim();
-  const uPrice = Number(document.getElementById("editIdentityUserPrice").value);
-  const aPrice = Number(document.getElementById("editIdentityAgentPrice").value || uPrice);
+    async function saveIdentityTariff() {
+      const newName = document.getElementById("editIdentityName").value.trim();
+      const uPrice = Number(document.getElementById("editIdentityUserPrice").value);
+      const aPrice = Number(document.getElementById("editIdentityAgentPrice").value || uPrice);
 
-  if (!newName || !uPrice) {
-    alert("Please provide both Service Name and Customer price.");
-    return;
-  }
+      if (!newName || !uPrice) {
+        alert("Please provide both Service Name and Customer price.");
+        return;
+      }
 
-  const token = localStorage.getItem("userToken");
-  const payload = {
-    serviceCategory: selectedEditIdentity.serviceCategory || "nimc",
-    serviceType: selectedEditIdentity.serviceKey,
-    serviceKey: selectedEditIdentity.serviceKey,
-    serviceId: selectedEditIdentity.serviceKey,
-    name: newName,
-    amount: uPrice,
-    userPrice: uPrice,
-    agentPrice: aPrice,
-    costPrice: 0,
-  };
+      const token = localStorage.getItem("userToken");
+      const isValidation = String(selectedEditIdentity.serviceCategory).toLowerCase() === "validation";
 
-  try {
-    // 1. Ajiye a babban teburin Pricing na SuperAdmin
-    await fetch(`${BASE_URL}/superadmin/pricing/set-global`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(() => {});
-
-    // 2. Ajiye kai-tsaye a /nimc/admin/set-price don app ya dauka a take
-    await fetch(`${BASE_URL}/nimc/admin/set-price`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
+      const payload = {
+        serviceCategory: selectedEditIdentity.serviceCategory || "nimc",
         serviceType: selectedEditIdentity.serviceKey,
-        amount: aPrice,
-        userPrice: uPrice,
+        serviceKey: selectedEditIdentity.serviceKey,
+        serviceId: selectedEditIdentity.serviceKey,
         name: newName,
-      }),
-    }).catch(() => {});
-
-    selectedEditIdentity.name = newName;
-    selectedEditIdentity.userPrice = uPrice;
-    selectedEditIdentity.agentPrice = aPrice;
-
-    alert(`NIMC Tariff for ${newName} updated successfully!`);
-    closeModal("editIdentityModal");
-    renderIdentityServices();
-  } catch (e) {
-    alert("Error updating price: " + e.message);
-  }
-}
-
-async function publishNewIdentityService() {
-  const key = document.getElementById("newIdentityKey").value.trim().toLowerCase().replace(/\s+/g, "_");
-  const name = document.getElementById("newIdentityName").value.trim();
-  const desc = document.getElementById("newIdentityDesc").value.trim();
-  const uPrice = Number(document.getElementById("newIdentityUserPrice").value);
-  const aPrice = Number(document.getElementById("newIdentityAgentPrice").value || uPrice);
-
-  if (!key || !name || !uPrice) {
-    alert("Please fill in Service Key, Name, and Customer Price.");
-    return;
-  }
-
-  const newServiceObj = {
-    serviceCategory: "nimc",
-    serviceKey: key,
-    name: name,
-    desc: desc || "NIMC digital verification",
-    userPrice: uPrice,
-    agentPrice: aPrice,
-  };
-
-  const token = localStorage.getItem("userToken");
-  try {
-    await fetch(`${BASE_URL}/superadmin/pricing/set-global`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        serviceCategory: "nimc",
-        serviceKey: key,
-        serviceId: key,
-        name: name,
         amount: uPrice,
         userPrice: uPrice,
         agentPrice: aPrice,
-      }),
-    }).catch(() => {});
+        costPrice: 0,
+        price: uPrice
+      };
 
-    identityServicesList.push(newServiceObj);
-    alert(`Service "${name}" added successfully!`);
-    closeModal("createIdentityModal");
-    renderIdentityServices();
-  } catch (e) {
-    alert("Failed to create service: " + e.message);
-  }
-}
+      try {
+        // 1. Tura zuwa babban tebur na SuperAdmin
+        await fetch(`${BASE_URL}/superadmin/pricing/set-global`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }).catch(() => {});
 
-async function deleteIdentityTariff() {
-  if (!selectedEditIdentity) return;
-  const sName = selectedEditIdentity.name || selectedEditIdentity.serviceKey;
-  if (!confirm(`Are you sure you want to PERMANENTLY REMOVE "${sName}"?`)) {
-    return;
-  }
+        // 2. Idan na NIN Validation ne, tura zuwa asalin endpoint dinsa don ya canza a shafin verification kai tsaye
+        if (isValidation) {
+          await fetch(`${BASE_URL}/admin/nin/update-price`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              serviceId: selectedEditIdentity.serviceKey,
+              serviceName: newName,
+              price: uPrice
+            }),
+          }).catch(() => {});
+        } else {
+          await fetch(`${BASE_URL}/nimc/admin/set-price`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              serviceType: selectedEditIdentity.serviceKey,
+              amount: aPrice,
+              userPrice: uPrice,
+              name: newName,
+            }),
+          }).catch(() => {});
+        }
 
-  const token = localStorage.getItem("userToken");
-  try {
-    await fetch(`${BASE_URL}/superadmin/pricing/delete-global/${selectedEditIdentity.serviceKey}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    }).catch(() => {});
+        selectedEditIdentity.name = newName;
+        selectedEditIdentity.userPrice = uPrice;
+        selectedEditIdentity.agentPrice = aPrice;
 
-    identityServicesList = identityServicesList.filter(s => s.serviceKey !== selectedEditIdentity.serviceKey);
-    alert(`"${sName}" has been completely removed.`);
-    closeModal("editIdentityModal");
-    renderIdentityServices();
-  } catch (e) {
-    alert("Delete error: " + e.message);
-  }
-}
+        alert(`Tariff for "${newName}" updated successfully across portals! 🚀`);
+        closeModal("editIdentityModal");
+        renderIdentityServices();
+      } catch (e) {
+        alert("Error updating price: " + e.message);
+      }
+    }
+
+    async function publishNewIdentityService() {
+      const key = document.getElementById("newIdentityKey").value.trim().toLowerCase().replace(/\s+/g, "_");
+      const name = document.getElementById("newIdentityName").value.trim();
+      const desc = document.getElementById("newIdentityDesc").value.trim();
+      const uPrice = Number(document.getElementById("newIdentityUserPrice").value);
+      const aPrice = Number(document.getElementById("newIdentityAgentPrice").value || uPrice);
+
+      if (!key || !name || !uPrice) {
+        alert("Please fill in Service Key, Name, and Customer Price.");
+        return;
+      }
+
+      const newServiceObj = {
+        serviceCategory: selectedNewIdentityCat,
+        serviceKey: key,
+        name: name,
+        desc: desc || "Government verified digital channel",
+        userPrice: uPrice,
+        agentPrice: aPrice,
+      };
+
+      const token = localStorage.getItem("userToken");
+      try {
+        await fetch(`${BASE_URL}/superadmin/pricing/set-global`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            serviceCategory: selectedNewIdentityCat,
+            serviceKey: key,
+            serviceId: key,
+            name: name,
+            amount: uPrice,
+            userPrice: uPrice,
+            agentPrice: aPrice,
+          }),
+        }).catch(() => {});
+
+        if (selectedNewIdentityCat === "validation") {
+          await fetch(`${BASE_URL}/admin/nin/update-price`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              serviceId: key,
+              serviceName: name,
+              price: uPrice
+            }),
+          }).catch(() => {});
+        }
+
+        identityServicesList.push(newServiceObj);
+        alert(`Service "${name}" added successfully!`);
+        closeModal("createIdentityModal");
+        renderIdentityServices();
+      } catch (e) {
+        alert("Failed to create service: " + e.message);
+      }
+    }
+
+    async function deleteIdentityTariff() {
+      if (!selectedEditIdentity) return;
+      const sName = selectedEditIdentity.name || selectedEditIdentity.serviceKey;
+      if (!confirm(`Are you sure you want to PERMANENTLY REMOVE "${sName}"?`)) {
+        return;
+      }
+
+      const token = localStorage.getItem("userToken");
+      try {
+        await fetch(`${BASE_URL}/superadmin/pricing/delete-global/${selectedEditIdentity.serviceKey}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+        }).catch(() => {});
+
+        identityServicesList = identityServicesList.filter(s => s.serviceKey !== selectedEditIdentity.serviceKey);
+        alert(`"${sName}" has been completely removed.`);
+        closeModal("editIdentityModal");
+        renderIdentityServices();
+      } catch (e) {
+        alert("Delete error: " + e.message);
+      }
+    }
 
     // USERS RENDERING
     function renderUsers(list) {
@@ -1530,7 +1681,7 @@ async function deleteIdentityTariff() {
     async function handleDispatchDirective() {
       const token = localStorage.getItem("userToken");
       try {
-        const res = await fetch(`${BASE_URL}/admin/targets/assign`, {
+        await fetch(`${BASE_URL}/admin/targets/assign`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1542,7 +1693,7 @@ async function deleteIdentityTariff() {
           })
         }).then(r => r.json());
 
-        alert(res.message || `Directive dispatched to ${directiveSelectedCadre.toUpperCase()} officers!`);
+        alert(`Directive dispatched to ${directiveSelectedCadre.toUpperCase()} officers!`);
       } catch (e) {
         alert("Directive dispatched to field personnel.");
       }
@@ -1563,7 +1714,7 @@ async function deleteIdentityTariff() {
 
       const token = localStorage.getItem("userToken");
       try {
-        const res = await fetch(`${BASE_URL}/admin/notifications/broadcast`, {
+        await fetch(`${BASE_URL}/admin/notifications/broadcast`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1573,7 +1724,7 @@ async function deleteIdentityTariff() {
           })
         }).then(r => r.json());
 
-        alert(res.message || "Notification dispatched successfully! 🚀");
+        alert("Notification dispatched successfully! 🚀");
         document.getElementById("broadcastTitle").value = "";
         document.getElementById("broadcastBody").value = "";
       } catch (e) {
