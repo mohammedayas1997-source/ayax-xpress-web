@@ -310,25 +310,6 @@
     }
     .agent-sup-title { color: #1e40af; font-size: 10px; font-weight: 900; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
     .agent-sup-text { font-size: 11px; color: #475569; margin: 2px 0; }
-    .agent-quotas {
-      display: flex;
-      justify-content: space-between;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 6px 10px;
-      margin-top: 8px;
-      font-size: 11px;
-      color: #64748b;
-    }
-    .agent-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid #f1f5f9;
-      padding-top: 8px;
-      margin-top: 8px;
-    }
 
     /* LGA Matrix */
     .lga-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
@@ -727,8 +708,36 @@
     </div>
   </div>
 
+  <!-- Inspect Supervisor Team Modal -->
+  <div class="modal-overlay" id="inspectModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="inspectModalTitle">Supervisor Details</h3>
+          <div class="modal-sub" id="inspectModalSub">Active Field Deployment</div>
+        </div>
+        <button class="icon-btn" onclick="closeModal('inspectModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="inspectContent"></div>
+    </div>
+  </div>
+
+  <!-- Smart Target / Auto-Split Modal -->
+  <div class="modal-overlay" id="targetModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="targetModalTitle">Quota Allocation</h3>
+          <div class="modal-sub" id="targetModalSub">State Operational Directives</div>
+        </div>
+        <button class="icon-btn" onclick="closeModal('targetModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="targetModalBody"></div>
+    </div>
+  </div>
+
   <script>
-    // --- 1. OFFICIAL NIGERIA GEODATA MAP FOR ALL 36 STATES + FCT ---
+    // --- OFFICIAL NIGERIA GEODATA MAP FOR ALL 36 STATES + FCT ---
     const NIGERIA_STATES_LGAS = {
       "Abia": ["Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala Ngwa North", "Isiala Ngwa South", "Isuikwuato", "Obi Ngwa", "Ohafia", "Osisioma", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu Nneochi"],
       "Adamawa": ["Demsa", "Fufure", "Ganye", "Gayuk", "Gombi", "Grie", "Hong", "Jada", "Lamurde", "Madagali", "Maiha", "Mayo Belwa", "Michika", "Mubi North", "Mubi South", "Numan", "Shelleng", "Song", "Toungo", "Yola North", "Yola South"],
@@ -770,8 +779,8 @@
     };
 
     const BASE_URL = "https://ayax-data-xpress-server.onrender.com/api/v1";
-    let managerState = "Zamfara";
-    let currentLgaList = NIGERIA_STATES_LGAS["Zamfara"] || [];
+    let managerState = "";
+    let currentLgaList = [];
     let supervisors = [];
     let agents = [];
     let logs = [];
@@ -784,10 +793,14 @@
 
     function switchTab(tab) {
       document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
-      document.getElementById(`tabBtn-${tab}`).classList.add("active");
+      const targetBtn = document.getElementById(`tabBtn-${tab}`);
+      if (targetBtn) targetBtn.classList.add("active");
+
       ["supervisors", "agents", "lgas", "history"].forEach(t => {
-        document.getElementById(`tabContent-${t}`).style.display = (t === tab) ? "block" : "none";
+        const el = document.getElementById(`tabContent-${t}`);
+        if (el) el.style.display = (t === tab) ? "block" : "none";
       });
+
       if (tab === "lgas") {
         renderLgas();
       }
@@ -796,10 +809,33 @@
     function openModal(id) { document.getElementById(id).classList.add("active"); }
     function closeModal(id) { document.getElementById(id).classList.remove("active"); }
 
+    // Helper don gano jihar a tsare-tsare daban-daban na sunaye
+    function resolveCanonicalStateName(stateInput) {
+      if (!stateInput || typeof stateInput !== "string") return "";
+      const cleaned = stateInput.trim().toLowerCase().replace(/state$/i, "").trim();
+      const allStates = Object.keys(NIGERIA_STATES_LGAS);
+      const match = allStates.find(s => s.toLowerCase() === cleaned);
+      return match || stateInput.trim();
+    }
+
     function updateLgaSelectOptions() {
       const select = document.getElementById("newSupLga");
-      if (select) {
+      if (select && currentLgaList.length > 0) {
         select.innerHTML = currentLgaList.map(lga => `<option value="${lga}">${lga}</option>`).join("");
+      }
+    }
+
+    // Helper don karanta JWT Token payload a client idan an buƙata
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
       }
     }
 
@@ -812,16 +848,32 @@
         return;
       }
 
-      // 1. Dauko ainihin Jihar mai shiga daga LocalStorage
+      // 1. Gano ainihin jihar mai shiga daga userData ko Token
+      let detectedState = "";
       if (storedUserData) {
         try {
           const user = JSON.parse(storedUserData);
-          if (user.state && user.state.trim() !== "") {
-            managerState = user.state.trim();
-          }
+          detectedState = user.state || user.assignedState || (user.user && user.user.state) || (user.targets && user.targets.state) || "";
         } catch (e) {
           console.error("Error parsing userData:", e);
         }
+      }
+
+      if (!detectedState) {
+        const decoded = parseJwt(token);
+        if (decoded && (decoded.state || decoded.assignedState)) {
+          detectedState = decoded.state || decoded.assignedState;
+        }
+      }
+
+      if (detectedState) {
+        managerState = resolveCanonicalStateName(detectedState);
+      }
+
+      // Saita LGAs na farko idan an samu jiha
+      if (managerState && NIGERIA_STATES_LGAS[managerState]) {
+        currentLgaList = NIGERIA_STATES_LGAS[managerState];
+        applyStateHeaderInfo();
       }
 
       const headers = { Authorization: `Bearer ${token}` };
@@ -836,29 +888,25 @@
 
         const data = dRes.data || dRes || {};
 
-        // 2. Idan backend ya dawo da ainihin jihar mai shiga, sabunta ta
-        const serverState = data.state || data.managerState || data.leaderState;
-        if (serverState && serverState.trim() !== "") {
-          managerState = serverState.trim();
+        // 2. Tabbatar da jihar daga Backend Response
+        const serverState = data.state || data.managerState || data.leaderState || dRes.state || dRes.managerState || (tRes.targets && tRes.targets.state);
+        if (serverState && typeof serverState === "string" && serverState.trim() !== "") {
+          managerState = resolveCanonicalStateName(serverState);
         }
 
-        // 3. Lissafa kananan hukumomin ainihin Jihar
-        currentLgaList = NIGERIA_STATES_LGAS[managerState] || NIGERIA_STATES_LGAS["Zamfara"] || [];
-        const stateLgaCount = currentLgaList.length;
+        // Idan har yanzu babu jiha, kar a yi amfani da Kano a matsayin dole, a ɗauki jihar farko a tsarin
+        if (!managerState || !NIGERIA_STATES_LGAS[managerState]) {
+          managerState = Object.keys(NIGERIA_STATES_LGAS)[0];
+        }
 
-        // 4. Sabunta dukkan Headers da Lambobin LGAs a Allon
-        const upperState = managerState.toUpperCase();
-        document.getElementById("topStateBadge").innerText = `${upperState} STATE MANAGER (SM)`;
-        document.getElementById("topLgaTitle").innerText = `${stateLgaCount} LGAS COMMAND DESK`;
-        document.getElementById("drawerStateText").innerText = `${managerState} State`;
-        document.getElementById("lgaCountNav").innerText = stateLgaCount;
-
+        currentLgaList = NIGERIA_STATES_LGAS[managerState] || [];
+        applyStateHeaderInfo();
         updateLgaSelectOptions();
 
         supervisors = Array.isArray(data.supervisors) ? data.supervisors : [];
         agents = Array.isArray(aRes.agents) ? aRes.agents : (data.agents || []);
         logs = Array.isArray(lRes.logs) ? lRes.logs : (data.activityLogs || []);
-        myTargets = tRes.targets || tRes.data || {};
+        myTargets = tRes.targets || tRes.data || data.myTargets || {};
 
         document.getElementById("supCountNav").innerText = supervisors.length;
         document.getElementById("agentCountNav").innerText = agents.length;
@@ -868,28 +916,28 @@
         // Metrics
         const uniqueLgasWithSup = new Set(supervisors.map(s => s.lga).filter(Boolean)).size;
         document.getElementById("statsSupCount").innerText = supervisors.length;
-        document.getElementById("statsLgaCount").innerText = `Across ${uniqueLgasWithSup} of ${stateLgaCount} LGAs`;
+        document.getElementById("statsLgaCount").innerText = `Across ${uniqueLgasWithSup} of ${currentLgaList.length} LGAs`;
         document.getElementById("statsAgentCount").innerText = agents.length;
-        document.getElementById("statsDataSold").innerText = (data.networkStats?.overallDataSold || 0) + " GB";
-        document.getElementById("statsAirtimeSold").innerText = "₦" + Number(data.networkStats?.overallAirtimeSold || 0).toLocaleString();
+        document.getElementById("statsDataSold").innerText = (data.networkStats?.overallDataSold || myTargets.dataSold || 0) + " GB";
+        document.getElementById("statsAirtimeSold").innerText = "₦" + Number(data.networkStats?.overallAirtimeSold || myTargets.airtimeSold || 0).toLocaleString();
 
-        // Targets
-        const dGoal = myTargets.dataGoal || 0;
-        const dSold = data.networkStats?.overallDataSold || 0;
+        // Target Quotas Progress
+        const dGoal = Number(myTargets.dataGoal || 0);
+        const dSold = Number(data.networkStats?.overallDataSold || myTargets.dataSold || 0);
         const dProg = dGoal > 0 ? Math.min(Math.round((dSold / dGoal) * 100), 100) : 0;
         document.getElementById("dataQuotaVal").innerText = `${dSold} / ${dGoal} GB`;
         document.getElementById("dataProgressFill").style.width = `${dProg}%`;
         document.getElementById("dataPercentSub").innerText = `${dProg}% Completed`;
 
-        const aGoal = myTargets.airtimeGoal || 0;
-        const aSold = data.networkStats?.overallAirtimeSold || 0;
+        const aGoal = Number(myTargets.airtimeGoal || 0);
+        const aSold = Number(data.networkStats?.overallAirtimeSold || myTargets.airtimeSold || 0);
         const aProg = aGoal > 0 ? Math.min(Math.round((aSold / aGoal) * 100), 100) : 0;
         document.getElementById("airtimeQuotaVal").innerText = `₦${Number(aSold).toLocaleString()} / ₦${Number(aGoal).toLocaleString()}`;
         document.getElementById("airtimeProgressFill").style.width = `${aProg}%`;
         document.getElementById("airtimePercentSub").innerText = `${aProg}% Completed`;
 
         document.getElementById("agentQuotaVal").innerText = `${agents.length} / ${myTargets.agentGoal || 50}`;
-        document.getElementById("supQuotaVal").innerText = `${supervisors.length} / ${myTargets.supervisorGoal || stateLgaCount}`;
+        document.getElementById("supQuotaVal").innerText = `${supervisors.length} / ${myTargets.supervisorGoal || currentLgaList.length}`;
 
         if (myTargets.currentMonth) {
           document.getElementById("targetMonthTitle").innerText = `${myTargets.currentMonth.toUpperCase()} TARGET MATRIX`;
@@ -900,14 +948,24 @@
         renderLgas();
         renderLogs(logs);
       } catch (err) {
-        console.error("Fetch error:", err);
+        console.error("Dashboard Fetch Error:", err);
       }
+    }
+
+    function applyStateHeaderInfo() {
+      const upperState = managerState.toUpperCase();
+      const stateLgaCount = currentLgaList.length;
+
+      document.getElementById("topStateBadge").innerText = `${upperState} STATE MANAGER (SM)`;
+      document.getElementById("topLgaTitle").innerText = `${stateLgaCount} LGAS COMMAND DESK`;
+      document.getElementById("drawerStateText").innerText = `${managerState} State`;
+      document.getElementById("lgaCountNav").innerText = stateLgaCount;
     }
 
     function renderSupervisors(list) {
       const feed = document.getElementById("supervisorsFeed");
       if (!list || list.length === 0) {
-        feed.innerHTML = `<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No field supervisors found in this region.</div>`;
+        feed.innerHTML = `<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No field supervisors deployed in ${managerState} State yet.</div>`;
         return;
       }
       feed.innerHTML = list.map(s => `
@@ -917,17 +975,34 @@
               <div class="sup-avatar"><i class="fa-solid fa-user-tie"></i></div>
               <div>
                 <div class="sup-name">${s.name || "Supervisor"}</div>
-                <div class="sup-meta">📍 ${s.lga || "LGA"} • 📞 ${s.phone}</div>
-                <div class="sup-ref">🆔 ID/Ref: <strong style="color:#1e40af;">${s.referralCode || s.referralId || "AYX-FS"}</strong></div>
+                <div class="sup-meta">📍 ${s.lga || "LGA"} LGA • 📞 ${s.phone}</div>
+                <div class="sup-ref">🆔 ID/Ref: <strong style="color:#1e40af;">${s.referralCode || s.referralId || ("AYX-FS-" + (s.phone ? String(s.phone).slice(-4) : "00"))}</strong></div>
                 <div class="sup-email">✉️ ${s.email || "N/A"}</div>
               </div>
             </div>
+            <button class="btn-action-outline btn-pill-blue" onclick="inspectSupervisor('${s.id || s._id}')">
+              <i class="fa-solid fa-users"></i> Inspect
+            </button>
           </div>
           <div class="stats-summary-grid">
-            <div><div class="summary-box-label">Data Target</div><div class="summary-box-value" style="color:#1e40af;">${s.dataGoal || 0} GB</div></div>
-            <div><div class="summary-box-label">Airtime Target</div><div class="summary-box-value" style="color:#d97706;">₦${Number(s.airtimeGoal || 0).toLocaleString()}</div></div>
-            <div><div class="summary-box-label">New Agents Goal</div><div class="summary-box-value" style="color:#059669;">${s.agentGoal || 10}</div></div>
+            <div><div class="summary-box-label">Data Target</div><div class="summary-box-value" style="color:#1e40af;">${s.dataGoal || s.targets?.dataGoal || 0} GB</div></div>
+            <div><div class="summary-box-label">Airtime Target</div><div class="summary-box-value" style="color:#d97706;">₦${Number(s.airtimeGoal || s.targets?.airtimeGoal || 0).toLocaleString()}</div></div>
+            <div><div class="summary-box-label">New Agents Goal</div><div class="summary-box-value" style="color:#059669;">${s.agentGoal || s.targets?.agentGoal || 10}</div></div>
             <div><div class="summary-box-label">Team Size</div><div class="summary-box-value" style="color:#0284c7;">${s.teamSize || s.agentsCount || 0}</div></div>
+          </div>
+          <div class="sup-action-row">
+            <button class="btn-action-outline" style="color:#1e40af;" onclick="openSinglePersonTarget('${s.id || s._id}', 'supervisor', '${s.name || 'Supervisor'}')">
+              <i class="fa-solid fa-pen-to-square"></i> Set Target
+            </button>
+            <button class="btn-action-outline btn-danger-text" onclick="clearTargetQuota('${s.id || s._id}', 'supervisor')">
+              <i class="fa-solid fa-trash-can"></i> Reset Target
+            </button>
+            <button class="btn-action-outline" style="color:#0284c7;" onclick="openTransferWithSource('${s.id || s._id}')">
+              <i class="fa-solid fa-people-arrows"></i> Reassign Team
+            </button>
+            <button class="btn-action-outline" style="color:#059669;" onclick="window.location.href='tel:${s.phone}'">
+              <i class="fa-solid fa-phone"></i> Call
+            </button>
           </div>
         </div>
       `).join("");
@@ -936,7 +1011,7 @@
     function renderAgents(list) {
       const feed = document.getElementById("agentsFeed");
       if (!list || list.length === 0) {
-        feed.innerHTML = `<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No agents recorded in this region.</div>`;
+        feed.innerHTML = `<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No retail agents registered in ${managerState} State yet.</div>`;
         return;
       }
       feed.innerHTML = list.map(a => `
@@ -944,11 +1019,26 @@
           <div class="agent-top">
             <div>
               <div class="agent-name">${a.name || "Agent"}</div>
-              <div class="agent-loc">📍 ${a.lga || "LGA"} • 📞 ${a.phone}</div>
+              <div class="agent-loc">📍 ${a.lga || "LGA"} LGA • 📞 ${a.phone}</div>
             </div>
             <div>
               <div class="agent-float">₦${Number(a.walletBalance || a.balance || 0).toLocaleString()}</div>
+              <div style="font-size:9.5px; color:#94a3b8; text-align:right;">Float Balance</div>
             </div>
+          </div>
+          ${a.assignedSupervisorName ? `
+            <div class="agent-sup-box">
+              <div class="agent-sup-title"><i class="fa-solid fa-user-tie"></i> SUPERVISOR IN-CHARGE</div>
+              <div class="agent-sup-text"><strong>${a.assignedSupervisorName}</strong></div>
+            </div>
+          ` : ''}
+          <div class="sup-action-row" style="margin-top:8px;">
+            <button class="btn-action-outline" style="color:#1e40af;" onclick="openSinglePersonTarget('${a.id || a._id}', 'agent', '${a.name || 'Agent'}')">
+              <i class="fa-solid fa-pen-to-square"></i> Set Target
+            </button>
+            <button class="btn-action-outline" style="color:#0284c7;" onclick="window.location.href='tel:${a.phone}'">
+              <i class="fa-solid fa-phone"></i> Call
+            </button>
           </div>
         </div>
       `).join("");
@@ -976,6 +1066,11 @@
             <div style="font-size: 10.5px; color: #64748b; margin-top: 2px;">
               ${agentsInLga.length} Agents • ${totalLgaData} GB Sold
             </div>
+            <div style="display:flex; gap:6px; margin-top:10px;">
+              <button class="btn-banner btn-banner-tert" style="padding:6px; font-size:10px;" onclick="openEnrollForLga('${lgaName}')">
+                <i class="fa-solid fa-user-plus"></i> Deploy FS
+              </button>
+            </div>
           </div>
         `;
       }).join("");
@@ -995,7 +1090,7 @@
             <span class="log-time">${log.createdAt ? new Date(log.createdAt).toLocaleTimeString() : 'Live'}</span>
           </div>
           <div class="log-desc">${log.details || log.action || 'Field operation recorded.'}</div>
-          <div class="log-actor">Actor: ${log.user?.phone || log.actorRole || 'State Desk'}</div>
+          <div class="log-actor">Actor: ${log.user?.phone || log.actorRole || 'State Operations'}</div>
         </div>
       `).join("");
     }
@@ -1021,6 +1116,203 @@
       renderAgents(filteredAgs);
     }
 
+    function openEnrollForLga(lgaName) {
+      const select = document.getElementById("newSupLga");
+      if (select) select.value = lgaName;
+      openModal("enrollModal");
+    }
+
+    function openTransferWithSource(supId) {
+      document.getElementById("transSource").value = supId;
+      openModal("transferModal");
+    }
+
+    function inspectSupervisor(supId) {
+      const sup = supervisors.find(s => String(s.id || s._id) === String(supId));
+      if (!sup) return;
+
+      const teamAgents = agents.filter(a =>
+        String(a.assignedSupervisor) === String(supId) ||
+        (a.assignedSupervisor && String(a.assignedSupervisor._id || a.assignedSupervisor.id) === String(supId)) ||
+        (a.lga && sup.lga && a.lga.toLowerCase() === sup.lga.toLowerCase())
+      );
+
+      document.getElementById("inspectModalTitle").innerText = sup.name || "Field Supervisor";
+      document.getElementById("inspectModalSub").innerText = `📍 ${sup.lga || 'N/A'} LGA • 📞 ${sup.phone}`;
+
+      document.getElementById("inspectContent").innerHTML = `
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-size:11px; color:#64748b; font-weight:700;">Subordinate Retail Agents:</span>
+            <span style="font-size:12px; font-weight:900; color:#1e40af;">${teamAgents.length} Agents</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="font-size:11px; color:#64748b; font-weight:700;">Data Delivered:</span>
+            <span style="font-size:12px; font-weight:900; color:#059669;">${sup.teamPerformance || sup.dataSold || 0} GB</span>
+          </div>
+        </div>
+        <div style="font-size:11px; font-weight:900; color:#475569; margin-bottom:8px;">TEAM RETAIL AGENTS LIST:</div>
+        <div style="max-height: 250px; overflow-y: auto;">
+          ${teamAgents.length > 0 ? teamAgents.map(ag => `
+            <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:8px; margin-bottom:6px;">
+              <div style="font-size:12px; font-weight:800; color:#0f172a;">${ag.name || "Agent"}</div>
+              <div style="font-size:10.5px; color:#64748b;">📞 ${ag.phone} • Float: ₦${Number(ag.walletBalance || ag.balance || 0).toLocaleString()}</div>
+            </div>
+          `).join("") : '<div style="color:#94a3b8; font-size:11px; text-align:center; padding:12px;">No agents under this supervisor yet.</div>'}
+        </div>
+      `;
+
+      openModal("inspectModal");
+    }
+
+    function openSmartTarget(type) {
+      const count = type === "supervisor" ? supervisors.length : agents.length;
+      if (count === 0) {
+        alert(`You do not have any registered ${type === "supervisor" ? "Supervisors" : "Agents"} in ${managerState} State yet.`);
+        return;
+      }
+
+      const totalDataGoal = Number(myTargets.dataGoal || 0);
+      const totalAirtimeGoal = Number(myTargets.airtimeGoal || 0);
+      const autoDataPerPerson = Math.floor(totalDataGoal / count);
+      const autoAirtimePerPerson = Math.floor(totalAirtimeGoal / count);
+
+      document.getElementById("targetModalTitle").innerText = `Auto-Split Target to ${type === "supervisor" ? "Supervisors" : "Agents"}`;
+      document.getElementById("targetModalSub").innerText = `${managerState} State: Distributing quota equally among ${count} personnel.`;
+
+      document.getElementById("targetModalBody").innerHTML = `
+        <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:10px; margin-bottom:12px; font-size:11.5px; color:#1e40af;">
+          Each person will be allocated approximately <strong>${autoDataPerPerson} GB Data</strong> and <strong>₦${autoAirtimePerPerson.toLocaleString()} Airtime</strong>.
+        </div>
+        <div class="form-group">
+          <label class="form-label">DATA VOLUME QUOTA PER PERSON (GB)</label>
+          <input type="number" class="input-box" id="autoDataVal" value="${autoDataPerPerson}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">AIRTIME SALES QUOTA PER PERSON (₦)</label>
+          <input type="number" class="input-box" id="autoAirtimeVal" value="${autoAirtimePerPerson}">
+        </div>
+        <button class="btn-submit" onclick="executeAutoSplit('${type}')">CONFIRM & DEPLOY TO ALL ${count} ${type.toUpperCase()}S</button>
+      `;
+
+      openModal("targetModal");
+    }
+
+    async function executeAutoSplit(type) {
+      const dataVal = Number(document.getElementById("autoDataVal").value);
+      const airtimeVal = Number(document.getElementById("autoAirtimeVal").value);
+      const token = localStorage.getItem("userToken");
+
+      const payload = {
+        mode: "custom_bulk",
+        category: type,
+        scope: "all",
+        dataGoal: dataVal,
+        airtimeGoal: airtimeVal,
+        month: myTargets.currentMonth || "Current Cycle",
+        state: managerState
+      };
+
+      try {
+        const res = await fetch(`${BASE_URL}/leader/assign-target`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        if (res.success) {
+          alert(`Quotas successfully dispatched to all ${type}s in ${managerState} State!`);
+          closeModal("targetModal");
+          loadDashboard();
+        } else {
+          alert(res.message || "Failed to split targets.");
+        }
+      } catch (e) {
+        alert("Error: " + e.message);
+      }
+    }
+
+    function openSinglePersonTarget(personId, role, name) {
+      document.getElementById("targetModalTitle").innerText = `Set Target: ${name}`;
+      document.getElementById("targetModalSub").innerText = `${managerState} State • Direct quota assignment`;
+
+      document.getElementById("targetModalBody").innerHTML = `
+        <div class="form-group">
+          <label class="form-label">DATA VOLUME QUOTA (GB)</label>
+          <input type="number" class="input-box" id="singleDataVal" value="500">
+        </div>
+        <div class="form-group">
+          <label class="form-label">AIRTIME SALES QUOTA (₦)</label>
+          <input type="number" class="input-box" id="singleAirtimeVal" value="50000">
+        </div>
+        <button class="btn-submit" onclick="executeSingleTarget('${personId}', '${role}')">SAVE & ASSIGN QUOTA</button>
+      `;
+
+      openModal("targetModal");
+    }
+
+    async function executeSingleTarget(personId, role) {
+      const dataVal = Number(document.getElementById("singleDataVal").value);
+      const airtimeVal = Number(document.getElementById("singleAirtimeVal").value);
+      const token = localStorage.getItem("userToken");
+
+      const payload = {
+        mode: role === "supervisor" ? "single_supervisor" : "single_agent",
+        category: role,
+        scope: "selected",
+        supervisorId: role === "supervisor" ? personId : undefined,
+        agentId: role === "agent" ? personId : undefined,
+        dataGoal: dataVal,
+        airtimeGoal: airtimeVal,
+        month: myTargets.currentMonth || "Current Cycle",
+        state: managerState
+      };
+
+      try {
+        const res = await fetch(`${BASE_URL}/leader/assign-target`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        if (res.success) {
+          alert("Target assigned successfully!");
+          closeModal("targetModal");
+          loadDashboard();
+        } else {
+          alert(res.message || "Could not assign target.");
+        }
+      } catch (e) {
+        alert("Error: " + e.message);
+      }
+    }
+
+    async function clearTargetQuota(personId, role) {
+      if (!confirm("Are you sure you want to reset this target quota to 0?")) return;
+      const token = localStorage.getItem("userToken");
+
+      try {
+        await fetch(`${BASE_URL}/leader/assign-target`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mode: role === "supervisor" ? "single_supervisor" : "single_agent",
+            category: role,
+            scope: "selected",
+            supervisorId: role === "supervisor" ? personId : undefined,
+            agentId: role === "agent" ? personId : undefined,
+            dataGoal: 0,
+            airtimeGoal: 0,
+            state: managerState
+          })
+        });
+        alert("Target quota reset to 0.");
+        loadDashboard();
+      } catch (e) {
+        alert("Error resetting quota.");
+      }
+    }
+
     async function handleEnroll(e) {
       e.preventDefault();
       const token = localStorage.getItem("userToken");
@@ -1028,17 +1320,21 @@
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: document.getElementById("newSupName").value,
-          phone: document.getElementById("newSupPhone").value,
-          email: document.getElementById("newSupEmail").value,
-          password: document.getElementById("newSupPassword").value,
-          lga: document.getElementById("newSupLga").value,
+          name: document.getElementById("newSupName").value.trim(),
+          phone: document.getElementById("newSupPhone").value.trim(),
+          email: document.getElementById("newSupEmail").value.trim(),
+          password: document.getElementById("newSupPassword").value.trim(),
+          lga: document.getElementById("newSupLga").value.trim(),
           state: managerState,
           role: "supervisor"
         })
       });
       const d = await res.json();
-      if(d.success) { alert("Supervisor enrolled successfully!"); closeModal("enrollModal"); loadDashboard(); }
+      if(d.success) { 
+        alert(`Supervisor enrolled successfully for ${document.getElementById("newSupLga").value} LGA!`); 
+        closeModal("enrollModal"); 
+        loadDashboard(); 
+      }
       else alert(d.message || "Failed to enroll supervisor");
     }
 
@@ -1049,13 +1345,13 @@
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: document.getElementById("notifTitle").value,
-          message: document.getElementById("notifMessage").value,
+          title: document.getElementById("notifTitle").value.trim(),
+          message: document.getElementById("notifMessage").value.trim(),
           category: "STATE_DIRECTIVE",
           state: managerState
         })
       });
-      alert("Directive Dispatched!");
+      alert(`Directive dispatched across ${managerState} State!`);
       closeModal("notifModal");
     }
 
@@ -1066,12 +1362,16 @@
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          oldSupervisorId: document.getElementById("transSource").value,
-          newSupervisorId: document.getElementById("transTarget").value
+          oldSupervisorId: document.getElementById("transSource").value.trim(),
+          newSupervisorId: document.getElementById("transTarget").value.trim()
         })
       });
       const d = await res.json();
-      if(d.success) { alert("Transferred successfully!"); closeModal("transferModal"); loadDashboard(); }
+      if(d.success) { 
+        alert("Team reassigned successfully!"); 
+        closeModal("transferModal"); 
+        loadDashboard(); 
+      }
       else alert(d.message || "Failed to transfer agents");
     }
 
@@ -1085,8 +1385,9 @@
       window.open(`${BASE_URL}/leader/download-full-report?token=${token}`);
     }
 
+    // Bootstrap
     loadDashboard();
-    setInterval(loadDashboard, 15000);
+    setInterval(loadDashboard, 20000);
   </script>
 </body>
 </html>
