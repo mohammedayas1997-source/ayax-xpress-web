@@ -2,6 +2,13 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+
+    {
+      "source": "/api/v1/:path*",
+      "destination": "https://ayax-data-xpress-server.onrender.com/api/v1/:path*"
+    },
+
+  
     { "source": "/", "destination": "/index.html" },
     { "source": "/index", "destination": "/index.html" },
     { "source": "/login", "destination": "/login.html" },
