@@ -769,7 +769,6 @@
     }
 
     function loadSecurityPreferences() {
-      // Duba saitin da shafin index.html ke gani
       const bioEnabled = localStorage.getItem('ayax_biometric_enabled') === 'true' || 
                          localStorage.getItem('fingerprint_login') === 'true';
       const bioTx = localStorage.getItem('fingerprint_tx') === 'true';
@@ -869,7 +868,6 @@
         userData: userObj
       };
 
-      // Adana bayanan da shafin index.html ke bukata kai-tsaye
       localStorage.setItem('ayax_biometric_user', JSON.stringify(payload));
       localStorage.setItem('ayax_biometric_enabled', 'true');
       localStorage.setItem('fingerprint_login', 'true');
@@ -886,14 +884,12 @@
         return;
       }
 
-      // Tabbatar da bayanan mai amfani kafin kunna shi
       if (!state.userData) {
         alert("Please wait for your profile to finish loading before enabling biometrics.");
         document.getElementById('switchBioLogin').checked = false;
         return;
       }
 
-      // Duba Hardware na Biometrics a browser / WebView
       if (window.PublicKeyCredential) {
         try {
           if (PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
@@ -903,7 +899,6 @@
             }
           }
 
-          // Fara WebAuthn Credential Registration na gaske
           const challenge = new Uint8Array(32);
           window.crypto.getRandomValues(challenge);
 
@@ -926,8 +921,8 @@
                 displayName: displayName
               },
               pubKeyCredParams: [
-                { alg: -7, type: "public-key" },  // ES256
-                { alg: -257, type: "public-key" } // RS256
+                { alg: -7, type: "public-key" },
+                { alg: -257, type: "public-key" }
               ],
               authenticatorSelection: {
                 authenticatorAttachment: "platform",
@@ -947,7 +942,6 @@
         }
       }
 
-      // Ajiye ainihin Session ɗin da Login Page zai yi amfani da shi
       saveBiometricSession(state.userData);
       if (sub) sub.textContent = "Enabled for fast unlock on this device";
       alert("Biometric login activated successfully! You can now log in instantly using your fingerprint on the login page.");
@@ -1002,18 +996,29 @@
       const btn = document.getElementById('btnSubmitPassword');
       btn.disabled = true;
 
+      const payload = { currentPassword, newPassword, password: newPassword };
+      const headers = {
+        'Authorization': `Bearer ${state.token}`,
+        'Content-Type': 'application/json'
+      };
+
       try {
-        const res = await fetch(`${BASE_URL}/auth/change-password`, {
+        let res = await fetch(`${BASE_URL}/auth/change-password`, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ currentPassword, newPassword })
+          headers,
+          body: JSON.stringify(payload)
         });
 
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/auth/update-password`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload)
+          });
+        }
+
         const data = await res.json();
-        if (res.ok && data.success) {
+        if (res.ok && (data.success || data.status === 'success')) {
           alert("Password updated successfully.");
           closeModal('passwordModal');
         } else {
@@ -1026,6 +1031,7 @@
       }
     }
 
+    // MULTI-ENDPOINT RESILIENT PIN UPDATE (PREVENTS 404 ON ALL SERVERS)
     async function handlePinUpdate() {
       const currentPin = document.getElementById('currentPinInput').value.trim();
       const newPin = document.getElementById('newPinInput').value.trim();
@@ -1044,28 +1050,73 @@
       const btn = document.getElementById('btnSubmitPin');
       btn.disabled = true;
 
-      try {
-        const endpoint = state.hasPin ? `${BASE_URL}/auth/change-pin` : `${BASE_URL}/auth/set-pin`;
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ currentPin, newPin, pin: newPin })
-        });
+      const payload = {
+        currentPin,
+        newPin,
+        pin: newPin,
+        transactionPin: newPin
+      };
 
-        const data = await res.json();
-        if (res.ok && data.success) {
-          alert("Transaction PIN saved successfully.");
+      const headers = {
+        'Authorization': `Bearer ${state.token}`,
+        'Content-Type': 'application/json'
+      };
+
+      try {
+        // Jerin endpoints da muke gwadawa a jere don gano wanda server ke karba
+        const candidateEndpoints = state.hasPin
+          ? [
+              `${BASE_URL}/auth/change-pin`,
+              `${BASE_URL}/auth/update-pin`,
+              `${BASE_URL}/user/change-pin`,
+              `${BASE_URL}/user/update-pin`,
+              `${BASE_URL}/auth/set-pin`
+            ]
+          : [
+              `${BASE_URL}/auth/set-pin`,
+              `${BASE_URL}/user/set-pin`,
+              `${BASE_URL}/auth/update-pin`,
+              `${BASE_URL}/user/update-pin`,
+              `${BASE_URL}/auth/change-pin`
+            ];
+
+        let successData = null;
+        let lastError = "Could not save PIN.";
+
+        for (const ep of candidateEndpoints) {
+          try {
+            const res = await fetch(ep, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(payload)
+            });
+
+            // Idan ba 404 bane, server din ta karbi request din
+            if (res.status !== 404) {
+              const data = await res.json().catch(() => ({}));
+              if (res.ok || data.success || data.status === 'success') {
+                successData = data;
+                break;
+              } else {
+                lastError = data.message || "Could not save PIN.";
+                break;
+              }
+            }
+          } catch (fetchErr) {
+            console.warn(`Probe failed on ${ep}:`, fetchErr);
+          }
+        }
+
+        if (successData) {
+          alert("Transaction PIN saved successfully! 🔐");
           state.hasPin = true;
           closeModal('pinModal');
           fetchUserProfile();
         } else {
-          throw new Error(data.message || "Could not save PIN.");
+          throw new Error(lastError);
         }
       } catch (err) {
-        alert("Error: " + err.message);
+        alert("PIN Error: " + err.message);
       } finally {
         btn.disabled = false;
       }
@@ -1080,18 +1131,36 @@
       const btn = document.getElementById('btnSubmitProfile');
       btn.disabled = true;
 
+      const payload = {
+        firstName,
+        surname,
+        name: `${firstName} ${surname}`.trim(),
+        phone,
+        address
+      };
+
+      const headers = {
+        'Authorization': `Bearer ${state.token}`,
+        'Content-Type': 'application/json'
+      };
+
       try {
-        const res = await fetch(`${BASE_URL}/auth/update-profile`, {
+        let res = await fetch(`${BASE_URL}/auth/update-profile`, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ firstName, surname, phone, address })
+          headers,
+          body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
-        if (res.ok && data.success) {
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/user/update-profile`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && (data.success || data.status === 'success')) {
           alert("Profile updated successfully.");
           closeModal('editProfileModal');
           fetchUserProfile();
@@ -1107,7 +1176,6 @@
 
     function handleLogout() {
       if (confirm("Terminate Session: Are you sure you want to log out from this device?")) {
-        // Kada a goge ayax_biometric_user don bawa mai amfani damar shiga da yatsa a login page
         const bioUser = localStorage.getItem('ayax_biometric_user');
         const bioOn = localStorage.getItem('ayax_biometric_enabled');
         

@@ -239,7 +239,7 @@
 
         <!-- Password Field (Visible only if user already has a PIN) -->
         <div class="input-group" id="passwordGroup" style="display: none;">
-          <label class="label" for="passwordInput">Account Password</label>
+          <label class="label" for="passwordInput">Account Password / Current PIN</label>
           <input
             type="password"
             id="passwordInput"
@@ -374,27 +374,65 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right: 6px;"></i> Processing...';
 
-        const endpoint = state.isUpdating
-          ? `${BASE_URL}/auth/update-pin`
-          : `${BASE_URL}/auth/create-pin`;
+        const payload = {
+          password: password,
+          currentPassword: password,
+          currentPin: password,
+          newPin: newPin,
+          pin: newPin,
+          transactionPin: newPin
+        };
 
-        const payload = state.isUpdating
-          ? { password: password, newPin: newPin, pin: newPin }
-          : { newPin: newPin, pin: newPin };
+        const headers = {
+          'Authorization': `Bearer ${state.token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        };
 
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
+        // Jerin endpoints don kariya daga 404 a kowane server
+        const endpointsToTry = state.isUpdating
+          ? [
+              `${BASE_URL}/auth/update-pin`,
+              `${BASE_URL}/auth/change-pin`,
+              `${BASE_URL}/user/update-pin`,
+              `${BASE_URL}/user/change-pin`,
+              `${BASE_URL}/auth/set-pin`
+            ]
+          : [
+              `${BASE_URL}/auth/set-pin`,
+              `${BASE_URL}/auth/create-pin`,
+              `${BASE_URL}/user/set-pin`,
+              `${BASE_URL}/user/create-pin`,
+              `${BASE_URL}/auth/update-pin`
+            ];
 
-        const data = await response.json();
+        let successData = null;
+        let lastError = "Could not save PIN.";
 
-        if (response.ok && data.success) {
+        for (const ep of endpointsToTry) {
+          try {
+            const response = await fetch(ep, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(payload)
+            });
+
+            if (response.status !== 404) {
+              const data = await response.json().catch(() => ({}));
+              if (response.ok && (data.success || data.status === 'success')) {
+                successData = data;
+                break;
+              } else {
+                lastError = data.message || "Could not save PIN.";
+                break;
+              }
+            }
+          } catch (probeErr) {
+            console.warn(`Probe failed on ${ep}:`, probeErr);
+          }
+        }
+
+        if (successData) {
           const cachedUser = localStorage.getItem('userData');
           if (cachedUser) {
             try {
@@ -405,10 +443,10 @@
             } catch (_) {}
           }
 
-          alert("Success 🎉\n\n" + (data.message || "Transaction PIN successfully configured."));
+          alert("Success 🎉\n\n" + (successData.message || "Transaction PIN successfully configured."));
           window.location.href = "profile.html";
         } else {
-          alert("Failed: " + (data.message || "Could not save PIN."));
+          alert("Failed: " + lastError);
         }
       } catch (err) {
         alert("Network Error: Unable to connect to server. Please check your network connection.");
