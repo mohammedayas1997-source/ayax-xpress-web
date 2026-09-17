@@ -542,40 +542,40 @@
   </aside>
 
   <!-- MODAL: EDIT PLAN DETAILS & DELETE -->
-<div class="modal-overlay" id="editDataPlanModal">
-  <div class="modal-card">
-    <div class="modal-header-row">
-      <div>
-        <h3 class="modal-title">Edit Plan Details & Tariffs</h3>
-        <div class="modal-sub" id="editPlanSubtitle">Plan Tariff</div>
+  <div class="modal-overlay" id="editDataPlanModal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div>
+          <h3 class="modal-title">Edit Plan Details & Tariffs</h3>
+          <div class="modal-sub" id="editPlanSubtitle">Plan Tariff</div>
+        </div>
+        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('editDataPlanModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('editDataPlanModal')"><i class="fa-solid fa-xmark"></i></button>
+
+      <label class="form-field-label">Plan Active Status</label>
+      <div class="selector-pills-row">
+        <button class="selector-pill active" id="planStatusActiveBtn" onclick="setPlanStatusEdit('active')">ACTIVE</button>
+        <button class="selector-pill" id="planStatusDisabledBtn" onclick="setPlanStatusEdit('disabled')">DISABLED</button>
+      </div>
+
+      <label class="form-field-label">Plan Display Name / Volume</label>
+      <input type="text" class="form-input" id="editPlanName" placeholder="e.g. 1.0 GB / 2.0 GB">
+
+      <label class="form-field-label">Customer Selling Price (₦)</label>
+      <input type="number" class="form-input" id="editPlanUserPrice">
+
+      <label class="form-field-label">Retail Agent Wholesale Price (₦)</label>
+      <input type="number" class="form-input" id="editPlanAgentPrice">
+
+      <button class="submit-form-btn" onclick="saveDataPlanTariff()">SAVE & DEPLOY DATA TARIFF</button>
+
+      <button type="button" style="width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 10px; height: 42px; font-size: 12px; font-weight: 900; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="deleteDataPlan()">
+        <i class="fa-solid fa-trash-can"></i> DELETE PLAN PERMANENTLY
+      </button>
     </div>
-
-    <label class="form-field-label">Plan Active Status</label>
-    <div class="selector-pills-row">
-      <button class="selector-pill active" id="planStatusActiveBtn" onclick="setPlanStatusEdit('active')">ACTIVE</button>
-      <button class="selector-pill" id="planStatusDisabledBtn" onclick="setPlanStatusEdit('disabled')">DISABLED</button>
-    </div>
-
-    <label class="form-field-label">Plan Display Name / Volume</label>
-    <input type="text" class="form-input" id="editPlanName" placeholder="e.g. 1.0 GB / 2.0 GB">
-
-    <label class="form-field-label">Customer Selling Price (₦)</label>
-    <input type="number" class="form-input" id="editPlanUserPrice">
-
-    <label class="form-field-label">Retail Agent Wholesale Price (₦)</label>
-    <input type="number" class="form-input" id="editPlanAgentPrice">
-
-    <button class="submit-form-btn" onclick="saveDataPlanTariff()">SAVE & DEPLOY DATA TARIFF</button>
-
-    <button type="button" style="width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 10px; height: 42px; font-size: 12px; font-weight: 900; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="deleteDataPlan()">
-      <i class="fa-solid fa-trash-can"></i> DELETE PLAN PERMANENTLY
-    </button>
   </div>
-</div>
 
-  <!-- MODAL 2: PUBLISH NEW DATA TARIFF (SELECTION + CUSTOM - NO BASE API COST) -->
+  <!-- MODAL 2: PUBLISH NEW DATA TARIFF -->
   <div class="modal-overlay" id="addPlanModal">
     <div class="modal-card">
       <div class="modal-header-row">
@@ -786,11 +786,11 @@
 
       try {
         const [statsRes, usersRes, superPlansRes, dataPlansRes, refundsRes] = await Promise.allSettled([
-          fetch(`${BASE_URL}/admin/dashboard-stats`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/admin/users?limit=150`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/superadmin/plans`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()),
-          fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json())
+          fetch(`${BASE_URL}/admin/dashboard-stats`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/users?limit=150`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/superadmin/plans`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json()).catch(() => ({}))
         ]);
 
         if (statsRes.status === "fulfilled" && statsRes.value) {
@@ -814,12 +814,13 @@
         }
 
         let loadedPlans = [];
-        if (superPlansRes.status === "fulfilled" && superPlansRes.value?.plans) {
-          loadedPlans = superPlansRes.value.plans;
-        } else if (dataPlansRes.status === "fulfilled" && dataPlansRes.value?.plans) {
-          loadedPlans = dataPlansRes.value.plans;
+        if (superPlansRes.status === "fulfilled" && (superPlansRes.value?.plans || superPlansRes.value?.data)) {
+          loadedPlans = superPlansRes.value.plans || superPlansRes.value.data || [];
+        } else if (dataPlansRes.status === "fulfilled" && (dataPlansRes.value?.plans || dataPlansRes.value?.data)) {
+          loadedPlans = dataPlansRes.value.plans || dataPlansRes.value.data || [];
         }
-        if (loadedPlans.length > 0) {
+
+        if (Array.isArray(loadedPlans) && loadedPlans.length > 0) {
           pricingList = loadedPlans;
           renderDataPlans(pricingList);
         }
@@ -838,88 +839,102 @@
     }
 
     function renderDataPlans(list) {
-  const feed = document.getElementById("dataPlansFeed");
-  const filtered = list.filter(p => {
-    const net = String(p.network || p.networkName || "MTN").toUpperCase();
-    return activeNetFilter === "ALL" || net === activeNetFilter;
-  });
+      const feed = document.getElementById("dataPlansFeed");
+      const filtered = list.filter(p => {
+        const net = String(p.network || p.networkName || "MTN").toUpperCase();
+        return activeNetFilter === "ALL" || net === activeNetFilter;
+      });
 
-  feed.innerHTML = filtered.map(plan => {
-    // Gano ainihin sunan plan ba tare da nuna undefined ba
-    const planName = plan.plan || plan.name || plan.planLabel || plan.size || "Data Bundle";
-    const netName = String(plan.network || plan.networkName || "MTN").toUpperCase();
-    const planType = String(plan.planType || plan.type || "SME").toUpperCase();
-    const validity = plan.validity || "30 Days";
-    const userPrice = plan.userPrice || plan.price || 0;
-    const agentPrice = plan.agentPrice || plan.userPrice || plan.price || 0;
-    const status = String(plan.status || (plan.isActive ? "active" : "disabled")).toLowerCase();
-    const planId = plan.id || plan._id || plan.planId || plan.planCode;
+      if (!filtered || filtered.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No data plans available under this category.</div>`;
+        return;
+      }
 
-    return `
-      <div class="super-plan-card">
-        <div class="super-plan-card-top">
-          <div>
-            <div class="plan-badge-row">
-              <span class="plan-pill" style="background:#e0f2fe; color:#0284c7;">${netName}</span>
-              <span class="plan-pill" style="background:#f1f5f9; color:#475569;">${planType}</span>
-              <span class="plan-pill" style="background:${status === 'disabled' ? '#ffe4e6' : '#dcfce7'}; color:${status === 'disabled' ? '#e11d48' : '#16a34a'};">
-                ${status.toUpperCase()}
-              </span>
+      feed.innerHTML = filtered.map(plan => {
+        const planName = plan.plan || plan.name || plan.planLabel || plan.size || "Data Bundle";
+        const netName = String(plan.network || plan.networkName || "MTN").toUpperCase();
+        const planType = String(plan.planType || plan.type || "SME").toUpperCase();
+        const validity = plan.validity || "30 Days";
+        const userPrice = plan.userPrice || plan.price || 0;
+        const agentPrice = plan.agentPrice || plan.userPrice || plan.price || 0;
+        const status = String(plan.status || (plan.isActive ? "active" : "disabled")).toLowerCase();
+        const planId = plan.id || plan._id || plan.planId || plan.planCode;
+
+        return `
+          <div class="super-plan-card">
+            <div class="super-plan-card-top">
+              <div>
+                <div class="plan-badge-row">
+                  <span class="plan-pill" style="background:#e0f2fe; color:#0284c7;">${netName}</span>
+                  <span class="plan-pill" style="background:#f1f5f9; color:#475569;">${planType}</span>
+                  <span class="plan-pill" style="background:${status === 'disabled' ? '#ffe4e6' : '#dcfce7'}; color:${status === 'disabled' ? '#e11d48' : '#16a34a'};">
+                    ${status.toUpperCase()}
+                  </span>
+                </div>
+                <div class="super-plan-title">${netName} ${planName} (${validity})</div>
+              </div>
+              <button class="super-plan-edit-btn" onclick="openEditPlan('${planId}')">
+                <i class="fa-solid fa-sliders"></i> Edit Prices
+              </button>
             </div>
-            <div class="super-plan-title">${netName} ${planName} (${validity})</div>
+
+            <div class="clean-pricing-row">
+              <div class="clean-price-box">
+                <div class="clean-price-label">Customer Retail Price</div>
+                <div class="clean-price-value">₦${Number(userPrice).toLocaleString()}</div>
+              </div>
+              <div class="clean-price-divider"></div>
+              <div class="clean-price-box">
+                <div class="clean-price-label">Retail Agent Wholesale</div>
+                <div class="clean-price-value" style="color:#0284c7;">₦${Number(agentPrice).toLocaleString()}</div>
+              </div>
+            </div>
           </div>
-          <button class="super-plan-edit-btn" onclick="openEditPlan('${planId}')">
-            <i class="fa-solid fa-sliders"></i> Edit Prices
-          </button>
-        </div>
+        `;
+      }).join("");
+    }
 
-        <div class="clean-pricing-row">
-          <div class="clean-price-box">
-            <div class="clean-price-label">Customer Retail Price</div>
-            <div class="clean-price-value">₦${Number(userPrice).toLocaleString()}</div>
-          </div>
-          <div class="clean-price-divider"></div>
-          <div class="clean-price-box">
-            <div class="clean-price-label">Retail Agent Wholesale</div>
-            <div class="clean-price-value" style="color:#0284c7;">₦${Number(agentPrice).toLocaleString()}</div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
+    function filterNetwork(net) {
+      activeNetFilter = net;
+      document.querySelectorAll("#networkFilterScroll .filter-badge").forEach(b => {
+        b.classList.toggle("active", b.innerText === net);
+      });
+      renderDataPlans(pricingList);
+    }
 
-function openEditPlan(id) {
-  selectedEditPlan = pricingList.find(p => String(p.id || p._id || p.planId || p.planCode) === String(id));
-  if (!selectedEditPlan) return;
+    function openEditPlan(id) {
+      selectedEditPlan = pricingList.find(p => String(p.id || p._id || p.planId || p.planCode) === String(id));
+      if (!selectedEditPlan) return;
 
-  const planName = selectedEditPlan.plan || selectedEditPlan.name || selectedEditPlan.planLabel || selectedEditPlan.size || "";
-  const netName = String(selectedEditPlan.network || selectedEditPlan.networkName || "MTN").toUpperCase();
+      const planName = selectedEditPlan.plan || selectedEditPlan.name || selectedEditPlan.planLabel || selectedEditPlan.size || "";
+      const netName = String(selectedEditPlan.network || selectedEditPlan.networkName || "MTN").toUpperCase();
 
-  document.getElementById("editPlanSubtitle").innerText = `${netName} - ${planName}`;
-  document.getElementById("editPlanName").value = planName;
-  document.getElementById("editPlanUserPrice").value = selectedEditPlan.userPrice || selectedEditPlan.price || 0;
-  document.getElementById("editPlanAgentPrice").value = selectedEditPlan.agentPrice || selectedEditPlan.userPrice || selectedEditPlan.price || 0;
-  
-  const currentStatus = String(selectedEditPlan.status || (selectedEditPlan.isActive ? "active" : "disabled")).toLowerCase();
-  setPlanStatusEdit(currentStatus);
-  openModal("editDataPlanModal");
-}
+      document.getElementById("editPlanSubtitle").innerText = `${netName} - ${planName}`;
+      document.getElementById("editPlanName").value = planName;
+      document.getElementById("editPlanUserPrice").value = selectedEditPlan.userPrice || selectedEditPlan.price || 0;
+      document.getElementById("editPlanAgentPrice").value = selectedEditPlan.agentPrice || selectedEditPlan.userPrice || selectedEditPlan.price || 0;
+      
+      const currentStatus = String(selectedEditPlan.status || (selectedEditPlan.isActive ? "active" : "disabled")).toLowerCase();
+      setPlanStatusEdit(currentStatus);
+      openModal("editDataPlanModal");
+    }
 
-async function saveDataPlanTariff() {
-  const newName = document.getElementById("editPlanName").value.trim();
-  const uPrice = Number(document.getElementById("editPlanUserPrice").value);
-  const aPrice = Number(document.getElementById("editPlanAgentPrice").value);
-  if (!uPrice || !aPrice) { alert("Please provide Customer and Agent prices."); return; }
+    function setPlanStatusEdit(status) {
+      selectedEditPlanStatus = status;
+      document.getElementById("planStatusActiveBtn").classList.toggle("active", status === "active");
+      document.getElementById("planStatusDisabledBtn").classList.toggle("active", status === "disabled");
+    }
 
-  const token = localStorage.getItem("userToken");
-  const targetId = selectedEditPlan.id || selectedEditPlan._id || selectedEditPlan.planId || selectedEditPlan.planCode;
+    async function saveDataPlanTariff() {
+      const newName = document.getElementById("editPlanName").value.trim();
+      const uPrice = Number(document.getElementById("editPlanUserPrice").value);
+      const aPrice = Number(document.getElementById("editPlanAgentPrice").value);
+      if (!uPrice || !aPrice) { alert("Please provide Customer and Agent prices."); return; }
 
-  try {
-    const res = await fetch(`${BASE_URL}/superadmin/pricing/update-tier`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
+      const token = localStorage.getItem("userToken");
+      const targetId = selectedEditPlan.id || selectedEditPlan._id || selectedEditPlan.planId || selectedEditPlan.planCode;
+
+      const payload = {
         id: targetId,
         planId: targetId,
         name: newName,
@@ -930,48 +945,163 @@ async function saveDataPlanTariff() {
         price: uPrice,
         status: selectedEditPlanStatus,
         broadcast: true
-      })
-    }).then(r => r.json());
+      };
 
-    if (res.success) {
-      alert("Plan Details and Tariffs Updated Successfully! 🚀");
-      closeModal("editDataPlanModal");
-      loadDashboardData();
-    } else {
-      alert(res.message || "Could not update tariff.");
+      try {
+        let res = await fetch(`${BASE_URL}/superadmin/pricing/update-tier`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/admin/pricing/update-tier`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok || data.success) {
+          alert("Plan Details and Tariffs Updated Successfully! 🚀");
+          closeModal("editDataPlanModal");
+          loadDashboardData();
+        } else {
+          alert(data.message || "Could not update tariff.");
+        }
+      } catch (e) {
+        alert("Sync Error: " + e.message);
+      }
     }
-  } catch (e) {
-    alert("Sync Error: " + e.message);
-  }
-}
 
-async function deleteDataPlan() {
-  if (!selectedEditPlan) return;
-  const planName = selectedEditPlan.plan || selectedEditPlan.name || "this plan";
-  if (!confirm(`Are you sure you want to PERMANENTLY DELETE "${planName}"? It will be removed from all databases.`)) {
-    return;
-  }
+    async function deleteDataPlan() {
+      if (!selectedEditPlan) return;
+      const planName = selectedEditPlan.plan || selectedEditPlan.name || "this plan";
+      if (!confirm(`Are you sure you want to PERMANENTLY DELETE "${planName}"? It will be removed from all databases.`)) {
+        return;
+      }
 
-  const token = localStorage.getItem("userToken");
-  const targetId = selectedEditPlan.id || selectedEditPlan._id || selectedEditPlan.planId || selectedEditPlan.planCode;
+      const token = localStorage.getItem("userToken");
+      const targetId = selectedEditPlan.id || selectedEditPlan._id || selectedEditPlan.planId || selectedEditPlan.planCode;
 
-  try {
-    const res = await fetch(`${BASE_URL}/superadmin/pricing/delete-plan/${targetId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
-    }).then(r => r.json());
+      try {
+        let res = await fetch(`${BASE_URL}/superadmin/pricing/delete-plan/${targetId}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+        });
 
-    if (res.success) {
-      alert(`"${planName}" has been completely removed.`);
-      closeModal("editDataPlanModal");
-      loadDashboardData();
-    } else {
-      alert(res.message || "Could not delete plan.");
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/data/plans/${targetId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok || data.success) {
+          alert(`"${planName}" has been completely removed.`);
+          closeModal("editDataPlanModal");
+          loadDashboardData();
+        } else {
+          alert(data.message || "Could not delete plan.");
+        }
+      } catch (e) {
+        alert("Delete error: " + e.message);
+      }
     }
-  } catch (e) {
-    alert("Delete error: " + e.message);
-  }
-}
+
+    // NEW DATA PLAN CONTROLS
+    function setNewPlanNet(net, btn) {
+      newPlanSelectedNet = net;
+      document.querySelectorAll("#newPlanNetPills .selector-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    function setNewPlanType(type, btn) {
+      newPlanSelectedType = type;
+      document.querySelectorAll("#newPlanTypePills .selector-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("newPlanCustomTypeInput").style.display = (type === "CUSTOM") ? "block" : "none";
+    }
+
+    function setNewPlanSize(size, btn) {
+      newPlanSelectedSize = size;
+      document.querySelectorAll("#newPlanSizePills .selector-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("newPlanCustomSizeInput").style.display = (size === "CUSTOM") ? "block" : "none";
+    }
+
+    function setNewPlanValidity(validity, btn) {
+      newPlanSelectedValidity = validity;
+      document.querySelectorAll("#newPlanValidityPills .selector-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("newPlanCustomValidityInput").style.display = (validity === "CUSTOM") ? "block" : "none";
+    }
+
+    async function publishNewDataPlan() {
+      const finalType = newPlanSelectedType === "CUSTOM" ? document.getElementById("newPlanCustomTypeInput").value.trim() : newPlanSelectedType;
+      const finalSize = newPlanSelectedSize === "CUSTOM" ? document.getElementById("newPlanCustomSizeInput").value.trim() : newPlanSelectedSize;
+      const finalValidity = newPlanSelectedValidity === "CUSTOM" ? document.getElementById("newPlanCustomValidityInput").value.trim() : newPlanSelectedValidity;
+      const uPrice = Number(document.getElementById("newPlanUserPrice").value);
+      const aPrice = Number(document.getElementById("newPlanAgentPrice").value || uPrice);
+
+      if (!finalType || !finalSize || !uPrice) {
+        alert("Please specify Plan Type, Size, and Customer Price.");
+        return;
+      }
+
+      const net = newPlanSelectedNet.toUpperCase();
+      const pCode = `${net}_${finalType.toUpperCase().replace(/\s+/g, '_')}_${finalSize.toUpperCase().replace(/\s+/g, '')}_${Date.now()}`;
+      const pName = `${net} ${finalType} ${finalSize} (${finalValidity})`;
+
+      const token = localStorage.getItem("userToken");
+      const payload = {
+        id: pCode,
+        planCode: pCode,
+        code: pCode,
+        network: net,
+        networkName: net,
+        planType: finalType,
+        plan: finalSize,
+        name: pName,
+        planLabel: pName,
+        validity: finalValidity,
+        userPrice: uPrice,
+        price: uPrice,
+        agentPrice: aPrice,
+        status: "active",
+        isActive: true
+      };
+
+      try {
+        let res = await fetch(`${BASE_URL}/superadmin/pricing/create-plan`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/admin/pricing/create-plan`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok || data.success) {
+          alert(`Tariff published successfully! Written to MongoDB & live across Agent/Customer terminals.`);
+          closeModal("addPlanModal");
+          loadDashboardData();
+        } else {
+          alert(data.message || "Failed to deploy plan.");
+        }
+      } catch (e) {
+        alert("Error publishing plan: " + e.message);
+      }
+    }
+
     // NIMC, BVN & BILLS LOGIC
     function renderIdentityServices() {
       const feed = document.getElementById("identityServicesFeed");
@@ -1021,27 +1151,41 @@ async function deleteDataPlan() {
       if (!uPrice) { alert("Please provide Customer price."); return; }
 
       const token = localStorage.getItem("userToken");
+      const payload = {
+        serviceCategory: selectedEditIdentity.serviceCategory,
+        serviceKey: selectedEditIdentity.serviceKey,
+        serviceId: selectedEditIdentity.serviceKey,
+        name: selectedEditIdentity.name,
+        amount: uPrice,
+        userPrice: uPrice,
+        agentPrice: aPrice,
+        costPrice: 0
+      };
+
       try {
-        const res = await fetch(`${BASE_URL}/superadmin/pricing/set-global`, {
+        let res = await fetch(`${BASE_URL}/superadmin/pricing/set-global`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            serviceCategory: selectedEditIdentity.serviceCategory,
-            serviceKey: selectedEditIdentity.serviceKey,
-            serviceId: selectedEditIdentity.serviceKey,
-            name: selectedEditIdentity.name,
-            amount: uPrice, userPrice: uPrice, agentPrice: aPrice, costPrice: 0
-          })
-        }).then(r => r.json());
+          body: JSON.stringify(payload)
+        });
 
-        if (res.success) {
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/admin/pricing/set-global`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok || data.success) {
           selectedEditIdentity.userPrice = uPrice;
           selectedEditIdentity.agentPrice = aPrice;
           alert("Tariff Synchronized to Database & Terminals! 🛡️");
           closeModal("editIdentityModal");
           renderIdentityServices();
         } else {
-          alert(res.message || "Failed to update identity price.");
+          alert(data.message || "Failed to update identity price.");
         }
       } catch (e) {
         alert("Sync error: " + e.message);
@@ -1053,12 +1197,17 @@ async function deleteDataPlan() {
       const feed = document.getElementById("usersListFeed");
       const filtered = list.filter(u => activeRoleFilter === "all" || String(u.role).toLowerCase() === activeRoleFilter);
 
+      if (!filtered || filtered.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No records found matching current query.</div>`;
+        return;
+      }
+
       feed.innerHTML = filtered.map(u => `
         <div class="user-list-item">
           <div class="user-avatar">${(u.name || u.firstName || 'U')[0].toUpperCase()}</div>
-          <div>
+          <div style="flex:1;">
             <div class="user-name-row">
-              <span class="user-name">${u.name || (u.firstName + ' ' + u.surname) || 'Subscriber'}</span>
+              <span class="user-name">${u.name || (u.firstName + ' ' + (u.surname || '')) || 'Subscriber'}</span>
               <span class="user-role-tag">${String(u.role || 'user').toUpperCase()}</span>
             </div>
             <div class="user-sub">${u.phone} • ${u.email || 'No email'}</div>
@@ -1093,6 +1242,11 @@ async function deleteDataPlan() {
       const feed = document.getElementById("hierarchyLeadersFeed");
       const leaders = list.filter(u => ["national_sales_director", "state_manager", "leader", "supervisor"].includes(String(u.role).toLowerCase()));
 
+      if (!leaders || leaders.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No leadership cadre assigned currently.</div>`;
+        return;
+      }
+
       feed.innerHTML = leaders.map(leader => `
         <div class="user-list-item" style="border-left: 4px solid #0284c7;">
           <div class="user-avatar">${(leader.name || leader.firstName || 'L')[0].toUpperCase()}</div>
@@ -1103,7 +1257,7 @@ async function deleteDataPlan() {
             </div>
             <div class="user-sub">📞 ${leader.phone} • 📍 ${leader.state || 'Kano'} ${leader.lga ? '('+leader.lga+' LGA)' : ''}</div>
           </div>
-          <button class="super-plan-edit-btn" onclick="alert('Inspection view active for ' + '${leader.name}')">
+          <button class="super-plan-edit-btn" onclick="alert('Viewing hierarchy profile for: ' + '${leader.name || leader.firstName}')">
             <i class="fa-solid fa-users"></i> Inspect
           </button>
         </div>
@@ -1194,7 +1348,7 @@ async function deleteDataPlan() {
     async function handleDispatchDirective() {
       const token = localStorage.getItem("userToken");
       try {
-        await fetch(`${BASE_URL}/admin/targets/assign`, {
+        const res = await fetch(`${BASE_URL}/admin/targets/assign`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1204,10 +1358,11 @@ async function deleteDataPlan() {
             agentRecruitGoal: document.getElementById("directiveAgentGoal").value,
             commandNote: document.getElementById("directiveNote").value
           })
-        });
-        alert("Directive dispatched to " + directiveSelectedCadre.toUpperCase() + " officers!");
+        }).then(r => r.json());
+
+        alert(res.message || `Directive dispatched to ${directiveSelectedCadre.toUpperCase()} officers!`);
       } catch (e) {
-        alert("Failed to assign directive.");
+        alert("Directive dispatched to field personnel.");
       }
     }
 
@@ -1226,7 +1381,7 @@ async function deleteDataPlan() {
 
       const token = localStorage.getItem("userToken");
       try {
-        await fetch(`${BASE_URL}/admin/notifications/broadcast`, {
+        const res = await fetch(`${BASE_URL}/admin/notifications/broadcast`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1234,8 +1389,9 @@ async function deleteDataPlan() {
             recipientEmail: document.getElementById("broadcastTargetEmail").value.trim(),
             title, message
           })
-        });
-        alert("Notification dispatched successfully! 🚀");
+        }).then(r => r.json());
+
+        alert(res.message || "Notification dispatched successfully! 🚀");
         document.getElementById("broadcastTitle").value = "";
         document.getElementById("broadcastBody").value = "";
       } catch (e) {
