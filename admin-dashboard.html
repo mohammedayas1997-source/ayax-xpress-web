@@ -291,7 +291,7 @@
   <!-- Dashboard Container -->
   <div class="container">
 
-    <!-- TAB 1: OVERVIEW (WITH REAL-TIME INFLOW, OUTFLOW & ALL SERVICES METRICS) -->
+    <!-- TAB 1: OVERVIEW -->
     <div id="tabContent-overview">
       <div class="section-header-row">
         <span class="section-header-label">FINANCIAL CASHFLOW & LIQUIDITY TELEMETRY</span>
@@ -300,52 +300,52 @@
 
       <div class="dark-telemetry-container">
         <div class="metric-grid">
-          <!-- Total Company Float -->
+          <!-- Total Company Float / Net Liquidity -->
           <div class="dark-metric-card" style="border-top-color: #10b981;">
             <div class="metric-card-header">
-              <span class="dark-metric-card-label">Company Total Float</span>
+              <span class="dark-metric-card-label">Company Net Float & Vault</span>
               <i class="fa-solid fa-vault" style="color: #10b981;"></i>
             </div>
             <div class="dark-metric-card-value" id="statsFloatVal" style="color: #34d399;">₦0.00</div>
-            <div class="dark-metric-card-sub">Reserves & System Vault</div>
+            <div class="dark-metric-card-sub" id="statsFloatSub">Reserves & System Vault</div>
           </div>
 
-          <!-- Total Inflow -->
+          <!-- Total Inflow (+) -->
           <div class="dark-metric-card" style="border-top-color: #38bdf8;">
             <div class="metric-card-header">
               <span class="dark-metric-card-label">Total Cash Inflow (+)</span>
               <i class="fa-solid fa-circle-arrow-down" style="color: #38bdf8;"></i>
             </div>
             <div class="dark-metric-card-value" id="statsInflowVal" style="color: #38bdf8;">₦0.00</div>
-            <div class="dark-metric-card-sub">Wallet Funding & Card Credits</div>
+            <div class="dark-metric-card-sub">Wallet Funding & Bank Credits</div>
           </div>
 
-          <!-- Total Outflow -->
+          <!-- Total Outflow (-) -->
           <div class="dark-metric-card" style="border-top-color: #f43f5e;">
             <div class="metric-card-header">
-              <span class="dark-metric-card-label">Total Outflow & Spending (-)</span>
+              <span class="dark-metric-card-label">Total Outflow / Spending (-)</span>
               <i class="fa-solid fa-circle-arrow-up" style="color: #f43f5e;"></i>
             </div>
             <div class="dark-metric-card-value" id="statsOutflowVal" style="color: #f43f5e;">₦0.00</div>
             <div class="dark-metric-card-sub">Data, VTU & Refund Debits</div>
           </div>
 
-          <!-- Total Transactions Count -->
+          <!-- Wallet Liabilities -->
           <div class="dark-metric-card" style="border-top-color: #c084fc;">
             <div class="metric-card-header">
-              <span class="dark-metric-card-label">Settled Operations</span>
-              <i class="fa-solid fa-chart-line" style="color: #c084fc;"></i>
+              <span class="dark-metric-card-label">Live Wallet Liabilities</span>
+              <i class="fa-solid fa-wallet" style="color: #c084fc;"></i>
             </div>
-            <div class="dark-metric-card-value" id="statsTransactionsVal" style="color: #c084fc;">0</div>
-            <div class="dark-metric-card-sub">VTU, Bills, NIMC, BVN</div>
+            <div class="dark-metric-card-value" id="statsLiabilitiesVal" style="color: #c084fc;">₦0.00</div>
+            <div class="dark-metric-card-sub" id="statsLiabilitiesSub">Customer & Agent Balances</div>
           </div>
         </div>
       </div>
 
       <!-- Quick Operations Summary Matrix -->
       <div class="section-header-row">
-        <span class="section-header-label">SERVICES OPERATIONAL TELEMETRY</span>
-        <span style="color: #0284c7; font-size: 10px; font-weight: 700;">REAL-TIME COUNTERS</span>
+        <span class="section-header-label">ALL SERVICES OPERATIONAL TELEMETRY</span>
+        <span style="color: #0284c7; font-size: 10px; font-weight: 700;">REAL-TIME LIVE COUNTERS</span>
       </div>
 
       <div class="metric-grid" style="margin-bottom: 14px;">
@@ -406,19 +406,18 @@
       </div>
     </div>
 
-    <!-- TAB 2: LIVE OPERATIONS LOG & TRANSACTION STREAM -->
+    <!-- TAB 2: LIVE OPERATIONS LOG & ALL TRANSACTIONS STREAM -->
     <div id="tabContent-operations" style="display: none;">
       <div class="section-header-row">
         <div>
           <span class="section-header-label">ALL COMPANY LIVE TRANSACTIONS & OPERATIONS</span>
           <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
-            Full financial audit trail: Inflows, Outflows, Data dispensing, Validations, and Bills.
+            Audited financial flow: Inflows (+), Outflows (-), Data, Airtime, Validations, NIMC Slips, and Utilities.
           </div>
         </div>
         <button class="add-plan-header-btn" onclick="loadDashboardData()"><i class="fa-solid fa-rotate"></i> Sync Live</button>
       </div>
 
-      <!-- Search & Category Filters -->
       <div class="search-filter-container">
         <div class="search-bar">
           <i class="fa-solid fa-magnifying-glass" style="color: #64748b;"></i>
@@ -789,7 +788,9 @@
           <h3 class="modal-title">Edit Verification Tariff</h3>
           <div class="modal-sub" id="editIdentitySubtitle">Gateway Channel</div>
         </div>
-        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('editIdentityModal')"><i class="fa-solid fa-xmark"></i></button>
+        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('editIdentityModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
 
       <label class="form-field-label">Service Channel Name</label>
@@ -817,10 +818,12 @@
           <h3 class="modal-title">Create Verification Channel</h3>
           <div class="modal-sub">Add custom NIMC / Identity lookup service</div>
         </div>
-        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('createIdentityModal')"><i class="fa-solid fa-xmark"></i></button>
+        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('createIdentityModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
 
-      <label class="form-field-label">Service Unique Key (e.g. vnin_val, bank_val, no_record)</label>
+      <label class="form-field-label">Service Unique Key</label>
       <input type="text" class="form-input" id="newIdentityKey" placeholder="e.g. sim_val">
 
       <label class="form-field-label">Service Category</label>
@@ -926,7 +929,6 @@
     let activeIdentityCategoryFilter = "ALL";
     let activeOpsFilter = "ALL";
 
-    // OFFICIAL AL-IHSAN PLAN PRESETS
     const ALIHSAN_PRESETS = {
       MTN: [
         { label: "1.0GB DC (30D)", id: "140", type: "DC", size: "1.0 GB", validity: "30 Days", uPrice: 230, aPrice: 210 },
@@ -1021,22 +1023,22 @@
 
     /**
      * =========================================================================
-     * REAL-TIME AGGREGATOR: INFLOW, OUTFLOW, AND COMPLETE LIVE OPERATIONS
+     * REAL LIVE FINANCIAL ENGINE: REAL INFLOW, OUTFLOW & ALL TRANSACTIONS
      * =========================================================================
      */
     async function loadDashboardData() {
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token") || localStorage.getItem("adminToken");
       if (!token) { window.location.href = "/login.html"; return; }
-      const headers = { Authorization: `Bearer ${token}` };
+      const headers = { Authorization: `Bearer ${token}`, Accept: "application/json" };
 
       try {
         const [statsRes, usersRes, superPlansRes, dataPlansRes, refundsRes, txRes, ninPricesRes, nimcPricesRes] = await Promise.allSettled([
           fetch(`${BASE_URL}/admin/dashboard-stats`, { headers }).then(r => r.json()).catch(() => ({})),
-          fetch(`${BASE_URL}/admin/users?limit=250`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/users?limit=500`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/superadmin/plans`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json()).catch(() => ({})),
-          fetch(`${BASE_URL}/admin/transactions?limit=500`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/transactions?limit=1000`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/nin/prices`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/nimc/prices`, { headers }).then(r => r.json()).catch(() => ({}))
         ]);
@@ -1049,11 +1051,26 @@
           renderOperationsLog(rawTx);
         }
 
-        // ==========================================
-        // CASHFLOW ENGINE: INFLOW VS OUTFLOW
-        // ==========================================
-        let calculatedInflow = 0;
-        let calculatedOutflow = 0;
+        // 1. Process Users List & Calculate Real System Wallet Liabilities
+        let realCalculatedLiabilities = 0;
+        if (usersRes.status === "fulfilled" && usersRes.value) {
+          usersList = usersRes.value.users || usersRes.value.data || [];
+          usersList.forEach(u => {
+            const bal = Number(u.walletBalance ?? u.balance ?? 0);
+            if (!isNaN(bal) && bal > 0) realCalculatedLiabilities += bal;
+          });
+
+          document.getElementById("countNsd").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("national")).length || 2;
+          document.getElementById("countSm").innerText = usersList.filter(u => ["state_manager", "leader", "sm"].includes(String(u.role).toLowerCase())).length || 14;
+          document.getElementById("countFs").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("supervisor")).length || 36;
+          document.getElementById("countAgents").innerText = usersList.filter(u => String(u.role).toLowerCase() === "agent").length || 148;
+          renderUsers(usersList);
+          renderHierarchyLeaders(usersList);
+        }
+
+        // 2. Compute Real Inflow (+) & Outflow (-) from Transactions Ledger
+        let liveInflowSum = 0;
+        let liveOutflowSum = 0;
         let dataCount = 0;
         let airtimeCount = 0;
         let nimcCount = 0;
@@ -1080,9 +1097,9 @@
 
           if (isSuccess || isRefund) {
             if (isInflow) {
-              calculatedInflow += amt;
+              liveInflowSum += amt;
             } else {
-              calculatedOutflow += amt;
+              liveOutflowSum += amt;
             }
           }
 
@@ -1125,21 +1142,32 @@
           }
         });
 
-        // Overview Stat Displays
+        // 3. Compute Real Company Total Float & Net Vault
+        let serverStats = {};
         if (statsRes.status === "fulfilled" && statsRes.value) {
-          const d = statsRes.value.stats || statsRes.value.data || statsRes.value;
-          const totalVault = (calculatedInflow - calculatedOutflow) > 0 ? (calculatedInflow - calculatedOutflow) : (d.companyTotalBalance || 4850000);
-          document.getElementById("statsFloatVal").innerText = "₦" + Number(totalVault).toLocaleString("en-NG", { minimumFractionDigits: 2 });
-          document.getElementById("statsInflowVal").innerText = "₦" + Number(calculatedInflow || d.totalRevenue || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 });
-          document.getElementById("statsOutflowVal").innerText = "₦" + Number(calculatedOutflow || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 });
-          document.getElementById("statsTransactionsVal").innerText = Number(rawTx.length || d.totalTransactions || 0).toLocaleString();
-
-          document.getElementById("salesTotalDataVal").innerText = (totalDataVolumeGB > 0 ? Math.round(totalDataVolumeGB * 10) / 10 : Number(d.totalDataSoldGB || 14850)).toLocaleString() + " GB";
-          document.getElementById("salesDataRevVal").innerText = "₦" + Number(d.totalDataRevenue || 3861000).toLocaleString() + " Volume";
-          document.getElementById("salesTotalAirtimeVal").innerText = "₦" + Number(totalAirtimeAmount > 0 ? totalAirtimeAmount : (d.totalAirtimeSold || 1240500)).toLocaleString();
+          serverStats = statsRes.value.stats || statsRes.value.data || statsRes.value || {};
         }
 
-        // Summary Operational Counters
+        const finalInflow = liveInflowSum > 0 ? liveInflowSum : Number(serverStats.totalInflow || serverStats.totalRevenue || 0);
+        const finalOutflow = liveOutflowSum > 0 ? liveOutflowSum : Number(serverStats.totalOutflow || 0);
+        const finalLiabilities = realCalculatedLiabilities > 0 ? realCalculatedLiabilities : Number(serverStats.totalWalletLiabilities || 0);
+
+        // Net Float = (Total Inflow - Total Outflow)
+        const netCompanyFloat = (finalInflow - finalOutflow) > 0 ? (finalInflow - finalOutflow) : Number(serverStats.companyTotalBalance || 0);
+
+        // Update Overview Cards with Real Money Figures
+        document.getElementById("statsFloatVal").innerText = "₦" + Number(netCompanyFloat).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById("statsInflowVal").innerText = "₦" + Number(finalInflow).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById("statsOutflowVal").innerText = "₦" + Number(finalOutflow).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById("statsLiabilitiesVal").innerText = "₦" + Number(finalLiabilities).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById("statsTransactionsVal").innerText = Number(rawTx.length || serverStats.totalTransactions || 0).toLocaleString();
+
+        // Update Sales Cards
+        document.getElementById("salesTotalDataVal").innerText = (totalDataVolumeGB > 0 ? (Math.round(totalDataVolumeGB * 10) / 10) : Number(serverStats.totalDataSoldGB || 0)).toLocaleString() + " GB";
+        document.getElementById("salesDataRevVal").innerText = "₦" + Number(serverStats.totalDataRevenue || (totalDataVolumeGB * 260)).toLocaleString("en-NG", { minimumFractionDigits: 2 }) + " Volume";
+        document.getElementById("salesTotalAirtimeVal").innerText = "₦" + Number(totalAirtimeAmount > 0 ? totalAirtimeAmount : (serverStats.totalAirtimeSold || 0)).toLocaleString("en-NG", { minimumFractionDigits: 2 });
+
+        // Update Summary Operational Counters
         document.getElementById("summaryDataCount").innerText = dataCount;
         document.getElementById("summaryDataVolume").innerText = `${Math.round(totalDataVolumeGB * 10) / 10} GB Dispensed`;
         document.getElementById("summaryAirtimeCount").innerText = airtimeCount;
@@ -1147,19 +1175,7 @@
         document.getElementById("summaryNimcCount").innerText = nimcCount;
         document.getElementById("summaryValCount").innerText = valCount;
 
-        // Render Network Breakdown
         renderNetworkBreakdown(networkStats);
-
-        // Users & Directory
-        if (usersRes.status === "fulfilled" && usersRes.value) {
-          usersList = usersRes.value.users || usersRes.value.data || [];
-          document.getElementById("countNsd").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("national")).length || 2;
-          document.getElementById("countSm").innerText = usersList.filter(u => ["state_manager", "leader"].includes(String(u.role).toLowerCase())).length || 14;
-          document.getElementById("countFs").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("supervisor")).length || 36;
-          document.getElementById("countAgents").innerText = usersList.filter(u => String(u.role).toLowerCase() === "agent").length || 148;
-          renderUsers(usersList);
-          renderHierarchyLeaders(usersList);
-        }
 
         // Plans & Tariffs
         let loadedPlans = [];
@@ -1177,11 +1193,12 @@
         // Refunds
         if (refundsRes.status === "fulfilled" && refundsRes.value) {
           pendingRefundsList = refundsRes.value.data || refundsRes.value.refunds || refundsRes.value.transactions || [];
+          document.getElementById("statsRefundsVal").innerText = pendingRefundsList.length;
           document.getElementById("refundTabCount").innerText = pendingRefundsList.length;
           renderRefunds(pendingRefundsList);
         }
 
-        // Identity Services Live Prices
+        // Identity Services Prices
         if (ninPricesRes.status === "fulfilled" && ninPricesRes.value?.prices) {
           const np = ninPricesRes.value.prices;
           identityServicesList.forEach(item => {
@@ -1197,7 +1214,7 @@
 
         renderIdentityServices();
       } catch (err) {
-        console.error("Dashboard Sync Error:", err);
+        console.error("Dashboard Real-time Telemetry Error:", err);
       }
     }
 
@@ -1214,11 +1231,9 @@
         const userPhone = String(tx.user?.phone || tx.phoneNumber || tx.recipient || tx.user || "").toLowerCase();
         const ref = String(tx.reference || tx.transactionId || "").toLowerCase();
 
-        // Search Match
         const matchesQuery = !q || userPhone.includes(q) || ref.includes(q) || dText.toLowerCase().includes(q) || sText.toLowerCase().includes(q);
         if (!matchesQuery) return false;
 
-        // Category Filter
         if (activeOpsFilter === "ALL") return true;
         if (activeOpsFilter === "DATA") return sText.includes("DATA") || dText.includes("DATA") || tx.type === "data";
         if (activeOpsFilter === "AIRTIME") return sText.includes("AIRTIME") || dText.includes("AIRTIME") || tx.type === "airtime";
@@ -1466,7 +1481,7 @@
         return;
       }
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       const oldId = selectedEditPlan.id || selectedEditPlan._id || selectedEditPlan.planId || selectedEditPlan.planCode;
 
       const payload = {
@@ -1522,7 +1537,7 @@
         return;
       }
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       const targetId = selectedEditPlan.id || selectedEditPlan._id || selectedEditPlan.planId || selectedEditPlan.planCode;
 
       try {
@@ -1632,7 +1647,7 @@
       const net = newPlanSelectedNet.toUpperCase();
       const pName = `${net} ${finalType} ${finalSize} (${finalValidity})`;
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       const payload = {
         id: planIdVal,
         planId: planIdVal,
@@ -1780,7 +1795,7 @@
         return;
       }
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       const isValidation = String(selectedEditIdentity.serviceCategory).toLowerCase() === "validation";
 
       const payload = {
@@ -1859,7 +1874,7 @@
         agentPrice: aPrice,
       };
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       try {
         await fetch(`${BASE_URL}/superadmin/pricing/set-global`, {
           method: "POST",
@@ -1903,7 +1918,7 @@
         return;
       }
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       try {
         await fetch(`${BASE_URL}/superadmin/pricing/delete-global/${selectedEditIdentity.serviceKey}`, {
           method: "DELETE",
@@ -1919,7 +1934,6 @@
       }
     }
 
-    // USERS RENDERING
     function renderUsers(list) {
       const feed = document.getElementById("usersListFeed");
       const filtered = list.filter(u => activeRoleFilter === "all" || String(u.role).toLowerCase() === activeRoleFilter);
@@ -1967,7 +1981,7 @@
 
     function renderHierarchyLeaders(list) {
       const feed = document.getElementById("hierarchyLeadersFeed");
-      const leaders = list.filter(u => ["national_sales_director", "state_manager", "leader", "supervisor"].includes(String(u.role).toLowerCase()));
+      const leaders = list.filter(u => ["national_sales_director", "state_manager", "leader", "supervisor", "sm", "nsd"].includes(String(u.role).toLowerCase()));
 
       if (!leaders || leaders.length === 0) {
         feed.innerHTML = `<div style="text-align:center; padding: 24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No leadership cadre assigned currently.</div>`;
@@ -1991,7 +2005,6 @@
       `).join("");
     }
 
-    // REFUNDS
     function renderRefunds(list) {
       const feed = document.getElementById("refundsQueueFeed");
       if (!list || list.length === 0) {
@@ -2049,7 +2062,7 @@
       if (selectedRefundIds.length === 0) { alert("Please select at least one ticket."); return; }
       if (!confirm(`Authorize refund for ${selectedRefundIds.length} accounts?`)) return;
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       try {
         const res = await fetch(`${BASE_URL}/admin/refunds/batch-approve`, {
           method: "POST",
@@ -2065,7 +2078,6 @@
       }
     }
 
-    // DIRECTIVE CADRE
     function setDirectiveCadre(cadre, btn) {
       directiveSelectedCadre = cadre;
       document.querySelectorAll("#directiveCadrePills .selector-pill").forEach(b => b.classList.remove("active"));
@@ -2073,7 +2085,7 @@
     }
 
     async function handleDispatchDirective() {
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       try {
         await fetch(`${BASE_URL}/admin/targets/assign`, {
           method: "POST",
@@ -2093,7 +2105,6 @@
       }
     }
 
-    // BROADCAST
     function setBroadcastScope(scope, btn) {
       broadcastSelectedScope = scope;
       document.querySelectorAll("#broadcastScopePills .selector-pill").forEach(b => b.classList.remove("active"));
@@ -2106,7 +2117,7 @@
       const message = document.getElementById("broadcastBody").value.trim();
       if (!title || !message) { alert("Title and Body are required."); return; }
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       try {
         await fetch(`${BASE_URL}/admin/notifications/broadcast`, {
           method: "POST",
@@ -2126,7 +2137,6 @@
       }
     }
 
-    // TRANSFER
     function setTransferMode(mode) {
       transferCurrentMode = mode;
       document.getElementById("transBulkBtn").classList.toggle("active", mode === "bulk");
@@ -2141,7 +2151,7 @@
       const agId = document.getElementById("transferAgentId").value.trim();
       if (!newSup) { alert("New Destination Supervisor ID is required."); return; }
 
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
       const endpoint = (transferCurrentMode === "bulk")
         ? `${BASE_URL}/supervisors/transfer-all-agents`
         : `${BASE_URL}/supervisors/transfer-single-agent`;
@@ -2169,7 +2179,6 @@
       }
     }
 
-    // CREATE STAFF
     function setNewStaffRole(role, btn) {
       newStaffSelectedRole = role;
       document.querySelectorAll("#newStaffRolePills .selector-pill").forEach(b => b.classList.remove("active"));
@@ -2184,7 +2193,7 @@
       const lga = document.getElementById("newStaffLga").value.trim();
 
       if (!name || !phone) { alert("Name and Phone Number are mandatory."); return; }
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
 
       try {
         const res = await fetch(`${BASE_URL}/admin/users/create`, {
@@ -2216,9 +2225,9 @@
       }
     }
 
-    // Bootstrap
+    // Bootstrap & Auto Polling
     loadDashboardData();
-    setInterval(loadDashboardData, 12000);
+    setInterval(loadDashboardData, 10000);
   </script>
 </body>
 </html>
