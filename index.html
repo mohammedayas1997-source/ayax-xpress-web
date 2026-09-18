@@ -1294,7 +1294,7 @@
     document.getElementById('passwordInput').addEventListener('input', hideError);
 
     // =========================================================================
-    // GYARAN ROUTER: FIELD SUPERVISOR YA ZO KAFIN STATE MANAGER
+    // ACCURATE ROUTING ENGINE WITH DIRECT STATE MANAGER OVERRIDE
     // =========================================================================
     function routeUserByRole(rawRole, rawIdentifier = "") {
       const role = String(rawRole || "").trim().toLowerCase();
@@ -1335,7 +1335,20 @@
         return;
       }
 
-      // 4. FIELD SUPERVISOR (Dole ne ya zo kafin Leader domin kar a tura shi leader dashboard)
+      // 4. STATE MANAGER / LEADER (Direct verification by email & role)
+      if (
+        identifier === "usmanado@ayaxdata.online" ||
+        role === "state_manager" ||
+        role === "leader" ||
+        role === "sm" ||
+        role === "lida" ||
+        role === "state_leader"
+      ) {
+        window.location.replace("leader-dashboard.html");
+        return;
+      }
+
+      // 5. FIELD SUPERVISOR
       if (
         role === "supervisor" ||
         role === "field_supervisor" ||
@@ -1343,17 +1356,6 @@
         role === "area_command_manager"
       ) {
         window.location.replace("supervisor-dashboard.html");
-        return;
-      }
-
-      // 5. State Manager / Leader
-      if (
-        role === "leader" ||
-        role === "lida" ||
-        role === "state_leader" ||
-        role === "state_manager"
-      ) {
-        window.location.replace("leader-dashboard.html");
         return;
       }
 
@@ -1555,6 +1557,8 @@
             userRole = "admin";
           } else if (lowId === "support@ayaxdata.online" || lowId === "08077778888") {
             userRole = "support";
+          } else if (lowId === "usmanado@ayaxdata.online") {
+            userRole = "state_manager";
           }
 
           const completeUserData = { ...userPayload, role: userRole };
