@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NIMC Slip Services - Ayax Data Xpress</title>
+  <title>NIMC Verification, Slips & Validation Services - Ayax Data Xpress</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #050811; color: #f8fafc; min-height: 100vh; overflow-x: hidden; }
 
     /* Layout Containers */
-    .container { max-width: 650px; margin: 0 auto; padding: 0 16px 40px; }
+    .container { max-width: 680px; margin: 0 auto; padding: 0 16px 50px; }
 
     /* Header Bar */
     .header-bar {
@@ -41,7 +41,7 @@
       padding: 18px;
       display: flex;
       align-items: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .banner-icon-wrap {
       width: 52px;
@@ -51,19 +51,67 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 24px;
       color: #00f0ff;
+      flex-shrink: 0;
     }
-    .banner-title { color: #ffffff; font-size: 16px; font-weight: 900; }
+    .banner-title { color: #ffffff; font-size: 15.5px; font-weight: 900; }
     .banner-sub { color: #cbd5e1; font-size: 11px; margin-top: 3px; line-height: 16px; }
 
+    /* Channel Type Filter Tabs */
+    .channel-filter-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      white-space: nowrap;
+    }
+    .channel-filter-scroll::-webkit-scrollbar { height: 4px; }
+    .channel-filter-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+
+    .filter-pill {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      padding: 8px 14px;
+      border-radius: 10px;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .filter-pill.active {
+      background: #0284c7;
+      border-color: #00f0ff;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+    }
+
     /* Section Heading */
+    .section-heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      margin-top: 6px;
+    }
     .section-heading {
       color: #64748b;
       font-size: 11px;
       font-weight: 900;
       letter-spacing: 0.8px;
-      margin-bottom: 12px;
+    }
+    .badge-count {
+      background: #1e293b;
+      color: #38bdf8;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 900;
     }
 
     /* Grid Container */
@@ -72,6 +120,10 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+    @media (max-width: 500px) {
+      .grid-container { grid-template-columns: 1fr; }
+    }
+
     .service-box {
       background-color: #0b1120;
       padding: 14px;
@@ -79,8 +131,11 @@
       border: 1px solid #1e293b;
       cursor: pointer;
       transition: 0.2s;
+      display: flex;
+      flex-direction: column;
     }
-    .service-box:hover { border-color: #00f0ff; }
+    .service-box:hover { border-color: #00f0ff; transform: translateY(-2px); }
+
     .box-header {
       display: flex;
       justify-content: space-between;
@@ -90,14 +145,21 @@
     .icon-circle {
       width: 40px;
       height: 40px;
-      border-radius: 20px;
+      border-radius: 12px;
       background: #071328;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid rgba(0, 240, 255, 0.2);
       color: #00f0ff;
-      font-size: 18px;
+      font-size: 17px;
+    }
+    .category-tag {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 3px 6px;
+      border-radius: 5px;
     }
     .admin-edit-pill {
       display: flex;
@@ -113,17 +175,17 @@
       font-weight: 800;
     }
     .box-title { color: #f8fafc; font-size: 13px; font-weight: 800; }
-    .box-desc { color: #64748b; font-size: 10px; margin-top: 4px; line-height: 14px; min-height: 28px; }
+    .box-desc { color: #64748b; font-size: 10.5px; margin-top: 4px; line-height: 14px; flex: 1; }
     .price-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 10px;
+      margin-top: 12px;
       padding-top: 8px;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
     .price-label { color: #64748b; font-size: 11px; font-weight: 600; }
-    .price-value { color: #10b981; font-size: 13px; font-weight: 900; }
+    .price-value { color: #10b981; font-size: 13.5px; font-weight: 900; }
 
     /* Modification Banner */
     .mod-card {
@@ -179,6 +241,8 @@
       font-weight: 700;
       outline: none;
     }
+    .text-input:focus { border-color: #00f0ff; }
+
     .fee-breakdown-box {
       background-color: #070c18;
       padding: 14px;
@@ -202,7 +266,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       color: #ffffff;
       font-weight: 900;
       font-size: 12.5px;
@@ -210,7 +274,7 @@
       cursor: pointer;
     }
 
-    /* Result Card */
+    /* Result Card (Slips & Profile) */
     .result-card {
       background-color: #0b1120;
       padding: 18px;
@@ -289,6 +353,16 @@
       margin-top: 18px;
     }
 
+    /* Validation Receipt Card */
+    .val-receipt-box {
+      width: 100%;
+      background: #071328;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
     /* Modals */
     .modal-overlay {
       position: fixed;
@@ -360,24 +434,44 @@
   <div class="container" id="viewMainList">
     <div class="header-bar">
       <button class="back-btn" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">NIMC Slip Services</div>
+      <div class="header-title">NIMC Identity Services</div>
       <div style="width: 40px;"></div>
     </div>
 
+    <!-- Hero Banner -->
     <div class="hero-banner">
-      <div class="banner-icon-wrap">
-        <i class="fa-solid fa-print"></i>
+      <div class="banner-icon-wrap" id="bannerIconWrap">
+        <i class="fa-solid fa-shield-halved"></i>
       </div>
       <div style="margin-left: 14px; flex: 1;">
-        <div class="banner-title">NIMC Slip Printing</div>
-        <div class="banner-sub">Instant verified reprint using NIN, Phone number, or Tracking ID.</div>
+        <div class="banner-title" id="bannerTitleText">NIMC Verification & Validation Portal</div>
+        <div class="banner-sub" id="bannerSubText">Access slip reprints, search channels, or resolve NIN record errors.</div>
       </div>
     </div>
 
-    <div class="section-heading">SELECT VERIFICATION CHANNEL</div>
+    <!-- Category Switcher Pills -->
+    <div class="channel-filter-scroll">
+      <button class="filter-pill active" id="pillAll" onclick="filterCategory('ALL')">
+        <i class="fa-solid fa-layer-group"></i> ALL SERVICES (13)
+      </button>
+      <button class="filter-pill" id="pillSlips" onclick="filterCategory('SLIPS')">
+        <i class="fa-solid fa-print"></i> SLIP PRINTING & SEARCH (6)
+      </button>
+      <button class="filter-pill" id="pillVal" onclick="filterCategory('VALIDATION')">
+        <i class="fa-solid fa-user-check"></i> NIN VALIDATIONS (7)
+      </button>
+    </div>
 
+    <!-- Dynamic Section Heading -->
+    <div class="section-heading-row">
+      <span class="section-heading" id="currentSectionTitle">SELECT CHANNEL</span>
+      <span class="badge-count" id="currentSectionCount">13 Channels</span>
+    </div>
+
+    <!-- Service Cards Grid -->
     <div class="grid-container" id="searchOptionsGrid"></div>
 
+    <!-- Modification Link -->
     <a href="/nimc-modification" class="mod-card">
       <div class="mod-icon-wrap">
         <i class="fa-solid fa-user-pen"></i>
@@ -399,28 +493,32 @@
     </div>
 
     <div class="form-card">
-      <label class="input-label">IDENTIFICATION NUMBER / VALUE</label>
+      <label class="input-label" id="formInputLabel">IDENTIFICATION NUMBER / VALUE</label>
       <input type="text" class="text-input" id="searchInputValue" placeholder="" maxlength="20">
 
       <div class="fee-breakdown-box">
         <div class="fee-row">
-          <span class="fee-row-label">Service Type</span>
+          <span class="fee-row-label">Category Desk</span>
+          <span class="fee-row-val" id="feeRowCategoryName" style="color: #38bdf8;">SLIP REPRINT</span>
+        </div>
+        <div class="fee-row">
+          <span class="fee-row-label">Service Channel</span>
           <span class="fee-row-val" id="feeRowServiceName">Service</span>
         </div>
         <div class="fee-row">
-          <span class="fee-row-label">Portal Printing Fee</span>
+          <span class="fee-row-label" id="feeRowFeeLabel">Official Portal Fee</span>
           <span class="fee-row-val" id="feeRowAmount" style="color: #10b981;">₦0</span>
         </div>
       </div>
 
-      <button class="action-btn-gradient" onclick="handleInitiateVerification()">
-        <i class="fa-solid fa-print"></i>
-        <span id="actionBtnLabelText">VERIFY & PRINT SLIP</span>
+      <button class="action-btn-gradient" id="actionSubmitBtn" onclick="handleInitiateAction()">
+        <i class="fa-solid fa-arrow-right" id="actionBtnIcon"></i>
+        <span id="actionBtnLabelText">SUBMIT REQUEST</span>
       </button>
     </div>
   </div>
 
-  <!-- VIEW 3: VERIFICATION RESULT VIEW -->
+  <!-- VIEW 3A: SLIP VERIFICATION RESULT (PRINT & PDF DOWNLOAD) -->
   <div class="container" id="viewResultProfile" style="display: none;">
     <div class="header-bar">
       <button class="back-btn" onclick="resetToMain()"><i class="fa-solid fa-xmark"></i></button>
@@ -447,12 +545,36 @@
     </div>
   </div>
 
+  <!-- VIEW 3B: VALIDATION CLEARANCE RESULT (CONFIRMATION & RECEIPT) -->
+  <div class="container" id="viewValidationResult" style="display: none;">
+    <div class="header-bar">
+      <button class="back-btn" onclick="resetToMain()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="header-title">Validation Clearance Status</div>
+      <div style="width: 40px;"></div>
+    </div>
+
+    <div class="result-card">
+      <div style="width: 60px; height: 60px; border-radius: 30px; background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center; color: #10b981; font-size: 28px; margin-bottom: 12px;">
+        <i class="fa-solid fa-shield-check"></i>
+      </div>
+      <h3 style="font-size: 16px; font-weight: 900; color: #ffffff;" id="valResTitle">Validation Submitted</h3>
+      <p style="font-size: 11.5px; color: #64748b; margin-top: 4px;" id="valResSubtitle">NIMC Database Synchronization Clearance</p>
+
+      <div class="val-receipt-box" id="valReceiptList"></div>
+
+      <button class="action-btn-gradient" style="margin-top: 18px;" onclick="resetToMain()">
+        <i class="fa-solid fa-check"></i>
+        <span>DONE / NEW TRANSACTION</span>
+      </button>
+    </div>
+  </div>
+
   <!-- MODAL 1: ADMIN EDIT PRICE MODAL -->
   <div class="modal-overlay" id="adminPriceModal">
     <div class="modal-content">
       <i class="fa-solid fa-tag" style="font-size: 32px; color: #f59e0b; margin-bottom: 10px;"></i>
       <div class="modal-title">Update Service Price</div>
-      <div class="modal-subtitle" id="adminPriceModalSub">Set global retail fee</div>
+      <div class="modal-subtitle" id="adminPriceModalSub">Set retail fee</div>
 
       <input type="number" class="modal-input" id="newAdminPriceInput" placeholder="Enter price in Naira">
 
@@ -470,7 +592,7 @@
 
       <input type="password" maxlength="4" class="modal-pin-input" id="pinInput" placeholder="••••">
 
-      <button class="modal-submit-btn" id="btnConfirmPin" onclick="handleVerification()">Confirm & Authorize</button>
+      <button class="modal-submit-btn" id="btnConfirmPin" onclick="handleExecuteAction()">Confirm & Authorize</button>
       <button style="border: none; background: none; color: #ef4444; font-weight: bold; margin-top: 12px; cursor: pointer;" onclick="closeModal('pinModal')">Cancel</button>
     </div>
   </div>
@@ -478,67 +600,176 @@
   <script>
     const BASE_URL = "https://ayax-data-xpress-server.onrender.com/api/v1";
 
-    const searchOptions = [
+    // CIKAKKEN JERIN AYYUKA DA AKA RABA GIDA BIYU (SLIP PRINTING VS VALIDATIONS)
+    const masterServicesList = [
+      // ==========================================
+      // SASHE NA 1: NIMC SLIP PRINTING & SEARCH
+      // ==========================================
       {
         id: "nin",
+        category: "SLIPS",
         name: "NIN Number Search",
         placeholder: "Enter 11-digit NIN (e.g. 12345678901)",
         icon: "fingerprint",
         length: 11,
         desc: "Direct verification using national identity number",
+        defaultPrice: 150,
+        badgeBg: "rgba(2, 132, 199, 0.15)",
+        badgeColor: "#38bdf8",
       },
       {
         id: "phone",
+        category: "SLIPS",
         name: "Phone Number Search",
         placeholder: "Enter Linked Phone Number (e.g. 08012345678)",
         icon: "phone-volume",
         length: 14,
         desc: "Fetch identity profile linked to SIM number",
+        defaultPrice: 200,
+        badgeBg: "rgba(2, 132, 199, 0.15)",
+        badgeColor: "#38bdf8",
       },
       {
         id: "trackingId",
+        category: "SLIPS",
         name: "Tracking ID Search",
         placeholder: "Enter NIMC Tracking ID (e.g. TRK12345XYZ)",
         icon: "barcode",
         length: 20,
         desc: "Retrieve slip with NIMC enrollment tracking code",
+        defaultPrice: 150,
+        badgeBg: "rgba(2, 132, 199, 0.15)",
+        badgeColor: "#38bdf8",
       },
       {
         id: "standardSlip",
+        category: "SLIPS",
         name: "Standard NIN Slip",
         placeholder: "Enter 11-digit NIN or Tracking ID",
         icon: "file-lines",
         length: 20,
         desc: "Official full details identification printable slip",
+        defaultPrice: 300,
+        badgeBg: "rgba(2, 132, 199, 0.15)",
+        badgeColor: "#38bdf8",
       },
       {
         id: "premiumCard",
+        category: "SLIPS",
         name: "Premium ID Card Slip",
         placeholder: "Enter 11-digit NIN",
         icon: "id-card",
         length: 11,
         desc: "Wallet plastic-sized ready-to-laminate NIN card",
+        defaultPrice: 400,
+        badgeBg: "rgba(2, 132, 199, 0.15)",
+        badgeColor: "#38bdf8",
       },
       {
         id: "basicSlip",
+        category: "SLIPS",
         name: "Basic Identification Slip",
         placeholder: "Enter 11-digit NIN",
         icon: "print",
         length: 11,
         desc: "Concise confirmation paper format slip",
+        defaultPrice: 150,
+        badgeBg: "rgba(2, 132, 199, 0.15)",
+        badgeColor: "#38bdf8",
+      },
+
+      // ==========================================
+      // SASHE NA 2: NIN VALIDATION SERVICES (7)
+      // ==========================================
+      {
+        id: "no_record",
+        category: "VALIDATION",
+        name: "No Record Found Validation",
+        placeholder: "Enter 11-digit NIN or Tracking ID",
+        icon: "triangle-exclamation",
+        length: 20,
+        desc: "NIN clearing and profile re-linking for no record errors",
+        defaultPrice: 1300,
+        badgeBg: "rgba(245, 158, 11, 0.15)",
+        badgeColor: "#f59e0b",
+      },
+      {
+        id: "sim_val",
+        category: "VALIDATION",
+        name: "SIM Registration Validation",
+        placeholder: "Enter 11-digit NIN to validate line",
+        icon: "sim-card",
+        length: 11,
+        desc: "Telecom and SIM registration line clearance validation",
+        defaultPrice: 1300,
+        badgeBg: "rgba(245, 158, 11, 0.15)",
+        badgeColor: "#f59e0b",
+      },
+      {
+        id: "vnin_val",
+        category: "VALIDATION",
+        name: "vNIN Validation",
+        placeholder: "Enter 16-digit Virtual NIN (vNIN)",
+        icon: "shield-halved",
+        length: 16,
+        desc: "Virtual NIN 16-digit verification and validation",
+        defaultPrice: 1300,
+        badgeBg: "rgba(245, 158, 11, 0.15)",
+        badgeColor: "#f59e0b",
+      },
+      {
+        id: "update_record",
+        category: "VALIDATION",
+        name: "Update Records Validation",
+        placeholder: "Enter 11-digit NIN",
+        icon: "arrows-rotate",
+        length: 11,
+        desc: "NIMC database record synchronization and update",
+        defaultPrice: 1300,
+        badgeBg: "rgba(245, 158, 11, 0.15)",
+        badgeColor: "#f59e0b",
+      },
+      {
+        id: "bank_val",
+        category: "VALIDATION",
+        name: "Bank Account & BVN Validation",
+        placeholder: "Enter 11-digit NIN tied to Bank account",
+        icon: "building-columns",
+        length: 11,
+        desc: "Commercial bank account and BVN-NIN tie validation",
+        defaultPrice: 1300,
+        badgeBg: "rgba(245, 158, 11, 0.15)",
+        badgeColor: "#f59e0b",
+      },
+      {
+        id: "mod_val",
+        category: "VALIDATION",
+        name: "Modification Validation",
+        placeholder: "Enter 11-digit NIN",
+        icon: "user-pen",
+        length: 11,
+        desc: "Validation clearance after name or date of birth modification",
+        defaultPrice: 1700,
+        badgeBg: "rgba(245, 158, 11, 0.15)",
+        badgeColor: "#f59e0b",
+      },
+      {
+        id: "photo_error",
+        category: "VALIDATION",
+        name: "Photographic Error Resolution",
+        placeholder: "Enter 11-digit NIN with portrait error",
+        icon: "camera-rotate",
+        length: 11,
+        desc: "NIMC portrait biometric photographic resolution",
+        defaultPrice: 1400,
+        badgeBg: "rgba(245, 158, 11, 0.15)",
+        badgeColor: "#f59e0b",
       },
     ];
 
-    let prices = {
-      nin: 100,
-      phone: 150,
-      trackingId: 100,
-      standardSlip: 200,
-      premiumCard: 300,
-      basicSlip: 100,
-    };
-
-    let selectedSearch = null;
+    let prices = {};
+    let activeFilter = "ALL";
+    let selectedService = null;
     let isAdmin = false;
     let editingService = null;
     let verifiedUserData = null;
@@ -547,13 +778,14 @@
     function closeModal(id) { document.getElementById(id).classList.remove("active"); }
 
     function resetToMain() {
-      selectedSearch = null;
+      selectedService = null;
       verifiedUserData = null;
       document.getElementById("searchInputValue").value = "";
       document.getElementById("pinInput").value = "";
       document.getElementById("viewMainList").style.display = "block";
       document.getElementById("viewEntryForm").style.display = "none";
       document.getElementById("viewResultProfile").style.display = "none";
+      document.getElementById("viewValidationResult").style.display = "none";
     }
 
     async function checkUserRole() {
@@ -567,36 +799,79 @@
     }
 
     async function fetchLivePrices() {
+      masterServicesList.forEach(s => { prices[s.id] = s.defaultPrice; });
+
       try {
-        const res = await fetch(`${BASE_URL}/nimc/prices`).then(r => r.json());
-        if (res.success && res.prices) {
-          if (typeof res.prices === "object" && !Array.isArray(res.prices)) {
-            prices = { ...prices, ...res.prices };
-          } else if (Array.isArray(res.prices)) {
-            res.prices.forEach(p => {
-              if (p.serviceType) prices[p.serviceType] = p.amount;
-            });
-          }
+        const [nimcRes, ninRes] = await Promise.allSettled([
+          fetch(`${BASE_URL}/nimc/prices`).then(r => r.json()),
+          fetch(`${BASE_URL}/nin/prices`).then(r => r.json())
+        ]);
+
+        if (nimcRes.status === "fulfilled" && nimcRes.value?.prices) {
+          const p = nimcRes.value.prices;
+          Object.keys(p).forEach(k => { prices[k] = Number(p[k]); });
+        }
+        if (ninRes.status === "fulfilled" && ninRes.value?.prices) {
+          const p = ninRes.value.prices;
+          Object.keys(p).forEach(k => { prices[k] = Number(p[k]); });
         }
       } catch (e) {
-        console.log("Using prices fallback:", e.message);
+        console.log("Prices fallback applied.");
       }
-      renderSearchOptions();
+      renderServicesGrid();
     }
 
-    function renderSearchOptions() {
+    function filterCategory(cat) {
+      activeFilter = cat;
+      document.getElementById("pillAll").classList.toggle("active", cat === "ALL");
+      document.getElementById("pillSlips").classList.toggle("active", cat === "SLIPS");
+      document.getElementById("pillVal").classList.toggle("active", cat === "VALIDATION");
+
+      if (cat === "SLIPS") {
+        document.getElementById("bannerTitleText").innerText = "NIMC Slip Printing & Verification";
+        document.getElementById("bannerSubText").innerText = "Instant reprint of verified standard, basic, or plastic premium ID cards.";
+        document.getElementById("currentSectionTitle").innerText = "SLIP REPRINT & SEARCH CHANNELS";
+      } else if (cat === "VALIDATION") {
+        document.getElementById("bannerTitleText").innerText = "NIN Validation & Record Clearing";
+        document.getElementById("bannerSubText").innerText = "Resolve No Record errors, SIM line validation, and Bank BVN linking.";
+        document.getElementById("currentSectionTitle").innerText = "OFFICIAL NIN VALIDATION CHANNELS";
+      } else {
+        document.getElementById("bannerTitleText").innerText = "NIMC Verification & Validation Portal";
+        document.getElementById("bannerSubText").innerText = "Access slip reprints, search channels, or resolve NIN record errors.";
+        document.getElementById("currentSectionTitle").innerText = "ALL REGISTERED CHANNELS";
+      }
+
+      renderServicesGrid();
+    }
+
+    function renderServicesGrid() {
       const grid = document.getElementById("searchOptionsGrid");
-      grid.innerHTML = searchOptions.map(opt => {
-        const currentPrice = prices[opt.id] || 100;
+      const filtered = masterServicesList.filter(s => {
+        if (activeFilter === "ALL") return true;
+        return s.category === activeFilter;
+      });
+
+      document.getElementById("currentSectionCount").innerText = `${filtered.length} Channels`;
+
+      grid.innerHTML = filtered.map(opt => {
+        const currentPrice = prices[opt.id] || opt.defaultPrice;
+        const isValidation = opt.category === "VALIDATION";
+        const tagText = isValidation ? "NIN VALIDATION" : "SLIP PRINT";
+
         return `
-          <div class="service-box" onclick="selectChannel('${opt.id}')">
+          <div class="service-box" onclick="selectServiceChannel('${opt.id}')">
             <div class="box-header">
-              <div class="icon-circle"><i class="fa-solid fa-${opt.icon}"></i></div>
-              ${isAdmin ? `
-                <button class="admin-edit-pill" onclick="event.stopPropagation(); openAdminPriceEdit('${opt.id}')">
-                  <i class="fa-solid fa-pencil"></i> Edit
-                </button>
-              ` : ''}
+              <div class="icon-circle" style="color:${isValidation ? '#f59e0b' : '#00f0ff'}; border-color:${isValidation ? 'rgba(245, 158, 11, 0.3)' : 'rgba(0, 240, 255, 0.2)'};">
+                <i class="fa-solid fa-${opt.icon}"></i>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="category-tag" style="background:${opt.badgeBg}; color:${opt.badgeColor};">${tagText}</span>
+                ${isAdmin ? `
+                  <button class="admin-edit-pill" onclick="event.stopPropagation(); openAdminPriceEdit('${opt.id}')">
+                    <i class="fa-solid fa-pencil"></i>
+                  </button>
+                ` : ''}
+              </div>
             </div>
             <div class="box-title">${opt.name}</div>
             <div class="box-desc">${opt.desc}</div>
@@ -609,19 +884,28 @@
       }).join("");
     }
 
-    function selectChannel(id) {
-      selectedSearch = searchOptions.find(o => o.id === id);
-      if (!selectedSearch) return;
+    function selectServiceChannel(id) {
+      selectedService = masterServicesList.find(o => o.id === id);
+      if (!selectedService) return;
 
-      const currentPrice = prices[selectedSearch.id] || 100;
-      document.getElementById("formHeaderTitle").innerText = selectedSearch.name;
-      document.getElementById("feeRowServiceName").innerText = selectedSearch.name;
+      const isVal = selectedService.category === "VALIDATION";
+      const currentPrice = prices[selectedService.id] || selectedService.defaultPrice;
+
+      document.getElementById("formHeaderTitle").innerText = selectedService.name;
+      document.getElementById("feeRowCategoryName").innerText = isVal ? "NIN VALIDATION DESK" : "SLIP REPRINT & SEARCH";
+      document.getElementById("feeRowCategoryName").style.color = isVal ? "#f59e0b" : "#38bdf8";
+      document.getElementById("feeRowServiceName").innerText = selectedService.name;
       document.getElementById("feeRowAmount").innerText = `₦${Number(currentPrice).toLocaleString()}`;
-      document.getElementById("actionBtnLabelText").innerText = `VERIFY & PRINT SLIP (₦${Number(currentPrice).toLocaleString()})`;
+      document.getElementById("feeRowFeeLabel").innerText = isVal ? "Clearance & Validation Fee" : "Portal Printing Fee";
+
+      document.getElementById("actionBtnIcon").className = isVal ? "fa-solid fa-user-check" : "fa-solid fa-print";
+      document.getElementById("actionBtnLabelText").innerText = isVal
+        ? `AUTHORIZE VALIDATION (₦${Number(currentPrice).toLocaleString()})`
+        : `VERIFY & PRINT SLIP (₦${Number(currentPrice).toLocaleString()})`;
 
       const input = document.getElementById("searchInputValue");
-      input.placeholder = selectedSearch.placeholder;
-      input.maxLength = selectedSearch.length;
+      input.placeholder = selectedService.placeholder;
+      input.maxLength = selectedService.length;
       input.value = "";
 
       document.getElementById("viewMainList").style.display = "none";
@@ -629,10 +913,10 @@
     }
 
     function openAdminPriceEdit(id) {
-      editingService = searchOptions.find(o => o.id === id);
+      editingService = masterServicesList.find(o => o.id === id);
       if (!editingService) return;
-      document.getElementById("adminPriceModalSub").innerText = `Set global retail fee for ${editingService.name}`;
-      document.getElementById("newAdminPriceInput").value = prices[editingService.id] || 100;
+      document.getElementById("adminPriceModalSub").innerText = `Set fee for ${editingService.name}`;
+      document.getElementById("newAdminPriceInput").value = prices[editingService.id] || editingService.defaultPrice;
       openModal("adminPriceModal");
     }
 
@@ -644,46 +928,52 @@
       const submitBtn = document.getElementById("btnSaveAdminPrice");
       submitBtn.innerText = "SAVING...";
 
+      const isVal = editingService.category === "VALIDATION";
+
       try {
-        await fetch(`${BASE_URL}/nimc/admin/set-price`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            serviceType: editingService.id,
-            amount: val,
-            name: editingService.name
-          })
-        });
+        if (isVal) {
+          await fetch(`${BASE_URL}/admin/nin/update-price`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ serviceId: editingService.id, serviceName: editingService.name, price: val })
+          });
+        } else {
+          await fetch(`${BASE_URL}/nimc/admin/set-price`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ serviceType: editingService.id, amount: val, name: editingService.name })
+          });
+        }
         prices[editingService.id] = val;
-        alert(`Updated: ${editingService.name} price set to ₦${val.toLocaleString()}`);
+        alert(`Price updated: ${editingService.name} is now ₦${val.toLocaleString()}`);
         closeModal("adminPriceModal");
-        renderSearchOptions();
+        renderServicesGrid();
       } catch (e) {
         prices[editingService.id] = val;
-        alert(`Updated: ${editingService.name} price set to ₦${val.toLocaleString()}`);
+        alert(`Price set to ₦${val.toLocaleString()}`);
         closeModal("adminPriceModal");
-        renderSearchOptions();
+        renderServicesGrid();
       } finally {
         submitBtn.innerText = "SAVE PRICE";
       }
     }
 
-    function handleInitiateVerification() {
+    function handleInitiateAction() {
       const val = document.getElementById("searchInputValue").value.trim();
       if (!val || val.length < 6) {
-        alert(`Please enter a valid ${selectedSearch?.name || "ID / Number"}.`);
+        alert(`Please enter a valid ${selectedService?.name || "ID / Number"}.`);
         return;
       }
-      const activePrice = prices[selectedSearch.id] || 100;
-      document.getElementById("pinModalSub").innerText = `Authorize ₦${Number(activePrice).toLocaleString()} fee for ${selectedSearch.name}`;
+      const activePrice = prices[selectedService.id] || selectedService.defaultPrice;
+      document.getElementById("pinModalSub").innerText = `Authorize ₦${Number(activePrice).toLocaleString()} for ${selectedService.name}`;
       document.getElementById("pinInput").value = "";
       openModal("pinModal");
     }
 
-    async function handleVerification() {
+    async function handleExecuteAction() {
       const pin = document.getElementById("pinInput").value.trim();
       if (!pin || pin.length < 4) {
-        alert("Security PIN: Please enter your 4-digit Transaction PIN.");
+        alert("Please enter your 4-digit Transaction PIN.");
         return;
       }
 
@@ -695,14 +985,66 @@
       }
 
       const submitBtn = document.getElementById("btnConfirmPin");
-      submitBtn.innerText = "Verifying...";
+      submitBtn.innerText = "Processing...";
       submitBtn.disabled = true;
 
-      const serviceId = selectedSearch?.id || "nin";
-      const activeAmount = prices[serviceId] || 100;
+      const isVal = selectedService.category === "VALIDATION";
+      const serviceId = selectedService.id;
+      const activeAmount = prices[serviceId] || selectedService.defaultPrice;
       const cleanInput = document.getElementById("searchInputValue").value.trim();
 
-      let payload = {
+      // ==========================================
+      // A. SHARI'AR NIN VALIDATION
+      // ==========================================
+      if (isVal) {
+        const valPayload = {
+          serviceCategory: "validation",
+          serviceType: serviceId,
+          serviceKey: serviceId,
+          nin: cleanInput,
+          trackingId: cleanInput,
+          vnin: cleanInput,
+          searchValue: cleanInput,
+          amount: activeAmount,
+          pin: pin,
+          transactionPin: pin,
+        };
+
+        try {
+          let res = await fetch(`${BASE_URL}/nin/validate`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(valPayload)
+          }).then(r => r.json()).catch(() => null);
+
+          if (!res || !res.success) {
+            res = await fetch(`${BASE_URL}/nimc/submit-request`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+              body: JSON.stringify(valPayload)
+            }).then(r => r.json()).catch(() => null);
+          }
+
+          closeModal("pinModal");
+
+          if (res && (res.success || res.status === "success" || res.code === 200)) {
+            renderValidationSuccess(cleanInput, res.data || res);
+          } else {
+            alert(res?.message || res?.desc || "Validation request could not be completed.");
+          }
+        } catch (err) {
+          alert("Validation Error: " + err.message);
+        } finally {
+          submitBtn.innerText = "Confirm & Authorize";
+          submitBtn.disabled = false;
+        }
+        return;
+      }
+
+      // ==========================================
+      // B. SHARI'AR SLIP PRINTING & SEARCH
+      // ==========================================
+      let slipPayload = {
         serviceType: serviceId,
         searchType: serviceId,
         amount: activeAmount,
@@ -719,31 +1061,31 @@
         } else if (phoneDigits.length === 10 && !phoneDigits.startsWith("0")) {
           phoneDigits = "0" + phoneDigits;
         }
-        payload.phone = phoneDigits;
-        payload.phoneNumber = phoneDigits;
-        payload.searchValue = phoneDigits;
+        slipPayload.phone = phoneDigits;
+        slipPayload.phoneNumber = phoneDigits;
+        slipPayload.searchValue = phoneDigits;
       } else if (serviceId === "trackingId") {
-        payload.trackingId = cleanInput;
-        payload.searchValue = cleanInput;
+        slipPayload.trackingId = cleanInput;
+        slipPayload.searchValue = cleanInput;
       } else {
-        payload.nin = cleanInput;
-        payload.ninNumber = cleanInput;
-        payload.searchValue = cleanInput;
+        slipPayload.nin = cleanInput;
+        slipPayload.ninNumber = cleanInput;
+        slipPayload.searchValue = cleanInput;
       }
 
       try {
         const res = await fetch(`${BASE_URL}/nimc/submit-request`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(slipPayload)
         }).then(r => r.json());
 
         if (res.success || res.status === "success") {
           closeModal("pinModal");
           verifiedUserData = res.data || res;
-          renderResultProfile();
+          renderSlipProfile();
         } else {
-          alert(res.message || "Verification failed. Check your input.");
+          alert(res.message || res.desc || "Search failed. Check your input.");
         }
       } catch (err) {
         alert("Verification Failed: " + (err.message || "Server communication failure."));
@@ -753,7 +1095,40 @@
       }
     }
 
-    function renderResultProfile() {
+    // NUNA SAKAMAKON VALIDATION
+    function renderValidationSuccess(ninVal, resData) {
+      document.getElementById("viewEntryForm").style.display = "none";
+      document.getElementById("viewValidationResult").style.display = "block";
+
+      const ref = resData?.reference || resData?.orderId || resData?.trackingId || `VAL_${Date.now()}`;
+      const statusText = resData?.statusText || "PROCESSING / COMPLETED";
+
+      document.getElementById("valReceiptList").innerHTML = `
+        <div class="result-row-container">
+          <span class="result-label">Channel Requested:</span>
+          <span class="result-value" style="color:#00f0ff;">${selectedService?.name}</span>
+        </div>
+        <div class="result-row-container">
+          <span class="result-label">Identifier (NIN):</span>
+          <span class="result-value">${ninVal}</span>
+        </div>
+        <div class="result-row-container">
+          <span class="result-label">Tracking Reference:</span>
+          <span class="result-value">${ref}</span>
+        </div>
+        <div class="result-row-container">
+          <span class="result-label">Clearance Status:</span>
+          <span class="result-value" style="color:#10b981; font-weight:900;">${statusText}</span>
+        </div>
+        <div class="result-row-container">
+          <span class="result-label">Notification:</span>
+          <span class="result-value" style="font-size:11px; color:#94a3b8;">Record cleared on NIMC gateways.</span>
+        </div>
+      `;
+    }
+
+    // NUNA SAKAMAKON SLIP PRINTING
+    function renderSlipProfile() {
       document.getElementById("viewEntryForm").style.display = "none";
       document.getElementById("viewResultProfile").style.display = "block";
 
@@ -807,6 +1182,7 @@
       alert(`${label || "Value"} copied to clipboard.`);
     }
 
+    // CIKAKKEN PDF SLIP GENERATOR (Standard, Premium, Basic)
     function handleDownloadPDF() {
       const directPdf = verifiedUserData?.pdfUrl || verifiedUserData?.slipUrl || verifiedUserData?.downloadUrl || verifiedUserData?.fileUrl || verifiedUserData?.url || verifiedUserData?.slip;
 
@@ -864,10 +1240,10 @@
         : "https://via.placeholder.com/150";
 
       const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
-        `NIN:${nin}|SURNAME:${surname}|GIVEN:${givenNames}|DOB:${formattedDob}|SEX:${gender}`
+        `NIN:${nin}|SURNAME:${surname}\vert{}GIVEN:${givenNames}|DOB:${formattedDob}\vert{}SEX:${gender}`
       )}`;
 
-      const selectedType = selectedSearch?.id || "standardSlip";
+      const selectedType = selectedService?.id || "standardSlip";
 
       const greenWatermarkBg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'><text x='5' y='30' fill='%2315803d' opacity='0.16' font-size='10' font-family='monospace' font-weight='bold' transform='rotate(-22 70 35)'>${nin}</text><text x='15' y='60' fill='%2315803d' opacity='0.10' font-size='8' font-family='monospace' transform='rotate(-22 70 35)'>${phone}</text></svg>`;
       const cardWatermarkBg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'><text x='5' y='28' fill='%23475569' opacity='0.15' font-size='9.5' font-family='monospace' font-weight='bold' transform='rotate(-22 60 30)'>${nin}</text></svg>`;
@@ -933,7 +1309,7 @@
 
               <div class="regular-disclaimer">
                 <strong>Note:</strong> The National Identification Number (NIN) is your identity. It is confidential and may only be released for legitimate transactions.<br/>
-                You will be notified when your National Identity Card is ready (For any enquiries, please contact)
+                You will be notified when your National Identity Card is ready.
               </div>
 
               <div class="regular-footer">
@@ -1012,10 +1388,7 @@
                 </div>
                 <div class="disc-caution">CAUTION!</div>
                 <div class="disc-txt">
-                  If this NIN was not issued to the person on the front of this document, please DO NOT attempt to scan, photocopy or replicate the personal data contained herein. You are only permitted to scan the barcode for the purpose of identity verification.
-                </div>
-                <div class="disc-txt" style="color: #444; font-size: 7px; margin-top: 4px;">
-                  The FEDERAL GOVERNMENT of NIGERIA assumes no responsibility if you accept any variance on the scan result or do not scan the 2D barcode overleaf.
+                  If this NIN was not issued to the person on the front of this document, please DO NOT attempt to scan, photocopy or replicate the personal data contained herein.
                 </div>
               </div>
             </div>
@@ -1058,7 +1431,6 @@
                   <div style="margin-top: 5px; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2px;">
                     <div style="font-size: 7px; color: #222; font-weight: bold;">National Identification Number (NIN)</div>
                     <div style="font-size: 18px; font-weight: 900; letter-spacing: 2px; color: #000; font-family: monospace;">${formattedNin}</div>
-                    <div style="font-size: 5.5px; color: #555; font-style: italic;">Kindly ensure you scan the barcode to verify the credentials.</div>
                   </div>
                 </div>
               </div>
@@ -1067,14 +1439,7 @@
                 <div class="disc-header" style="font-size: 12px;">DISCLAIMER</div>
                 <div class="disc-sub" style="font-size: 8.5px; margin-bottom: 5px;">Trust, but verify</div>
                 <div class="disc-txt" style="font-size: 7px; line-height: 9.5px;">
-                  Kindly ensure each time this ID is presented, that you verify the credentials using a Government APPROVED verification resource. The details on the front of this NIN Slip must EXACTLY match the verification result.
-                </div>
-                <div class="disc-caution" style="font-size: 9px; margin: 3px 0 2px;">CAUTION!</div>
-                <div class="disc-txt" style="font-size: 6.8px; line-height: 9px;">
-                  If this NIN was not issued to the person on the front of this document, please DO NOT attempt to scan, photocopy or replicate the personal data contained herein. You are only permitted to scan the barcode for the purpose of identity verification.
-                </div>
-                <div class="disc-txt" style="font-size: 6.2px; line-height: 8.5px; color: #555; margin-top: 3px;">
-                  The FEDERAL GOVERNMENT of NIGERIA assumes no responsibility if you accept any variance on the scan result or do not scan the 2D barcode overleaf.
+                  Kindly ensure each time this ID is presented, that you verify the credentials using a Government APPROVED verification resource.
                 </div>
               </div>
             </div>
@@ -1094,20 +1459,20 @@
                 body { font-family: Arial, Helvetica, sans-serif; background: #cbd5e1; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                 .sheet { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
                 
-                .regular-card { width: 780px; background: #fff; border: 2px solid #000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                .regular-card { width: 780px; background: #fff; border: 2px solid #000; }
                 .regular-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; border-bottom: 2px solid #000; }
                 .regular-table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
                 .regular-table td { border: 1px solid #000; padding: 5px 7px; }
                 .regular-disclaimer { padding: 6px 10px; font-size: 8.5px; border-bottom: 2px solid #000; line-height: 13px; }
                 .regular-footer { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; font-size: 9px; }
 
-                .premium-box { width: 840px; height: 260px; display: flex; border: 1.5px solid #000; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+                .premium-box { width: 840px; height: 260px; display: flex; border: 1.5px solid #000; background: #fff; }
                 .prem-front { flex: 1.18; padding: 12px 14px; border-right: 1.5px solid #000; background-color: #f1fbf4; position: relative; overflow: hidden; background-repeat: repeat; }
                 .prem-back { flex: 0.82; padding: 14px 18px; display: flex; flex-direction: column; justify-content: center; text-align: center; background: #fff; }
                 .prem-center-coat { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 150px; height: 150px; background: url('https://upload.wikimedia.org/wikipedia/commons/b/bc/Coat_of_arms_of_Nigeria.svg') no-repeat center; background-size: contain; opacity: 0.08; pointer-events: none; z-index: 1; }
 
                 .card-deck { display: flex; gap: 20px; }
-                .std-card { width: 345px; height: 215px; border: 1.5px solid #222; border-radius: 6px; background-color: #fff; padding: 8px 12px; position: relative; overflow: hidden; background-repeat: repeat; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+                .std-card { width: 345px; height: 215px; border: 1.5px solid #222; border-radius: 6px; background-color: #fff; padding: 8px 12px; position: relative; overflow: hidden; background-repeat: repeat; }
                 .std-center-coat { position: absolute; top: 25px; left: 50%; transform: translateX(-50%); width: 110px; height: 110px; background: url('https://upload.wikimedia.org/wikipedia/commons/b/bc/Coat_of_arms_of_Nigeria.svg') no-repeat center; background-size: contain; opacity: 0.12; pointer-events: none; z-index: 1; }
 
                 .lbl { color: #64748b; font-size: 7px; font-weight: bold; }
@@ -1115,7 +1480,7 @@
                 .val-sm { font-weight: bold; font-size: 9.5px; color: #000; }
 
                 .disc-header { font-weight: 900; font-size: 13px; letter-spacing: 0.5px; color: #000; }
-                .disc-sub { font-style: italic; font-size: 9px; color: #333; margin: 1px 0 6px; font-family: 'Georgia', serif; }
+                .disc-sub { font-style: italic; font-size: 9px; color: #333; margin: 1px 0 6px; }
                 .disc-caution { font-weight: bold; font-size: 10px; color: #000; margin: 3px 0 1px; }
                 .disc-txt { font-size: 7.2px; line-height: 10.5px; text-align: justify; color: #111; }
 
