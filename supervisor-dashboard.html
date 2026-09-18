@@ -977,6 +977,10 @@
         <label class="form-field-label">AGENT FULL NAME *</label>
         <input type="text" id="regAgentName" class="text-input-style" placeholder="e.g. Aliyu Sani" required />
 
+        <!-- Sabon filin Email Address da aka sanya a nan -->
+        <label class="form-field-label">EMAIL ADDRESS (LOGIN & NOTIFICATIONS) *</label>
+        <input type="email" id="regAgentEmail" class="text-input-style" placeholder="e.g. agent@ayaxdata.online" required />
+
         <div style="display: flex; gap: 8px;">
           <div style="flex: 1;">
             <label class="form-field-label">PHONE NUMBER (LOGIN) *</label>
@@ -1460,17 +1464,18 @@
     }
 
     // =========================================================================
-    // RAJISTAR AGENT TARE DA TABBATAR DA CEWA SUPERVISOR YA TSAYA A DASHBOARD DINSA
+    // RAJISTAR AGENT TARE DA SANYA EMAIL KAI-TSAYE BA TARE DA FITA DAGA DASHBOARD BA
     // =========================================================================
     async function handleDirectRegisterAgent() {
       const name = document.getElementById('regAgentName').value.trim();
+      const emailInput = document.getElementById('regAgentEmail').value.trim();
       const phone = document.getElementById('regAgentPhone').value.trim();
       const lga = document.getElementById('regAgentLga').value.trim();
       const address = document.getElementById('regAgentAddress').value.trim();
       const password = document.getElementById('regAgentPassword').value.trim();
 
-      if (!name || !phone || !password) {
-        alert("Please provide full name, phone number, and password.");
+      if (!name || !phone || !password || !emailInput) {
+        alert("Da fatan za a shigar da Cikakken Suna, Email Address, Lambar Waya da Password.");
         return;
       }
 
@@ -1485,7 +1490,7 @@
         firstName: name.split(' ')[0],
         surname: name.split(' ').slice(1).join(' ') || 'Agent',
         phone,
-        email: `${phone}@ayaxdata.online`,
+        email: emailInput || `${phone}@ayaxdata.online`,
         password,
         role: "agent",
         state: state.profile.state,
@@ -1521,14 +1526,15 @@
           if (res.ok && (resData.success || res.status === 200 || res.status === 201)) {
             registeredSuccess = true;
             
-            // RUFE MODAL KUMA SHARE AKWATINAN RUBUTU
+            // RUFE MODAL KUMA SHARE DUK AKWATINAN RUBUTU
             closeModal('registerAgentModal');
             document.getElementById('regAgentName').value = '';
+            document.getElementById('regAgentEmail').value = '';
             document.getElementById('regAgentPhone').value = '';
             document.getElementById('regAgentAddress').value = '';
 
             // SANARWA TA NASARA: SUPERVISOR YANA NAN A DASHBOARD DINSA BA TARE DA YA FITA BA!
-            alert(`Nasara! An yi wa Agent ${name} rajista lafiya a karkashin ${payload.lga} LGA.`);
+            alert(`Nasara! An yi wa Agent ${name} rajista lafiya tare da Email (${payload.email}) a karkashin ${payload.lga} LGA.`);
 
             // Daukako sabbin jerin agents ba tare da canza login ba
             fetchDashboardData();
