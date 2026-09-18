@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Operations Console - Ayax Data Xpress</title>
+  <title>Admin Operations & Financial Console - Ayax Data Xpress</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -33,7 +33,12 @@
       background: #e0f2fe; padding: 2px 8px; border-radius: 8px;
       border: 1px solid #bae6fd; margin-bottom: 2px;
     }
-    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #0284c7; }
+    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #0284c7; animation: pulse 1.8s infinite; }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(2, 132, 199, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(2, 132, 199, 0); }
+    }
     .live-text { color: #0284c7; font-size: 9px; font-weight: 900; letter-spacing: 0.6px; }
     .brand-title { color: #0f172a; font-size: 13px; font-weight: 900; }
     .top-actions { display: flex; align-items: center; gap: 8px; }
@@ -134,6 +139,26 @@
     .user-role-tag { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 900; color: #0284c7; }
     .user-sub { color: #64748b; font-size: 11px; margin-top: 2px; }
     .user-balance-val { color: #059669; font-size: 13px; font-weight: 900; margin-left: auto; text-align: right; }
+
+    /* Transaction Stream Item */
+    .tx-item-card {
+      background: #ffffff; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px;
+      border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px;
+      transition: all 0.2s;
+    }
+    .tx-item-card:hover { border-color: #0284c7; }
+    .tx-icon-box {
+      width: 40px; height: 40px; border-radius: 12px; display: flex;
+      align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+    }
+    .tx-details-wrap { flex: 1; min-width: 0; }
+    .tx-main-line { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .tx-title { font-size: 13px; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tx-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 900; }
+    .tx-sub-line { font-size: 11px; color: #64748b; }
+    .tx-amount-side { text-align: right; flex-shrink: 0; }
+    .tx-amount { font-size: 14.5px; font-weight: 900; }
+    .tx-status-pill { font-size: 9px; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
 
     /* Plan & Tariff Cards */
     .super-plan-card {
@@ -252,7 +277,8 @@
   <!-- Horizontal Tab Ribbon -->
   <div class="tab-ribbon">
     <button class="tab-btn active" id="tabBtn-overview" onclick="switchTab('overview')"><i class="fa-solid fa-table-cells-large"></i> Overview</button>
-    <button class="tab-btn" id="tabBtn-sales" onclick="switchTab('sales')"><i class="fa-solid fa-chart-line"></i> Sales & Bundles</button>
+    <button class="tab-btn" id="tabBtn-operations" onclick="switchTab('operations')"><i class="fa-solid fa-list-check"></i> Live Operations Log (<span id="liveOpsCount">0</span>)</button>
+    <button class="tab-btn" id="tabBtn-sales" onclick="switchTab('sales')"><i class="fa-solid fa-chart-line"></i> Sales & Cashflow</button>
     <button class="tab-btn" id="tabBtn-hierarchy" onclick="switchTab('hierarchy')"><i class="fa-solid fa-sitemap"></i> Cadre Hierarchy</button>
     <button class="tab-btn" id="tabBtn-users" onclick="switchTab('users')"><i class="fa-solid fa-users"></i> User Directory</button>
     <button class="tab-btn" id="tabBtn-refunds" onclick="switchTab('refunds')"><i class="fa-solid fa-rotate-left"></i> Refunds (<span id="refundTabCount">0</span>)</button>
@@ -265,50 +291,86 @@
   <!-- Dashboard Container -->
   <div class="container">
 
-    <!-- TAB 1: OVERVIEW -->
+    <!-- TAB 1: OVERVIEW (WITH REAL-TIME INFLOW, OUTFLOW & ALL SERVICES METRICS) -->
     <div id="tabContent-overview">
       <div class="section-header-row">
-        <span class="section-header-label">FINANCIAL & LIQUIDITY TELEMETRY</span>
+        <span class="section-header-label">FINANCIAL CASHFLOW & LIQUIDITY TELEMETRY</span>
         <span class="section-header-live">REAL-TIME LIVE</span>
       </div>
 
       <div class="dark-telemetry-container">
         <div class="metric-grid">
+          <!-- Total Company Float -->
           <div class="dark-metric-card" style="border-top-color: #10b981;">
             <div class="metric-card-header">
               <span class="dark-metric-card-label">Company Total Float</span>
-              <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i>
+              <i class="fa-solid fa-vault" style="color: #10b981;"></i>
             </div>
-            <div class="dark-metric-card-value" id="statsFloatVal" style="color: #34d399;">₦4,850,000</div>
-            <div class="dark-metric-card-sub">Vault Reserves & Total Float</div>
+            <div class="dark-metric-card-value" id="statsFloatVal" style="color: #34d399;">₦0.00</div>
+            <div class="dark-metric-card-sub">Reserves & System Vault</div>
           </div>
 
+          <!-- Total Inflow -->
           <div class="dark-metric-card" style="border-top-color: #38bdf8;">
             <div class="metric-card-header">
-              <span class="dark-metric-card-label">Wallet Liabilities</span>
-              <i class="fa-solid fa-wallet" style="color: #38bdf8;"></i>
+              <span class="dark-metric-card-label">Total Cash Inflow (+)</span>
+              <i class="fa-solid fa-circle-arrow-down" style="color: #38bdf8;"></i>
             </div>
-            <div class="dark-metric-card-value" id="statsLiabilitiesVal" style="color: #38bdf8;">₦250,000</div>
-            <div class="dark-metric-card-sub">Customer/Agent Balances</div>
+            <div class="dark-metric-card-value" id="statsInflowVal" style="color: #38bdf8;">₦0.00</div>
+            <div class="dark-metric-card-sub">Wallet Funding & Card Credits</div>
           </div>
 
+          <!-- Total Outflow -->
+          <div class="dark-metric-card" style="border-top-color: #f43f5e;">
+            <div class="metric-card-header">
+              <span class="dark-metric-card-label">Total Outflow & Spending (-)</span>
+              <i class="fa-solid fa-circle-arrow-up" style="color: #f43f5e;"></i>
+            </div>
+            <div class="dark-metric-card-value" id="statsOutflowVal" style="color: #f43f5e;">₦0.00</div>
+            <div class="dark-metric-card-sub">Data, VTU & Refund Debits</div>
+          </div>
+
+          <!-- Total Transactions Count -->
           <div class="dark-metric-card" style="border-top-color: #c084fc;">
             <div class="metric-card-header">
-              <span class="dark-metric-card-label">Settled Transactions</span>
+              <span class="dark-metric-card-label">Settled Operations</span>
               <i class="fa-solid fa-chart-line" style="color: #c084fc;"></i>
             </div>
-            <div class="dark-metric-card-value" id="statsTransactionsVal" style="color: #c084fc;">1,280</div>
+            <div class="dark-metric-card-value" id="statsTransactionsVal" style="color: #c084fc;">0</div>
             <div class="dark-metric-card-sub">VTU, Bills, NIMC, BVN</div>
           </div>
+        </div>
+      </div>
 
-          <div class="dark-metric-card" style="border-top-color: #fb7185;">
-            <div class="metric-card-header">
-              <span class="dark-metric-card-label">Pending Refunds</span>
-              <i class="fa-solid fa-circle-exclamation" style="color: #fb7185;"></i>
-            </div>
-            <div class="dark-metric-card-value" id="statsRefundsVal" style="color: #fb7185;">0</div>
-            <div class="dark-metric-card-sub">Failed/Disputed Orders</div>
-          </div>
+      <!-- Quick Operations Summary Matrix -->
+      <div class="section-header-row">
+        <span class="section-header-label">SERVICES OPERATIONAL TELEMETRY</span>
+        <span style="color: #0284c7; font-size: 10px; font-weight: 700;">REAL-TIME COUNTERS</span>
+      </div>
+
+      <div class="metric-grid" style="margin-bottom: 14px;">
+        <div class="roster-card" onclick="switchTab('operations')">
+          <div class="roster-icon-wrap" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;"><i class="fa-solid fa-wifi"></i></div>
+          <div><div class="roster-card-title">Live Data Bundles</div><div class="roster-card-sub" id="summaryDataVolume">0 GB Dispensed</div></div>
+          <div class="roster-card-count" style="color: #0284c7;" id="summaryDataCount">0</div>
+        </div>
+
+        <div class="roster-card" onclick="switchTab('operations')">
+          <div class="roster-icon-wrap" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i class="fa-solid fa-phone"></i></div>
+          <div><div class="roster-card-title">Airtime VTU Orders</div><div class="roster-card-sub" id="summaryAirtimeVolume">₦0.00 Dispensed</div></div>
+          <div class="roster-card-count" style="color: #10b981;" id="summaryAirtimeCount">0</div>
+        </div>
+
+        <div class="roster-card" onclick="switchTab('operations')">
+          <div class="roster-icon-wrap" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;"><i class="fa-solid fa-id-card"></i></div>
+          <div><div class="roster-card-title">NIMC Slips & Search</div><div class="roster-card-sub">Standard, Premium, Basic</div></div>
+          <div class="roster-card-count" style="color: #f59e0b;" id="summaryNimcCount">0</div>
+        </div>
+
+        <div class="roster-card" onclick="switchTab('operations')">
+          <div class="roster-icon-wrap" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;"><i class="fa-solid fa-shield-halved"></i></div>
+          <div><div class="roster-card-title">NIN Validations (7)</div><div class="roster-card-sub">Clearances & Re-linking</div></div>
+          <div class="roster-card-count" style="color: #ec4899;" id="summaryValCount">0</div>
         </div>
       </div>
 
@@ -321,55 +383,94 @@
         <div class="roster-card" onclick="setRoleFilterAndSwitch('national_sales_director')">
           <div class="roster-icon-wrap" style="background: rgba(217, 119, 6, 0.1); color: #d97706;"><i class="fa-solid fa-crown"></i></div>
           <div><div class="roster-card-title">National Sales Directors</div><div class="roster-card-sub">National Commands</div></div>
-          <div class="roster-card-count" style="color: #d97706;" id="countNsd">2</div>
+          <div class="roster-card-count" style="color: #d97706;" id="countNsd">0</div>
         </div>
 
         <div class="roster-card" onclick="setRoleFilterAndSwitch('state_manager')">
           <div class="roster-icon-wrap" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;"><i class="fa-solid fa-building-columns"></i></div>
           <div><div class="roster-card-title">State Managers (SM)</div><div class="roster-card-sub">State Quotas</div></div>
-          <div class="roster-card-count" style="color: #0284c7;" id="countSm">14</div>
+          <div class="roster-card-count" style="color: #0284c7;" id="countSm">0</div>
         </div>
 
         <div class="roster-card" onclick="setRoleFilterAndSwitch('supervisor')">
           <div class="roster-icon-wrap" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;"><i class="fa-solid fa-user-tie"></i></div>
           <div><div class="roster-card-title">Field Supervisors</div><div class="roster-card-sub">LGA Clusters</div></div>
-          <div class="roster-card-count" style="color: #6366f1;" id="countFs">36</div>
+          <div class="roster-card-count" style="color: #6366f1;" id="countFs">0</div>
         </div>
 
         <div class="roster-card" onclick="setRoleFilterAndSwitch('agent')">
           <div class="roster-icon-wrap" style="background: rgba(5, 150, 105, 0.1); color: #059669;"><i class="fa-solid fa-store"></i></div>
           <div><div class="roster-card-title">Retail Merchant Agents</div><div class="roster-card-sub">Active POS Outlets</div></div>
-          <div class="roster-card-count" style="color: #059669;" id="countAgents">148</div>
+          <div class="roster-card-count" style="color: #059669;" id="countAgents">0</div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: SALES & BUNDLES -->
+    <!-- TAB 2: LIVE OPERATIONS LOG & TRANSACTION STREAM -->
+    <div id="tabContent-operations" style="display: none;">
+      <div class="section-header-row">
+        <div>
+          <span class="section-header-label">ALL COMPANY LIVE TRANSACTIONS & OPERATIONS</span>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+            Full financial audit trail: Inflows, Outflows, Data dispensing, Validations, and Bills.
+          </div>
+        </div>
+        <button class="add-plan-header-btn" onclick="loadDashboardData()"><i class="fa-solid fa-rotate"></i> Sync Live</button>
+      </div>
+
+      <!-- Search & Category Filters -->
+      <div class="search-filter-container">
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass" style="color: #64748b;"></i>
+          <input type="text" class="search-input" id="txSearchInput" placeholder="Search by recipient phone, reference, or details..." oninput="filterOperationsLog()">
+        </div>
+      </div>
+
+      <div class="filter-scroll" id="opsFilterScroll">
+        <button class="filter-badge active" onclick="setOpsFilter('ALL', this)">All Operations</button>
+        <button class="filter-badge" onclick="setOpsFilter('DATA', this)">Data Bundles</button>
+        <button class="filter-badge" onclick="setOpsFilter('AIRTIME', this)">Airtime VTU</button>
+        <button class="filter-badge" onclick="setOpsFilter('NIMC', this)">NIMC Slips</button>
+        <button class="filter-badge" onclick="setOpsFilter('VALIDATION', this)">NIN Validations</button>
+        <button class="filter-badge" onclick="setOpsFilter('WALLET', this)">Inflows / Fundings (+)</button>
+        <button class="filter-badge" onclick="setOpsFilter('REFUND', this)">Refunds / Disputes</button>
+      </div>
+
+      <div id="operationsListFeed"></div>
+    </div>
+
+    <!-- TAB 3: SALES & CASHFLOW -->
     <div id="tabContent-sales" style="display: none;">
       <div class="section-header-row">
         <span class="section-header-label">DATA BUNDLE & AIRTIME SALES TELEMETRY</span>
       </div>
 
       <div class="dark-telemetry-container">
-        <div style="display: flex; align-items: center; justify-content: space-around; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: space-around; text-align: center; flex-wrap: wrap; gap: 14px;">
           <div>
             <div style="width: 40px; height: 40px; border-radius: 50%; background: #0284c7; display: flex; align-items: center; justify-content: center; color: #fff; margin: 0 auto 6px;"><i class="fa-solid fa-wifi"></i></div>
             <div class="dark-metric-card-label">Total Data Vended</div>
-            <div class="dark-metric-card-value" id="salesTotalDataVal">14,850 GB</div>
-            <div style="color: #34d399; font-size: 10px; font-weight: 600;" id="salesDataRevVal">₦3,861,000 Volume</div>
+            <div class="dark-metric-card-value" id="salesTotalDataVal">0 GB</div>
+            <div style="color: #34d399; font-size: 10.5px; font-weight: 600;" id="salesDataRevVal">₦0.00 Volume</div>
           </div>
           <div style="width: 1px; height: 60px; background: #334155;"></div>
           <div>
             <div style="width: 40px; height: 40px; border-radius: 50%; background: #10b981; display: flex; align-items: center; justify-content: center; color: #fff; margin: 0 auto 6px;"><i class="fa-solid fa-phone"></i></div>
             <div class="dark-metric-card-label">Total Airtime Sold</div>
-            <div class="dark-metric-card-value" id="salesTotalAirtimeVal">₦1,240,500</div>
-            <div style="color: #38bdf8; font-size: 10px; font-weight: 600;">Automated VTU Delivery</div>
+            <div class="dark-metric-card-value" id="salesTotalAirtimeVal">₦0.00</div>
+            <div style="color: #38bdf8; font-size: 10.5px; font-weight: 600;">Automated VTU Delivery</div>
           </div>
         </div>
       </div>
+
+      <div class="section-header-row">
+        <span class="section-header-label">NETWORK OPERATOR BREAKDOWN</span>
+      </div>
+
+      <div class="metric-grid" id="networkBreakdownGrid"></div>
     </div>
 
-    <!-- TAB 3: HIERARCHY -->
+    <!-- TAB 4: HIERARCHY -->
     <div id="tabContent-hierarchy" style="display: none;">
       <div class="section-header-row">
         <span class="section-header-label">LEADERSHIP CADRE & SUBORDINATE TEAMS</span>
@@ -380,7 +481,7 @@
       <div id="hierarchyLeadersFeed"></div>
     </div>
 
-    <!-- TAB 4: USERS DIRECTORY -->
+    <!-- TAB 5: USERS DIRECTORY -->
     <div id="tabContent-users" style="display: none;">
       <div class="search-filter-container">
         <div class="search-bar">
@@ -403,7 +504,7 @@
       <div id="usersListFeed"></div>
     </div>
 
-    <!-- TAB 5: REFUNDS -->
+    <!-- TAB 6: REFUNDS -->
     <div id="tabContent-refunds" style="display: none;">
       <div class="bulk-refund-toolbar">
         <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #0284c7; font-weight: bold; font-size: 12.5px;" onclick="toggleSelectAllRefunds()">
@@ -417,7 +518,7 @@
       <div id="refundsQueueFeed"></div>
     </div>
 
-    <!-- TAB 6: DATA TARIFFS -->
+    <!-- TAB 7: DATA TARIFFS -->
     <div id="tabContent-pricing" style="display: none;">
       <div class="section-header-row">
         <span class="section-header-label">DATA BUNDLE LIVE TARIFFS (CUSTOMER & AGENT)</span>
@@ -435,7 +536,7 @@
       <div id="dataPlansFeed"></div>
     </div>
 
-    <!-- TAB 7: NIMC, VALIDATION & IDENTITY SERVICES PRICING -->
+    <!-- TAB 8: NIMC, VALIDATION & IDENTITY SERVICES PRICING -->
     <div id="tabContent-identity_pricing" style="display: none;">
       <div class="section-header-row">
         <div>
@@ -459,7 +560,7 @@
       <div id="identityServicesFeed"></div>
     </div>
 
-    <!-- TAB 8: DIRECTIVES & TARGETS -->
+    <!-- TAB 9: DIRECTIVES & TARGETS -->
     <div id="tabContent-targets" style="display: none;">
       <div class="form-card">
         <h4 style="font-size: 14px; font-weight: 900; color: #0f172a;">Command Directive & Quota Allocation</h4>
@@ -489,7 +590,7 @@
       </div>
     </div>
 
-    <!-- TAB 9: PUSH NOTIFICATION -->
+    <!-- TAB 10: PUSH NOTIFICATION -->
     <div id="tabContent-broadcast" style="display: none;">
       <div class="form-card">
         <h4 style="font-size: 14px; font-weight: 900; color: #0f172a;">Push Notification Broadcaster</h4>
@@ -520,7 +621,7 @@
 
   </div>
 
-  <!-- Sidebar Overlay & Drawer -->
+  <!-- Sidebar Drawer -->
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
   <aside class="sidebar-drawer" id="sidebarDrawer">
     <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 12px;">
@@ -534,6 +635,7 @@
     <div style="flex: 1; overflow-y: auto;">
       <div style="font-size: 10px; font-weight: 900; color: #94a3b8; margin: 10px 0 6px 4px;">MAIN MODULES</div>
       <div class="nav-drawer-item" onclick="switchTab('overview'); toggleSidebar(false);"><i class="fa-solid fa-table-cells-large"></i> Overview & Balance</div>
+      <div class="nav-drawer-item" onclick="switchTab('operations'); toggleSidebar(false);"><i class="fa-solid fa-list-check"></i> Live Operations Log</div>
       <div class="nav-drawer-item" onclick="switchTab('sales'); toggleSidebar(false);"><i class="fa-solid fa-chart-line"></i> Data & Airtime Sales</div>
       <div class="nav-drawer-item" onclick="switchTab('hierarchy'); toggleSidebar(false);"><i class="fa-solid fa-sitemap"></i> Cadre Hierarchy</div>
       <div class="nav-drawer-item" onclick="switchTab('users'); toggleSidebar(false);"><i class="fa-solid fa-users"></i> User Directory</div>
@@ -582,7 +684,7 @@
         <button class="selector-pill" onclick="setEditPlanType('GIFTING', this)">GIFTING</button>
         <button class="selector-pill" onclick="setEditPlanType('AWOOF', this)">AWOOF</button>
         <button class="selector-pill" onclick="setEditPlanType('DATASHARE', this)">DATASHARE</button>
-        <button class="selector-pill" onclick="setEditPlanType('CUSTOM', this)">CUSTOM (Manual Type)</button>
+        <button class="selector-pill" onclick="setEditPlanType('CUSTOM', this)">CUSTOM</button>
       </div>
       <input type="text" class="form-input" id="editPlanCustomTypeInput" placeholder="Manual Type Category..." style="display:none;">
 
@@ -606,7 +708,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: PUBLISH NEW DATA TARIFF (WITH AUTOMATIC PRESETS & MANUAL OPTIONS) -->
+  <!-- MODAL 2: PUBLISH NEW DATA TARIFF -->
   <div class="modal-overlay" id="addPlanModal">
     <div class="modal-card">
       <div class="modal-header-row">
@@ -617,7 +719,6 @@
         <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('addPlanModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- 1. Telecom Network -->
       <label class="form-field-label">1. Select Telecom Network</label>
       <div class="selector-pills-row" id="newPlanNetPills">
         <button class="selector-pill active" onclick="setNewPlanNet('MTN', this)">MTN</button>
@@ -626,15 +727,11 @@
         <button class="selector-pill" onclick="setNewPlanNet('9MOBILE', this)">9MOBILE</button>
       </div>
 
-      <!-- 2. Automatic Quick Presets from Al-Ihsan -->
       <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px; margin-bottom: 12px;">
-        <span class="form-field-label" style="color: #166534; margin-bottom: 4px;">⚡ AUTOMATIC QUICK PRESET (Tap to auto-fill Plan ID, Category & Prices)</span>
-        <div class="selector-pills-row" id="presetPillsRow" style="margin-bottom: 0;">
-          <!-- Dynamically populated based on chosen Network -->
-        </div>
+        <span class="form-field-label" style="color: #166534; margin-bottom: 4px;">⚡ AUTOMATIC QUICK PRESET (Tap to auto-fill)</span>
+        <div class="selector-pills-row" id="presetPillsRow" style="margin-bottom: 0;"></div>
       </div>
 
-      <!-- 3. Plan Type Selection -->
       <label class="form-field-label">2. Select Plan Category / Type</label>
       <div class="selector-pills-row" id="newPlanTypePills">
         <button class="selector-pill active" onclick="setNewPlanType('DC', this)">DC</button>
@@ -644,15 +741,13 @@
         <button class="selector-pill" onclick="setNewPlanType('GIFTING', this)">GIFTING</button>
         <button class="selector-pill" onclick="setNewPlanType('AWOOF', this)">AWOOF</button>
         <button class="selector-pill" onclick="setNewPlanType('DATASHARE', this)">DATASHARE</button>
-        <button class="selector-pill" onclick="setNewPlanType('CUSTOM', this)">CUSTOM (Type Manually)</button>
+        <button class="selector-pill" onclick="setNewPlanType('CUSTOM', this)">CUSTOM</button>
       </div>
-      <input type="text" class="form-input" id="newPlanCustomTypeInput" style="display: none;" placeholder="Type custom plan type (e.g. Night Plan, Weekend Boost)">
+      <input type="text" class="form-input" id="newPlanCustomTypeInput" style="display: none;" placeholder="Type custom plan type">
 
-      <!-- 4. Plan ID (Auto or Manual input) -->
       <label class="form-field-label">3. Gateway Plan ID (Al-Ihsan Provider ID) *</label>
-      <input type="text" class="form-input" id="newPlanIdInput" placeholder="e.g. 140 (MTN DC 1GB), 27 (MTN CG 1GB), 262 (Airtel CG)">
+      <input type="text" class="form-input" id="newPlanIdInput" placeholder="e.g. 140, 27, 262">
 
-      <!-- 5. Plan Volume / Size -->
       <label class="form-field-label">4. Plan Volume (Size)</label>
       <div class="selector-pills-row" id="newPlanSizePills">
         <button class="selector-pill" onclick="setNewPlanSize('500 MB', this)">500 MB</button>
@@ -662,22 +757,20 @@
         <button class="selector-pill" onclick="setNewPlanSize('3.0 GB', this)">3.0 GB</button>
         <button class="selector-pill" onclick="setNewPlanSize('5.0 GB', this)">5.0 GB</button>
         <button class="selector-pill" onclick="setNewPlanSize('10.0 GB', this)">10.0 GB</button>
-        <button class="selector-pill" onclick="setNewPlanSize('CUSTOM', this)">CUSTOM (Type Manually)</button>
+        <button class="selector-pill" onclick="setNewPlanSize('CUSTOM', this)">CUSTOM</button>
       </div>
-      <input type="text" class="form-input" id="newPlanCustomSizeInput" style="display: none;" placeholder="Type custom volume (e.g. 750 MB, 15.0 GB, 25.0 GB)">
+      <input type="text" class="form-input" id="newPlanCustomSizeInput" style="display: none;" placeholder="Type custom volume">
 
-      <!-- 6. Validity Duration -->
       <label class="form-field-label">5. Validity Duration</label>
       <div class="selector-pills-row" id="newPlanValidityPills">
         <button class="selector-pill" onclick="setNewPlanValidity('1 Day', this)">1 Day</button>
         <button class="selector-pill" onclick="setNewPlanValidity('2 Days', this)">2 Days</button>
         <button class="selector-pill" onclick="setNewPlanValidity('7 Days', this)">7 Days</button>
         <button class="selector-pill active" onclick="setNewPlanValidity('30 Days', this)">30 Days</button>
-        <button class="selector-pill" onclick="setNewPlanValidity('CUSTOM', this)">CUSTOM (Type Manually)</button>
+        <button class="selector-pill" onclick="setNewPlanValidity('CUSTOM', this)">CUSTOM</button>
       </div>
-      <input type="text" class="form-input" id="newPlanCustomValidityInput" style="display: none;" placeholder="Type custom duration (e.g. 14 Days, 60 Days)">
+      <input type="text" class="form-input" id="newPlanCustomValidityInput" style="display: none;" placeholder="Type custom duration">
 
-      <!-- 7. Pricing Inputs -->
       <label class="form-field-label">6. Customer Selling Price (₦) *</label>
       <input type="number" class="form-input" id="newPlanUserPrice" placeholder="e.g. 230">
 
@@ -696,9 +789,7 @@
           <h3 class="modal-title">Edit Verification Tariff</h3>
           <div class="modal-sub" id="editIdentitySubtitle">Gateway Channel</div>
         </div>
-        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('editIdentityModal')">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('editIdentityModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <label class="form-field-label">Service Channel Name</label>
@@ -726,9 +817,7 @@
           <h3 class="modal-title">Create Verification Channel</h3>
           <div class="modal-sub">Add custom NIMC / Identity lookup service</div>
         </div>
-        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('createIdentityModal')">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('createIdentityModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <label class="form-field-label">Service Unique Key (e.g. vnin_val, bank_val, no_record)</label>
@@ -745,7 +834,7 @@
       <input type="text" class="form-input" id="newIdentityName" placeholder="e.g. SIM Registration Validation">
 
       <label class="form-field-label">Channel Description</label>
-      <input type="text" class="form-input" id="newIdentityDesc" placeholder="e.g. NIMC official telecom and line clearance">
+      <input type="text" class="form-input" id="newIdentityDesc" placeholder="e.g. NIMC official line clearance">
 
       <label class="form-field-label">Customer Selling Price (₦)</label>
       <input type="number" class="form-input" id="newIdentityUserPrice" placeholder="e.g. 1300">
@@ -831,11 +920,13 @@
     let pricingList = [];
     let pendingRefundsList = [];
     let selectedRefundIds = [];
+    let allTransactionsList = [];
     let activeRoleFilter = "all";
     let activeNetFilter = "ALL";
     let activeIdentityCategoryFilter = "ALL";
+    let activeOpsFilter = "ALL";
 
-    // OFFICIAL AL-IHSAN PLAN PRESETS (FOR AUTOMATIC FILLING)
+    // OFFICIAL AL-IHSAN PLAN PRESETS
     const ALIHSAN_PRESETS = {
       MTN: [
         { label: "1.0GB DC (30D)", id: "140", type: "DC", size: "1.0 GB", validity: "30 Days", uPrice: 230, aPrice: 210 },
@@ -914,7 +1005,7 @@
       const btn = document.getElementById(`tabBtn-${tab}`);
       if (btn) btn.classList.add("active");
 
-      ["overview", "sales", "hierarchy", "users", "refunds", "pricing", "identity_pricing", "targets", "broadcast"].forEach(t => {
+      ["overview", "operations", "sales", "hierarchy", "users", "refunds", "pricing", "identity_pricing", "targets", "broadcast"].forEach(t => {
         const el = document.getElementById(`tabContent-${t}`);
         if (el) el.style.display = (t === tab) ? "block" : "none";
       });
@@ -928,32 +1019,138 @@
     function openModal(id) { document.getElementById(id).classList.add("active"); }
     function closeModal(id) { document.getElementById(id).classList.remove("active"); }
 
+    /**
+     * =========================================================================
+     * REAL-TIME AGGREGATOR: INFLOW, OUTFLOW, AND COMPLETE LIVE OPERATIONS
+     * =========================================================================
+     */
     async function loadDashboardData() {
       const token = localStorage.getItem("userToken");
       if (!token) { window.location.href = "/login.html"; return; }
       const headers = { Authorization: `Bearer ${token}` };
 
       try {
-        const [statsRes, usersRes, superPlansRes, dataPlansRes, refundsRes, ninPricesRes, nimcPricesRes] = await Promise.allSettled([
+        const [statsRes, usersRes, superPlansRes, dataPlansRes, refundsRes, txRes, ninPricesRes, nimcPricesRes] = await Promise.allSettled([
           fetch(`${BASE_URL}/admin/dashboard-stats`, { headers }).then(r => r.json()).catch(() => ({})),
-          fetch(`${BASE_URL}/admin/users?limit=150`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/users?limit=250`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/superadmin/plans`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/transactions?limit=500`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/nin/prices`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/nimc/prices`, { headers }).then(r => r.json()).catch(() => ({}))
         ]);
 
-        if (statsRes.status === "fulfilled" && statsRes.value) {
-          const d = statsRes.value.stats || statsRes.value.data || statsRes.value;
-          document.getElementById("statsFloatVal").innerText = "₦" + Number(d.companyTotalBalance || 4850000).toLocaleString();
-          document.getElementById("statsLiabilitiesVal").innerText = "₦" + Number(d.totalWalletLiabilities || 250000).toLocaleString();
-          document.getElementById("statsTransactionsVal").innerText = Number(d.totalTransactions || 1280).toLocaleString();
-          document.getElementById("salesTotalDataVal").innerText = Number(d.totalDataSoldGB || 14850).toLocaleString() + " GB";
-          document.getElementById("salesDataRevVal").innerText = "₦" + Number(d.totalDataRevenue || 3861000).toLocaleString() + " Volume";
-          document.getElementById("salesTotalAirtimeVal").innerText = "₦" + Number(d.totalAirtimeSold || 1240500).toLocaleString();
+        let rawTx = [];
+        if (txRes.status === "fulfilled" && txRes.value) {
+          rawTx = txRes.value.transactions || txRes.value.data || (Array.isArray(txRes.value) ? txRes.value : []);
+          allTransactionsList = rawTx;
+          document.getElementById("liveOpsCount").innerText = rawTx.length;
+          renderOperationsLog(rawTx);
         }
 
+        // ==========================================
+        // CASHFLOW ENGINE: INFLOW VS OUTFLOW
+        // ==========================================
+        let calculatedInflow = 0;
+        let calculatedOutflow = 0;
+        let dataCount = 0;
+        let airtimeCount = 0;
+        let nimcCount = 0;
+        let valCount = 0;
+        let totalDataVolumeGB = 0;
+        let totalAirtimeAmount = 0;
+
+        const networkStats = {
+          MTN: { count: 0, amount: 0 },
+          AIRTEL: { count: 0, amount: 0 },
+          GLO: { count: 0, amount: 0 },
+          "9MOBILE": { count: 0, amount: 0 }
+        };
+
+        rawTx.forEach(tx => {
+          const amt = Number(tx.amount || 0);
+          const st = String(tx.status || "").toUpperCase();
+          const sText = String(tx.service || tx.type || tx.category || "").toUpperCase();
+          const dText = String(tx.details || tx.description || tx.planCode || "").toUpperCase();
+          const isSuccess = st === "SUCCESS" || st === "SUCCESSFUL" || st === "COMPLETED";
+
+          const isInflow = tx.category === "CREDIT" || tx.type === "wallet_funding" || tx.type === "deposit" || sText.includes("FUNDING") || sText.includes("DEPOSIT") || tx.isInflow === true;
+          const isRefund = tx.type === "refund" || sText.includes("REFUND") || st === "REFUNDED";
+
+          if (isSuccess || isRefund) {
+            if (isInflow) {
+              calculatedInflow += amt;
+            } else {
+              calculatedOutflow += amt;
+            }
+          }
+
+          if (isSuccess) {
+            // Data detection
+            if (sText.includes("DATA") || dText.includes("DATA") || tx.type === "data") {
+              dataCount++;
+              const combined = dText + " " + sText;
+              let parsedGB = 0;
+              const matchGB = combined.match(/(\d+(?:\.\d+)?)\s*GB/i);
+              const matchMB = combined.match(/(\d+(?:\.\d+)?)\s*MB/i);
+              if (matchGB && matchGB[1]) parsedGB = parseFloat(matchGB[1]);
+              else if (matchMB && matchMB[1]) parsedGB = parseFloat(matchMB[1]) / 1024;
+              else parsedGB = amt >= 200 ? 1 : 0.5;
+              totalDataVolumeGB += parsedGB;
+
+              ["MTN", "AIRTEL", "GLO", "9MOBILE"].forEach(net => {
+                if (combined.includes(net)) {
+                  networkStats[net].count++;
+                  networkStats[net].amount += amt;
+                }
+              });
+            }
+
+            // Airtime detection
+            if (sText.includes("AIRTIME") || dText.includes("AIRTIME") || tx.type === "airtime" || sText.includes("VTU")) {
+              airtimeCount++;
+              totalAirtimeAmount += amt;
+            }
+
+            // NIMC Slip detection
+            if (sText.includes("SLIP") || sText.includes("NIMC") || dText.includes("SLIP") || sText.includes("NIN SEARCH")) {
+              nimcCount++;
+            }
+
+            // Validation detection
+            if (sText.includes("VALIDATION") || dText.includes("VALIDATION") || tx.type === "validation") {
+              valCount++;
+            }
+          }
+        });
+
+        // Overview Stat Displays
+        if (statsRes.status === "fulfilled" && statsRes.value) {
+          const d = statsRes.value.stats || statsRes.value.data || statsRes.value;
+          const totalVault = (calculatedInflow - calculatedOutflow) > 0 ? (calculatedInflow - calculatedOutflow) : (d.companyTotalBalance || 4850000);
+          document.getElementById("statsFloatVal").innerText = "₦" + Number(totalVault).toLocaleString("en-NG", { minimumFractionDigits: 2 });
+          document.getElementById("statsInflowVal").innerText = "₦" + Number(calculatedInflow || d.totalRevenue || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 });
+          document.getElementById("statsOutflowVal").innerText = "₦" + Number(calculatedOutflow || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 });
+          document.getElementById("statsTransactionsVal").innerText = Number(rawTx.length || d.totalTransactions || 0).toLocaleString();
+
+          document.getElementById("salesTotalDataVal").innerText = (totalDataVolumeGB > 0 ? Math.round(totalDataVolumeGB * 10) / 10 : Number(d.totalDataSoldGB || 14850)).toLocaleString() + " GB";
+          document.getElementById("salesDataRevVal").innerText = "₦" + Number(d.totalDataRevenue || 3861000).toLocaleString() + " Volume";
+          document.getElementById("salesTotalAirtimeVal").innerText = "₦" + Number(totalAirtimeAmount > 0 ? totalAirtimeAmount : (d.totalAirtimeSold || 1240500)).toLocaleString();
+        }
+
+        // Summary Operational Counters
+        document.getElementById("summaryDataCount").innerText = dataCount;
+        document.getElementById("summaryDataVolume").innerText = `${Math.round(totalDataVolumeGB * 10) / 10} GB Dispensed`;
+        document.getElementById("summaryAirtimeCount").innerText = airtimeCount;
+        document.getElementById("summaryAirtimeVolume").innerText = `₦${totalAirtimeAmount.toLocaleString()} Dispensed`;
+        document.getElementById("summaryNimcCount").innerText = nimcCount;
+        document.getElementById("summaryValCount").innerText = valCount;
+
+        // Render Network Breakdown
+        renderNetworkBreakdown(networkStats);
+
+        // Users & Directory
         if (usersRes.status === "fulfilled" && usersRes.value) {
           usersList = usersRes.value.users || usersRes.value.data || [];
           document.getElementById("countNsd").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("national")).length || 2;
@@ -964,6 +1161,7 @@
           renderHierarchyLeaders(usersList);
         }
 
+        // Plans & Tariffs
         let loadedPlans = [];
         if (superPlansRes.status === "fulfilled" && (superPlansRes.value?.plans || superPlansRes.value?.data)) {
           loadedPlans = superPlansRes.value.plans || superPlansRes.value.data || [];
@@ -976,13 +1174,14 @@
           renderDataPlans(pricingList);
         }
 
+        // Refunds
         if (refundsRes.status === "fulfilled" && refundsRes.value) {
           pendingRefundsList = refundsRes.value.data || refundsRes.value.refunds || refundsRes.value.transactions || [];
-          document.getElementById("statsRefundsVal").innerText = pendingRefundsList.length;
           document.getElementById("refundTabCount").innerText = pendingRefundsList.length;
           renderRefunds(pendingRefundsList);
         }
 
+        // Identity Services Live Prices
         if (ninPricesRes.status === "fulfilled" && ninPricesRes.value?.prices) {
           const np = ninPricesRes.value.prices;
           identityServicesList.forEach(item => {
@@ -1000,6 +1199,143 @@
       } catch (err) {
         console.error("Dashboard Sync Error:", err);
       }
+    }
+
+    /**
+     * RENDER LIVE OPERATIONS STREAM
+     */
+    function renderOperationsLog(list) {
+      const feed = document.getElementById("operationsListFeed");
+      const q = (document.getElementById("txSearchInput")?.value || "").toLowerCase().trim();
+
+      const filtered = list.filter(tx => {
+        const sText = String(tx.service || tx.type || tx.category || "").toUpperCase();
+        const dText = String(tx.details || tx.description || tx.planCode || "").toUpperCase();
+        const userPhone = String(tx.user?.phone || tx.phoneNumber || tx.recipient || tx.user || "").toLowerCase();
+        const ref = String(tx.reference || tx.transactionId || "").toLowerCase();
+
+        // Search Match
+        const matchesQuery = !q || userPhone.includes(q) || ref.includes(q) || dText.toLowerCase().includes(q) || sText.toLowerCase().includes(q);
+        if (!matchesQuery) return false;
+
+        // Category Filter
+        if (activeOpsFilter === "ALL") return true;
+        if (activeOpsFilter === "DATA") return sText.includes("DATA") || dText.includes("DATA") || tx.type === "data";
+        if (activeOpsFilter === "AIRTIME") return sText.includes("AIRTIME") || dText.includes("AIRTIME") || tx.type === "airtime";
+        if (activeOpsFilter === "NIMC") return sText.includes("SLIP") || sText.includes("NIMC") || dText.includes("SLIP");
+        if (activeOpsFilter === "VALIDATION") return sText.includes("VALIDATION") || dText.includes("VALIDATION") || tx.type === "validation";
+        if (activeOpsFilter === "WALLET") return tx.category === "CREDIT" || tx.type === "wallet_funding" || tx.type === "deposit" || sText.includes("FUNDING");
+        if (activeOpsFilter === "REFUND") return tx.type === "refund" || sText.includes("REFUND") || String(tx.status).toUpperCase() === "REFUNDED";
+
+        return true;
+      });
+
+      if (!filtered || filtered.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 36px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">
+          <i class="fa-solid fa-list-check" style="font-size:32px; margin-bottom:8px;"></i>
+          <div>No transactions or operational activities recorded under this criteria.</div>
+        </div>`;
+        return;
+      }
+
+      feed.innerHTML = filtered.map(tx => {
+        const amt = Number(tx.amount || 0);
+        const st = String(tx.status || "SUCCESS").toUpperCase();
+        const sText = String(tx.service || tx.type || "Transaction").toUpperCase();
+        const dText = tx.details || tx.description || "System transaction";
+        const isInflow = tx.category === "CREDIT" || tx.type === "wallet_funding" || tx.type === "deposit" || sText.includes("FUNDING") || sText.includes("DEPOSIT");
+        const isRefund = tx.type === "refund" || sText.includes("REFUND") || st === "REFUNDED";
+
+        let iconName = "fa-bolt";
+        let iconBg = "#e0f2fe";
+        let iconColor = "#0284c7";
+
+        if (isInflow) {
+          iconName = "fa-circle-arrow-down";
+          iconBg = "#dcfce7";
+          iconColor = "#16a34a";
+        } else if (isRefund) {
+          iconName = "fa-rotate-left";
+          iconBg = "#fef3c7";
+          iconColor = "#d97706";
+        } else if (sText.includes("DATA")) {
+          iconName = "fa-wifi";
+          iconBg = "#e0f2fe";
+          iconColor = "#0284c7";
+        } else if (sText.includes("AIRTIME")) {
+          iconName = "fa-phone";
+          iconBg = "#ecfdf5";
+          iconColor = "#059669";
+        } else if (sText.includes("NIMC") || sText.includes("SLIP") || sText.includes("VALIDATION")) {
+          iconName = "fa-id-card";
+          iconBg = "#f3e8ff";
+          iconColor = "#7c3aed";
+        }
+
+        const dateFormatted = tx.createdAt ? new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Live';
+        const clientPhone = tx.user?.phone || tx.phoneNumber || tx.recipient || "Subscriber";
+
+        return `
+          <div class="tx-item-card">
+            <div class="tx-icon-box" style="background:${iconBg}; color:${iconColor};">
+              <i class="fa-solid ${iconName}"></i>
+            </div>
+            <div class="tx-details-wrap">
+              <div class="tx-main-line">
+                <span class="tx-title">${sText}</span>
+                <span class="tx-badge" style="background:${isInflow ? '#dcfce7' : '#f1f5f9'}; color:${isInflow ? '#15803d' : '#475569'};">
+                  ${isInflow ? 'INFLOW (+)' : 'OUTFLOW (-)'}
+                </span>
+              </div>
+              <div class="tx-sub-line">
+                📞 ${clientPhone} • Ref: <span style="font-family:monospace; color:#0284c7;">${tx.reference || tx.transactionId || 'TXN'}</span> • ${dateFormatted}
+              </div>
+            </div>
+            <div class="tx-amount-side">
+              <div class="tx-amount" style="color:${isInflow ? '#16a34a' : '#0f172a'};">
+                ${isInflow ? '+' : '-'}₦${amt.toLocaleString()}
+              </div>
+              <div class="tx-status-pill" style="color:${st === 'FAILED' ? '#ef4444' : (st === 'REFUNDED' ? '#d97706' : '#10b981')};">
+                ${st}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function setOpsFilter(cat, btn) {
+      activeOpsFilter = cat;
+      document.querySelectorAll("#opsFilterScroll .filter-badge").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      filterOperationsLog();
+    }
+
+    function filterOperationsLog() {
+      renderOperationsLog(allTransactionsList);
+    }
+
+    function renderNetworkBreakdown(stats) {
+      const container = document.getElementById("networkBreakdownGrid");
+      if (!container) return;
+
+      const colors = { MTN: "#d97706", AIRTEL: "#e11d48", GLO: "#16a34a", "9MOBILE": "#0d9488" };
+      const nets = ["MTN", "AIRTEL", "GLO", "9MOBILE"];
+
+      container.innerHTML = nets.map(n => `
+        <div class="roster-card">
+          <div class="roster-icon-wrap" style="background:${colors[n]}18; color:${colors[n]};">
+            <i class="fa-solid fa-signal"></i>
+          </div>
+          <div>
+            <div class="roster-card-title">${n} Nigeria</div>
+            <div class="roster-card-sub">${stats[n].count} Successful Sales</div>
+          </div>
+          <div class="roster-card-count" style="color:${colors[n]}; font-size:14.5px;">
+            ₦${stats[n].amount.toLocaleString()}
+          </div>
+        </div>
+      `).join("");
     }
 
     function renderDataPlans(list) {
@@ -1082,7 +1418,6 @@
       document.getElementById("editPlanUserPrice").value = selectedEditPlan.userPrice || selectedEditPlan.price || 0;
       document.getElementById("editPlanAgentPrice").value = selectedEditPlan.agentPrice || selectedEditPlan.userPrice || selectedEditPlan.price || 0;
       
-      // Sync Type Pills
       setEditPlanType(planType);
 
       const currentStatus = String(selectedEditPlan.status || (selectedEditPlan.isActive ? "active" : "disabled")).toLowerCase();
@@ -1216,7 +1551,6 @@
       }
     }
 
-    // AUTOMATIC PRESET LOGIC & CONTROLS FOR NEW PLANS
     function openAddPlanModal() {
       renderPresetChips(newPlanSelectedNet);
       openModal('addPlanModal');
@@ -1245,19 +1579,11 @@
       document.querySelectorAll("#presetPillsRow .selector-pill").forEach(b => b.style.background = "#dcfce7");
       btn.style.background = "#86efac";
 
-      // 1. Auto-fill Gateway Plan ID
       document.getElementById("newPlanIdInput").value = preset.id;
-
-      // 2. Select Type
       setNewPlanType(preset.type, Array.from(document.querySelectorAll("#newPlanTypePills .selector-pill")).find(b => b.innerText.includes(preset.type)));
-
-      // 3. Select Size
       setNewPlanSize(preset.size, Array.from(document.querySelectorAll("#newPlanSizePills .selector-pill")).find(b => b.innerText.includes(preset.size)));
-
-      // 4. Select Validity
       setNewPlanValidity(preset.validity, Array.from(document.querySelectorAll("#newPlanValidityPills .selector-pill")).find(b => b.innerText.includes(preset.validity)));
 
-      // 5. Fill Suggested Prices
       document.getElementById("newPlanUserPrice").value = preset.uPrice;
       document.getElementById("newPlanAgentPrice").value = preset.aPrice;
     }
@@ -1354,7 +1680,6 @@
       }
     }
 
-    // NIMC, BVN & VALIDATION CONTROLS
     function filterIdentityCategory(cat, btn) {
       activeIdentityCategoryFilter = cat;
       document.querySelectorAll("#identityFilterScroll .filter-badge").forEach(b => b.classList.remove("active"));
@@ -1893,7 +2218,7 @@
 
     // Bootstrap
     loadDashboardData();
-    setInterval(loadDashboardData, 20000);
+    setInterval(loadDashboardData, 12000);
   </script>
 </body>
 </html>
