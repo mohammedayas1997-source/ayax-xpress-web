@@ -678,7 +678,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: TRANSACTION PIN (SETUP / RESET) -->
+  <!-- MODAL 2: TRANSACTION PIN (SETUP / RESET) - AN SAKA FILIN PASSWORD -->
   <div class="modal-overlay" id="pinModal">
     <div class="modal-card">
       <div class="modal-header-row">
@@ -687,15 +687,19 @@
       </div>
 
       <form onsubmit="event.preventDefault(); handlePinUpdate();">
+        <!-- Filin Password da ake bukata domin ba da izini -->
+        <label class="form-field-label" for="accountPasswordForPin">ACCOUNT PASSWORD (FOR SECURITY) *</label>
+        <input type="password" id="accountPasswordForPin" class="text-input-style" placeholder="Enter your account login password" required />
+
         <div id="currentPinBox" style="display: none;">
-          <label class="form-field-label" for="currentPinInput">CURRENT 4-DIGIT PIN</label>
+          <label class="form-field-label" for="currentPinInput">CURRENT 4-DIGIT PIN (OPTIONAL)</label>
           <input type="password" id="currentPinInput" class="modal-pin-input" placeholder="••••" maxlength="4" inputmode="numeric" />
         </div>
 
-        <label class="form-field-label" for="newPinInput">NEW 4-DIGIT PIN</label>
+        <label class="form-field-label" for="newPinInput">NEW 4-DIGIT PIN *</label>
         <input type="password" id="newPinInput" class="modal-pin-input" placeholder="••••" maxlength="4" inputmode="numeric" required />
 
-        <label class="form-field-label" for="confirmPinInput">CONFIRM 4-DIGIT PIN</label>
+        <label class="form-field-label" for="confirmPinInput">CONFIRM 4-DIGIT PIN *</label>
         <input type="password" id="confirmPinInput" class="modal-pin-input" placeholder="••••" maxlength="4" inputmode="numeric" required />
 
         <button type="submit" class="primary-modal-btn" id="btnSubmitPin">
@@ -850,9 +854,6 @@
       document.getElementById('pinSubText').textContent = state.hasPin ? "Change / Reset PIN" : "Setup Transaction PIN";
     }
 
-    // =========================================================================
-    // ENHANCED BIOMETRIC REGISTRATION (EXACT MATCH FOR INDEX.HTML)
-    // =========================================================================
     function saveBiometricSession(u) {
       const userObj = u || state.userData || {};
       const primaryId = userObj.phone || userObj.email || userObj.username || "";
@@ -895,7 +896,7 @@
           if (PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
             const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
             if (!available) {
-              console.warn("Biometric hardware prompt note: Authenticator report unavailable, proceeding with hybrid enrollment.");
+              console.warn("Biometric hardware prompt note: Authenticator report unavailable.");
             }
           }
 
@@ -944,7 +945,7 @@
 
       saveBiometricSession(state.userData);
       if (sub) sub.textContent = "Enabled for fast unlock on this device";
-      alert("Biometric login activated successfully! You can now log in instantly using your fingerprint on the login page.");
+      alert("Biometric login activated successfully!");
     }
 
     async function toggleBiometricTx(enabled) {
@@ -975,6 +976,10 @@
     function openPinModal() {
       document.getElementById('pinModalTitle').textContent = state.hasPin ? "Change Transaction PIN" : "Setup Transaction PIN";
       document.getElementById('currentPinBox').style.display = state.hasPin ? "block" : "none";
+      document.getElementById('accountPasswordForPin').value = "";
+      document.getElementById('newPinInput').value = "";
+      document.getElementById('confirmPinInput').value = "";
+      if (document.getElementById('currentPinInput')) document.getElementById('currentPinInput').value = "";
       openModal('pinModal');
     }
 
@@ -1031,11 +1036,19 @@
       }
     }
 
-    // MULTI-ENDPOINT RESILIENT PIN UPDATE (PREVENTS 404 ON ALL SERVERS)
+    // =========================================================================
+    // MULTI-ENDPOINT RESILIENT PIN UPDATE (YANA TURAWA TARE DA PASSWORD)
+    // =========================================================================
     async function handlePinUpdate() {
-      const currentPin = document.getElementById('currentPinInput').value.trim();
+      const password = document.getElementById('accountPasswordForPin').value.trim();
+      const currentPin = document.getElementById('currentPinInput')?.value.trim() || "";
       const newPin = document.getElementById('newPinInput').value.trim();
       const confirmPin = document.getElementById('confirmPinInput').value.trim();
+
+      if (!password) {
+        alert("Please enter your account password to authorize PIN creation.");
+        return;
+      }
 
       if (newPin.length !== 4 || confirmPin.length !== 4) {
         alert("PIN must be exactly 4 digits.");
@@ -1050,9 +1063,14 @@
       const btn = document.getElementById('btnSubmitPin');
       btn.disabled = true;
 
+      // An saita payload din ya hada da password da sabon PIN a kowane salo
       const payload = {
-        currentPin,
-        newPin,
+        password: password,
+        accountPassword: password,
+        currentPassword: password,
+        currentPin: currentPin || undefined,
+        oldPin: currentPin || undefined,
+        newPin: newPin,
         pin: newPin,
         transactionPin: newPin
       };
@@ -1063,21 +1081,20 @@
       };
 
       try {
-        // Jerin endpoints da muke gwadawa a jere don gano wanda server ke karba
         const candidateEndpoints = state.hasPin
           ? [
               `${BASE_URL}/auth/change-pin`,
               `${BASE_URL}/auth/update-pin`,
+              `${BASE_URL}/auth/set-pin`,
               `${BASE_URL}/user/change-pin`,
-              `${BASE_URL}/user/update-pin`,
-              `${BASE_URL}/auth/set-pin`
+              `${BASE_URL}/user/update-pin`
             ]
           : [
               `${BASE_URL}/auth/set-pin`,
+              `${BASE_URL}/auth/create-pin`,
               `${BASE_URL}/user/set-pin`,
-              `${BASE_URL}/auth/update-pin`,
-              `${BASE_URL}/user/update-pin`,
-              `${BASE_URL}/auth/change-pin`
+              `${BASE_URL}/user/create-pin`,
+              `${BASE_URL}/auth/update-pin`
             ];
 
         let successData = null;
@@ -1091,14 +1108,13 @@
               body: JSON.stringify(payload)
             });
 
-            // Idan ba 404 bane, server din ta karbi request din
             if (res.status !== 404) {
               const data = await res.json().catch(() => ({}));
-              if (res.ok || data.success || data.status === 'success') {
+              if (res.ok && (data.success || data.status === 'success')) {
                 successData = data;
                 break;
               } else {
-                lastError = data.message || "Could not save PIN.";
+                lastError = data.message || data.error || "Could not save PIN.";
                 break;
               }
             }
@@ -1190,7 +1206,5 @@
       }
     }
   </script>
-  <script src="js/config.js"></script>
-  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>
