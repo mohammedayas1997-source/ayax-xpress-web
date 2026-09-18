@@ -105,6 +105,13 @@
       height: 6px;
       border-radius: 50%;
       background: var(--accent-green);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
     }
 
     .notif-btn {
@@ -268,7 +275,7 @@
       color: #ffffff;
     }
 
-    /* Executive Target Quota Card */
+    /* Executive Target Quota Card (Real-Time Live Telemetry) */
     .executive-card-dark {
       background: var(--bg-dark);
       border-radius: 16px;
@@ -277,6 +284,7 @@
       border-left: 5px solid var(--accent-cyan);
       margin-bottom: 18px;
       color: #ffffff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
 
     .exec-header-row {
@@ -299,6 +307,9 @@
       font-size: 13px;
       font-weight: 900;
       margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .cycle-badge {
@@ -325,11 +336,15 @@
       border-radius: 10px;
       padding: 10px;
       border: 1px solid #334155;
+      position: relative;
     }
 
     .metric-label-dark {
       font-size: 9.5px;
       font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .metric-val-dark {
@@ -350,12 +365,15 @@
     .progress-bar {
       height: 6px;
       border-radius: 3px;
+      transition: width 0.4s ease-in-out;
     }
 
     .percent-sub {
       font-size: 9.5px;
       font-weight: 700;
       color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
     }
 
     /* Dedicated Virtual Account */
@@ -750,12 +768,15 @@
       </div>
     </section>
 
-    <!-- 2. Quota & Target Tracking Card -->
+    <!-- 2. Quota & Target Tracking Card (Real-Time Live Metering) -->
     <section class="executive-card-dark">
       <div class="exec-header-row">
         <div>
-          <div class="exec-badge-sub">OFFICIAL SUPERVISOR QUOTA ALLOCATION</div>
-          <div class="exec-title-main" id="targetMonthHeader">PERFORMANCE QUOTA</div>
+          <div class="exec-badge-sub">OFFICIAL SUPERVISOR & ADMIN LIVE TELEMETRY</div>
+          <div class="exec-title-main" id="targetMonthHeader">
+            <span>PERFORMANCE QUOTA</span>
+            <span style="font-size: 9px; padding: 2px 6px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; border-radius: 4px;">LIVE SYNC</span>
+          </div>
         </div>
         <div class="cycle-badge">
           <i class="fa-regular fa-calendar"></i> <span id="targetMonthBadge">Cycle</span>
@@ -765,22 +786,34 @@
       <div class="exec-metrics-row">
         <!-- Data Quota -->
         <div class="metric-box-dark">
-          <div class="metric-label-dark" style="color: #38bdf8;">DATA QUOTA (GB)</div>
+          <div class="metric-label-dark" style="color: #38bdf8;">
+            <span>DATA QUOTA (GB)</span>
+            <i class="fa-solid fa-wifi" style="font-size: 11px;"></i>
+          </div>
           <div class="metric-val-dark" id="dataQuotaNumbers">0 / 100 GB</div>
           <div class="progress-track">
             <div class="progress-bar" id="dataProgressBar" style="width: 0%; background: #38bdf8;"></div>
           </div>
-          <div class="percent-sub" id="dataPercentSub">0% Delivered</div>
+          <div class="percent-sub">
+            <span id="dataPercentSub">0% Delivered</span>
+            <span id="dataRemainingSub" style="color: #64748b;">100 GB Left</span>
+          </div>
         </div>
 
         <!-- Airtime Quota -->
         <div class="metric-box-dark">
-          <div class="metric-label-dark" style="color: #fbbf24;">AIRTIME SALES (₦)</div>
+          <div class="metric-label-dark" style="color: #fbbf24;">
+            <span>AIRTIME SALES (₦)</span>
+            <i class="fa-solid fa-phone" style="font-size: 11px;"></i>
+          </div>
           <div class="metric-val-dark" id="airtimeQuotaNumbers">₦0 / ₦10,000</div>
           <div class="progress-track">
             <div class="progress-bar" id="airtimeProgressBar" style="width: 0%; background: #fbbf24;"></div>
           </div>
-          <div class="percent-sub" id="airtimePercentSub">0% Delivered</div>
+          <div class="percent-sub">
+            <span id="airtimePercentSub">0% Delivered</span>
+            <span id="airtimeRemainingSub" style="color: #64748b;">₦10,000 Left</span>
+          </div>
         </div>
       </div>
     </section>
@@ -819,7 +852,7 @@
       </div>
     </section>
 
-    <!-- 4. Retail Services Grid (Real-Life Functional Links) -->
+    <!-- 4. Retail Services Grid -->
     <span class="section-label">RETAIL SERVICES & DISPENSER</span>
     <section class="services-grid-card">
       <a href="buy-data.html" class="service-btn">
@@ -952,7 +985,13 @@
       user: null,
       balanceVisible: true,
       virtualAccount: null,
-      quota: { dataGoal: 100, airtimeGoal: 10000, dataSold: 0, airtimeSold: 0, currentMonth: "September 2026" }
+      quota: { 
+        dataGoal: 100, 
+        airtimeGoal: 10000, 
+        dataSold: 0, 
+        airtimeSold: 0, 
+        currentMonth: "September 2026" 
+      }
     };
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -969,9 +1008,28 @@
         } catch (e) {}
       }
 
-      fetchAgentDashboardData();
-      setInterval(fetchAgentDashboardData, 15000);
+      // Initial Sync
+      syncFullAgentTelemetry();
+
+      // Real-Time Polling: Sabunta Target da Telemetry a ko da yaushe
+      setInterval(syncFullAgentTelemetry, 10000);
+
+      // Sabuntawa nan take idan mutum ya dawo shafin
+      window.addEventListener('focus', syncFullAgentTelemetry);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          syncFullAgentTelemetry();
+        }
+      });
     });
+
+    async function syncFullAgentTelemetry() {
+      if (!state.token) return;
+      await Promise.allSettled([
+        fetchAgentDashboardData(),
+        fetchLiveTargetTelemetry()
+      ]);
+    }
 
     async function fetchAgentDashboardData() {
       if (!state.token) return;
@@ -1014,7 +1072,186 @@
           }
         }
       } catch (e) {
-        console.warn('Dashboard sync:', e.message);
+        console.warn('Dashboard sync issue:', e.message);
+      }
+    }
+
+    /**
+     * =========================================================================
+     * REAL LIVE TARGET TELEMETRY:
+     * Yana bincikar Transaction Ledger na Agent a watan nan, yana tara ainihin 
+     * Data GB da Airtime da aka sayar sannan ya daidaita shi da na Supervisor da Admin.
+     * =========================================================================
+     */
+    async function fetchLiveTargetTelemetry() {
+      if (!state.token) return;
+      const headers = { 'Authorization': `Bearer ${state.token}`, 'Accept': 'application/json' };
+
+      let liveDataGB = 0;
+      let liveAirtimeAmount = 0;
+      let goalData = Number(state.user?.targets?.dataGoal || state.quota.dataGoal || 100);
+      let goalAirtime = Number(state.user?.targets?.airtimeGoal || state.quota.airtimeGoal || 10000);
+      let activeMonth = state.user?.targets?.month || state.user?.targets?.currentMonth || "September 2026";
+
+      try {
+        // 1. Gwada kiran kofa ta musamman ta target progress
+        let targetApiRes = await fetch(`${BASE_URL}/agent/target-progress`, { headers });
+        if (!targetApiRes.ok) targetApiRes = await fetch(`${BASE_URL}/targets/my-progress`, { headers });
+
+        if (targetApiRes.ok) {
+          const tData = await targetApiRes.json();
+          const p = tData.progress || tData.data || tData;
+          if (p.dataSoldGB !== undefined || p.dataSold !== undefined) {
+            liveDataGB = Number(p.dataSoldGB ?? p.dataSold ?? 0);
+          }
+          if (p.airtimeSold !== undefined) {
+            liveAirtimeAmount = Number(p.airtimeSold ?? 0);
+          }
+          if (p.dataGoal) goalData = Number(p.dataGoal);
+          if (p.airtimeGoal) goalAirtime = Number(p.airtimeGoal);
+          if (p.month) activeMonth = p.month;
+        }
+
+        // 2. Direct Ledger Verification: Karanta ainihin transactions na agent don tabbatar da live telemetry
+        let txRes = await fetch(`${BASE_URL}/transactions/my-history?limit=150`, { headers });
+        if (!txRes.ok) txRes = await fetch(`${BASE_URL}/vtu/history?limit=150`, { headers });
+        if (!txRes.ok) txRes = await fetch(`${BASE_URL}/transactions?limit=150`, { headers });
+
+        if (txRes.ok) {
+          const txData = await txRes.json();
+          const txList = txData.transactions || txData.data || (Array.isArray(txData) ? txData : []);
+
+          if (Array.isArray(txList) && txList.length > 0) {
+            let ledgerDataGB = 0;
+            let ledgerAirtimeAmount = 0;
+
+            const now = new Date();
+            const currentMonthIdx = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            txList.forEach(item => {
+              const status = String(item.status || "").toUpperCase();
+              const isSuccess = status === "SUCCESS" || status === "SUCCESSFUL" || status === "COMPLETED";
+              if (!isSuccess) return;
+
+              // Tabbatar transaction din na wannan watan ne
+              const txDate = item.createdAt ? new Date(item.createdAt) : (item.date ? new Date(item.date) : null);
+              if (txDate && !isNaN(txDate.getTime())) {
+                if (txDate.getMonth() !== currentMonthIdx || txDate.getFullYear() !== currentYear) {
+                  return; // Ketare tsofaffin watanni
+                }
+              }
+
+              const serviceText = String(item.service || item.type || item.category || "").toUpperCase();
+              const detailsText = String(item.details || item.description || item.planCode || "").toUpperCase();
+
+              // Kididdige Data Bundles (GB)
+              if (serviceText.includes("DATA") || detailsText.includes("DATA") || item.type === "data") {
+                const combined = detailsText + " " + serviceText;
+                let parsedGB = 0;
+
+                const matchGB = combined.match(/(\d+(?:\.\d+)?)\s*GB/i);
+                const matchMB = combined.match(/(\d+(?:\.\d+)?)\s*MB/i);
+
+                if (matchGB && matchGB[1]) {
+                  parsedGB = parseFloat(matchGB[1]);
+                } else if (matchMB && matchMB[1]) {
+                  parsedGB = parseFloat(matchMB[1]) / 1024;
+                } else if (item.dataAmountGB) {
+                  parsedGB = Number(item.dataAmountGB);
+                } else {
+                  // Estimation ta kudin data idan ba a rubuta GB a fili ba
+                  const amt = Number(item.amount || 0);
+                  if (amt >= 200 && amt <= 300) parsedGB = 1.0;
+                  else if (amt > 300 && amt <= 600) parsedGB = 2.0;
+                  else if (amt > 600 && amt <= 1200) parsedGB = 5.0;
+                  else if (amt > 1200) parsedGB = Math.round(amt / 250);
+                }
+
+                ledgerDataGB += parsedGB;
+              }
+
+              // Kididdige Airtime Sales (₦)
+              if (serviceText.includes("AIRTIME") || detailsText.includes("AIRTIME") || item.type === "airtime" || serviceText.includes("VTU")) {
+                ledgerAirtimeAmount += Number(item.amount || 0);
+              }
+            });
+
+            // Idan ledger ta nuna an sayar da fiye da abin da target API ke da shi, yi amfani da ainihin ledger
+            if (ledgerDataGB > liveDataGB) liveDataGB = Math.round(ledgerDataGB * 10) / 10;
+            if (ledgerAirtimeAmount > liveAirtimeAmount) liveAirtimeAmount = ledgerAirtimeAmount;
+          }
+        }
+
+        // Sabunta Tsarin State na Cikin Gida
+        state.quota.dataSold = Math.round(liveDataGB * 10) / 10;
+        state.quota.airtimeSold = Math.round(liveAirtimeAmount);
+        state.quota.dataGoal = goalData;
+        state.quota.airtimeGoal = goalAirtime;
+        state.quota.currentMonth = activeMonth;
+
+        // Render Telemetry kai tsaye a allon waya
+        renderTargetUI(state.quota);
+
+        // Tura Telemetry zuwa Supervisor & Admin Console kai-tsaye
+        syncProgressToSupervisor(state.quota);
+
+      } catch (err) {
+        console.warn("Target telemetry evaluation notice:", err.message);
+      }
+    }
+
+    function renderTargetUI(q) {
+      const dataSold = Number(q.dataSold || 0);
+      const dataGoal = Number(q.dataGoal || 100);
+      const airtimeSold = Number(q.airtimeSold || 0);
+      const airtimeGoal = Number(q.airtimeGoal || 10000);
+      const month = q.currentMonth || "September 2026";
+
+      document.getElementById('targetMonthHeader').innerHTML = `
+        <span>${month.toUpperCase()} PERFORMANCE</span>
+        <span style="font-size: 9px; padding: 2px 6px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; border-radius: 4px;">LIVE SYNC</span>
+      `;
+      document.getElementById('targetMonthBadge').textContent = month;
+
+      // Lissafin Data
+      const dataPct = Math.min(Math.round((dataSold / (dataGoal || 1)) * 100), 100);
+      const dataRemaining = Math.max(0, Math.round((dataGoal - dataSold) * 10) / 10);
+
+      document.getElementById('dataQuotaNumbers').textContent = `${dataSold} / ${dataGoal} GB`;
+      document.getElementById('dataProgressBar').style.width = `${dataPct}%`;
+      document.getElementById('dataPercentSub').textContent = `${dataPct}% Delivered`;
+      document.getElementById('dataRemainingSub').textContent = `${dataRemaining} GB Left`;
+
+      // Lissafin Airtime
+      const airtimePct = Math.min(Math.round((airtimeSold / (airtimeGoal || 1)) * 100), 100);
+      const airtimeRemaining = Math.max(0, airtimeGoal - airtimeSold);
+
+      document.getElementById('airtimeQuotaNumbers').textContent = `₦${airtimeSold.toLocaleString()} / ₦${airtimeGoal.toLocaleString()}`;
+      document.getElementById('airtimeProgressBar').style.width = `${airtimePct}%`;
+      document.getElementById('airtimePercentSub').textContent = `${airtimePct}% Delivered`;
+      document.getElementById('airtimeRemainingSub').textContent = `₦${airtimeRemaining.toLocaleString()} Left`;
+    }
+
+    // Tura wa Supervisor da Admin sabon sakamako ta background
+    async function syncProgressToSupervisor(q) {
+      if (!state.token) return;
+      try {
+        await fetch(`${BASE_URL}/agent/sync-target-meter`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            dataVolumeSold: q.dataSold,
+            airtimeSold: q.airtimeSold,
+            month: q.currentMonth,
+            timestamp: new Date().toISOString()
+          })
+        });
+      } catch (e) {
+        // Silent sync
       }
     }
 
@@ -1048,27 +1285,19 @@
         document.getElementById('activeAccountBox').style.display = 'none';
       }
 
-      // Quotas
+      // Quota initialization daga User Object idan babu live ledger
       const tg = u.targets || {};
-      const dataGoal = Number(tg.dataGoal || u.dataGoal || 100);
-      const airtimeGoal = Number(tg.airtimeGoal || u.airtimeGoal || 10000);
-      const dataSold = Number(u.dataSold || u.dataVolumeSold || 0);
-      const airtimeSold = Number(u.airtimeSold || 0);
-      const month = tg.currentMonth || "September 2026";
+      if (state.quota.dataSold === 0 && (tg.dataVolumeSold || tg.dataSold)) {
+        state.quota.dataSold = Number(tg.dataVolumeSold || tg.dataSold || 0);
+      }
+      if (state.quota.airtimeSold === 0 && tg.airtimeSold) {
+        state.quota.airtimeSold = Number(tg.airtimeSold || 0);
+      }
+      if (tg.dataGoal) state.quota.dataGoal = Number(tg.dataGoal);
+      if (tg.airtimeGoal) state.quota.airtimeGoal = Number(tg.airtimeGoal);
+      if (tg.currentMonth || tg.month) state.quota.currentMonth = tg.currentMonth || tg.month;
 
-      document.getElementById('targetMonthHeader').textContent = month.toUpperCase() + ' PERFORMANCE';
-      document.getElementById('targetMonthBadge').textContent = month;
-
-      const dataPct = Math.min(Math.round((dataSold / (dataGoal || 1)) * 100), 100);
-      const airtimePct = Math.min(Math.round((airtimeSold / (airtimeGoal || 1)) * 100), 100);
-
-      document.getElementById('dataQuotaNumbers').textContent = `${dataSold} / ${dataGoal} GB`;
-      document.getElementById('dataProgressBar').style.width = `${dataPct}%`;
-      document.getElementById('dataPercentSub').textContent = `${dataPct}% Delivered`;
-
-      document.getElementById('airtimeQuotaNumbers').textContent = `₦${airtimeSold.toLocaleString()} / ₦${airtimeGoal.toLocaleString()}`;
-      document.getElementById('airtimeProgressBar').style.width = `${airtimePct}%`;
-      document.getElementById('airtimePercentSub').textContent = `${airtimePct}% Delivered`;
+      renderTargetUI(state.quota);
     }
 
     function updateBalanceDisplay() {
