@@ -2573,7 +2573,7 @@
     function handleLogout() {
       if (confirm("Terminate Administrative Operations Session?")) {
         localStorage.clear();
-        window.location.href = "/login.html";
+        window.location.replace("index.html");
       }
     }
 

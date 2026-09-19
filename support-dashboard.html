@@ -1438,7 +1438,7 @@
     function handleLogout() {
       if (confirm("Exit Support Session?")) {
         localStorage.clear();
-        window.location.href = "index.html";
+        window.location.replace("index.html");
       }
     }
   </script>
