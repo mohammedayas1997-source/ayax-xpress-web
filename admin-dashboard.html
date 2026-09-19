@@ -1090,11 +1090,12 @@
       const headers = { Authorization: `Bearer ${token}`, Accept: "application/json" };
 
       try {
-        const [statsRes, usersRes, superPlansRes, dataPlansRes, refundsRes, txRes, ninPricesRes, nimcPricesRes] = await Promise.allSettled([
+       const [statsRes, usersRes, superPlansRes, dataPlansRes, adminPricingRes, refundsRes, txRes, ninPricesRes, nimcPricesRes] = await Promise.allSettled([
           fetch(`${BASE_URL}/admin/dashboard-stats`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/admin/users?limit=500`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/superadmin/plans`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/pricing/plans`, { headers }).then(r => r.json()).catch(() => ({})), // <--- AN ƘARA WANNAN AINIHIN KOFA TA ADMIN
           fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/admin/transactions?limit=1000`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/nin/prices`, { headers }).then(r => r.json()).catch(() => ({})),
@@ -1230,15 +1231,32 @@
         renderNetworkBreakdown(networkStats);
 
         // Plans & Tariffs
+        // Plans & Tariffs Robust Resolver
         let loadedPlans = [];
-        if (superPlansRes.status === "fulfilled" && (superPlansRes.value?.plans || superPlansRes.value?.data)) {
-          loadedPlans = superPlansRes.value.plans || superPlansRes.value.data || [];
-        } else if (dataPlansRes.status === "fulfilled" && (dataPlansRes.value?.plans || dataPlansRes.value?.data)) {
-          loadedPlans = dataPlansRes.value.plans || dataPlansRes.value.data || [];
+        
+        // 1. Gwada karɓa daga Admin Pricing Plans
+        if (adminPricingRes.status === "fulfilled" && adminPricingRes.value) {
+          const val = adminPricingRes.value;
+          loadedPlans = val.plans || val.data || (Array.isArray(val) ? val : []);
+        }
+
+        // 2. Idan babu komai, duba SuperAdmin Plans
+        if ((!loadedPlans || loadedPlans.length === 0) && superPlansRes.status === "fulfilled" && superPlansRes.value) {
+          const val = superPlansRes.value;
+          loadedPlans = val.plans || val.data || (Array.isArray(val) ? val : []);
+        }
+
+        // 3. Idan har yanzu babu, duba Data Plans na jama'a
+        if ((!loadedPlans || loadedPlans.length === 0) && dataPlansRes.status === "fulfilled" && dataPlansRes.value) {
+          const val = dataPlansRes.value;
+          loadedPlans = val.plans || val.data || (Array.isArray(val) ? val : []);
         }
 
         if (Array.isArray(loadedPlans) && loadedPlans.length > 0) {
           pricingList = loadedPlans;
+          renderDataPlans(pricingList);
+        } else {
+          // Idan babu komai a database, kiyaye na baya ko sanya sanarwa
           renderDataPlans(pricingList);
         }
 
