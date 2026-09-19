@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>NIN Validation Portal | Ayax Xpress</title>
+  <title>NIN Validation & Clearance Desk | Ayax Xpress</title>
 
   <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,11 +13,12 @@
 
   <style>
     :root {
-      --primary-navy: #1e3a8a;
+      --primary-navy: #0a1d37;
       --accent-blue: #0284c7;
       --accent-cyan: #38bdf8;
-      --accent-red: #dc2626;
+      --accent-green: #16a34a;
       --accent-amber: #f59e0b;
+      --accent-red: #dc2626;
       --text-dark: #0f172a;
       --text-muted: #64748b;
       --bg-light: #f8fafc;
@@ -26,11 +27,7 @@
       --border-input: #cbd5e1;
     }
 
-    * {
-      box-sizing: border-box;
-      text-decoration: none !important;
-      -webkit-text-decoration-line: none !important;
-    }
+    * { box-sizing: border-box; text-decoration: none !important; }
 
     html, body {
       margin: 0;
@@ -45,7 +42,7 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Top Header */
+    /* Top Navigation Header */
     .top-header-row {
       display: flex;
       justify-content: space-between;
@@ -65,15 +62,12 @@
       justify-content: center;
       align-items: center;
       color: var(--primary-navy);
-      text-decoration: none;
       font-size: 16px;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .back-btn:hover {
-      background: #f1f5f9;
-    }
+    .back-btn:hover { background: #f1f5f9; }
 
     .screen-main-title {
       font-size: 17px;
@@ -82,7 +76,7 @@
       margin: 0;
     }
 
-    /* Container Area */
+    /* Main Container */
     .container {
       max-width: 600px;
       margin: 0 auto;
@@ -90,160 +84,151 @@
     }
 
     /* Notice Banner */
-    .red-notice-card {
-      background: #fef2f2;
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-      border: 1.5px solid #ef4444;
+    .notice-card {
+      background: #fffbeb;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1.5px solid #fde68a;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.08);
     }
 
-    .red-notice-header {
+    .notice-header {
       display: flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 6px;
-      color: #b91c1c;
-      font-size: 12px;
+      color: #b45309;
+      font-size: 12.5px;
       font-weight: 900;
       letter-spacing: 0.3px;
     }
 
-    .red-notice-text {
-      color: #991b1b;
+    .notice-text {
+      color: #92400e;
       font-size: 12px;
       line-height: 1.6;
       font-weight: 600;
       margin: 0;
     }
 
-    /* Card Standard */
+    /* Standard Card */
     .card {
       background: var(--card-bg);
-      border-radius: 16px;
-      padding: 18px 16px;
+      border-radius: 18px;
+      padding: 20px 18px;
       margin-bottom: 14px;
       border: 1px solid var(--border-light);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
     .card-title {
-      font-size: 13px;
-      font-weight: 800;
+      font-size: 13.5px;
+      font-weight: 900;
       color: var(--primary-navy);
-      margin: 0;
+      margin: 0 0 14px 0;
       display: flex;
       align-items: center;
-      gap: 6px;
-    }
-
-    .price-badge {
-      background: #eff6ff;
-      padding: 4px 10px;
-      border-radius: 10px;
-      border: 1px solid #bae6fd;
-      color: #0369a1;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    /* Chip Grid */
-    .chip-container {
-      display: flex;
-      flex-wrap: wrap;
       gap: 8px;
     }
 
-    .chip-wrapper {
-      display: inline-flex;
-      align-items: center;
+    /* Error Type Options Grid */
+    .validation-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
     }
 
-    .chip {
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      padding: 8px 12px;
+    .val-option-card {
+      border: 1.5px solid var(--border-light);
+      border-radius: 14px;
+      padding: 14px;
       background: #f8fafc;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
+      justify-content: space-between;
       transition: all 0.2s;
     }
 
-    .chip.selected {
-      background: var(--primary-navy);
-      border-color: var(--primary-navy);
+    .val-option-card.selected {
+      border-color: var(--accent-amber);
+      background: #fffdf5;
+      box-shadow: 0 0 0 1.5px var(--accent-amber);
     }
 
-    .chip-text {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      font-weight: 700;
+    .val-info-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .chip.selected .chip-text {
-      color: #ffffff;
-      font-weight: 800;
-    }
-
-    .chip-price-tag {
-      font-size: 9.5px;
-      color: #94a3b8;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    .chip.selected .chip-price-tag {
-      color: var(--accent-cyan);
-    }
-
-    .admin-edit-btn {
-      background: rgba(245, 158, 11, 0.15);
-      border: none;
-      padding: 6px 8px;
-      border-radius: 8px;
-      margin-left: 4px;
+    .val-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--accent-amber);
-      font-size: 11px;
-      cursor: pointer;
+      font-size: 18px;
     }
 
-    /* Input Field */
+    .val-option-card.selected .val-icon-box {
+      background: #fef3c7;
+      border-color: #fde68a;
+    }
+
+    .val-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 3px 0;
+    }
+
+    .val-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .val-price-tag {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--primary-navy);
+      text-align: right;
+    }
+
+    /* Input Styling */
     .field-label {
       font-size: 12px;
       font-weight: 800;
       color: #475569;
       margin-bottom: 8px;
-      letter-spacing: 0.3px;
       display: block;
     }
 
     .text-input {
       width: 100%;
-      height: 50px;
+      height: 52px;
       background: #f8fafc;
       border: 1px solid var(--border-light);
       border-radius: 12px;
       padding: 0 14px;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-dark);
       outline: none;
       transition: border-color 0.2s;
+      letter-spacing: 1px;
     }
 
     .text-input:focus {
-      border-color: var(--primary-navy);
+      border-color: var(--accent-amber);
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
     }
 
     /* Checkboxes */
@@ -264,33 +249,14 @@
     }
 
     .checkbox-row.checked .checkbox-icon {
-      color: var(--primary-navy);
+      color: var(--accent-amber);
     }
 
-    .auth-text {
+    .consent-text {
       font-size: 11.5px;
       color: #475569;
       line-height: 1.5;
-      margin: 0;
-      flex: 1;
-    }
-
-    .red-checkbox-row {
-      background: #fff5f5;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #fecaca;
-    }
-
-    .red-checkbox-row.checked .checkbox-icon {
-      color: var(--accent-red);
-    }
-
-    .red-agreement-text {
-      font-size: 11.5px;
-      color: #991b1b;
-      line-height: 1.5;
-      font-weight: 700;
+      font-weight: 600;
       margin: 0;
       flex: 1;
     }
@@ -300,23 +266,19 @@
       width: 100%;
       height: 52px;
       border-radius: 14px;
-      background: var(--primary-navy);
+      background: #b45309;
       color: #ffffff;
       border: none;
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 900;
       letter-spacing: 0.5px;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 10px;
+      margin-top: 14px;
       transition: all 0.2s;
-      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
-    }
-
-    .submit-btn:hover {
-      background: #172554;
+      box-shadow: 0 4px 14px rgba(180, 83, 9, 0.25);
     }
 
     .submit-btn:disabled {
@@ -325,12 +287,75 @@
       box-shadow: none;
     }
 
-    /* Modal Overlay */
+    /* Receipt Confirmation View */
+    .receipt-container {
+      display: none;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 22px 18px;
+      border: 1px solid #bbf7d0;
+      margin-top: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      text-align: center;
+    }
+
+    .receipt-icon-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      background: #dcfce7;
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 12px;
+    }
+
+    .receipt-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin: 0 0 4px 0;
+    }
+
+    .receipt-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin: 0 0 16px 0;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 12.5px;
+      text-align: left;
+    }
+
+    .detail-label { color: var(--text-muted); font-weight: 600; }
+    .detail-value { font-weight: 800; color: var(--text-dark); text-align: right; }
+
+    .btn-done {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      margin-top: 18px;
+    }
+
+    /* PIN Modal */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       z-index: 1000;
       justify-content: center;
       align-items: center;
@@ -346,37 +371,6 @@
       padding: 22px;
       text-align: center;
       border: 1px solid var(--border-light);
-      animation: modalSlide 0.25s ease-out;
-    }
-
-    @keyframes modalSlide {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-title {
-      font-size: 16px;
-      font-weight: 900;
-      color: var(--primary-navy);
-      margin: 0 0 4px 0;
-    }
-
-    .modal-subtitle {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      margin: 0 0 10px 0;
-      line-height: 1.4;
-    }
-
-    .modal-warning-box {
-      background: #fef2f2;
-      padding: 6px 10px;
-      border-radius: 8px;
-      margin-bottom: 14px;
-      border: 1px solid #fecaca;
-      color: #b91c1c;
-      font-size: 11px;
-      font-weight: 800;
     }
 
     .modal-pin-input {
@@ -390,33 +384,20 @@
       letter-spacing: 8px;
       font-weight: bold;
       color: var(--text-dark);
-      margin-bottom: 16px;
+      margin: 14px 0;
       outline: none;
-    }
-
-    .modal-pin-input:focus {
-      border-color: var(--primary-navy);
     }
 
     .modal-submit-btn {
       width: 100%;
       height: 46px;
-      background: var(--primary-navy);
+      background: #b45309;
       color: #ffffff;
       border: none;
       border-radius: 12px;
       font-size: 13px;
       font-weight: 800;
       cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: all 0.2s;
-    }
-
-    .modal-submit-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
     }
 
     .modal-cancel-btn {
@@ -426,55 +407,94 @@
       font-weight: 700;
       font-size: 12px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 12px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Header -->
   <header class="top-header-row">
     <a href="javascript:history.back()" class="back-btn" title="Back">
       <i class="fa-solid fa-arrow-left"></i>
     </a>
-    <h1 class="screen-main-title">NIN Validation Portal</h1>
+    <h1 class="screen-main-title">NIN Validation Desk</h1>
     <div style="width: 40px;"></div>
   </header>
 
-  <!-- Container Area -->
-  <main class="container">
+  <main class="container" id="mainFormContainer">
 
-    <!-- 48-Hour Processing Window Notice -->
-    <div class="red-notice-card">
-      <div class="red-notice-header">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span>IMPORTANT NOTICE: PROCESSING TIMEFRAME (48 WORKING HOURS)</span>
+    <!-- 48-Working Hours Window Notice -->
+    <div class="notice-card">
+      <div class="notice-header">
+        <i class="fa-solid fa-clock"></i>
+        <span>MANUAL QUEUE NOTICE: 24 - 48 WORKING HOURS</span>
       </div>
-      <p class="red-notice-text">
-        This identity validation query takes approximately <strong>48 working hours</strong> to complete on the official NIMC database servers. Weekends and official public holidays are excluded from this processing window.
+      <p class="notice-text">
+        NIN validation issues are forwarded to the official clearing queue. Processing takes approximately <strong>24 to 48 working hours</strong>. Saturdays, Sundays, and public holidays are excluded from clearing operations.
       </p>
     </div>
 
-    <!-- Service Selection Card -->
+    <!-- Step 1: Select Error Type (Official Abjiktech Supported Types) -->
     <section class="card">
-      <div class="card-header">
-        <h2 class="card-title">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span>Select Validation Service</span>
-        </h2>
-        <div class="price-badge">
-          <span id="priceBadgeText">Fee: ₦1,300</span>
-        </div>
-      </div>
+      <h2 class="card-title">
+        <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-amber);"></i>
+        <span>Select Error / Validation Category</span>
+      </h2>
 
-      <div class="chip-container" id="chipsContainer">
-        <!-- Injected via JavaScript -->
+      <div class="validation-grid">
+        <!-- 1. No Record Found -->
+        <div class="val-option-card selected" id="optNoRecord" onclick="selectErrorType('no_record', 1300, 'No Record Found')">
+          <div class="val-info-left">
+            <div class="val-icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <div>
+              <div class="val-name">No Record Found</div>
+              <p class="val-desc">Profile synchronization & re-linking</p>
+            </div>
+          </div>
+          <div class="val-price-tag">₦1,300</div>
+        </div>
+
+        <!-- 2. SIM / Bank Validation -->
+        <div class="val-option-card" id="optSimBank" onclick="selectErrorType('simbank_validation', 1300, 'SIM / Bank Validation')">
+          <div class="val-info-left">
+            <div class="val-icon-box"><i class="fa-solid fa-sim-card"></i></div>
+            <div>
+              <div class="val-name">SIM / Bank Validation</div>
+              <p class="val-desc">Telco line & BVN-NIN tie clearing</p>
+            </div>
+          </div>
+          <div class="val-price-tag">₦1,300</div>
+        </div>
+
+        <!-- 3. Modification Validation -->
+        <div class="val-option-card" id="optMod" onclick="selectErrorType('modification', 1700, 'Modification Validation')">
+          <div class="val-info-left">
+            <div class="val-icon-box"><i class="fa-solid fa-user-pen"></i></div>
+            <div>
+              <div class="val-name">Modification Validation</div>
+              <p class="val-desc">Clearance after Name, DOB or Phone update</p>
+            </div>
+          </div>
+          <div class="val-price-tag">₦1,700</div>
+        </div>
+
+        <!-- 4. Photographic Error -->
+        <div class="val-option-card" id="optPhoto" onclick="selectErrorType('photo_error', 1400, 'Photographic Error')">
+          <div class="val-info-left">
+            <div class="val-icon-box"><i class="fa-solid fa-camera-rotate"></i></div>
+            <div>
+              <div class="val-name">Photographic Error</div>
+              <p class="val-desc">Portrait facial biometric resolution</p>
+            </div>
+          </div>
+          <div class="val-price-tag">₦1,400</div>
+        </div>
       </div>
     </section>
 
-    <!-- NIN Input Card -->
+    <!-- Step 2: Input Target NIN -->
     <section class="card">
-      <label class="field-label" for="ninInput">NIN Number (11 Digits)</label>
+      <label class="field-label" for="ninInput">National Identification Number (11 Digits) *</label>
       <input
         type="text"
         id="ninInput"
@@ -482,54 +502,75 @@
         placeholder="Enter 11-digit NIN"
         maxlength="11"
         inputmode="numeric"
-        spellcheck="false"
-        autocorrect="off"
-        autocapitalize="off"
-        oninput="handleFormValidation()"
+        oninput="validateForm()"
       />
     </section>
 
-    <!-- Consent & Agreement Card -->
+    <!-- Step 3: Consent & Confirmation -->
     <section class="card">
-      <h2 class="card-title" style="margin-bottom: 12px;">
-        <i class="fa-solid fa-lock"></i>
-        <span>Consent & Terms of Service</span>
-      </h2>
-
-      <!-- Checkbox 1: Consent -->
       <div class="checkbox-row" id="consentRow" onclick="toggleConsent()">
         <i class="fa-regular fa-square checkbox-icon" id="consentIcon"></i>
-        <p class="auth-text">
-          I confirm that I have obtained proper authorization from the NIN owner to perform this check.
+        <p class="consent-text">
+          I confirm that I have the owner's authorization to submit this NIN for validation and database synchronization.
         </p>
       </div>
 
-      <!-- Checkbox 2: 48-Hour Agreement -->
-      <div class="checkbox-row red-checkbox-row" id="timeRow" onclick="toggleTimeAgreement()">
+      <div class="checkbox-row" id="timeRow" onclick="toggleTimeAgreement()">
         <i class="fa-regular fa-square checkbox-icon" id="timeIcon"></i>
-        <p class="red-agreement-text">
-          I acknowledge and accept that this service takes up to <strong>48 working hours</strong> to process and settle before payment is finalized.
+        <p class="consent-text" style="color: #b45309;">
+          I acknowledge that this request enters a manual clearance window of <strong>24 to 48 working hours</strong>.
         </p>
       </div>
 
-      <!-- Submit Action Button -->
-      <button type="button" class="submit-btn" id="btnSubmit" onclick="handleInitiateSubmit()" disabled>
-        <span id="btnSubmitLabel">SUBMIT VALIDATION REQUEST (₦1,300)</span>
+      <button type="button" class="submit-btn" id="btnInitiate" onclick="openPinModal()" disabled>
+        SUBMIT VALIDATION REQUEST (₦1,300)
       </button>
     </section>
 
   </main>
 
-  <!-- PIN Authorization Modal -->
+  <!-- Submission Receipt Screen -->
+  <main class="container" id="receiptContainer" style="display: none;">
+    <section class="receipt-container" style="display: block;">
+      <div class="receipt-icon-wrap">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h2 class="receipt-title">Validation Request Queued!</h2>
+      <p class="receipt-sub">Your submission has been dispatched to the Abjiktech clearance system.</p>
+
+      <div class="detail-row">
+        <span class="detail-label">Service Type:</span>
+        <span class="detail-value" id="rcptType">No Record Found</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Validated NIN:</span>
+        <span class="detail-value" id="rcptNin">00000000000</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Tracking / Ticket ID:</span>
+        <span class="detail-value" id="rcptTicket" style="color: var(--accent-blue);">TKT-0000</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Amount Deducted:</span>
+        <span class="detail-value" id="rcptAmount">₦1,300</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Status:</span>
+        <span class="detail-value" style="color: #d97706;">PENDING CLEARANCE (24-48 HRS)</span>
+      </div>
+
+      <button type="button" class="btn-done" onclick="resetForm()">
+        SUBMIT ANOTHER VALIDATION
+      </button>
+    </section>
+  </main>
+
+  <!-- Security PIN Modal -->
   <div class="modal-overlay" id="pinModal">
     <div class="modal-content">
-      <i class="fa-solid fa-shield-halved" style="font-size: 32px; color: var(--primary-navy); margin-bottom: 8px;"></i>
-      <h2 class="modal-title">Enter Security PIN</h2>
-      <p class="modal-subtitle" id="pinModalSubtitle">Authorize fee for validation</p>
-
-      <div class="modal-warning-box">
-        ⚠️ Processing timeframe: 48 Working Hours
-      </div>
+      <i class="fa-solid fa-shield-halved" style="font-size: 32px; color: #b45309;"></i>
+      <h2 style="font-size: 16px; font-weight: 900; margin: 8px 0 4px 0;">Enter Security PIN</h2>
+      <p style="font-size: 11.5px; color: var(--text-muted); margin: 0;" id="pinModalSub">Authorize validation</p>
 
       <input
         type="password"
@@ -540,7 +581,7 @@
         inputmode="numeric"
       />
 
-      <button type="button" class="modal-submit-btn" id="btnConfirmPay" onclick="handleSubmit()">
+      <button type="button" class="modal-submit-btn" id="btnConfirmPay" onclick="executeValidation()">
         Confirm & Authorize
       </button>
 
@@ -550,175 +591,65 @@
     </div>
   </div>
 
-  <!-- Admin Price Modal -->
-  <div class="modal-overlay" id="adminModal">
-    <div class="modal-content">
-      <i class="fa-solid fa-tag" style="font-size: 32px; color: var(--accent-amber); margin-bottom: 8px;"></i>
-      <h2 class="modal-title">Update Service Price</h2>
-      <p class="modal-subtitle" id="adminModalSubtitle">Set new fee for service</p>
-
-      <input
-        type="number"
-        id="adminPriceInput"
-        class="modal-pin-input"
-        style="letter-spacing: normal; font-size: 16px;"
-        placeholder="Enter price in Naira"
-      />
-
-      <button type="button" class="modal-submit-btn" id="btnSaveAdminPrice" onclick="handleSaveAdminPrice()">
-        SAVE PRICE
-      </button>
-
-      <button type="button" class="modal-cancel-btn" onclick="closeAdminModal()">
-        Cancel
-      </button>
-    </div>
-  </div>
-
-  <!-- Scripts -->
   <script src="js/config.js"></script>
   <script>
     const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
       ? CONFIG.BASE_URL
       : "https://ayax-data-xpress-server.onrender.com/api/v1";
 
-    const initialValidationTypes = [
-      { id: "no_record", name: "No Record Found", cost: 1300 },
-      { id: "sim_val", name: "SIM Validation", cost: 1300 },
-      { id: "vnin_val", name: "vNIN Validation", cost: 1300 },
-      { id: "update_record", name: "Update Records Validation", cost: 1300 },
-      { id: "bank_val", name: "Bank Validation", cost: 1300 },
-      { id: "mod_val", name: "Modification Validation", cost: 1700 },
-      { id: "photo_error", name: "Photographic Error", cost: 1400 },
-    ];
-
     let state = {
       token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
-      validationTypes: initialValidationTypes,
-      selectedType: "No Record Found",
-      isAuthorized: false,
-      isTimeAgreed: false,
-      isAdmin: false,
-      editingItem: null
+      errorType: 'no_record',
+      typeName: 'No Record Found',
+      cost: 1300,
+      isConsentChecked: false,
+      isTimeChecked: false
     };
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const stored = localStorage.getItem('userData');
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          state.isAdmin = parsed.role === "admin" || parsed.isAdmin === true;
-        } catch (_) {}
-      }
+    function selectErrorType(typeSlug, cost, name) {
+      state.errorType = typeSlug;
+      state.cost = cost;
+      state.typeName = name;
 
-      renderChips();
-      fetchLivePrices();
-    });
+      document.querySelectorAll('.val-option-card').forEach(c => c.classList.remove('selected'));
 
-    function renderChips() {
-      const container = document.getElementById('chipsContainer');
-      container.innerHTML = state.validationTypes.map(item => {
-        const isSelected = state.selectedType === item.name;
-        return `
-          <div class="chip-wrapper">
-            <div class="chip ${isSelected ? 'selected' : ''}" onclick="selectValidationType('${item.name}')">
-              <span class="chip-text">${item.name}</span>
-              <span class="chip-price-tag">₦${Number(item.cost).toLocaleString()}</span>
-            </div>
-            ${state.isAdmin ? `
-              <button type="button" class="admin-edit-btn" onclick="openAdminPriceModal('${item.id}')">
-                <i class="fa-solid fa-pencil"></i>
-              </button>
-            ` : ''}
-          </div>
-        `;
-      }).join('');
+      if (typeSlug === 'no_record') document.getElementById('optNoRecord').classList.add('selected');
+      if (typeSlug === 'simbank_validation') document.getElementById('optSimBank').classList.add('selected');
+      if (typeSlug === 'modification') document.getElementById('optMod').classList.add('selected');
+      if (typeSlug === 'photo_error') document.getElementById('optPhoto').classList.add('selected');
 
-      const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
-      const activeCost = activeItem ? activeItem.cost : 1300;
-
-      document.getElementById('priceBadgeText').textContent = `Fee: ₦${Number(activeCost).toLocaleString()}`;
-      document.getElementById('btnSubmitLabel').textContent = `SUBMIT VALIDATION REQUEST (₦${Number(activeCost).toLocaleString()})`;
-    }
-
-    function selectValidationType(name) {
-      state.selectedType = name;
-      renderChips();
-      handleFormValidation();
-    }
-
-    async function fetchLivePrices() {
-      try {
-        const res = await fetch(`${BASE_URL}/nin/prices`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.prices) {
-            const serverPrices = data.prices;
-            state.validationTypes = state.validationTypes.map(item => ({
-              ...item,
-              cost: serverPrices[item.id] !== undefined ? serverPrices[item.id] : item.cost
-            }));
-            renderChips();
-          }
-        }
-      } catch (_) {}
+      document.getElementById('btnInitiate').textContent = `SUBMIT VALIDATION REQUEST (₦${cost.toLocaleString()})`;
+      validateForm();
     }
 
     function toggleConsent() {
-      state.isAuthorized = !state.isAuthorized;
-      const row = document.getElementById('consentRow');
-      const icon = document.getElementById('consentIcon');
-
-      row.classList.toggle('checked', state.isAuthorized);
-      icon.className = state.isAuthorized ? 'fa-solid fa-square-check checkbox-icon' : 'fa-regular fa-square checkbox-icon';
-      handleFormValidation();
+      state.isConsentChecked = !state.isConsentChecked;
+      document.getElementById('consentRow').classList.toggle('checked', state.isConsentChecked);
+      document.getElementById('consentIcon').className = state.isConsentChecked ? 'fa-solid fa-square-check checkbox-icon' : 'fa-regular fa-square checkbox-icon';
+      validateForm();
     }
 
     function toggleTimeAgreement() {
-      state.isTimeAgreed = !state.isTimeAgreed;
-      const row = document.getElementById('timeRow');
-      const icon = document.getElementById('timeIcon');
-
-      row.classList.toggle('checked', state.isTimeAgreed);
-      icon.className = state.isTimeAgreed ? 'fa-solid fa-square-check checkbox-icon' : 'fa-regular fa-square checkbox-icon';
-      handleFormValidation();
+      state.isTimeChecked = !state.isTimeChecked;
+      document.getElementById('timeRow').classList.toggle('checked', state.isTimeChecked);
+      document.getElementById('timeIcon').className = state.isTimeChecked ? 'fa-solid fa-square-check checkbox-icon' : 'fa-regular fa-square checkbox-icon';
+      validateForm();
     }
 
-    function handleFormValidation() {
+    function validateForm() {
       const nin = document.getElementById('ninInput').value.trim();
-      const ready = state.isAuthorized && state.isTimeAgreed && nin.length === 11;
-      document.getElementById('btnSubmit').disabled = !ready;
+      const ready = nin.length === 11 && state.isConsentChecked && state.isTimeChecked;
+      document.getElementById('btnInitiate').disabled = !ready;
     }
 
-    function handleInitiateSubmit() {
+    function openPinModal() {
       const nin = document.getElementById('ninInput').value.trim();
-
-      if (!nin) {
-        alert("Please enter your 11-digit NIN.");
-        return;
-      }
-
       if (nin.length !== 11) {
-        alert("NIN must be exactly 11 digits.");
+        alert("Please enter a valid 11-digit NIN.");
         return;
       }
 
-      if (!state.isAuthorized) {
-        alert("Please accept the authorization consent checkbox.");
-        return;
-      }
-
-      if (!state.isTimeAgreed) {
-        alert("Please acknowledge and agree to the 48-working-hours processing period before payment.");
-        return;
-      }
-
-      const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
-      const activeCost = activeItem ? activeItem.cost : 1300;
-
-      document.getElementById('pinModalSubtitle').textContent =
-        `Authorize ₦${Number(activeCost).toLocaleString()} fee for ${state.selectedType}`;
-
+      document.getElementById('pinModalSub').textContent = `Authorize ₦${state.cost.toLocaleString()} for ${state.typeName}`;
       document.getElementById('pinInput').value = '';
       document.getElementById('pinModal').style.display = 'flex';
       setTimeout(() => document.getElementById('pinInput').focus(), 100);
@@ -729,18 +660,17 @@
       document.getElementById('pinInput').value = '';
     }
 
-    async function handleSubmit() {
+    async function executeValidation() {
       const pin = document.getElementById('pinInput').value.trim();
       const nin = document.getElementById('ninInput').value.trim();
 
-      if (!pin || pin.length !== 4) {
-        alert("Transaction PIN must be exactly 4 digits.");
+      if (pin.length !== 4) {
+        alert("Please enter your 4-digit Transaction PIN.");
         return;
       }
 
       if (!state.token) {
-        closePinModal();
-        alert("Session Expired: Please login again.");
+        alert("Session expired. Please log in again.");
         window.location.href = "index.html";
         return;
       }
@@ -750,108 +680,75 @@
 
       try {
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
 
-        const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
-        const activeCost = activeItem ? activeItem.cost : 1300;
+        const requestPayload = {
+          nin: nin,
+          error_type: state.errorType,
+          issueType: state.errorType,
+          validationType: state.errorType,
+          type: state.errorType,
+          serviceId: state.errorType,
+          amount: state.cost,
+          pin: pin,
+          transactionPin: pin,
+          processingWindow: "48_WORKING_HOURS"
+        };
 
-        const response = await fetch(`${BASE_URL}/nin/validate`, {
+        // Call backend validation dispatcher
+        let response = await fetch(`${BASE_URL}/validation/submit`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${state.token}`
           },
-          body: JSON.stringify({
-            type: state.selectedType,
-            serviceId: activeItem?.id,
-            nin: nin,
-            pin: pin,
-            transactionPin: pin,
-            amount: activeCost,
-            timestamp: new Date().toISOString(),
-            processingWindow: "48_WORKING_HOURS"
-          })
+          body: JSON.stringify(requestPayload)
         });
 
-        const result = await response.json();
-
-        if (response.ok && (result.success || result.status === 'success')) {
-          closePinModal();
-          alert("Request Submitted 🎉: Your NIN validation request has been queued. Verification will be finalized within 48 working hours.");
-          document.getElementById('ninInput').value = '';
-          if (state.isAuthorized) toggleConsent();
-          if (state.isTimeAgreed) toggleTimeAgreement();
-        } else {
-          throw new Error(result.message || "Failed to process validation request.");
+        if (response.status === 404) {
+          response = await fetch(`${BASE_URL}/nin/validate`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${state.token}`
+            },
+            body: JSON.stringify(requestPayload)
+          });
         }
-      } catch (error) {
-        alert("Validation Failed: " + (error.message || "Server communication failure."));
+
+        const resData = await response.json();
+
+        if (response.ok && (resData.success || resData.status === 'success')) {
+          closePinModal();
+
+          const ticketId = resData.data?.ticketId || resData.ticketId || resData.reference || "QUEUED-NIMC";
+
+          document.getElementById('rcptType').textContent = state.typeName;
+          document.getElementById('rcptNin').textContent = nin;
+          document.getElementById('rcptTicket').textContent = ticketId;
+          document.getElementById('rcptAmount').textContent = `₦${state.cost.toLocaleString()}`;
+
+          document.getElementById('mainFormContainer').style.display = 'none';
+          document.getElementById('receiptContainer').style.display = 'block';
+        } else {
+          throw new Error(resData.message || "Failed to submit validation request.");
+        }
+      } catch (err) {
+        alert("Validation Submission Error: " + (err.message || "Network communication failed."));
       } finally {
         btn.disabled = false;
         btn.innerHTML = originalText;
       }
     }
 
-    /* Admin Price Editor */
-    function openAdminPriceModal(id) {
-      const item = state.validationTypes.find(t => t.id === id);
-      if (!item) return;
+    function resetForm() {
+      document.getElementById('ninInput').value = '';
+      if (state.isConsentChecked) toggleConsent();
+      if (state.isTimeChecked) toggleTimeAgreement();
 
-      state.editingItem = item;
-      document.getElementById('adminModalSubtitle').textContent = `Set new fee for ${item.name}`;
-      document.getElementById('adminPriceInput').value = item.cost;
-      document.getElementById('adminModal').style.display = 'flex';
-    }
-
-    function closeAdminModal() {
-      document.getElementById('adminModal').style.display = 'none';
-      state.editingItem = null;
-    }
-
-    async function handleSaveAdminPrice() {
-      const val = Number(document.getElementById('adminPriceInput').value);
-
-      if (isNaN(val) || val < 0) {
-        alert("Please enter a valid numeric price.");
-        return;
-      }
-
-      const btn = document.getElementById('btnSaveAdminPrice');
-      btn.disabled = true;
-
-      try {
-        await fetch(`${BASE_URL}/admin/nin/update-price`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            serviceId: state.editingItem.id,
-            serviceName: state.editingItem.name,
-            price: val
-          })
-        });
-
-        state.validationTypes = state.validationTypes.map(item =>
-          item.id === state.editingItem.id ? { ...item, cost: val } : item
-        );
-        renderChips();
-        closeAdminModal();
-        alert(`${state.editingItem.name} price updated to ₦${val.toLocaleString()}`);
-      } catch (err) {
-        state.validationTypes = state.validationTypes.map(item =>
-          item.id === state.editingItem.id ? { ...item, cost: val } : item
-        );
-        renderChips();
-        closeAdminModal();
-        alert(`${state.editingItem.name} price set to ₦${val.toLocaleString()}`);
-      } finally {
-        btn.disabled = false;
-      }
+      document.getElementById('receiptContainer').style.display = 'none';
+      document.getElementById('mainFormContainer').style.display = 'block';
     }
   </script>
-  <script src="js/config.js"></script>
-  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>

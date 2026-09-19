@@ -2,873 +2,864 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>NIN Validation Portal | Ayax Xpress</title>
-
-  <!-- Google Fonts & FontAwesome -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIMC Verification & Slip Printing - Ayax Data Xpress</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
   <style>
-    :root {
-      --primary-navy: #1e3a8a;
-      --accent-blue: #0284c7;
-      --accent-cyan: #38bdf8;
-      --accent-red: #dc2626;
-      --accent-amber: #f59e0b;
-      --text-dark: #0f172a;
-      --text-muted: #64748b;
-      --bg-light: #f8fafc;
-      --card-bg: #ffffff;
-      --border-light: #e2e8f0;
-      --border-input: #cbd5e1;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #050811; color: #f8fafc; min-height: 100vh; overflow-x: hidden; }
 
-    * {
-      box-sizing: border-box;
-      text-decoration: none !important;
-      -webkit-text-decoration-line: none !important;
-    }
+    /* Layout Containers */
+    .container { max-width: 680px; margin: 0 auto; padding: 0 16px 50px; }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100%;
-      background-color: var(--bg-light);
-      color: var(--text-dark);
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow-x: hidden;
-      overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* Top Header */
-    .top-header-row {
+    /* Header Bar */
+    .header-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 18px 14px 18px;
-      max-width: 600px;
-      margin: 0 auto;
+      padding: 24px 0 15px;
     }
-
     .back-btn {
       width: 40px;
       height: 40px;
-      border-radius: 12px;
-      background: #ffffff;
-      border: 1px solid var(--border-light);
       display: flex;
-      justify-content: center;
       align-items: center;
-      color: var(--primary-navy);
-      text-decoration: none;
-      font-size: 16px;
+      justify-content: flex-start;
+      background: none;
+      border: none;
+      color: #f8fafc;
+      font-size: 20px;
       cursor: pointer;
-      transition: all 0.2s;
     }
+    .header-title { color: #f8fafc; font-size: 16px; font-weight: 900; }
 
-    .back-btn:hover {
-      background: #f1f5f9;
-    }
-
-    .screen-main-title {
-      font-size: 17px;
-      font-weight: 900;
-      color: var(--primary-navy);
-      margin: 0;
-    }
-
-    /* Container Area */
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 0 16px 80px 16px;
-    }
-
-    /* Notice Banner */
-    .red-notice-card {
-      background: #fef2f2;
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-      border: 1.5px solid #ef4444;
-    }
-
-    .red-notice-header {
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, #0369a1, #0f172a);
+      border: 1px solid #00f0ff;
+      border-radius: 18px;
+      padding: 18px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-      color: #b91c1c;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.3px;
+      margin-bottom: 16px;
     }
-
-    .red-notice-text {
-      color: #991b1b;
-      font-size: 12px;
-      line-height: 1.6;
-      font-weight: 600;
-      margin: 0;
+    .banner-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 26px;
+      background: rgba(0, 240, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #00f0ff;
+      flex-shrink: 0;
     }
+    .banner-title { color: #ffffff; font-size: 15.5px; font-weight: 900; }
+    .banner-sub { color: #cbd5e1; font-size: 11px; margin-top: 3px; line-height: 16px; }
 
-    /* Card Standard */
-    .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 18px 16px;
-      margin-bottom: 14px;
-      border: 1px solid var(--border-light);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
-    }
-
-    .card-header {
+    /* Section Heading */
+    .section-heading-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      margin-top: 6px;
     }
-
-    .card-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--primary-navy);
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .price-badge {
-      background: #eff6ff;
-      padding: 4px 10px;
-      border-radius: 10px;
-      border: 1px solid #bae6fd;
-      color: #0369a1;
+    .section-heading {
+      color: #64748b;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+    }
+    .badge-count {
+      background: #1e293b;
+      color: #38bdf8;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 900;
     }
 
-    /* Chip Grid */
-    .chip-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    /* Grid Container */
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 500px) {
+      .grid-container { grid-template-columns: 1fr; }
     }
 
-    .chip-wrapper {
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .chip {
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      padding: 8px 12px;
-      background: #f8fafc;
+    .service-box {
+      background-color: #0b1120;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid #1e293b;
       cursor: pointer;
+      transition: 0.2s;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      transition: all 0.2s;
     }
+    .service-box:hover { border-color: #00f0ff; transform: translateY(-2px); }
 
-    .chip.selected {
-      background: var(--primary-navy);
-      border-color: var(--primary-navy);
-    }
-
-    .chip-text {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      font-weight: 700;
-    }
-
-    .chip.selected .chip-text {
-      color: #ffffff;
-      font-weight: 800;
-    }
-
-    .chip-price-tag {
-      font-size: 9.5px;
-      color: #94a3b8;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    .chip.selected .chip-price-tag {
-      color: var(--accent-cyan);
-    }
-
-    .admin-edit-btn {
-      background: rgba(245, 158, 11, 0.15);
-      border: none;
-      padding: 6px 8px;
-      border-radius: 8px;
-      margin-left: 4px;
-      color: var(--accent-amber);
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    /* Input Field */
-    .field-label {
-      font-size: 12px;
-      font-weight: 800;
-      color: #475569;
-      margin-bottom: 8px;
-      letter-spacing: 0.3px;
-      display: block;
-    }
-
-    .text-input {
-      width: 100%;
-      height: 50px;
-      background: #f8fafc;
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      padding: 0 14px;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-dark);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .text-input:focus {
-      border-color: var(--primary-navy);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
-    }
-
-    /* Checkboxes */
-    .checkbox-row {
+    .box-header {
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      user-select: none;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
     }
-
-    .checkbox-icon {
-      font-size: 20px;
-      color: #cbd5e1;
-      line-height: 1;
-      margin-top: 2px;
+    .icon-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #071328;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      color: #00f0ff;
+      font-size: 17px;
     }
-
-    .checkbox-row.checked .checkbox-icon {
-      color: var(--primary-navy);
-    }
-
-    .auth-text {
-      font-size: 11.5px;
-      color: #475569;
-      line-height: 1.5;
-      margin: 0;
-      flex: 1;
-    }
-
-    .red-checkbox-row {
-      background: #fff5f5;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #fecaca;
-    }
-
-    .red-checkbox-row.checked .checkbox-icon {
-      color: var(--accent-red);
-    }
-
-    .red-agreement-text {
-      font-size: 11.5px;
-      color: #991b1b;
-      line-height: 1.5;
-      font-weight: 700;
-      margin: 0;
-      flex: 1;
-    }
-
-    /* Submit Button */
-    .submit-btn {
-      width: 100%;
-      height: 52px;
-      border-radius: 14px;
-      background: var(--primary-navy);
-      color: #ffffff;
-      border: none;
-      font-size: 12.5px;
+    .category-tag {
+      font-size: 9px;
       font-weight: 900;
       letter-spacing: 0.5px;
-      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 5px;
+      background: rgba(2, 132, 199, 0.15);
+      color: #38bdf8;
+    }
+    .admin-edit-pill {
       display: flex;
-      justify-content: center;
       align-items: center;
-      margin-top: 10px;
-      transition: all 0.2s;
-      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
-    }
-
-    .submit-btn:hover {
-      background: #172554;
-    }
-
-    .submit-btn:disabled {
-      background: #cbd5e1;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    /* Modal Overlay */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      backdrop-filter: blur(4px);
-    }
-
-    .modal-content {
-      width: 100%;
-      max-width: 320px;
-      background: #ffffff;
-      border-radius: 22px;
-      padding: 22px;
-      text-align: center;
-      border: 1px solid var(--border-light);
-      animation: modalSlide 0.25s ease-out;
-    }
-
-    @keyframes modalSlide {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-title {
-      font-size: 16px;
-      font-weight: 900;
-      color: var(--primary-navy);
-      margin: 0 0 4px 0;
-    }
-
-    .modal-subtitle {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      margin: 0 0 10px 0;
-      line-height: 1.4;
-    }
-
-    .modal-warning-box {
-      background: #fef2f2;
-      padding: 6px 10px;
-      border-radius: 8px;
-      margin-bottom: 14px;
-      border: 1px solid #fecaca;
-      color: #b91c1c;
-      font-size: 11px;
+      gap: 4px;
+      background: rgba(245, 158, 11, 0.15);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      color: #f59e0b;
+      font-size: 10px;
       font-weight: 800;
     }
+    .box-title { color: #f8fafc; font-size: 13px; font-weight: 800; }
+    .box-desc { color: #64748b; font-size: 10.5px; margin-top: 4px; line-height: 14px; flex: 1; }
+    .price-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .price-label { color: #64748b; font-size: 11px; font-weight: 600; }
+    .price-value { color: #10b981; font-size: 13.5px; font-weight: 900; }
 
+    /* Form Card */
+    .form-card {
+      background-color: #0b1120;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid #1e293b;
+      margin-top: 6px;
+    }
+    .input-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #64748b;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      display: block;
+    }
+    .text-input {
+      width: 100%;
+      background-color: #050811;
+      padding: 0 14px;
+      height: 52px;
+      border-radius: 12px;
+      border: 1px solid #1e293b;
+      font-size: 15px;
+      color: #ffffff;
+      font-weight: 700;
+      outline: none;
+    }
+    .text-input:focus { border-color: #00f0ff; }
+
+    .fee-breakdown-box {
+      background-color: #070c18;
+      padding: 14px;
+      border-radius: 12px;
+      margin: 18px 0;
+      border: 1px solid #1e293b;
+    }
+    .fee-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 4px 0;
+    }
+    .fee-row-label { color: #64748b; font-size: 12px; font-weight: 600; }
+    .fee-row-val { color: #ffffff; font-size: 12px; font-weight: 800; }
+    .action-btn-gradient {
+      width: 100%;
+      background: linear-gradient(90deg, #0284c7, #2563eb);
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 12.5px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+
+    /* Result Card (Slips & Profile) */
+    .result-card {
+      background-color: #0b1120;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid #1e293b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .photo-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; }
+    .user-photo {
+      width: 110px;
+      height: 125px;
+      border-radius: 14px;
+      border: 2px solid #00f0ff;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0, 240, 255, 0.2);
+    }
+    .photo-placeholder {
+      width: 110px;
+      height: 125px;
+      border-radius: 14px;
+      background-color: #071328;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #1e293b;
+      font-size: 48px;
+      color: #64748b;
+    }
+    .status-verified-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 8px;
+      color: #10b981;
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .details-list { width: 100%; margin: 6px 0; }
+    .result-row-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .result-label { color: #64748b; font-size: 10.5px; font-weight: 700; text-transform: uppercase; }
+    .result-value { color: #f8fafc; font-size: 13px; font-weight: 800; margin-top: 2px; text-align: right; }
+    .copy-small-btn {
+      padding: 6px 8px;
+      background: rgba(0, 240, 255, 0.1);
+      border-radius: 6px;
+      border: none;
+      color: #00f0ff;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+    .download-pdf-btn {
+      width: 100%;
+      background: #16a34a;
+      border: none;
+      display: flex;
+      padding: 15px;
+      border-radius: 14px;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 12.5px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 18px;
+      transition: 0.2s;
+    }
+    .download-pdf-btn:hover { background: #15803d; }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      width: 100%;
+      max-width: 340px;
+      background-color: #0b1120;
+      border-radius: 20px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #1e293b;
+    }
+    .modal-title { color: #f8fafc; font-size: 16px; font-weight: 900; }
+    .modal-subtitle { color: #64748b; font-size: 11px; text-align: center; margin: 8px 0; }
+    .modal-input {
+      width: 100%;
+      height: 48px;
+      background-color: #050811;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 0 12px;
+      font-size: 16px;
+      color: #ffffff;
+      font-weight: bold;
+      margin: 12px 0;
+      outline: none;
+    }
     .modal-pin-input {
       width: 100%;
       height: 50px;
-      background: #f8fafc;
-      border: 1px solid var(--border-input);
+      background-color: #050811;
+      border: 1px solid #1e293b;
       border-radius: 12px;
       text-align: center;
-      font-size: 22px;
+      font-size: 24px;
       letter-spacing: 8px;
+      color: #ffffff;
       font-weight: bold;
-      color: var(--text-dark);
-      margin-bottom: 16px;
+      margin: 14px 0;
       outline: none;
     }
-
-    .modal-pin-input:focus {
-      border-color: var(--primary-navy);
-    }
-
     .modal-submit-btn {
       width: 100%;
-      height: 46px;
-      background: var(--primary-navy);
+      background: #0284c7;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
       color: #ffffff;
-      border: none;
-      border-radius: 12px;
+      font-weight: bold;
       font-size: 13px;
-      font-weight: 800;
       cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: all 0.2s;
-    }
-
-    .modal-submit-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    .modal-cancel-btn {
-      background: none;
-      border: none;
-      color: var(--accent-red);
-      font-weight: 700;
-      font-size: 12px;
-      cursor: pointer;
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Header -->
-  <header class="top-header-row">
-    <a href="javascript:history.back()" class="back-btn" title="Back">
-      <i class="fa-solid fa-arrow-left"></i>
-    </a>
-    <h1 class="screen-main-title">NIN Validation Portal</h1>
-    <div style="width: 40px;"></div>
-  </header>
-
-  <!-- Container Area -->
-  <main class="container">
-
-    <!-- 48-Hour Processing Window Notice -->
-    <div class="red-notice-card">
-      <div class="red-notice-header">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span>IMPORTANT NOTICE: PROCESSING TIMEFRAME (48 WORKING HOURS)</span>
-      </div>
-      <p class="red-notice-text">
-        This identity validation query takes approximately <strong>48 working hours</strong> to complete on the official NIMC database servers. Weekends and official public holidays are excluded from this processing window.
-      </p>
+  <!-- VIEW 1: MAIN SELECTION LIST (VERIFICATION & SLIP PRINTING ONLY) -->
+  <div class="container" id="viewMainList">
+    <div class="header-bar">
+      <button class="back-btn" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+      <div class="header-title">NIMC Verification Desk</div>
+      <div style="width: 40px;"></div>
     </div>
 
-    <!-- Service Selection Card -->
-    <section class="card">
-      <div class="card-header">
-        <h2 class="card-title">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span>Select Validation Service</span>
-        </h2>
-        <div class="price-badge">
-          <span id="priceBadgeText">Fee: ₦1,300</span>
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="banner-icon-wrap">
+        <i class="fa-solid fa-id-card"></i>
+      </div>
+      <div style="margin-left: 14px; flex: 1;">
+        <div class="banner-title">NIMC Verification & Slip Printing</div>
+        <div class="banner-sub">Verify identity records and reprint official Standard, Premium, or Regular slips instantly.</div>
+      </div>
+    </div>
+
+    <!-- Section Heading -->
+    <div class="section-heading-row">
+      <span class="section-heading">VERIFICATION & REPRINT CHANNELS</span>
+      <span class="badge-count" id="currentSectionCount">6 Channels</span>
+    </div>
+
+    <!-- Service Cards Grid -->
+    <div class="grid-container" id="searchOptionsGrid"></div>
+  </div>
+
+  <!-- VIEW 2: FORM ENTRY VIEW -->
+  <div class="container" id="viewEntryForm" style="display: none;">
+    <div class="header-bar">
+      <button class="back-btn" onclick="resetToMain()"><i class="fa-solid fa-arrow-left"></i></button>
+      <div class="header-title" id="formHeaderTitle">Channel Verification</div>
+      <div style="width: 40px;"></div>
+    </div>
+
+    <div class="form-card">
+      <label class="input-label" id="formInputLabel">IDENTIFICATION NUMBER / VALUE</label>
+      <input type="text" class="text-input" id="searchInputValue" placeholder="" maxlength="20">
+
+      <div class="fee-breakdown-box">
+        <div class="fee-row">
+          <span class="fee-row-label">Category Desk</span>
+          <span class="fee-row-val" style="color: #38bdf8;">SLIP REPRINT & VERIFICATION</span>
+        </div>
+        <div class="fee-row">
+          <span class="fee-row-label">Service Channel</span>
+          <span class="fee-row-val" id="feeRowServiceName">Service</span>
+        </div>
+        <div class="fee-row">
+          <span class="fee-row-label">Official Portal Fee</span>
+          <span class="fee-row-val" id="feeRowAmount" style="color: #10b981;">₦0</span>
         </div>
       </div>
 
-      <div class="chip-container" id="chipsContainer">
-        <!-- Injected via JavaScript -->
-      </div>
-    </section>
-
-    <!-- NIN Input Card -->
-    <section class="card">
-      <label class="field-label" for="ninInput">NIN Number (11 Digits)</label>
-      <input
-        type="text"
-        id="ninInput"
-        class="text-input"
-        placeholder="Enter 11-digit NIN"
-        maxlength="11"
-        inputmode="numeric"
-        spellcheck="false"
-        autocorrect="off"
-        autocapitalize="off"
-        oninput="handleFormValidation()"
-      />
-    </section>
-
-    <!-- Consent & Agreement Card -->
-    <section class="card">
-      <h2 class="card-title" style="margin-bottom: 12px;">
-        <i class="fa-solid fa-lock"></i>
-        <span>Consent & Terms of Service</span>
-      </h2>
-
-      <!-- Checkbox 1: Consent -->
-      <div class="checkbox-row" id="consentRow" onclick="toggleConsent()">
-        <i class="fa-regular fa-square checkbox-icon" id="consentIcon"></i>
-        <p class="auth-text">
-          I confirm that I have obtained proper authorization from the NIN owner to perform this check.
-        </p>
-      </div>
-
-      <!-- Checkbox 2: 48-Hour Agreement -->
-      <div class="checkbox-row red-checkbox-row" id="timeRow" onclick="toggleTimeAgreement()">
-        <i class="fa-regular fa-square checkbox-icon" id="timeIcon"></i>
-        <p class="red-agreement-text">
-          I acknowledge and accept that this service takes up to <strong>48 working hours</strong> to process and settle before payment is finalized.
-        </p>
-      </div>
-
-      <!-- Submit Action Button -->
-      <button type="button" class="submit-btn" id="btnSubmit" onclick="handleInitiateSubmit()" disabled>
-        <span id="btnSubmitLabel">SUBMIT VALIDATION REQUEST (₦1,300)</span>
+      <button class="action-btn-gradient" id="actionSubmitBtn" onclick="handleInitiateAction()">
+        <i class="fa-solid fa-print"></i>
+        <span id="actionBtnLabelText">VERIFY & PRINT SLIP</span>
       </button>
-    </section>
+    </div>
+  </div>
 
-  </main>
+  <!-- VIEW 3: SLIP VERIFICATION RESULT (PRINT & PDF DOWNLOAD) -->
+  <div class="container" id="viewResultProfile" style="display: none;">
+    <div class="header-bar">
+      <button class="back-btn" onclick="resetToMain()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="header-title">Verified NIMC Profile</div>
+      <div style="width: 40px;"></div>
+    </div>
 
-  <!-- PIN Authorization Modal -->
+    <div class="result-card">
+      <div class="photo-container">
+        <img id="resUserPhoto" class="user-photo" src="" style="display: none;" />
+        <div id="resPhotoPlaceholder" class="photo-placeholder"><i class="fa-solid fa-user"></i></div>
+        <div class="status-verified-badge">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>NIMC VERIFIED</span>
+        </div>
+      </div>
+
+      <div class="details-list" id="resDetailsList"></div>
+
+      <button class="download-pdf-btn" id="btnDownloadSlipPdf" onclick="handleDownloadPDF()">
+        <i class="fa-solid fa-file-arrow-down" style="font-size: 18px;"></i>
+        <span>DOWNLOAD OFFICIAL SLIP (PDF)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 1: ADMIN EDIT PRICE MODAL -->
+  <div class="modal-overlay" id="adminPriceModal">
+    <div class="modal-content">
+      <i class="fa-solid fa-tag" style="font-size: 32px; color: #f59e0b; margin-bottom: 10px;"></i>
+      <div class="modal-title">Update Service Price</div>
+      <div class="modal-subtitle" id="adminPriceModalSub">Set retail fee</div>
+
+      <input type="number" class="modal-input" id="newAdminPriceInput" placeholder="Enter price in Naira">
+
+      <button class="modal-submit-btn" id="btnSaveAdminPrice" onclick="handleSaveAdminPrice()">SAVE PRICE</button>
+      <button style="border: none; background: none; color: #ef4444; font-weight: bold; margin-top: 12px; cursor: pointer;" onclick="closeModal('adminPriceModal')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- MODAL 2: TRANSACTION SECURITY PIN MODAL -->
   <div class="modal-overlay" id="pinModal">
     <div class="modal-content">
-      <i class="fa-solid fa-shield-halved" style="font-size: 32px; color: var(--primary-navy); margin-bottom: 8px;"></i>
-      <h2 class="modal-title">Enter Security PIN</h2>
-      <p class="modal-subtitle" id="pinModalSubtitle">Authorize fee for validation</p>
+      <i class="fa-solid fa-shield-halved" style="font-size: 36px; color: #00f0ff; margin-bottom: 10px;"></i>
+      <div class="modal-title">Enter Security PIN</div>
+      <div class="modal-subtitle" id="pinModalSub">Authorize transaction</div>
 
-      <div class="modal-warning-box">
-        ⚠️ Processing timeframe: 48 Working Hours
-      </div>
+      <input type="password" maxlength="4" class="modal-pin-input" id="pinInput" placeholder="••••">
 
-      <input
-        type="password"
-        id="pinInput"
-        class="modal-pin-input"
-        placeholder="••••"
-        maxlength="4"
-        inputmode="numeric"
-      />
-
-      <button type="button" class="modal-submit-btn" id="btnConfirmPay" onclick="handleSubmit()">
-        Confirm & Authorize
-      </button>
-
-      <button type="button" class="modal-cancel-btn" onclick="closePinModal()">
-        Cancel
-      </button>
+      <button class="modal-submit-btn" id="btnConfirmPin" onclick="handleExecuteAction()">Confirm & Authorize</button>
+      <button style="border: none; background: none; color: #ef4444; font-weight: bold; margin-top: 12px; cursor: pointer;" onclick="closeModal('pinModal')">Cancel</button>
     </div>
   </div>
 
-  <!-- Admin Price Modal -->
-  <div class="modal-overlay" id="adminModal">
-    <div class="modal-content">
-      <i class="fa-solid fa-tag" style="font-size: 32px; color: var(--accent-amber); margin-bottom: 8px;"></i>
-      <h2 class="modal-title">Update Service Price</h2>
-      <p class="modal-subtitle" id="adminModalSubtitle">Set new fee for service</p>
-
-      <input
-        type="number"
-        id="adminPriceInput"
-        class="modal-pin-input"
-        style="letter-spacing: normal; font-size: 16px;"
-        placeholder="Enter price in Naira"
-      />
-
-      <button type="button" class="modal-submit-btn" id="btnSaveAdminPrice" onclick="handleSaveAdminPrice()">
-        SAVE PRICE
-      </button>
-
-      <button type="button" class="modal-cancel-btn" onclick="closeAdminModal()">
-        Cancel
-      </button>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="js/config.js"></script>
   <script>
-    const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
-      ? CONFIG.BASE_URL
-      : "https://ayax-data-xpress-server.onrender.com/api/v1";
+    const BASE_URL = "https://ayax-data-xpress-server.onrender.com/api/v1";
 
-    // Aligned strictly with Abjiktech error_type specification:
-    // Allowed values: no_record, simbank_validation, modification, photo_error
-    const initialValidationTypes = [
-      { id: "no_record", name: "No Record Found", errorType: "no_record", cost: 1300 },
-      { id: "simbank_validation", name: "SIM / Bank Validation", errorType: "simbank_validation", cost: 1300 },
-      { id: "modification", name: "Modification Validation", errorType: "modification", cost: 1700 },
-      { id: "photo_error", name: "Photographic Error", errorType: "photo_error", cost: 1400 }
+    // KADAI KAWAI AYYUKAN VERIFICATION DA SLIP PRINTING (BABU VALIDATIONS A CIKI)
+    const verificationServicesList = [
+      {
+        id: "nin",
+        name: "NIN Number Search",
+        placeholder: "Enter 11-digit NIN (e.g. 12345678901)",
+        icon: "fingerprint",
+        length: 11,
+        desc: "Direct verification and profile lookup using 11-digit NIN",
+        defaultPrice: 150,
+      },
+      {
+        id: "phone",
+        name: "Phone Number Search",
+        placeholder: "Enter Linked Phone Number (e.g. 08012345678)",
+        icon: "phone-volume",
+        length: 14,
+        desc: "Retrieve citizen identity profile linked to SIM number",
+        defaultPrice: 200,
+      },
+      {
+        id: "trackingId",
+        name: "Tracking ID Search",
+        placeholder: "Enter NIMC Tracking ID (e.g. TRK12345XYZ)",
+        icon: "barcode",
+        length: 20,
+        desc: "Retrieve record using official NIMC enrollment tracking code",
+        defaultPrice: 150,
+      },
+      {
+        id: "standardSlip",
+        name: "Standard NIN Slip",
+        placeholder: "Enter 11-digit NIN or Tracking ID",
+        icon: "file-lines",
+        length: 20,
+        desc: "Official full details identification printable slip with barcode",
+        defaultPrice: 200,
+      },
+      {
+        id: "premiumCard",
+        name: "Premium ID Card Slip",
+        placeholder: "Enter 11-digit NIN",
+        icon: "id-card",
+        length: 11,
+        desc: "Wallet plastic-sized ready-to-laminate digital card",
+        defaultPrice: 300,
+      },
+      {
+        id: "basicSlip",
+        name: "Basic Identification Slip",
+        placeholder: "Enter 11-digit NIN",
+        icon: "print",
+        length: 11,
+        desc: "Concise confirmation paper format slip with tracking ID",
+        defaultPrice: 100,
+      }
     ];
 
-    let state = {
-      token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
-      validationTypes: initialValidationTypes,
-      selectedType: "No Record Found",
-      isAuthorized: false,
-      isTimeAgreed: false,
-      isAdmin: false,
-      editingItem: null
-    };
+    let prices = {};
+    let selectedService = null;
+    let isAdmin = false;
+    let editingService = null;
+    let verifiedUserData = null;
+    let returnedBase64Pdf = null;
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const stored = localStorage.getItem('userData');
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          state.isAdmin = parsed.role === "admin" || parsed.isAdmin === true;
-        } catch (_) {}
-      }
+    function openModal(id) { document.getElementById(id).classList.add("active"); }
+    function closeModal(id) { document.getElementById(id).classList.remove("active"); }
 
-      renderChips();
-      fetchLivePrices();
-    });
-
-    function renderChips() {
-      const container = document.getElementById('chipsContainer');
-      container.innerHTML = state.validationTypes.map(item => {
-        const isSelected = state.selectedType === item.name;
-        return `
-          <div class="chip-wrapper">
-            <div class="chip ${isSelected ? 'selected' : ''}" onclick="selectValidationType('${item.name}')">
-              <span class="chip-text">${item.name}</span>
-              <span class="chip-price-tag">₦${Number(item.cost).toLocaleString()}</span>
-            </div>
-            ${state.isAdmin ? `
-              <button type="button" class="admin-edit-btn" onclick="openAdminPriceModal('${item.id}')">
-                <i class="fa-solid fa-pencil"></i>
-              </button>
-            ` : ''}
-          </div>
-        `;
-      }).join('');
-
-      const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
-      const activeCost = activeItem ? activeItem.cost : 1300;
-
-      document.getElementById('priceBadgeText').textContent = `Fee: ₦${Number(activeCost).toLocaleString()}`;
-      document.getElementById('btnSubmitLabel').textContent = `SUBMIT VALIDATION REQUEST (₦${Number(activeCost).toLocaleString()})`;
+    function resetToMain() {
+      selectedService = null;
+      verifiedUserData = null;
+      returnedBase64Pdf = null;
+      document.getElementById("searchInputValue").value = "";
+      document.getElementById("pinInput").value = "";
+      document.getElementById("viewMainList").style.display = "block";
+      document.getElementById("viewEntryForm").style.display = "none";
+      document.getElementById("viewResultProfile").style.display = "none";
     }
 
-    function selectValidationType(name) {
-      state.selectedType = name;
-      renderChips();
-      handleFormValidation();
+    async function checkUserRole() {
+      try {
+        const stored = localStorage.getItem("userData");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          isAdmin = (parsed.role === "admin" || parsed.isAdmin === true || parsed.role === "superadmin");
+        }
+      } catch (e) {}
     }
 
     async function fetchLivePrices() {
+      verificationServicesList.forEach(s => { prices[s.id] = s.defaultPrice; });
+
       try {
-        const res = await fetch(`${BASE_URL}/nin/prices`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.prices) {
-            const serverPrices = data.prices;
-            state.validationTypes = state.validationTypes.map(item => ({
-              ...item,
-              cost: serverPrices[item.id] !== undefined ? serverPrices[item.id] : item.cost
-            }));
-            renderChips();
-          }
+        const nimcRes = await fetch(`${BASE_URL}/nimc/prices`).then(r => r.json());
+        if (nimcRes?.prices) {
+          const p = nimcRes.prices;
+          Object.keys(p).forEach(k => { prices[k] = Number(p[k]); });
         }
-      } catch (_) {}
+      } catch (e) {
+        console.log("Using default verification prices.");
+      }
+      renderServicesGrid();
     }
 
-    function toggleConsent() {
-      state.isAuthorized = !state.isAuthorized;
-      const row = document.getElementById('consentRow');
-      const icon = document.getElementById('consentIcon');
+    function renderServicesGrid() {
+      const grid = document.getElementById("searchOptionsGrid");
+      document.getElementById("currentSectionCount").innerText = `${verificationServicesList.length} Channels`;
 
-      row.classList.toggle('checked', state.isAuthorized);
-      icon.className = state.isAuthorized ? 'fa-solid fa-square-check checkbox-icon' : 'fa-regular fa-square checkbox-icon';
-      handleFormValidation();
+      grid.innerHTML = verificationServicesList.map(opt => {
+        const currentPrice = prices[opt.id] || opt.defaultPrice;
+
+        return `
+          <div class="service-box" onclick="selectServiceChannel('${opt.id}')">
+            <div class="box-header">
+              <div class="icon-circle">
+                <i class="fa-solid fa-${opt.icon}"></i>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="category-tag">SLIP PRINT</span>
+                ${isAdmin ? `
+                  <button class="admin-edit-pill" onclick="event.stopPropagation(); openAdminPriceEdit('${opt.id}')">
+                    <i class="fa-solid fa-pencil"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+            <div class="box-title">${opt.name}</div>
+            <div class="box-desc">${opt.desc}</div>
+            <div class="price-container">
+              <span class="price-label">Fee:</span>
+              <span class="price-value">₦${Number(currentPrice).toLocaleString()}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
-    function toggleTimeAgreement() {
-      state.isTimeAgreed = !state.isTimeAgreed;
-      const row = document.getElementById('timeRow');
-      const icon = document.getElementById('timeIcon');
+    function selectServiceChannel(id) {
+      selectedService = verificationServicesList.find(o => o.id === id);
+      if (!selectedService) return;
 
-      row.classList.toggle('checked', state.isTimeAgreed);
-      icon.className = state.isTimeAgreed ? 'fa-solid fa-square-check checkbox-icon' : 'fa-regular fa-square checkbox-icon';
-      handleFormValidation();
+      const currentPrice = prices[selectedService.id] || selectedService.defaultPrice;
+
+      document.getElementById("formHeaderTitle").innerText = selectedService.name;
+      document.getElementById("feeRowServiceName").innerText = selectedService.name;
+      document.getElementById("feeRowAmount").innerText = `₦${Number(currentPrice).toLocaleString()}`;
+      document.getElementById("actionBtnLabelText").innerText = `VERIFY & PRINT SLIP (₦${Number(currentPrice).toLocaleString()})`;
+
+      const input = document.getElementById("searchInputValue");
+      input.placeholder = selectedService.placeholder;
+      input.maxLength = selectedService.length;
+      input.value = "";
+
+      document.getElementById("viewMainList").style.display = "none";
+      document.getElementById("viewEntryForm").style.display = "block";
     }
 
-    function handleFormValidation() {
-      const nin = document.getElementById('ninInput').value.trim();
-      const ready = state.isAuthorized && state.isTimeAgreed && nin.length === 11;
-      document.getElementById('btnSubmit').disabled = !ready;
+    function openAdminPriceEdit(id) {
+      editingService = verificationServicesList.find(o => o.id === id);
+      if (!editingService) return;
+      document.getElementById("adminPriceModalSub").innerText = `Set fee for ${editingService.name}`;
+      document.getElementById("newAdminPriceInput").value = prices[editingService.id] || editingService.defaultPrice;
+      openModal("adminPriceModal");
     }
 
-    function handleInitiateSubmit() {
-      const nin = document.getElementById('ninInput').value.trim();
+    async function handleSaveAdminPrice() {
+      const val = Number(document.getElementById("newAdminPriceInput").value);
+      if (isNaN(val) || val < 0) { alert("Please enter a valid numeric price."); return; }
 
-      if (!nin) {
-        alert("Please enter your 11-digit NIN.");
+      const token = localStorage.getItem("userToken");
+      const submitBtn = document.getElementById("btnSaveAdminPrice");
+      submitBtn.innerText = "SAVING...";
+
+      try {
+        await fetch(`${BASE_URL}/nimc/admin/set-price`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ serviceType: editingService.id, amount: val, name: editingService.name })
+        });
+        prices[editingService.id] = val;
+        alert(`Price updated: ${editingService.name} is now ₦${val.toLocaleString()}`);
+        closeModal("adminPriceModal");
+        renderServicesGrid();
+      } catch (e) {
+        prices[editingService.id] = val;
+        alert(`Price set to ₦${val.toLocaleString()}`);
+        closeModal("adminPriceModal");
+        renderServicesGrid();
+      } finally {
+        submitBtn.innerText = "SAVE PRICE";
+      }
+    }
+
+    function handleInitiateAction() {
+      const val = document.getElementById("searchInputValue").value.trim();
+      if (!val || val.length < 6) {
+        alert(`Please enter a valid ${selectedService?.name || "Identifier"}.`);
+        return;
+      }
+      const activePrice = prices[selectedService.id] || selectedService.defaultPrice;
+      document.getElementById("pinModalSub").innerText = `Authorize ₦${Number(activePrice).toLocaleString()} for ${selectedService.name}`;
+      document.getElementById("pinInput").value = "";
+      openModal("pinModal");
+    }
+
+    async function handleExecuteAction() {
+      const pin = document.getElementById("pinInput").value.trim();
+      if (!pin || pin.length < 4) {
+        alert("Please enter your 4-digit Transaction PIN.");
         return;
       }
 
-      if (nin.length !== 11) {
-        alert("NIN must be exactly 11 digits.");
-        return;
-      }
-
-      if (!state.isAuthorized) {
-        alert("Please accept the authorization consent checkbox.");
-        return;
-      }
-
-      if (!state.isTimeAgreed) {
-        alert("Please acknowledge and agree to the 48-working-hours processing period before payment.");
-        return;
-      }
-
-      const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
-      const activeCost = activeItem ? activeItem.cost : 1300;
-
-      document.getElementById('pinModalSubtitle').textContent =
-        `Authorize ₦${Number(activeCost).toLocaleString()} fee for ${state.selectedType}`;
-
-      document.getElementById('pinInput').value = '';
-      document.getElementById('pinModal').style.display = 'flex';
-      setTimeout(() => document.getElementById('pinInput').focus(), 100);
-    }
-
-    function closePinModal() {
-      document.getElementById('pinModal').style.display = 'none';
-      document.getElementById('pinInput').value = '';
-    }
-
-    async function handleSubmit() {
-      const pin = document.getElementById('pinInput').value.trim();
-      const nin = document.getElementById('ninInput').value.trim();
-
-      if (!pin || pin.length !== 4) {
-        alert("Transaction PIN must be exactly 4 digits.");
-        return;
-      }
-
-      if (!state.token) {
-        closePinModal();
-        alert("Session Expired: Please login again.");
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
+      if (!token) {
+        alert("Session Expired. Please login again.");
         window.location.href = "index.html";
         return;
       }
 
-      const btn = document.getElementById('btnConfirmPay');
-      const originalText = btn.innerHTML;
+      const submitBtn = document.getElementById("btnConfirmPin");
+      submitBtn.innerText = "Processing...";
+      submitBtn.disabled = true;
+
+      const serviceId = selectedService.id;
+      const activeAmount = prices[serviceId] || selectedService.defaultPrice;
+      const cleanInput = document.getElementById("searchInputValue").value.trim();
+
+      let slipPayload = {
+        serviceType: serviceId,
+        type: serviceId,
+        amount: activeAmount,
+        pin: pin,
+        transactionPin: pin,
+        format: "pdf",
+        generatePdf: true
+      };
+
+      if (serviceId === "phone") {
+        let phoneDigits = cleanInput.replace(/\D/g, "");
+        if (phoneDigits.startsWith("234") && phoneDigits.length >= 13) {
+          phoneDigits = "0" + phoneDigits.slice(3);
+        } else if (phoneDigits.length === 10 && !phoneDigits.startsWith("0")) {
+          phoneDigits = "0" + phoneDigits;
+        }
+        slipPayload.phone = phoneDigits;
+        slipPayload.phoneNumber = phoneDigits;
+        slipPayload.searchValue = phoneDigits;
+      } else if (serviceId === "trackingId") {
+        slipPayload.trackingId = cleanInput;
+        slipPayload.searchValue = cleanInput;
+      } else {
+        slipPayload.nin = cleanInput;
+        slipPayload.ninNumber = cleanInput;
+        slipPayload.searchValue = cleanInput;
+      }
 
       try {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        const res = await fetch(`${BASE_URL}/nimc/submit`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(slipPayload)
+        }).then(r => r.json());
 
-        const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
-        const activeCost = activeItem ? activeItem.cost : 1300;
-        const abjikErrorType = activeItem?.errorType || "no_record";
-
-        const requestBody = {
-          type: abjikErrorType,
-          issueType: abjikErrorType,
-          validationType: abjikErrorType,
-          error_type: abjikErrorType,
-          serviceId: activeItem?.id,
-          nin: nin,
-          pin: pin,
-          transactionPin: pin,
-          amount: activeCost,
-          timestamp: new Date().toISOString(),
-          processingWindow: "48_WORKING_HOURS"
-        };
-
-        // Try primary validation endpoint, fallback to /nin/validate
-        let response = await fetch(`${BASE_URL}/validation/submit`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${state.token}`
-          },
-          body: JSON.stringify(requestBody)
-        });
-
-        if (response.status === 404) {
-          response = await fetch(`${BASE_URL}/nin/validate`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${state.token}`
-            },
-            body: JSON.stringify(requestBody)
-          });
-        }
-
-        const result = await response.json();
-
-        if (response.ok && (result.success || result.status === 'success')) {
-          closePinModal();
-          const ticketId = result.data?.ticketId || result.ticketId || result.reference || "Generated";
-          alert(`Request Submitted 🎉\n\nTicket: ${ticketId}\nYour NIN validation request has been submitted to the Abjiktech clearing queue. Settlement completes within 24-48 working hours.`);
-          
-          document.getElementById('ninInput').value = '';
-          if (state.isAuthorized) toggleConsent();
-          if (state.isTimeAgreed) toggleTimeAgreement();
+        if (res.success || res.status === "success") {
+          closeModal("pinModal");
+          verifiedUserData = res.data || res.user_data || res;
+          returnedBase64Pdf = res.pdf_base64 || verifiedUserData.pdf_base64 || null;
+          renderSlipProfile();
         } else {
-          throw new Error(result.message || "Failed to process validation request.");
+          alert(res.message || res.desc || "Search failed. Record not found.");
         }
-      } catch (error) {
-        alert("Validation Failed: " + (error.message || "Server communication failure."));
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-      }
-    }
-
-    /* Admin Price Editor */
-    function openAdminPriceModal(id) {
-      const item = state.validationTypes.find(t => t.id === id);
-      if (!item) return;
-
-      state.editingItem = item;
-      document.getElementById('adminModalSubtitle').textContent = `Set new fee for ${item.name}`;
-      document.getElementById('adminPriceInput').value = item.cost;
-      document.getElementById('adminModal').style.display = 'flex';
-    }
-
-    function closeAdminModal() {
-      document.getElementById('adminModal').style.display = 'none';
-      state.editingItem = null;
-    }
-
-    async function handleSaveAdminPrice() {
-      const val = Number(document.getElementById('adminPriceInput').value);
-
-      if (isNaN(val) || val < 0) {
-        alert("Please enter a valid numeric price.");
-        return;
-      }
-
-      const btn = document.getElementById('btnSaveAdminPrice');
-      btn.disabled = true;
-
-      try {
-        await fetch(`${BASE_URL}/admin/nin/update-price`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            serviceId: state.editingItem.id,
-            serviceName: state.editingItem.name,
-            price: val
-          })
-        });
-
-        state.validationTypes = state.validationTypes.map(item =>
-          item.id === state.editingItem.id ? { ...item, cost: val } : item
-        );
-        renderChips();
-        closeAdminModal();
-        alert(`${state.editingItem.name} price updated to ₦${val.toLocaleString()}`);
       } catch (err) {
-        state.validationTypes = state.validationTypes.map(item =>
-          item.id === state.editingItem.id ? { ...item, cost: val } : item
-        );
-        renderChips();
-        closeAdminModal();
-        alert(`${state.editingItem.name} price set to ₦${val.toLocaleString()}`);
+        alert("Verification Failed: " + (err.message || "Server communication failure."));
       } finally {
-        btn.disabled = false;
+        submitBtn.innerText = "Confirm & Authorize";
+        submitBtn.disabled = false;
       }
     }
+
+    // NUNA SAKAMAKON SLIP DA HOTON MUTUM
+    function renderSlipProfile() {
+      document.getElementById("viewEntryForm").style.display = "none";
+      document.getElementById("viewResultProfile").style.display = "block";
+
+      const fullName = verifiedUserData?.fullName || verifiedUserData?.name ||
+        `${verifiedUserData?.first_name || verifiedUserData?.firstName || ""} ${verifiedUserData?.middle_name || verifiedUserData?.middleName || ""} ${verifiedUserData?.last_name || verifiedUserData?.surname || ""}`.replace(/\s+/g, ' ').trim() || "Verified Citizen";
+
+      const resolvedNin = String(verifiedUserData?.nin || verifiedUserData?.ninNumber || document.getElementById("searchInputValue").value || "N/A").trim();
+
+      const photo = verifiedUserData?.photo || verifiedUserData?.image;
+      const photoEl = document.getElementById("resUserPhoto");
+      const placeHolderEl = document.getElementById("resPhotoPlaceholder");
+
+      if (photo) {
+        photoEl.src = String(photo).startsWith("data:image") ? photo : `data:image/jpeg;base64,${photo}`;
+        photoEl.style.display = "block";
+        placeHolderEl.style.display = "none";
+      } else {
+        photoEl.style.display = "none";
+        placeHolderEl.style.display = "flex";
+      }
+
+      const rows = [
+        { label: "Full Legal Name", value: fullName },
+        { label: "National Identity Number (NIN)", value: resolvedNin, copyable: true },
+        { label: "Phone Number", value: verifiedUserData?.phone || verifiedUserData?.telephoneno || verifiedUserData?.phone_number || "N/A" },
+        { label: "Date of Birth", value: verifiedUserData?.dob || verifiedUserData?.birthdate || verifiedUserData?.date_of_birth || "N/A" },
+        { label: "Gender", value: (verifiedUserData?.gender || "N/A").toUpperCase() },
+        { label: "Residential Address", value: verifiedUserData?.address || "N/A" }
+      ];
+
+      document.getElementById("resDetailsList").innerHTML = rows.map(r => `
+        <div class="result-row-container">
+          <div style="flex:1;">
+            <div class="result-label">${r.label}</div>
+            <div class="result-value">${r.value}</div>
+          </div>
+          ${r.copyable && r.value !== "N/A" ? `
+            <button class="copy-small-btn" onclick="copyValue('${r.value}', '${r.label}')">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          ` : ''}
+        </div>
+      `).join("");
+    }
+
+    function copyValue(text, label) {
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      alert(`${label || "Value"} copied to clipboard.`);
+    }
+
+    // SAUKE AINIHIN TAKARDAR PDF DAGA ABJIKTECH KAI-TSAYE
+    function handleDownloadPDF() {
+      if (returnedBase64Pdf) {
+        try {
+          let base64String = returnedBase64Pdf;
+          if (base64String.startsWith('data:application/pdf;base64,')) {
+            base64String = base64String.replace('data:application/pdf;base64,', '');
+          }
+
+          const byteCharacters = atob(base64String);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = `NIN_Slip_${verifiedUserData?.nin || Date.now()}.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          return;
+        } catch (e) {
+          console.warn("Base64 decoding failed, checking URL:", e);
+        }
+      }
+
+      const directPdfUrl = verifiedUserData?.slipUrl || verifiedUserData?.pdfUrl || verifiedUserData?.url;
+      if (directPdfUrl && directPdfUrl.startsWith("http")) {
+        window.open(directPdfUrl, "_blank");
+      } else {
+        window.print();
+      }
+    }
+
+    // Bootstrap
+    checkUserRole();
+    fetchLivePrices();
   </script>
 </body>
 </html>
