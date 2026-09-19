@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>BVN Verification | Ayax Xpress</title>
+  <title>BVN Verification & Slip Printing | Ayax Xpress</title>
 
   <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,314 +13,262 @@
 
   <style>
     :root {
-      --bg-dark: #050811;
-      --card-bg: #0b1120;
-      --border-dark: #1e293b;
+      --primary-navy: #0a1d37;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #16a34a;
       --accent-red: #dc2626;
-      --accent-red-hover: #b91c1c;
-      --accent-cyan: #00f0ff;
-      --accent-green: #10b981;
-      --text-white: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-label: #cbd5e1;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
     }
+
+    * { box-sizing: border-box; text-decoration: none !important; }
 
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       min-height: 100%;
-      background-color: var(--bg-dark);
-      color: var(--text-white);
+      background-color: var(--bg-light);
+      color: var(--text-dark);
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow-x: hidden;
       overflow-y: auto !important;
       -webkit-overflow-scrolling: touch;
     }
 
-    * { box-sizing: border-box; }
-
-    /* Header Bar */
-    .header-bar {
+    .top-header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 18px 14px 18px;
-      max-width: 580px;
+      padding: 20px 18px 14px 18px;
+      max-width: 600px;
       margin: 0 auto;
-      border-bottom: 1px solid var(--border-dark);
     }
 
     .back-btn {
       width: 40px;
       height: 40px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
       display: flex;
-      align-items: center;
       justify-content: center;
-      color: var(--text-white);
-      text-decoration: none;
-      font-size: 18px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-dark);
+      align-items: center;
+      color: var(--primary-navy);
+      font-size: 16px;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
+    .back-btn:hover { background: #f1f5f9; }
 
-    .header-title {
+    .screen-main-title {
       font-size: 17px;
       font-weight: 900;
-      color: var(--text-white);
+      color: var(--primary-navy);
       margin: 0;
     }
 
-    /* Container */
     .container {
-      max-width: 580px;
+      max-width: 600px;
       margin: 0 auto;
-      padding: 16px 16px 60px 16px;
-    }
-
-    .page-sub {
-      color: var(--text-muted);
-      font-size: 12px;
-      line-height: 1.6;
-      margin: 0 0 18px 0;
+      padding: 0 16px 80px 16px;
     }
 
     .card {
       background: var(--card-bg);
-      padding: 20px;
-      border-radius: 18px;
-      border: 1px solid var(--border-dark);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     }
 
-    .section-label {
-      color: var(--text-label);
-      font-size: 12px;
+    .card-title {
+      font-size: 13px;
       font-weight: 800;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    /* Tier Selector Cards */
-    .tier-container {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 22px;
-    }
-
-    .tier-box {
-      background: var(--bg-dark);
-      border: 1.5px solid var(--border-dark);
-      padding: 16px;
-      border-radius: 14px;
-      cursor: pointer;
+      color: var(--primary-navy);
+      margin: 0 0 12px 0;
       display: flex;
       align-items: center;
+      gap: 6px;
+    }
+
+    .slip-tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .tier-card {
+      border: 1.5px solid var(--border-light);
+      border-radius: 12px;
+      padding: 12px;
+      background: #f8fafc;
+      cursor: pointer;
       transition: all 0.2s;
     }
 
-    .tier-box.active {
-      border-color: var(--accent-cyan);
-      background: rgba(0, 240, 255, 0.05);
+    .tier-card.selected {
+      border-color: var(--accent-blue);
+      background: #f0f9ff;
     }
 
-    .tier-radio {
-      font-size: 20px;
-      color: var(--text-muted);
-      margin-right: 12px;
-      transition: color 0.2s;
-    }
-
-    .tier-box.active .tier-radio {
-      color: var(--accent-cyan);
-    }
-
-    .tier-title {
-      color: var(--text-muted);
-      font-size: 14px;
+    .tier-name {
+      font-size: 13px;
       font-weight: 800;
-      margin: 0;
+      color: var(--text-dark);
+      margin: 0 0 4px 0;
     }
 
-    .tier-box.active .tier-title {
-      color: #ffffff;
+    .tier-desc {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin: 0 0 8px 0;
+      line-height: 1.4;
     }
 
     .tier-price {
-      color: var(--accent-red);
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 900;
-      margin: 2px 0 0 0;
+      color: var(--accent-blue);
     }
 
-    /* Text Input */
+    .field-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+      margin-bottom: 8px;
+      display: block;
+    }
+
     .text-input {
       width: 100%;
-      background: var(--bg-dark);
-      padding: 0 14px;
-      height: 52px;
+      height: 50px;
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
       border-radius: 12px;
-      border: 1px solid var(--border-dark);
+      padding: 0 14px;
       font-size: 16px;
-      color: #ffffff;
-      font-weight: bold;
+      font-weight: 700;
+      color: var(--text-dark);
       outline: none;
-      margin-bottom: 20px;
       transition: border-color 0.2s;
+      letter-spacing: 1px;
     }
 
     .text-input:focus {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
+      border-color: var(--primary-navy);
+      background: #ffffff;
     }
 
-    .text-input::placeholder {
-      color: #64748b;
-      font-weight: normal;
-    }
-
-    /* Gradient Action Button */
-    .action-btn {
+    .submit-btn {
       width: 100%;
       height: 52px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+      border-radius: 14px;
+      background: var(--primary-navy);
       color: #ffffff;
+      border: none;
+      font-size: 13px;
       font-weight: 900;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
-      transition: all 0.2s;
-    }
-
-    .action-btn:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
-    }
-
-    /* View 2: Result Component */
-    .result-card {
-      background: var(--card-bg);
-      padding: 28px 20px;
-      border-radius: 20px;
-      border: 1px solid var(--border-dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .success-icon-circle {
-      width: 80px;
-      height: 80px;
-      border-radius: 40px;
-      background: rgba(16, 185, 129, 0.12);
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-top: 14px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(10, 29, 55, 0.25);
+    }
+
+    .submit-btn:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Result Preview Container */
+    .result-container {
+      display: none;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px 18px;
+      border: 1px solid #bbf7d0;
+      margin-top: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       color: var(--accent-green);
-      font-size: 44px;
+      font-size: 14.5px;
+      font-weight: 900;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .profile-photo-wrap {
+      text-align: center;
       margin-bottom: 16px;
     }
 
-    .result-title {
-      color: var(--text-white);
-      font-size: 18px;
-      font-weight: 900;
-      margin: 0;
-    }
-
-    .result-sub {
-      color: var(--text-muted);
-      font-size: 12px;
-      margin: 6px 0 0 0;
-      line-height: 1.6;
-    }
-
-    .info-box {
-      width: 100%;
-      background: var(--bg-dark);
+    .profile-photo-img {
+      width: 105px;
+      height: 125px;
       border-radius: 12px;
-      border: 1px solid var(--border-dark);
-      padding: 14px;
-      margin: 20px 0;
+      object-fit: cover;
+      border: 2px solid var(--accent-blue);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+      display: inline-block;
+      background: #f1f5f9;
     }
 
-    .info-row {
+    .detail-row {
       display: flex;
       justify-content: space-between;
-      margin: 6px 0;
-      font-size: 13px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f8fafc;
+      font-size: 12.5px;
     }
 
-    .info-label {
-      color: var(--text-muted);
-      font-weight: 600;
-    }
+    .detail-label { color: var(--text-muted); font-weight: 600; }
+    .detail-value { font-weight: 800; color: var(--text-dark); text-align: right; max-width: 65%; }
 
-    .info-value {
-      color: var(--text-white);
-      font-weight: bold;
-    }
-
-    .download-big-btn {
+    .download-btn {
       width: 100%;
-      background: var(--accent-red);
+      height: 48px;
+      border-radius: 12px;
+      background: var(--accent-green);
       color: #ffffff;
       border: none;
-      height: 52px;
-      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 900;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
-      font-weight: 900;
-      font-size: 13px;
-      letter-spacing: 0.5px;
       cursor: pointer;
+      margin-top: 18px;
       transition: all 0.2s;
     }
 
-    .download-big-btn:hover {
-      background: var(--accent-red-hover);
-    }
+    .download-btn:hover { background: #15803d; }
 
-    .download-big-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    .new-search-btn {
-      margin-top: 16px;
-      background: none;
-      border: none;
-      color: var(--accent-cyan);
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      padding: 8px;
-    }
-
-    /* Modal Styles */
+    /* PIN Modal */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.75);
       z-index: 1000;
       justify-content: center;
       align-items: center;
@@ -331,207 +279,151 @@
     .modal-content {
       width: 100%;
       max-width: 320px;
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 24px;
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 22px;
       text-align: center;
-      border: 1px solid var(--border-dark);
-      animation: modalSlide 0.25s ease-out;
-    }
-
-    @keyframes modalSlide {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-icon {
-      font-size: 36px;
-      color: var(--accent-cyan);
-      margin-bottom: 10px;
-    }
-
-    .modal-title {
-      color: var(--text-white);
-      font-size: 16px;
-      font-weight: 900;
-      margin: 0;
-    }
-
-    .modal-subtitle {
-      color: var(--text-muted);
-      font-size: 11px;
-      margin: 8px 0;
-      line-height: 1.4;
+      border: 1px solid var(--border-light);
     }
 
     .modal-pin-input {
       width: 100%;
       height: 50px;
-      background: var(--bg-dark);
-      border: 1px solid var(--border-dark);
+      background: #f8fafc;
+      border: 1px solid var(--border-input);
       border-radius: 12px;
       text-align: center;
-      font-size: 24px;
+      font-size: 22px;
       letter-spacing: 8px;
-      color: #ffffff;
       font-weight: bold;
+      color: var(--text-dark);
       margin: 14px 0;
       outline: none;
-    }
-
-    .modal-pin-input:focus {
-      border-color: var(--accent-cyan);
     }
 
     .modal-submit-btn {
       width: 100%;
       height: 46px;
-      background: var(--accent-red);
+      background: var(--primary-navy);
       color: #ffffff;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 13px;
-      font-weight: bold;
+      font-weight: 800;
       cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-
-    .modal-submit-btn:hover {
-      background: var(--accent-red-hover);
-    }
-
-    .modal-submit-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
     }
 
     .modal-cancel-btn {
       background: none;
       border: none;
       color: var(--accent-red);
-      font-weight: bold;
-      font-size: 13px;
+      font-weight: 700;
+      font-size: 12px;
       cursor: pointer;
-      margin-top: 14px;
+      margin-top: 12px;
     }
   </style>
 </head>
 <body>
 
-  <!-- VIEW 1: SELECTION & VERIFY FORM -->
-  <div id="viewMain">
-    <header class="header-bar">
-      <a href="javascript:history.back()" class="back-btn" title="Go Back">
-        <i class="fa-solid fa-arrow-left"></i>
-      </a>
-      <h1 class="header-title">BVN Verification</h1>
-      <div style="width: 40px;"></div>
-    </header>
+  <header class="top-header-row">
+    <a href="javascript:history.back()" class="back-btn" title="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="screen-main-title">BVN Verification Desk</h1>
+    <div style="width: 40px;"></div>
+  </header>
 
-    <main class="container">
-      <p class="page-sub">
-        Verify a Bank Verification Number (BVN) using your preferred method. Enter the required details and your transaction PIN.
-      </p>
+  <main class="container">
 
-      <section class="card">
-        <label class="section-label">Select Slip Type</label>
-
-        <div class="tier-container">
-          <!-- Full Details Slip -->
-          <div class="tier-box active" id="tierFull" onclick="selectTier('bvn_full_details')">
-            <i class="fa-solid fa-circle-dot tier-radio" id="radioFull"></i>
-            <div>
-              <h2 class="tier-title">Full Details Slip</h2>
-              <p class="tier-price" id="priceFull">NGN 150</p>
-            </div>
-          </div>
-
-          <!-- Premium Slip -->
-          <div class="tier-box" id="tierPremium" onclick="selectTier('bvn_premium')">
-            <i class="fa-regular fa-circle tier-radio" id="radioPremium"></i>
-            <div>
-              <h2 class="tier-title">Premium Slip</h2>
-              <p class="tier-price" id="pricePremium">NGN 150</p>
-            </div>
-          </div>
+    <!-- Step 1: Select Tier -->
+    <section class="card">
+      <h2 class="card-title"><i class="fa-solid fa-id-card-clip"></i> Select Verification Slip Tier</h2>
+      
+      <div class="slip-tiers-grid">
+        <div class="tier-card selected" id="tierStandard" onclick="selectBvnTier('bvn_full_details', 150, 'Standard Full Details')">
+          <div class="tier-name">Standard Slip</div>
+          <div class="tier-desc">Complete banking details & address layout</div>
+          <div class="tier-price">₦150</div>
         </div>
 
-        <label class="section-label" for="bvnNumberInput">BVN Number</label>
-        <input
-          type="text"
-          id="bvnNumberInput"
-          class="text-input"
-          placeholder="Enter 11-digit BVN"
-          maxlength="11"
-          inputmode="numeric"
-        />
-
-        <button type="button" class="action-btn" id="btnInitiate" onclick="handleInitiate()">
-          <i class="fa-solid fa-circle-check"></i>
-          <span id="btnInitiateText">Verify BVN (NGN 150)</span>
-        </button>
-      </section>
-    </main>
-  </div>
-
-  <!-- VIEW 2: SUCCESS & DIRECT DOWNLOAD SCREEN -->
-  <div id="viewResult" style="display: none;">
-    <header class="header-bar">
-      <button class="back-btn" onclick="resetToMainView()" title="Close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <h1 class="header-title">Official BVN Document</h1>
-      <div style="width: 40px;"></div>
-    </header>
-
-    <main class="container">
-      <div class="result-card">
-        <div class="success-icon-circle">
-          <i class="fa-solid fa-circle-check"></i>
+        <div class="tier-card" id="tierPremium" onclick="selectBvnTier('bvn_premium', 150, 'Premium Card Slip')">
+          <div class="tier-name">Premium Slip</div>
+          <div class="tier-desc">Compact ID card portrait orientation</div>
+          <div class="tier-price">₦150</div>
         </div>
-
-        <h2 class="result-title">Verification Successful!</h2>
-        <p class="result-sub">
-          Your official government-standard BVN slip has been generated and is ready for immediate download.
-        </p>
-
-        <div class="info-box">
-          <div class="info-row">
-            <span class="info-label">BVN Number</span>
-            <span class="info-value" id="resultBvnVal">00000000000</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Document Tier</span>
-            <span class="info-value" id="resultTierVal">Full Details Slip</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Status</span>
-            <span class="info-value" style="color: var(--accent-green);">Verified & Available</span>
-          </div>
-        </div>
-
-        <button type="button" class="download-big-btn" id="btnDownloadSlip" onclick="downloadSlipFile()">
-          <i class="fa-solid fa-download"></i>
-          <span id="btnDownloadText">DOWNLOAD OFFICIAL SLIP (PDF)</span>
-        </button>
-
-        <button type="button" class="new-search-btn" onclick="resetToMainView()">
-          Perform New Verification
-        </button>
       </div>
-    </main>
-  </div>
 
-  <!-- Transaction PIN Modal -->
+      <label class="field-label" for="bvnIdentifier">Bank Verification Number (11 Digits)</label>
+      <input
+        type="text"
+        id="bvnIdentifier"
+        class="text-input"
+        placeholder="Enter 11-digit BVN"
+        maxlength="11"
+        inputmode="numeric"
+        oninput="validateBvnForm()"
+      />
+
+      <button type="button" class="submit-btn" id="btnInitiate" onclick="openPinModal()" disabled>
+        PROCEED TO VERIFY (₦150)
+      </button>
+    </section>
+
+    <!-- Result / Download Card -->
+    <section class="result-container" id="resultCard">
+      <div class="result-header">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>BVN Slip Successfully Generated!</span>
+      </div>
+
+      <!-- User Portrait Photo -->
+      <div class="profile-photo-wrap" id="photoContainer" style="display: none;">
+        <img id="resPhoto" src="" alt="Citizen Portrait" class="profile-photo-img" />
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Full Name:</span>
+        <span class="detail-value" id="resFullName">Account Holder</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">BVN Number:</span>
+        <span class="detail-value" id="resBvn">00000000000</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Linked NIN:</span>
+        <span class="detail-value" id="resNin">N/A</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Phone Number:</span>
+        <span class="detail-value" id="resPhone">N/A</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Date of Birth:</span>
+        <span class="detail-value" id="resDob">N/A</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Gender:</span>
+        <span class="detail-value" id="resGender">N/A</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Enrollment Bank:</span>
+        <span class="detail-value" id="resBank">N/A</span>
+      </div>
+
+      <button type="button" class="download-btn" id="btnDownloadSlip" onclick="downloadBase64Pdf()">
+        <i class="fa-solid fa-file-arrow-down"></i> DOWNLOAD PDF SLIP
+      </button>
+    </section>
+
+  </main>
+
+  <!-- PIN Modal -->
   <div class="modal-overlay" id="pinModal">
     <div class="modal-content">
-      <i class="fa-solid fa-shield-halved modal-icon"></i>
-      <h2 class="modal-title">Transaction PIN</h2>
-      <p class="modal-subtitle" id="modalSubtitle">Authorize NGN 150 for Full Details Slip</p>
+      <i class="fa-solid fa-shield-halved" style="font-size: 32px; color: var(--primary-navy);"></i>
+      <h2 style="font-size: 16px; font-weight: 900; margin: 8px 0 4px 0;">Enter Security PIN</h2>
+      <p style="font-size: 11.5px; color: var(--text-muted); margin: 0;" id="pinModalSub">Authorize slip generation</p>
 
       <input
         type="password"
@@ -542,8 +434,8 @@
         inputmode="numeric"
       />
 
-      <button type="button" class="modal-submit-btn" id="btnConfirmVerify" onclick="handleVerifyBVN()">
-        Authorize & Generate
+      <button type="button" class="modal-submit-btn" id="btnConfirmPay" onclick="executeBvnVerification()">
+        Confirm & Generate
       </button>
 
       <button type="button" class="modal-cancel-btn" onclick="closePinModal()">
@@ -552,7 +444,6 @@
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="js/config.js"></script>
   <script>
     const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
@@ -561,72 +452,39 @@
 
     let state = {
       token: localStorage.getItem('userToken') || localStorage.getItem('token') || '',
-      selectedTier: 'bvn_full_details',
-      prices: { bvn_full_details: 150, bvn_premium: 150 },
-      slipResult: null
+      tier: 'bvn_full_details',
+      tierName: 'Standard Full Details',
+      cost: 150,
+      generatedPdfBase64: null,
+      generatedFileName: 'BVN_Slip.pdf'
     };
 
-    window.addEventListener('DOMContentLoaded', () => {
-      fetchPrices();
-    });
+    function selectBvnTier(tierKey, cost, name) {
+      state.tier = tierKey;
+      state.cost = cost;
+      state.tierName = name;
 
-    async function fetchPrices() {
-      try {
-        const res = await fetch(`${BASE_URL}/bvn/prices`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.prices) {
-            state.prices = { ...state.prices, ...data.prices };
-            updatePricingDisplay();
-          }
-        }
-      } catch (_) {}
+      document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+      
+      if (tierKey === 'bvn_full_details') document.getElementById('tierStandard').classList.add('selected');
+      if (tierKey === 'bvn_premium') document.getElementById('tierPremium').classList.add('selected');
+
+      document.getElementById('btnInitiate').textContent = `PROCEED TO VERIFY (₦${cost.toLocaleString()})`;
     }
 
-    function updatePricingDisplay() {
-      document.getElementById('priceFull').textContent = `NGN ${state.prices.bvn_full_details || 150}`;
-      document.getElementById('pricePremium').textContent = `NGN ${state.prices.bvn_premium || 150}`;
-      updateInitiateBtnText();
+    function validateBvnForm() {
+      const val = document.getElementById('bvnIdentifier').value.trim();
+      document.getElementById('btnInitiate').disabled = val.length !== 11;
     }
 
-    function selectTier(tier) {
-      state.selectedTier = tier;
-      const boxFull = document.getElementById('tierFull');
-      const boxPrem = document.getElementById('tierPremium');
-      const radFull = document.getElementById('radioFull');
-      const radPrem = document.getElementById('radioPremium');
-
-      if (tier === 'bvn_full_details') {
-        boxFull.classList.add('active');
-        boxPrem.classList.remove('active');
-        radFull.className = 'fa-solid fa-circle-dot tier-radio';
-        radPrem.className = 'fa-regular fa-circle tier-radio';
-      } else {
-        boxPrem.classList.add('active');
-        boxFull.classList.remove('active');
-        radPrem.className = 'fa-solid fa-circle-dot tier-radio';
-        radFull.className = 'fa-regular fa-circle tier-radio';
-      }
-
-      updateInitiateBtnText();
-    }
-
-    function updateInitiateBtnText() {
-      const activeCost = state.prices[state.selectedTier] || 150;
-      document.getElementById('btnInitiateText').textContent = `Verify BVN (NGN ${activeCost})`;
-    }
-
-    function handleInitiate() {
-      const bvn = document.getElementById('bvnNumberInput').value.replace(/\D/g, '');
-      if (!bvn || bvn.length !== 11) {
-        alert("Invalid BVN: Please enter a valid 11-digit Bank Verification Number.");
+    function openPinModal() {
+      const val = document.getElementById('bvnIdentifier').value.trim();
+      if (val.length !== 11) {
+        alert("Please enter a valid 11-digit BVN.");
         return;
       }
 
-      const activeCost = state.prices[state.selectedTier] || 150;
-      const tierName = state.selectedTier === 'bvn_premium' ? 'Premium Slip' : 'Full Details Slip';
-      document.getElementById('modalSubtitle').textContent = `Authorize NGN ${activeCost} for ${tierName}`;
-
+      document.getElementById('pinModalSub').textContent = `Authorize ₦${state.cost.toLocaleString()} for ${state.tierName}`;
       document.getElementById('pinInput').value = '';
       document.getElementById('pinModal').style.display = 'flex';
       setTimeout(() => document.getElementById('pinInput').focus(), 100);
@@ -637,127 +495,117 @@
       document.getElementById('pinInput').value = '';
     }
 
-    async function handleVerifyBVN() {
+    async function executeBvnVerification() {
       const pin = document.getElementById('pinInput').value.trim();
-      const bvn = document.getElementById('bvnNumberInput').value.replace(/\D/g, '').trim();
+      const bvn = document.getElementById('bvnIdentifier').value.trim();
 
-      if (!pin || pin.length < 4) {
-        alert("Security PIN: Please enter your 4-digit Transaction PIN.");
+      if (pin.length !== 4) {
+        alert("Please enter your 4-digit Transaction PIN.");
         return;
       }
 
       if (!state.token) {
-        closePinModal();
-        alert("Session Expired: Please login again.");
-        window.location.href = 'index.html';
+        alert("Session expired. Please log in again.");
+        window.location.href = "index.html";
         return;
       }
 
-      const btn = document.getElementById('btnConfirmVerify');
+      const btn = document.getElementById('btnConfirmPay');
       const originalText = btn.innerHTML;
 
       try {
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
 
-        const activeCost = state.prices[state.selectedTier] || 150;
+        const requestBody = {
+          bvn: bvn,
+          bvnNumber: bvn,
+          serviceType: state.tier,
+          serviceId: state.tier,
+          amount: state.cost,
+          pin: pin,
+          transactionPin: pin
+        };
 
-        const response = await fetch(`${BASE_URL}/bvn/verify-and-generate`, {
+        const response = await fetch(`${BASE_URL}/bvn/verify`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${state.token}`
           },
-          body: JSON.stringify({
-            bvn: bvn,
-            bvnNumber: bvn,
-            serviceType: state.selectedTier,
-            amount: activeCost,
-            pin: pin
-          })
+          body: JSON.stringify(requestBody)
         });
 
-        const result = await response.json();
+        const resData = await response.json();
 
-        const isOk =
-          result.success === true ||
-          result.status === 'success' ||
-          String(result.message || '').toLowerCase().includes('pdf generated') ||
-          String(result.message || '').toLowerCase().includes('successful');
-
-        const base64Content = result.pdf_base64 || result.pdfBase64 || result.data?.pdf_base64;
-
-        if (isOk && base64Content) {
+        if (response.ok && (resData.success || resData.status === 'success')) {
           closePinModal();
+          
+          const details = resData.data || resData.userData || {};
+          
+          document.getElementById('resFullName').textContent = details.fullName || details.name || "Account Holder";
+          document.getElementById('resBvn').textContent = details.bvn || bvn;
+          document.getElementById('resNin').textContent = details.nin || "N/A";
+          document.getElementById('resPhone').textContent = details.phone || details.telephoneno || "N/A";
+          document.getElementById('resDob').textContent = details.dob || details.date_of_birth || "N/A";
+          document.getElementById('resGender').textContent = details.gender || "N/A";
+          document.getElementById('resBank').textContent = details.enrollmentBank || details.bank || "N/A";
 
-          state.slipResult = {
-            bvn: bvn,
-            slipType: state.selectedTier === 'bvn_premium' ? 'Premium Slip' : 'Full Details Slip',
-            base64: base64Content,
-            userData: result.userData || null
-          };
+          const photoWrap = document.getElementById('photoContainer');
+          const photoImg = document.getElementById('resPhoto');
+          if (details.photo) {
+            photoImg.src = details.photo;
+            photoWrap.style.display = 'block';
+          } else {
+            photoWrap.style.display = 'none';
+          }
 
-          showResultView();
+          state.generatedPdfBase64 = resData.pdf_base64 || details.pdf_base64 || null;
+          state.generatedFileName = `BVN_Slip_${bvn}.pdf`;
+
+          document.getElementById('resultCard').style.display = 'block';
+          alert("BVN Verification Completed Successfully 🎉! You can now view details and download your slip.");
         } else {
-          throw new Error(result.message || "Failed to generate BVN slip.");
+          throw new Error(resData.message || "Failed to generate BVN verification slip.");
         }
       } catch (err) {
-        alert("Verification Notice: " + (err.message || "Service request timed out."));
+        alert("BVN Verification Error: " + (err.message || "Gateway communication failure."));
       } finally {
         btn.disabled = false;
         btn.innerHTML = originalText;
       }
     }
 
-    function showResultView() {
-      document.getElementById('resultBvnVal').textContent = state.slipResult.bvn;
-      document.getElementById('resultTierVal').textContent = state.slipResult.slipType;
-
-      document.getElementById('viewMain').style.display = 'none';
-      document.getElementById('viewResult').style.display = 'block';
-      window.scrollTo(0, 0);
-    }
-
-    function resetToMainView() {
-      document.getElementById('bvnNumberInput').value = '';
-      state.slipResult = null;
-      document.getElementById('viewResult').style.display = 'none';
-      document.getElementById('viewMain').style.display = 'block';
-      window.scrollTo(0, 0);
-    }
-
-    function downloadSlipFile() {
-      if (!state.slipResult?.base64) {
-        alert("Notice: Document data is missing.");
+    function downloadBase64Pdf() {
+      if (!state.generatedPdfBase64) {
+        alert("No PDF document was returned. Please check your transaction history.");
         return;
       }
 
-      const btn = document.getElementById('btnDownloadSlip');
-      const originalText = btn.innerHTML;
-
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> DOWNLOADING SLIP...';
-
       try {
-        const fileName = `BVN_Slip_${state.slipResult?.bvn || "DOCUMENT"}.pdf`;
-        const linkSource = `data:application/pdf;base64,${state.slipResult.base64}`;
-        const downloadLink = document.createElement("a");
-        downloadLink.href = linkSource;
-        downloadLink.download = fileName;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-      } catch (err) {
-        alert("Download Notice: Could not trigger download: " + err.message);
-      } finally {
-        setTimeout(() => {
-          btn.disabled = false;
-          btn.innerHTML = originalText;
-        }, 1000);
+        let base64String = state.generatedPdfBase64;
+        if (base64String.startsWith('data:application/pdf;base64,')) {
+          base64String = base64String.replace('data:application/pdf;base64,', '');
+        }
+
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = state.generatedFileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e) {
+        alert("Download failed: " + e.message);
       }
     }
   </script>
-  <script src="js/config.js"></script>
-  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>
