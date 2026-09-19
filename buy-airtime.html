@@ -524,8 +524,22 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
 
+        // Taswirar lambar Al-Ihsan da kuma babban sunan cibiyar sadarwa
+        const netMap = {
+          "MTN": "1",
+          "AIRTEL": "2",
+          "9MOBILE": "3",
+          "GLO": "4"
+        };
+
+        const chosenNetName = String(selectedNetwork || "MTN").toUpperCase().trim();
+        const chosenNetId = netMap[chosenNetName] || "1";
+
         const requestPayload = {
-          network: selectedNetwork,
+          network: chosenNetName,         // "MTN", "AIRTEL", "GLO", "9MOBILE"
+          networkId: chosenNetId,         // "1", "2", "3", "4"
+          plan_type: "VTU",
+          airtime_type: "VTU",
           phone: phone,
           phoneNumber: phone,
           phoneNo: phone,
@@ -534,8 +548,8 @@
           pin: pin
         };
 
-        // Gwada /airtime/buy sannan fallback zuwa /vtu/buy-airtime
-        let response = await fetch(`${BASE_URL}/airtime/buy`, {
+        // Kira direct airtime desk kadai (Babu kiran /vtu/ domin gujewa data gateway)
+        const response = await fetch(`${BASE_URL}/airtime/buy`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -543,17 +557,6 @@
           },
           body: JSON.stringify(requestPayload)
         });
-
-        if (response.status === 404) {
-          response = await fetch(`${BASE_URL}/vtu/buy-airtime`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestPayload)
-          });
-        }
 
         const result = await response.json();
 
