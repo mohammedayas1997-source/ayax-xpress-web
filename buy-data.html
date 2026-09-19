@@ -41,7 +41,6 @@
 
     * { box-sizing: border-box; }
 
-    /* Top Command Header */
     .header-bar {
       display: flex;
       justify-content: space-between;
@@ -80,7 +79,6 @@
       letter-spacing: 0.3px;
     }
 
-    /* Container */
     .container {
       max-width: 600px;
       margin: 0 auto;
@@ -96,7 +94,6 @@
       display: block;
     }
 
-    /* Network Grid */
     .network-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -123,7 +120,6 @@
       box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
     }
 
-    /* Type Selector Chips */
     .type-chip-row {
       display: flex;
       gap: 8px;
@@ -153,7 +149,6 @@
       color: #ffffff;
     }
 
-    /* Inputs */
     .input-field {
       width: 100%;
       height: 50px;
@@ -178,7 +173,6 @@
       font-weight: normal;
     }
 
-    /* Dropdown Toggle */
     .dropdown-btn {
       width: 100%;
       display: flex;
@@ -211,7 +205,6 @@
       margin: 3px 0 0 0;
     }
 
-    /* Plans Container Dropdown Menu */
     .plans-container {
       display: none;
       background: #070c18;
@@ -287,7 +280,6 @@
       margin-top: 2px;
     }
 
-    /* Empty Box */
     .empty-card {
       background: var(--card-bg);
       padding: 24px;
@@ -298,7 +290,6 @@
       font-size: 12px;
     }
 
-    /* Purchase Action Button */
     .submit-btn {
       width: 100%;
       height: 52px;
@@ -326,7 +317,6 @@
       transform: none;
     }
 
-    /* Feedback Banner */
     .status-banner {
       display: none;
       padding: 12px 14px;
@@ -347,7 +337,6 @@
       color: #f87171;
     }
 
-    /* Transaction PIN Modal */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -456,7 +445,6 @@
 </head>
 <body>
 
-  <!-- Header Bar -->
   <header class="header-bar">
     <a href="javascript:history.back()" class="back-btn" title="Back">
       <i class="fa-solid fa-arrow-left"></i>
@@ -465,10 +453,7 @@
     <div style="width: 24px;"></div>
   </header>
 
-  <!-- Main Container -->
   <main class="container">
-
-    <!-- 1. Network Selection -->
     <span class="section-label">SELECT NETWORK</span>
     <div class="network-grid">
       <div class="network-btn active" onclick="setNetwork('MTN', this)">MTN</div>
@@ -477,7 +462,6 @@
       <div class="network-btn" onclick="setNetwork('9MOBILE', this)">9MOBILE</div>
     </div>
 
-    <!-- 2. Plan Type Chips (Enhanced with exact Al-Ihsan Categories) -->
     <span class="section-label">PLAN TYPE</span>
     <div class="type-chip-row" id="typeChipRow">
       <div class="type-chip active" onclick="setPlanType('ALL', this)">ALL</div>
@@ -490,7 +474,6 @@
       <div class="type-chip" onclick="setPlanType('DATASHARE', this)">DATASHARE</div>
     </div>
 
-    <!-- 3. Recipient Phone Number -->
     <span class="section-label">RECIPIENT PHONE NUMBER</span>
     <input
       type="tel"
@@ -502,7 +485,6 @@
       oninput="updateSubmitButton()"
     />
 
-    <!-- 4. Data Bundle Dropdown Package -->
     <span class="section-label">DATA BUNDLE PACKAGE</span>
     <button type="button" class="dropdown-btn" id="dropdownBtn" onclick="toggleDropdown()">
       <div style="display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden;">
@@ -515,22 +497,15 @@
       <i class="fa-solid fa-chevron-down" id="dropdownChevron" style="color: var(--text-muted); font-size: 14px;"></i>
     </button>
 
-    <!-- Dropdown List Container -->
-    <div class="plans-container" id="plansContainer">
-      <!-- Injected via JavaScript -->
-    </div>
+    <div class="plans-container" id="plansContainer"></div>
 
-    <!-- Submit Purchase Button -->
     <button type="button" class="submit-btn" id="btnSubmitPurchase" onclick="handleInitiatePurchase()" disabled>
       PURCHASE DATA (₦0)
     </button>
 
-    <!-- Feedback Banner -->
     <div id="statusBanner" class="status-banner"></div>
-
   </main>
 
-  <!-- PIN Authorization Modal -->
   <div class="modal-overlay" id="pinModal">
     <div class="modal-content">
       <i class="fa-solid fa-shield-halved modal-icon"></i>
@@ -556,7 +531,6 @@
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="js/config.js"></script>
   <script>
     const BASE_URL = (typeof CONFIG !== 'undefined' && CONFIG.BASE_URL)
@@ -565,84 +539,76 @@
 
     // Cikakken Database na dukkan Plan IDs na Al-Ihsan kai-tsaye
     const FALLBACK_ALIHSAN_PLANS = [
-      // ================= MTN DATA PLANS =================
-      // MTN DC (30 Days direct)
-      { network: "MTN", planId: "140", planCode: "140", name: "1.0GB DC", planType: "DC", validity: "30 Days", userPrice: 230, agentPrice: 210 },
-      { network: "MTN", planId: "133", planCode: "133", name: "1.5GB DC", planType: "DC", validity: "30 Days", userPrice: 340, agentPrice: 320 },
-      { network: "MTN", planId: "134", planCode: "134", name: "2.0GB DC", planType: "DC", validity: "30 Days", userPrice: 440, agentPrice: 415 },
-      { network: "MTN", planId: "135", planCode: "135", name: "3.0GB DC", planType: "DC", validity: "30 Days", userPrice: 650, agentPrice: 620 },
-      { network: "MTN", planId: "136", planCode: "136", name: "5.0GB DC", planType: "DC", validity: "30 Days", userPrice: 1050, agentPrice: 1000 },
-      { network: "MTN", planId: "141", planCode: "141", name: "750.0MB DC", planType: "DC", validity: "30 Days", userPrice: 190, agentPrice: 170 },
-      { network: "MTN", planId: "144", planCode: "144", name: "750MB DC (7D)", planType: "DC", validity: "7 Days", userPrice: 180, agentPrice: 160 },
-      { network: "MTN", planId: "145", planCode: "145", name: "1.0GB DC (7D)", planType: "DC", validity: "7 Days", userPrice: 290, agentPrice: 275 },
-      { network: "MTN", planId: "146", planCode: "146", name: "3.0GB DC (30D)", planType: "DC", validity: "30 Days", userPrice: 760, agentPrice: 730 },
+      // ================= MTN DATA PLANS (BA A TABA SU BA) =================
+      { network: "MTN", networkId: "1", planId: "140", planCode: "140", name: "1.0GB DC", planType: "DC", validity: "30 Days", userPrice: 230, agentPrice: 210 },
+      { network: "MTN", networkId: "1", planId: "133", planCode: "133", name: "1.5GB DC", planType: "DC", validity: "30 Days", userPrice: 340, agentPrice: 320 },
+      { network: "MTN", networkId: "1", planId: "134", planCode: "134", name: "2.0GB DC", planType: "DC", validity: "30 Days", userPrice: 440, agentPrice: 415 },
+      { network: "MTN", networkId: "1", planId: "135", planCode: "135", name: "3.0GB DC", planType: "DC", validity: "30 Days", userPrice: 650, agentPrice: 620 },
+      { network: "MTN", networkId: "1", planId: "136", planCode: "136", name: "5.0GB DC", planType: "DC", validity: "30 Days", userPrice: 1050, agentPrice: 1000 },
+      { network: "MTN", networkId: "1", planId: "141", planCode: "141", name: "750.0MB DC", planType: "DC", validity: "30 Days", userPrice: 190, agentPrice: 170 },
+      { network: "MTN", networkId: "1", planId: "144", planCode: "144", name: "750MB DC (7D)", planType: "DC", validity: "7 Days", userPrice: 180, agentPrice: 160 },
+      { network: "MTN", networkId: "1", planId: "145", planCode: "145", name: "1.0GB DC (7D)", planType: "DC", validity: "7 Days", userPrice: 290, agentPrice: 275 },
+      { network: "MTN", networkId: "1", planId: "146", planCode: "146", name: "3.0GB DC (30D)", planType: "DC", validity: "30 Days", userPrice: 760, agentPrice: 730 },
 
-      // MTN CG (Corporate Gifting)
-      { network: "MTN", planId: "26", planCode: "26", name: "500.0MB CG", planType: "CG", validity: "30 Days", userPrice: 350, agentPrice: 330 },
-      { network: "MTN", planId: "27", planCode: "27", name: "1.0GB CG", planType: "CG", validity: "30 Days", userPrice: 450, agentPrice: 425 },
-      { network: "MTN", planId: "28", planCode: "28", name: "2.0GB CG", planType: "CG", validity: "30 Days", userPrice: 900, agentPrice: 860 },
-      { network: "MTN", planId: "38", planCode: "38", name: "5.0GB CG", planType: "CG", validity: "30 Days", userPrice: 2100, agentPrice: 2000 },
-      { network: "MTN", planId: "64", planCode: "64", name: "10.0GB CG", planType: "CG", validity: "30 Days", userPrice: 4800, agentPrice: 4600 },
-      { network: "MTN", planId: "78", planCode: "78", name: "3.0GB CG", planType: "CG", validity: "30 Days", userPrice: 1350, agentPrice: 1300 },
-      { network: "MTN", planId: "83", planCode: "83", name: "2.0GB CG (2D)", planType: "CG", validity: "2 Days", userPrice: 870, agentPrice: 840 },
-      { network: "MTN", planId: "84", planCode: "84", name: "2.5GB CG (2D)", planType: "CG", validity: "2 Days", userPrice: 1050, agentPrice: 1000 },
+      { network: "MTN", networkId: "1", planId: "26", planCode: "26", name: "500.0MB CG", planType: "CG", validity: "30 Days", userPrice: 350, agentPrice: 330 },
+      { network: "MTN", networkId: "1", planId: "27", planCode: "27", name: "1.0GB CG", planType: "CG", validity: "30 Days", userPrice: 450, agentPrice: 425 },
+      { network: "MTN", networkId: "1", planId: "28", planCode: "28", name: "2.0GB CG", planType: "CG", validity: "30 Days", userPrice: 900, agentPrice: 860 },
+      { network: "MTN", networkId: "1", planId: "38", planCode: "38", name: "5.0GB CG", planType: "CG", validity: "30 Days", userPrice: 2100, agentPrice: 2000 },
+      { network: "MTN", networkId: "1", planId: "64", planCode: "64", name: "10.0GB CG", planType: "CG", validity: "30 Days", userPrice: 4800, agentPrice: 4600 },
+      { network: "MTN", networkId: "1", planId: "78", planCode: "78", name: "3.0GB CG", planType: "CG", validity: "30 Days", userPrice: 1350, agentPrice: 1300 },
+      { network: "MTN", networkId: "1", planId: "83", planCode: "83", name: "2.0GB CG (2D)", planType: "CG", validity: "2 Days", userPrice: 870, agentPrice: 840 },
+      { network: "MTN", networkId: "1", planId: "84", planCode: "84", name: "2.5GB CG (2D)", planType: "CG", validity: "2 Days", userPrice: 1050, agentPrice: 1000 },
 
-      // MTN SME & SME2
-      { network: "MTN", planId: "17", planCode: "17", name: "500.0MB SME", planType: "SME", validity: "1 Day", userPrice: 290, agentPrice: 270 },
-      { network: "MTN", planId: "112", planCode: "112", name: "1.0GB SME2", planType: "SME2", validity: "1 Day", userPrice: 270, agentPrice: 250 },
-      { network: "MTN", planId: "293", planCode: "293", name: "100MB SME", planType: "SME", validity: "1 Day", userPrice: 110, agentPrice: 95 },
-      { network: "MTN", planId: "294", planCode: "294", name: "200MB SME", planType: "SME", validity: "1 Day", userPrice: 180, agentPrice: 165 },
+      { network: "MTN", networkId: "1", planId: "17", planCode: "17", name: "500.0MB SME", planType: "SME", validity: "1 Day", userPrice: 290, agentPrice: 270 },
+      { network: "MTN", networkId: "1", planId: "112", planCode: "112", name: "1.0GB SME2", planType: "SME2", validity: "1 Day", userPrice: 270, agentPrice: 250 },
+      { network: "MTN", networkId: "1", planId: "293", planCode: "293", name: "100MB SME", planType: "SME", validity: "1 Day", userPrice: 110, agentPrice: 95 },
+      { network: "MTN", networkId: "1", planId: "294", planCode: "294", name: "200MB SME", planType: "SME", validity: "1 Day", userPrice: 180, agentPrice: 165 },
 
-      // MTN DATASHARE & GIFTING
-      { network: "MTN", planId: "18", planCode: "18", name: "1.5GB Gifting", planType: "GIFTING", validity: "7 Days", userPrice: 1050, agentPrice: 1000 },
-      { network: "MTN", planId: "151", planCode: "151", name: "1.0GB DataShare", planType: "DATASHARE", validity: "30 Days", userPrice: 280, agentPrice: 260 },
-      { network: "MTN", planId: "152", planCode: "152", name: "2.0GB DataShare", planType: "DATASHARE", validity: "30 Days", userPrice: 550, agentPrice: 520 },
-      { network: "MTN", planId: "153", planCode: "153", name: "3.0GB DataShare", planType: "DATASHARE", validity: "30 Days", userPrice: 820, agentPrice: 780 },
-      { network: "MTN", planId: "154", planCode: "154", name: "5.0GB DataShare", planType: "DATASHARE", validity: "30 Days", userPrice: 1350, agentPrice: 1300 },
-      { network: "MTN", planId: "187", planCode: "187", name: "11GB Gifting", planType: "GIFTING", validity: "Weekly", userPrice: 3700, agentPrice: 3550 },
-      { network: "MTN", planId: "192", planCode: "192", name: "1.5GB Gifting", planType: "GIFTING", validity: "2 Days", userPrice: 700, agentPrice: 670 },
-      { network: "MTN", planId: "284", planCode: "284", name: "18GB Gifting", planType: "GIFTING", validity: "14 Days", userPrice: 6300, agentPrice: 6100 },
-      { network: "MTN", planId: "285", planCode: "285", name: "28GB Gifting", planType: "GIFTING", validity: "14 Days", userPrice: 8500, agentPrice: 8200 },
+      { network: "MTN", networkId: "1", planId: "18", planCode: "18", name: "1.5GB Gifting", planType: "GIFTING", validity: "7 Days", userPrice: 1050, agentPrice: 1000 },
+      { network: "MTN", networkId: "1", planId: "151", planCode: "151", name: "1.0GB DataShare", planType: "DATASHARE", validity: "30 Days", userPrice: 280, agentPrice: 260 },
+      { network: "MTN", networkId: "1", planId: "152", planCode: "152", name: "2.0GB DataShare", planType: "DATASHARE", validity: "30 Days", userPrice: 550, agentPrice: 520 },
+      { network: "MTN", networkId: "1", planId: "153", planCode: "153", name: "3.0GB DataShare", planType: "DATASHARE", validity: "30 Days", userPrice: 820, agentPrice: 780 },
+      { network: "MTN", networkId: "1", planId: "154", planCode: "154", name: "5.0GB DataShare", planType: "DATASHARE", validity: "30 Days", userPrice: 1350, agentPrice: 1300 },
+      { network: "MTN", networkId: "1", planId: "187", planCode: "187", name: "11GB Gifting", planType: "GIFTING", validity: "Weekly", userPrice: 3700, agentPrice: 3550 },
+      { network: "MTN", networkId: "1", planId: "192", planCode: "192", name: "1.5GB Gifting", planType: "GIFTING", validity: "2 Days", userPrice: 700, agentPrice: 670 },
+      { network: "MTN", networkId: "1", planId: "284", planCode: "284", name: "18GB Gifting", planType: "GIFTING", validity: "14 Days", userPrice: 6300, agentPrice: 6100 },
+      { network: "MTN", networkId: "1", planId: "285", planCode: "285", name: "28GB Gifting", planType: "GIFTING", validity: "14 Days", userPrice: 8500, agentPrice: 8200 },
 
-      // ================= AIRTEL DATA PLANS =================
-      // AIRTEL CG
-      { network: "AIRTEL", planId: "262", planCode: "262", name: "1.2GB CG", planType: "CG", validity: "7 Days", userPrice: 280, agentPrice: 260 },
-      { network: "AIRTEL", planId: "240", planCode: "240", name: "1.5GB CG", planType: "CG", validity: "7 Days", userPrice: 620, agentPrice: 590 },
-      { network: "AIRTEL", planId: "263", planCode: "263", name: "6.5GB CG", planType: "CG", validity: "14 Days", userPrice: 1350, agentPrice: 1280 },
+      // ================= AIRTEL DATA PLANS (INGANTATTU DAGA HOTUNAN AL-IHSAN) =================
+      // CG
+      { network: "AIRTEL", networkId: "4", planId: "237", planCode: "237", name: "3.2GB CG", planType: "CG", validity: "30 Days", userPrice: 650, agentPrice: 600 },
+      { network: "AIRTEL", networkId: "4", planId: "262", planCode: "262", name: "1.2GB CG", planType: "CG", validity: "7 Days", userPrice: 280, agentPrice: 260 },
+      { network: "AIRTEL", networkId: "4", planId: "240", planCode: "240", name: "1.5GB CG", planType: "CG", validity: "7 Days", userPrice: 620, agentPrice: 590 },
+      { network: "AIRTEL", networkId: "4", planId: "263", planCode: "263", name: "6.5GB CG", planType: "CG", validity: "14 Days", userPrice: 1350, agentPrice: 1280 },
 
-      // AIRTEL SME
-      { network: "AIRTEL", planId: "257", planCode: "257", name: "250MB SME", planType: "SME", validity: "1 Day", userPrice: 130, agentPrice: 115 },
-      { network: "AIRTEL", planId: "256", planCode: "256", name: "500MB SME", planType: "SME", validity: "2 Days", userPrice: 820, agentPrice: 790 },
-      { network: "AIRTEL", planId: "200", planCode: "200", name: "1.0GB SME", planType: "SME", validity: "7 Days", userPrice: 350, agentPrice: 330 },
-      { network: "AIRTEL", planId: "253", planCode: "253", name: "2.0GB SME", planType: "SME", validity: "30 Days", userPrice: 750, agentPrice: 700 },
-      { network: "AIRTEL", planId: "255", planCode: "255", name: "3.0GB SME", planType: "SME", validity: "30 Days", userPrice: 2150, agentPrice: 2050 },
-      { network: "AIRTEL", planId: "267", planCode: "267", name: "4.0GB SME", planType: "SME", validity: "7 Days", userPrice: 1650, agentPrice: 1570 },
-      { network: "AIRTEL", planId: "268", planCode: "268", name: "6.0GB SME", planType: "SME", validity: "14 Days", userPrice: 2650, agentPrice: 2550 },
-      { network: "AIRTEL", planId: "213", planCode: "213", name: "8.0GB SME", planType: "SME", validity: "30 Days", userPrice: 3250, agentPrice: 3100 },
-      { network: "AIRTEL", planId: "184", planCode: "184", name: "10GB SME", planType: "SME", validity: "30 Days", userPrice: 3200, agentPrice: 3050 },
-      { network: "AIRTEL", planId: "181", planCode: "181", name: "15GB SME", planType: "SME", validity: "30 Days", userPrice: 200, agentPrice: 150 },
-      { network: "AIRTEL", planId: "258", planCode: "258", name: "18GB SME", planType: "SME", validity: "7 Days", userPrice: 5200, agentPrice: 5000 },
+      // SME
+      { network: "AIRTEL", networkId: "4", planId: "180", planCode: "180", name: "150MB SME", planType: "SME", validity: "1 Day", userPrice: 120, agentPrice: 100 },
+      { network: "AIRTEL", networkId: "4", planId: "257", planCode: "257", name: "250MB SME", planType: "SME", validity: "1 Day", userPrice: 130, agentPrice: 100 },
+      { network: "AIRTEL", networkId: "4", planId: "181", planCode: "181", name: "300MB SME", planType: "SME", validity: "30 Days", userPrice: 150, agentPrice: 120 },
+      { network: "AIRTEL", networkId: "4", planId: "218", planCode: "218", name: "600MB SME", planType: "SME", validity: "2 Days", userPrice: 320, agentPrice: 290 },
+      { network: "AIRTEL", networkId: "4", planId: "200", planCode: "200", name: "1.0GB SME", planType: "SME", validity: "7 Days", userPrice: 350, agentPrice: 300 },
+      { network: "AIRTEL", networkId: "4", planId: "239", planCode: "239", name: "1.5GB SME", planType: "SME", validity: "7 Days", userPrice: 600, agentPrice: 550 },
+      { network: "AIRTEL", networkId: "4", planId: "240", planCode: "240", name: "2.0GB SME", planType: "SME", validity: "7 Days", userPrice: 700, agentPrice: 650 },
+      { network: "AIRTEL", networkId: "4", planId: "255", planCode: "255", name: "3.0GB SME (2D)", planType: "SME", validity: "2 Days", userPrice: 800, agentPrice: 750 },
+      { network: "AIRTEL", networkId: "4", planId: "182", planCode: "182", name: "3.0GB SME (7D)", planType: "SME", validity: "7 Days", userPrice: 1600, agentPrice: 1530 },
+      { network: "AIRTEL", networkId: "4", planId: "256", planCode: "256", name: "4.0GB SME", planType: "SME", validity: "2 Days", userPrice: 1100, agentPrice: 1040 },
+      { network: "AIRTEL", networkId: "4", planId: "221", planCode: "221", name: "5.0GB SME", planType: "SME", validity: "7 Days", userPrice: 1650, agentPrice: 1550 },
+      { network: "AIRTEL", networkId: "4", planId: "253", planCode: "253", name: "6.0GB SME", planType: "SME", validity: "7 Days", userPrice: 2050, agentPrice: 1950 },
+      { network: "AIRTEL", networkId: "4", planId: "213", planCode: "213", name: "8.0GB SME", planType: "SME", validity: "30 Days", userPrice: 3150, agentPrice: 2990 },
+      { network: "AIRTEL", networkId: "4", planId: "184", planCode: "184", name: "10GB SME", planType: "SME", validity: "7 Days", userPrice: 3100, agentPrice: 2950 },
 
-      // AIRTEL AWOOF
-      { network: "AIRTEL", planId: "157", planCode: "157", name: "2.0GB Awoof", planType: "AWOOF", validity: "2 Days", userPrice: 400, agentPrice: 375 },
-      { network: "AIRTEL", planId: "158", planCode: "158", name: "3.0GB Awoof", planType: "AWOOF", validity: "7 Days", userPrice: 630, agentPrice: 595 },
-      { network: "AIRTEL", planId: "159", planCode: "159", name: "4.0GB Awoof", planType: "AWOOF", validity: "30 Days", userPrice: 1200, agentPrice: 1140 },
-      { network: "AIRTEL", planId: "160", planCode: "160", name: "10GB Awoof", planType: "AWOOF", validity: "30 Days", userPrice: 2300, agentPrice: 2200 },
-      { network: "AIRTEL", planId: "161", planCode: "161", name: "15GB Awoof", planType: "AWOOF", validity: "30 Days", userPrice: 3500, agentPrice: 3380 },
+      // AWOOF
+      { network: "AIRTEL", networkId: "4", planId: "157", planCode: "157", name: "2.0GB Awoof", planType: "AWOOF", validity: "2 Days", userPrice: 400, agentPrice: 350 },
+      { network: "AIRTEL", networkId: "158", planId: "158", planCode: "158", name: "3.0GB Awoof", planType: "AWOOF", validity: "7 Days", userPrice: 630, agentPrice: 560 },
+      { network: "AIRTEL", networkId: "4", planId: "159", planCode: "159", name: "4.0GB Awoof", planType: "AWOOF", validity: "30 Days", userPrice: 1200, agentPrice: 1080 },
+      { network: "AIRTEL", networkId: "4", planId: "160", planCode: "160", name: "10GB Awoof", planType: "AWOOF", validity: "30 Days", userPrice: 2300, agentPrice: 2100 },
+      { network: "AIRTEL", networkId: "4", planId: "161", planCode: "161", name: "15GB Awoof", planType: "AWOOF", validity: "30 Days", userPrice: 3500, agentPrice: 3240 },
 
-      // AIRTEL GIFTING
-      { network: "AIRTEL", planId: "50", planCode: "50", name: "2.0GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 1650, agentPrice: 1580 },
-      { network: "AIRTEL", planId: "51", planCode: "51", name: "3.0GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 2100, agentPrice: 2020 },
-      { network: "AIRTEL", planId: "266", planCode: "266", name: "4GB + 2GB YouTube", planType: "GIFTING", validity: "7 Days", userPrice: 2150, agentPrice: 2050 },
-      { network: "AIRTEL", planId: "269", planCode: "269", name: "13GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 5250, agentPrice: 5050 },
-
-      // ================= 9MOBILE DATA PLANS =================
-      { network: "9MOBILE", planId: "45", planCode: "45", name: "500.0MB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 550, agentPrice: 510 },
-      { network: "9MOBILE", planId: "11", planCode: "11", name: "1.5GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 1000, agentPrice: 950 },
-
-      // ================= GLO DATA PLANS =================
-      { network: "GLO", planId: "28", planCode: "28", name: "1.0GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 480, agentPrice: 450 },
-      { network: "GLO", planId: "29", planCode: "29", name: "2.0GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 950, agentPrice: 900 }
+      // ================= 9MOBILE & GLO =================
+      { network: "9MOBILE", networkId: "3", planId: "45", planCode: "45", name: "500.0MB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 550, agentPrice: 510 },
+      { network: "9MOBILE", networkId: "3", planId: "11", planCode: "11", name: "1.5GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 1000, agentPrice: 950 },
+      { network: "GLO", networkId: "2", planId: "28", planCode: "28", name: "1.0GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 480, agentPrice: 450 },
+      { network: "GLO", networkId: "2", planId: "29", planCode: "29", name: "2.0GB Gifting", planType: "GIFTING", validity: "30 Days", userPrice: 950, agentPrice: 900 }
     ];
 
     let state = {
@@ -700,10 +666,9 @@
           }
         }
       } catch (e) {
-        console.warn('Plans fetch issue, using comprehensive fallback:', e.message);
+        console.warn('Plans fetch issue, using fallback database:', e.message);
       }
 
-      // Idan server ba ta dawo da plans ba ko kuma ta dawo da fanko, yi amfani da cikakken jerin Al-Ihsan kai tsaye
       if (plansArray.length === 0) {
         plansArray = FALLBACK_ALIHSAN_PLANS;
       }
@@ -912,19 +877,25 @@
       }
 
       const netName = state.selectedPlan?.networkName || state.selectedPlan?.network || state.selectedNetwork;
-      
-      // Babban gyara: Tura ainihin planId na Al-Ihsan kai-tsaye ba tare da gurbata shi ba
       const cleanPlanCode = String(state.selectedPlan?.planId || state.selectedPlan?.planCode || state.selectedPlan?.code || "").trim();
       
       const finalAmount = state.userRole === 'agent'
         ? (state.selectedPlan?.agentPrice ?? state.selectedPlan?.price ?? state.selectedPlan?.userPrice ?? 0)
         : (state.selectedPlan?.userPrice ?? state.selectedPlan?.price ?? 0);
 
+      // Tabbatar da ingantaccen Network ID ga Al-Ihsan ba tare da tabawa MTN ba
+      let assignedNetId = "1";
+      if (netName.toUpperCase() === "AIRTEL") assignedNetId = "4";
+      if (netName.toUpperCase() === "GLO") assignedNetId = "2";
+      if (netName.toUpperCase() === "9MOBILE") assignedNetId = "3";
+
       const requestBody = {
         network: netName,
-        networkId: state.selectedPlan?.networkId || null,
+        networkId: state.selectedPlan?.networkId || assignedNetId,
         planCode: cleanPlanCode,
         plan_id: cleanPlanCode,
+        planId: cleanPlanCode,
+        id: cleanPlanCode,
         phone: phone,
         phoneNumber: phone,
         amount: Number(finalAmount),
@@ -941,7 +912,6 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
 
-        // Gwada /vtu/buy-data ko /data/buy
         let response = await fetch(`${BASE_URL}/vtu/buy-data`, {
           method: 'POST',
           headers: {
