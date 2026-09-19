@@ -541,7 +541,7 @@
         placeholder: "Enter 11-digit NIN",
         icon: "print",
         length: 11,
-        desc: "Concise confirmation paper format slip with tracking ID",
+        desc: "Official regular slip with Tracking ID and residential address",
         defaultPrice: 100,
       }
     ];
@@ -767,7 +767,7 @@
       }
     }
 
-    // NUNA SAKAMAKON SLIP DA HOTON MUTUM
+    // NUNA SAKAMAKON SLIP, TRACKING ID, ADIRESHI DA HOTON MUTUM
     function renderSlipProfile() {
       document.getElementById("viewEntryForm").style.display = "none";
       document.getElementById("viewResultProfile").style.display = "block";
@@ -776,6 +776,22 @@
         `${verifiedUserData?.first_name || verifiedUserData?.firstName || ""} ${verifiedUserData?.middle_name || verifiedUserData?.middleName || ""} ${verifiedUserData?.last_name || verifiedUserData?.surname || ""}`.replace(/\s+/g, ' ').trim() || "Verified Citizen";
 
       const resolvedNin = String(verifiedUserData?.nin || verifiedUserData?.ninNumber || document.getElementById("searchInputValue").value || "N/A").trim();
+
+      const trackingId = String(
+        verifiedUserData?.trackingId ||
+        verifiedUserData?.tracking_id ||
+        verifiedUserData?.trackingID ||
+        verifiedUserData?.trackingNo ||
+        "N/A"
+      ).trim();
+
+      const resolvedAddress = String(
+        verifiedUserData?.address ||
+        verifiedUserData?.residence_address ||
+        verifiedUserData?.residence_AdressLine1 ||
+        [verifiedUserData?.residence_town, verifiedUserData?.lga, verifiedUserData?.state].filter(Boolean).join(", ") ||
+        "N/A"
+      ).trim();
 
       const photo = verifiedUserData?.photo || verifiedUserData?.image;
       const photoEl = document.getElementById("resUserPhoto");
@@ -793,17 +809,18 @@
       const rows = [
         { label: "Full Legal Name", value: fullName },
         { label: "National Identity Number (NIN)", value: resolvedNin, copyable: true },
+        { label: "NIMC Tracking ID", value: trackingId, copyable: true, highlight: true },
         { label: "Phone Number", value: verifiedUserData?.phone || verifiedUserData?.telephoneno || verifiedUserData?.phone_number || "N/A" },
         { label: "Date of Birth", value: verifiedUserData?.dob || verifiedUserData?.birthdate || verifiedUserData?.date_of_birth || "N/A" },
         { label: "Gender", value: (verifiedUserData?.gender || "N/A").toUpperCase() },
-        { label: "Residential Address", value: verifiedUserData?.address || "N/A" }
+        { label: "Residential Address", value: resolvedAddress }
       ];
 
       document.getElementById("resDetailsList").innerHTML = rows.map(r => `
         <div class="result-row-container">
           <div style="flex:1;">
             <div class="result-label">${r.label}</div>
-            <div class="result-value">${r.value}</div>
+            <div class="result-value" style="${r.highlight ? 'color:#00f0ff; font-weight:900;' : ''}">${r.value}</div>
           </div>
           ${r.copyable && r.value !== "N/A" ? `
             <button class="copy-small-btn" onclick="copyValue('${r.value}', '${r.label}')">
@@ -820,7 +837,7 @@
       alert(`${label || "Value"} copied to clipboard.`);
     }
 
-    // SAUKE AINIHIN TAKARDAR PDF DAGA ABJIKTECH KAI-TSAYE
+    // SAUKE AINIHIN TAKARDAR PDF DAGA ABJIKTECH KAI-TSAYE KO BUGAWA TARE DA TRACKING ID DA ADDRESS
     function handleDownloadPDF() {
       if (returnedBase64Pdf) {
         try {
@@ -845,13 +862,119 @@
           document.body.removeChild(link);
           return;
         } catch (e) {
-          console.warn("Base64 decoding failed, checking URL:", e);
+          console.warn("Base64 decoding failed, falling back:", e);
         }
       }
 
       const directPdfUrl = verifiedUserData?.slipUrl || verifiedUserData?.pdfUrl || verifiedUserData?.url;
       if (directPdfUrl && directPdfUrl.startsWith("http")) {
         window.open(directPdfUrl, "_blank");
+        return;
+      }
+
+      // Idan ba a samu direct link ba, tsara shafin bugawa na Basic Slip tare da Tracking ID da Address
+      const rawFullName = (
+        verifiedUserData?.fullName ||
+        verifiedUserData?.name ||
+        `${verifiedUserData?.first_name || verifiedUserData?.firstName || ""} ${verifiedUserData?.middle_name || verifiedUserData?.middleName || ""} ${verifiedUserData?.last_name || verifiedUserData?.surname || ""}`
+      ).trim();
+
+      const nameParts = rawFullName.split(/\s+/).filter(Boolean);
+      const surname = (verifiedUserData?.surname || verifiedUserData?.last_name || nameParts[0] || "CITIZEN").toUpperCase();
+      const firstName = (verifiedUserData?.firstName || verifiedUserData?.first_name || nameParts[1] || "").toUpperCase();
+      const middleName = (verifiedUserData?.middleName || verifiedUserData?.middle_name || nameParts.slice(2).join(" ") || "").toUpperCase();
+
+      const rawNin = String(verifiedUserData?.nin || verifiedUserData?.ninNumber || document.getElementById("searchInputValue").value || "").replace(/\D/g, "");
+      const trackingId = (verifiedUserData?.trackingId || verifiedUserData?.tracking_id || "TRK" + rawNin.slice(-8)).toUpperCase();
+      const gender = (verifiedUserData?.gender || "MALE").toUpperCase();
+      const address = (verifiedUserData?.address || verifiedUserData?.residence_address || verifiedUserData?.residence_AdressLine1 || "N/A").toUpperCase();
+
+      const userPhoto = verifiedUserData?.photo || verifiedUserData?.image
+        ? (String(verifiedUserData.photo || verifiedUserData.image).startsWith("data:image")
+            ? (verifiedUserData.photo || verifiedUserData.image)
+            : `data:image/jpeg;base64,${verifiedUserData.photo || verifiedUserData.image}`)
+        : "https://via.placeholder.com/150";
+
+      const printWindow = window.open("", "_blank");
+      if (printWindow) {
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>NIMC Basic Regular Slip - ${rawNin}</title>
+              <style>
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body { font-family: Arial, Helvetica, sans-serif; background: #fff; padding: 20px; }
+                .regular-card { width: 780px; margin: 0 auto; background: #fff; border: 2px solid #000; }
+                .regular-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; border-bottom: 2px solid #000; }
+                .regular-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+                .regular-table td { border: 1px solid #000; padding: 6px 8px; }
+                .regular-disclaimer { padding: 8px 10px; font-size: 9px; border-bottom: 2px solid #000; line-height: 14px; }
+                .regular-footer { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 9px; }
+                @media print { body { padding: 0; } @page { size: auto; margin: 5mm; } }
+              </style>
+            </head>
+            <body onload="setTimeout(function(){ window.print(); }, 400);">
+              <div class="regular-card">
+                <div class="regular-header">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Coat_of_arms_of_Nigeria.svg" style="height: 55px;" />
+                  <div style="text-align: center;">
+                    <div style="font-size: 16px; font-weight: bold;">National Identity Management System</div>
+                    <div style="font-size: 13px;">Federal Republic of Nigeria</div>
+                    <div style="font-size: 11px; font-weight: bold; margin-top: 2px;">National Identification Number Slip (NINS)</div>
+                  </div>
+                  <img src="https://nimc.gov.ng/wp-content/uploads/2020/07/nimc-logo.png" style="height: 46px;" />
+                </div>
+                <table class="regular-table">
+                  <tr>
+                    <td style="width: 15%; font-weight: bold;">Tracking ID:</td>
+                    <td style="width: 25%; font-weight: bold; color: #000;">${trackingId}</td>
+                    <td style="width: 15%; font-weight: bold;">Surname:</td>
+                    <td style="width: 20%; font-weight: bold;">${surname}</td>
+                    <td style="width: 10%; font-weight: bold;">Address:</td>
+                    <td rowspan="4" style="width: 15%; text-align: center; vertical-align: middle; padding: 4px;">
+                      <img src="${userPhoto}" style="width: 105px; height: 125px; border: 1px solid #000; object-fit: cover; display: block; margin: 0 auto;" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: bold;">NIN:</td>
+                    <td style="font-weight: bold; font-size: 13px;">${rawNin}</td>
+                    <td style="font-weight: bold;">First Name:</td>
+                    <td style="font-weight: bold;">${firstName}</td>
+                    <td rowspan="3" style="vertical-align: top; line-height: 14px; font-size: 10px;">
+                      ${address}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td style="font-weight: bold;">Middle Name:</td>
+                    <td>${middleName}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td style="font-weight: bold;">Gender:</td>
+                    <td>${gender}</td>
+                  </tr>
+                </table>
+                <div class="regular-disclaimer">
+                  <strong>Note:</strong> The National Identification Number (NIN) is your identity. It is confidential and may only be released for legitimate transactions.<br/>
+                  You will be notified when your National Identity Card is ready.
+                </div>
+                <div class="regular-footer">
+                  <div>✉ helpdesk@nimc.gov.ng</div>
+                  <div>🌐 www.nimc.gov.ng</div>
+                  <div>📞 0700-CALL-NIMC</div>
+                  <div style="text-align: right;">
+                    <strong>National Identity Management Commission</strong>
+                  </div>
+                </div>
+              </div>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
       } else {
         window.print();
       }

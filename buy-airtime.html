@@ -119,14 +119,13 @@
 
     .net-box.active {
       border: 2px solid var(--primary-navy);
-      color: #000000;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    .net-box[data-id="01"].active { background: #FFCC00; }
-    .net-box[data-id="02"].active { background: #2ecc71; color: #ffffff; }
-    .net-box[data-id="04"].active { background: #e74c3c; color: #ffffff; }
-    .net-box[data-id="03"].active { background: #006600; color: #ffffff; }
+    .net-box[data-net="MTN"].active { background: #FFCC00; color: #000000; }
+    .net-box[data-net="AIRTEL"].active { background: #e74c3c; color: #ffffff; }
+    .net-box[data-net="9MOBILE"].active { background: #006600; color: #ffffff; }
+    .net-box[data-net="GLO"].active { background: #2ecc71; color: #ffffff; }
 
     /* Inputs */
     .input-field {
@@ -356,10 +355,10 @@
     <!-- 1. Network Selection -->
     <label class="label">Select Network</label>
     <div class="net-grid">
-      <div class="net-box active" data-id="01" onclick="selectNetwork('01', this)">MTN</div>
-      <div class="net-box" data-id="02" onclick="selectNetwork('02', this)">GLO</div>
-      <div class="net-box" data-id="04" onclick="selectNetwork('04', this)">Airtel</div>
-      <div class="net-box" data-id="03" onclick="selectNetwork('03', this)">9Mobile</div>
+      <div class="net-box active" data-net="MTN" onclick="selectNetwork('MTN', this)">MTN</div>
+      <div class="net-box" data-net="AIRTEL" onclick="selectNetwork('AIRTEL', this)">Airtel</div>
+      <div class="net-box" data-net="9MOBILE" onclick="selectNetwork('9MOBILE', this)">9Mobile</div>
+      <div class="net-box" data-net="GLO" onclick="selectNetwork('GLO', this)">GLO</div>
     </div>
 
     <!-- 2. Phone Number -->
@@ -438,10 +437,10 @@
       ? CONFIG.BASE_URL
       : "https://ayax-data-xpress-server.onrender.com/api/v1";
 
-    let selectedNetworkId = "01";
+    let selectedNetwork = "MTN";
 
-    function selectNetwork(id, el) {
-      selectedNetworkId = id;
+    function selectNetwork(netName, el) {
+      selectedNetwork = netName.toUpperCase();
       document.querySelectorAll('.net-box').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
     }
@@ -506,7 +505,7 @@
       const numericAmount = parseFloat(amount);
       const token = localStorage.getItem('userToken') || localStorage.getItem('token') || '';
 
-      if (!pin || pin.length < 4) {
+      if (!pin || pin.length !== 4) {
         alert("Enter your valid 4-digit Transaction PIN.");
         return;
       }
@@ -525,20 +524,36 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
 
-        const response = await fetch(`${BASE_URL}/vtu/buy-airtime`, {
+        const requestPayload = {
+          network: selectedNetwork,
+          phone: phone,
+          phoneNumber: phone,
+          phoneNo: phone,
+          amount: numericAmount,
+          transactionPin: pin,
+          pin: pin
+        };
+
+        // Gwada /airtime/buy sannan fallback zuwa /vtu/buy-airtime
+        let response = await fetch(`${BASE_URL}/airtime/buy`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            network: selectedNetworkId,
-            phoneNumber: phone,
-            amount: numericAmount,
-            transactionPin: pin,
-            pin: pin
-          })
+          body: JSON.stringify(requestPayload)
         });
+
+        if (response.status === 404) {
+          response = await fetch(`${BASE_URL}/vtu/buy-airtime`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestPayload)
+          });
+        }
 
         const result = await response.json();
 
@@ -560,7 +575,5 @@
       }
     }
   </script>
-  <script src="js/config.js"></script>
-  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>
