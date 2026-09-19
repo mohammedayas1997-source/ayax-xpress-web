@@ -923,14 +923,38 @@
         <button style="border:none; background:none; cursor:pointer; font-size:18px; color:#64748b;" onclick="closeModal('createUserModal')"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <label class="form-field-label">Full Legal Name</label>
+      <label class="form-field-label">Full Legal Name *</label>
       <input type="text" class="form-input" id="newStaffName" placeholder="e.g. Ibrahim Sani">
 
-      <label class="form-field-label">Phone Number</label>
+      <label class="form-field-label">Phone Number *</label>
       <input type="tel" class="form-input" id="newStaffPhone" placeholder="e.g. 08011223344">
 
-      <label class="form-field-label">Email Address</label>
+      <label class="form-field-label">Email Address *</label>
       <input type="email" class="form-input" id="newStaffEmail" placeholder="e.g. officer@ayaxdata.online">
+
+      <!-- SASHE NA PASSWORD -->
+      <label class="form-field-label">Account Password *</label>
+      <div style="position: relative; margin-bottom: 12px;">
+        <input 
+          type="text" 
+          class="form-input" 
+          id="newStaffPassword" 
+          value="Password123@" 
+          placeholder="Enter account password"
+          style="margin-bottom: 0; padding-right: 40px;"
+        >
+        <button 
+          type="button" 
+          onclick="generateRandomPassword()" 
+          title="Generate Random Password"
+          style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #0284c7; cursor: pointer; font-size: 14px; font-weight: bold;"
+        >
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+      </div>
+      <div style="font-size: 10.5px; color: #64748b; margin-top: -6px; margin-bottom: 12px;">
+        Default: <code>Password123@</code> (Za ka iya canzawa ko danna icon ɗin don ƙirƙirar sabo).
+      </div>
 
       <label class="form-field-label">Assigned Role</label>
       <div class="selector-pills-row" id="newStaffRolePills">
@@ -946,7 +970,7 @@
       <label class="form-field-label">LGA / Ward</label>
       <input type="text" class="form-input" id="newStaffLga" value="Municipal">
 
-      <button class="submit-form-btn" onclick="executeCreateStaff()">CREATE & SYNC ACCOUNT</button>
+      <button class="submit-form-btn" id="btnSubmitCreateStaff" onclick="executeCreateStaff()">CREATE & SYNC ACCOUNT</button>
     </div>
   </div>
 
@@ -2308,36 +2332,96 @@
       btn.classList.add("active");
     }
 
+    function generateRandomPassword() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789@#$!";
+      let pass = "Ayax@";
+      for (let i = 0; i < 6; i++) {
+        pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById("newStaffPassword").value = pass;
+    }
+
     async function executeCreateStaff() {
       const name = document.getElementById("newStaffName").value.trim();
       const phone = document.getElementById("newStaffPhone").value.trim();
       const email = document.getElementById("newStaffEmail").value.trim();
+      const password = document.getElementById("newStaffPassword").value.trim();
       const state = document.getElementById("newStaffState").value.trim();
       const lga = document.getElementById("newStaffLga").value.trim();
 
-      if (!name || !phone) { alert("Name and Phone Number are mandatory."); return; }
-      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
+      if (!name || !phone) { 
+        alert("Name and Phone Number are mandatory."); 
+        return; 
+      }
+
+      if (!password) {
+        alert("Please provide a password for this user.");
+        return;
+      }
+
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token") || localStorage.getItem("adminToken");
+      const btn = document.getElementById("btnSubmitCreateStaff");
+      const originalText = btn.innerText;
+
+      btn.disabled = true;
+      btn.innerText = "CREATING ACCOUNT...";
 
       try {
-        const res = await fetch(`${BASE_URL}/admin/users/create`, {
+        let res = await fetch(`${BASE_URL}/admin/users/create`, {
           method: "POST",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          headers: { 
+            Authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
           body: JSON.stringify({
-            name, phone, email, state, lga,
+            name, 
+            phone, 
+            email, 
+            state, 
+            lga,
             role: newStaffSelectedRole,
-            password: "Password123@"
+            password: password
           })
-        }).then(r => r.json());
+        });
 
-        if (res.success) {
-          alert(`Account provisioned as ${newStaffSelectedRole.toUpperCase()}! 🎉`);
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/admin/create-user`, {
+            method: "POST",
+            headers: { 
+              Authorization: `Bearer ${token}`, 
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            body: JSON.stringify({
+              name, phone, email, state, lga,
+              role: newStaffSelectedRole,
+              password: password
+            })
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && (data.success || data.status === "success")) {
+          alert(`Account for ${name} provisioned successfully as ${newStaffSelectedRole.toUpperCase()}!\nPassword: ${password} 🎉`);
           closeModal("createUserModal");
+          
+          // Share filayen
+          document.getElementById("newStaffName").value = "";
+          document.getElementById("newStaffPhone").value = "";
+          document.getElementById("newStaffEmail").value = "";
+          document.getElementById("newStaffPassword").value = "Password123@";
+
           loadDashboardData();
         } else {
-          alert(res.message || "Could not provision account.");
+          alert(data.message || "Could not provision account.");
         }
       } catch (e) {
         alert("Provision error: " + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
       }
     }
 
