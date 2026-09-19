@@ -392,16 +392,26 @@
       </button>
     </section>
 
-    <!-- Result / Download Card -->
-    <section class="result-container" id="resultCard">
+    <!-- Result / Download Card tare da Hoto da Bayanai -->
+    <section class="result-container" id="resultCard" style="display: none;">
       <div class="result-header">
         <i class="fa-solid fa-circle-check"></i>
         <span>NIN Slip Successfully Generated!</span>
       </div>
 
+      <!-- HOTON MUTUM -->
+      <div style="text-align: center; margin-bottom: 14px;">
+        <img
+          id="resPhoto"
+          src=""
+          alt="Citizen Portrait"
+          style="display: none; width: 100px; height: 115px; border-radius: 10px; object-fit: cover; border: 2px solid #0284c7; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"
+        />
+      </div>
+
       <div class="detail-row">
         <span class="detail-label">Full Name:</span>
-        <span class="detail-value" id="resFullName">Citizen</span>
+        <span class="detail-value" id="resFullName">Loading...</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">NIN Number:</span>
@@ -415,13 +425,19 @@
         <span class="detail-label">Date of Birth:</span>
         <span class="detail-value" id="resDob">N/A</span>
       </div>
+      <div class="detail-row">
+        <span class="detail-label">Gender:</span>
+        <span class="detail-value" id="resGender">N/A</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Address / LGA:</span>
+        <span class="detail-value" id="resAddress">N/A</span>
+      </div>
 
       <button type="button" class="download-btn" id="btnDownloadSlip" onclick="downloadBase64Pdf()">
         <i class="fa-solid fa-file-arrow-down"></i> DOWNLOAD PDF SLIP
       </button>
     </section>
-
-  </main>
 
   <!-- PIN Modal -->
   <div class="modal-overlay" id="pinModal">
