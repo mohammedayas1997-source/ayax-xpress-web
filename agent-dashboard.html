@@ -768,7 +768,7 @@
       </div>
     </section>
 
-    <!-- 2. Quota & Target Tracking Card (Real-Time Live Metering) -->
+    <!-- 2. Quota & Target Tracking Card (Real-Time Live Telemetry) -->
     <section class="executive-card-dark">
       <div class="exec-header-row">
         <div>
@@ -852,7 +852,7 @@
       </div>
     </section>
 
-    <!-- 4. Retail Services Grid -->
+    <!-- 4. Retail Services Grid (GYARARREN KIRAN HANYOYI) -->
     <span class="section-label">RETAIL SERVICES & DISPENSER</span>
     <section class="services-grid-card">
       <a href="buy-data.html" class="service-btn">
@@ -875,6 +875,7 @@
         <span class="service-label">Cable TV</span>
       </a>
 
+      <!-- 1. NIMC Verification Desk (Slip Printing & Lookups) -->
       <a href="nin-verification-service.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-id-card"></i></div>
         <span class="service-label">NIMC Verify</span>
@@ -885,12 +886,14 @@
         <span class="service-label">NIMC Mod</span>
       </a>
 
-      <a href="bvn-history.html" class="service-btn">
+      <!-- 2. BVN Verification Desk (Slip Printing & Lookups) -->
+      <a href="bvn-verification-service.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #ffedd5; color: #ea580c;"><i class="fa-solid fa-shield-halved"></i></div>
         <span class="service-label">BVN Desk</span>
       </a>
 
-      <a href="nin-verification-service.html" class="service-btn">
+      <!-- 3. NIN Validation Desk (No Record, SIM/Bank, Mod Validation) -->
+      <a href="nin-validation.html" class="service-btn">
         <div class="service-icon-wrap" style="background: #e0e7ff; color: #4f46e5;"><i class="fa-solid fa-user-shield"></i></div>
         <span class="service-label">NIN Validate</span>
       </a>
@@ -939,7 +942,10 @@
       <a href="buy-airtime.html" class="nav-link-item"><i class="fa-solid fa-phone" style="color: #16a34a;"></i> Recharge Airtime VTU</a>
       <a href="electricity.html" class="nav-link-item"><i class="fa-solid fa-bolt" style="color: #d97706;"></i> Electricity Tokens</a>
       <a href="cable.html" class="nav-link-item"><i class="fa-solid fa-tv" style="color: #7c3aed;"></i> Cable TV Subscription</a>
-      <a href="nin-verification-service.html" class="nav-link-item"><i class="fa-solid fa-id-card" style="color: #0284c7;"></i> NIMC & Identity Desk</a>
+      <!-- Gyararren Hanyoyin Sidebar -->
+      <a href="nin-verification-service.html" class="nav-link-item"><i class="fa-solid fa-id-card" style="color: #0284c7;"></i> NIMC Verification & Slips</a>
+      <a href="bvn-verification-service.html" class="nav-link-item"><i class="fa-solid fa-shield-halved" style="color: #ea580c;"></i> BVN Verification & Slips</a>
+      <a href="nin-validation.html" class="nav-link-item"><i class="fa-solid fa-user-shield" style="color: #4f46e5;"></i> NIN Validation Clearance</a>
       <a href="wallet-history.html" class="nav-link-item"><i class="fa-solid fa-clock-rotate-left" style="color: #0284c7;"></i> Transaction Records</a>
 
       <div style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 0.8px; margin: 16px 0 6px 4px;">ACCOUNT & SUPPORT</div>
@@ -1160,7 +1166,6 @@
                 } else if (item.dataAmountGB) {
                   parsedGB = Number(item.dataAmountGB);
                 } else {
-                  // Estimation ta kudin data idan ba a rubuta GB a fili ba
                   const amt = Number(item.amount || 0);
                   if (amt >= 200 && amt <= 300) parsedGB = 1.0;
                   else if (amt > 300 && amt <= 600) parsedGB = 2.0;
@@ -1177,7 +1182,6 @@
               }
             });
 
-            // Idan ledger ta nuna an sayar da fiye da abin da target API ke da shi, yi amfani da ainihin ledger
             if (ledgerDataGB > liveDataGB) liveDataGB = Math.round(ledgerDataGB * 10) / 10;
             if (ledgerAirtimeAmount > liveAirtimeAmount) liveAirtimeAmount = ledgerAirtimeAmount;
           }
@@ -1233,7 +1237,6 @@
       document.getElementById('airtimeRemainingSub').textContent = `₦${airtimeRemaining.toLocaleString()} Left`;
     }
 
-    // Tura wa Supervisor da Admin sabon sakamako ta background
     async function syncProgressToSupervisor(q) {
       if (!state.token) return;
       try {
@@ -1250,9 +1253,7 @@
             timestamp: new Date().toISOString()
           })
         });
-      } catch (e) {
-        // Silent sync
-      }
+      } catch (e) {}
     }
 
     function renderUserData() {
@@ -1345,7 +1346,7 @@
     }
 
     function openWhatsApp() {
-      const phone = '2349033738409';
+      const phone = '2347087244444';
       const msg = encodeURIComponent(`Hello Ayax Support, I am Retail Agent ${state.user?.name || state.user?.phone}. I need assistance.`);
       window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
     }
