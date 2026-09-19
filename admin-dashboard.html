@@ -128,17 +128,27 @@
     /* User Directory Card */
     .user-list-item {
       background: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 8px;
-      border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px; cursor: pointer;
+      border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px;
+      transition: all 0.2s;
     }
+    .user-list-item:hover { border-color: #cbd5e1; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
     .user-avatar {
       width: 38px; height: 38px; border-radius: 50%; background: #e0f2fe; color: #0284c7;
       display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900;
+      flex-shrink: 0;
     }
-    .user-name-row { display: flex; align-items: center; gap: 8px; }
+    .user-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .user-name { font-size: 13.5px; font-weight: 800; color: #0f172a; }
     .user-role-tag { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 900; color: #0284c7; }
     .user-sub { color: #64748b; font-size: 11px; margin-top: 2px; }
-    .user-balance-val { color: #059669; font-size: 13px; font-weight: 900; margin-left: auto; text-align: right; }
+    .user-actions-side { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .user-balance-val { color: #059669; font-size: 13px; font-weight: 900; text-align: right; }
+    .delete-user-icon-btn {
+      width: 32px; height: 32px; border-radius: 8px; background: #fee2e2;
+      border: 1px solid #fca5a5; display: flex; align-items: center; justify-content: center;
+      color: #dc2626; cursor: pointer; font-size: 13px; transition: all 0.2s;
+    }
+    .delete-user-icon-btn:hover { background: #dc2626; color: #ffffff; }
 
     /* Transaction Stream Item */
     .tx-item-card {
@@ -219,13 +229,14 @@
     /* Modal */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center;
-      z-index: 60; padding: 16px;
+      background: rgba(15, 23, 42, 0.65); display: none; align-items: center; justify-content: center;
+      z-index: 60; padding: 16px; backdrop-filter: blur(4px);
     }
     .modal-overlay.active { display: flex; }
     .modal-card {
-      background: #ffffff; border-radius: 16px; padding: 20px; width: 100%;
-      max-width: 580px; max-height: 90vh; overflow-y: auto; border: 1px solid #cbd5e1;
+      background: #ffffff; border-radius: 18px; padding: 22px; width: 100%;
+      max-width: 540px; max-height: 90vh; overflow-y: auto; border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     .modal-header-row {
       display: flex; justify-content: space-between; align-items: center;
@@ -480,7 +491,7 @@
       <div id="hierarchyLeadersFeed"></div>
     </div>
 
-    <!-- TAB 5: USERS DIRECTORY -->
+    <!-- TAB 5: USERS DIRECTORY (WITH DELETE PERMISSION) -->
     <div id="tabContent-users" style="display: none;">
       <div class="search-filter-container">
         <div class="search-bar">
@@ -653,6 +664,28 @@
       <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out Console
     </button>
   </aside>
+
+  <!-- MODAL: CONFIRM PERMANENT USER DELETION -->
+  <div class="modal-overlay" id="confirmDeleteUserModal">
+    <div class="modal-card" style="max-width: 420px; text-align: center;">
+      <div style="width: 54px; height: 54px; border-radius: 27px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 12px;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 class="modal-title" style="color: #dc2626; font-size: 17px;">Permanently Delete Account?</h3>
+      <p style="font-size: 12.5px; color: #64748b; margin: 8px 0 16px; line-height: 1.6;" id="confirmDeleteUserMsg">
+        Are you sure you want to completely erase this user account from MongoDB database? This action cannot be undone.
+      </p>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="button" style="flex: 1; height: 44px; border-radius: 10px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 800; font-size: 13px; color: #475569; cursor: pointer;" onclick="closeModal('confirmDeleteUserModal')">
+          Cancel
+        </button>
+        <button type="button" id="btnExecuteDeleteUser" style="flex: 1; height: 44px; border-radius: 10px; border: none; background: #dc2626; font-weight: 900; font-size: 13px; color: #ffffff; cursor: pointer;" onclick="executeDeleteUser()">
+          YES, DELETE
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- MODAL: EDIT PLAN DETAILS & DELETE -->
   <div class="modal-overlay" id="editDataPlanModal">
@@ -928,6 +961,7 @@
     let activeNetFilter = "ALL";
     let activeIdentityCategoryFilter = "ALL";
     let activeOpsFilter = "ALL";
+    let pendingDeleteUser = null;
 
     const ALIHSAN_PRESETS = {
       MTN: [
@@ -1023,7 +1057,7 @@
 
     /**
      * =========================================================================
-     * REAL LIVE FINANCIAL ENGINE: REAL INFLOW, OUTFLOW & ALL TRANSACTIONS
+     * REAL-TIME AGGREGATOR: INFLOW, OUTFLOW, FLOAT & LIVE TELEMETRY
      * =========================================================================
      */
     async function loadDashboardData() {
@@ -1051,7 +1085,7 @@
           renderOperationsLog(rawTx);
         }
 
-        // 1. Process Users List & Calculate Real System Wallet Liabilities
+        // Calculate Real Wallet Liabilities
         let realCalculatedLiabilities = 0;
         if (usersRes.status === "fulfilled" && usersRes.value) {
           usersList = usersRes.value.users || usersRes.value.data || [];
@@ -1060,15 +1094,15 @@
             if (!isNaN(bal) && bal > 0) realCalculatedLiabilities += bal;
           });
 
-          document.getElementById("countNsd").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("national")).length || 2;
-          document.getElementById("countSm").innerText = usersList.filter(u => ["state_manager", "leader", "sm"].includes(String(u.role).toLowerCase())).length || 14;
-          document.getElementById("countFs").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("supervisor")).length || 36;
-          document.getElementById("countAgents").innerText = usersList.filter(u => String(u.role).toLowerCase() === "agent").length || 148;
+          document.getElementById("countNsd").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("national")).length || 0;
+          document.getElementById("countSm").innerText = usersList.filter(u => ["state_manager", "leader", "sm"].includes(String(u.role).toLowerCase())).length || 0;
+          document.getElementById("countFs").innerText = usersList.filter(u => String(u.role).toLowerCase().includes("supervisor")).length || 0;
+          document.getElementById("countAgents").innerText = usersList.filter(u => String(u.role).toLowerCase() === "agent").length || 0;
           renderUsers(usersList);
           renderHierarchyLeaders(usersList);
         }
 
-        // 2. Compute Real Inflow (+) & Outflow (-) from Transactions Ledger
+        // Compute Real Live Inflow (+) & Outflow (-)
         let liveInflowSum = 0;
         let liveOutflowSum = 0;
         let dataCount = 0;
@@ -1142,7 +1176,6 @@
           }
         });
 
-        // 3. Compute Real Company Total Float & Net Vault
         let serverStats = {};
         if (statsRes.status === "fulfilled" && statsRes.value) {
           serverStats = statsRes.value.stats || statsRes.value.data || statsRes.value || {};
@@ -1151,23 +1184,18 @@
         const finalInflow = liveInflowSum > 0 ? liveInflowSum : Number(serverStats.totalInflow || serverStats.totalRevenue || 0);
         const finalOutflow = liveOutflowSum > 0 ? liveOutflowSum : Number(serverStats.totalOutflow || 0);
         const finalLiabilities = realCalculatedLiabilities > 0 ? realCalculatedLiabilities : Number(serverStats.totalWalletLiabilities || 0);
-
-        // Net Float = (Total Inflow - Total Outflow)
         const netCompanyFloat = (finalInflow - finalOutflow) > 0 ? (finalInflow - finalOutflow) : Number(serverStats.companyTotalBalance || 0);
 
-        // Update Overview Cards with Real Money Figures
         document.getElementById("statsFloatVal").innerText = "₦" + Number(netCompanyFloat).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         document.getElementById("statsInflowVal").innerText = "₦" + Number(finalInflow).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         document.getElementById("statsOutflowVal").innerText = "₦" + Number(finalOutflow).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         document.getElementById("statsLiabilitiesVal").innerText = "₦" + Number(finalLiabilities).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         document.getElementById("statsTransactionsVal").innerText = Number(rawTx.length || serverStats.totalTransactions || 0).toLocaleString();
 
-        // Update Sales Cards
         document.getElementById("salesTotalDataVal").innerText = (totalDataVolumeGB > 0 ? (Math.round(totalDataVolumeGB * 10) / 10) : Number(serverStats.totalDataSoldGB || 0)).toLocaleString() + " GB";
         document.getElementById("salesDataRevVal").innerText = "₦" + Number(serverStats.totalDataRevenue || (totalDataVolumeGB * 260)).toLocaleString("en-NG", { minimumFractionDigits: 2 }) + " Volume";
         document.getElementById("salesTotalAirtimeVal").innerText = "₦" + Number(totalAirtimeAmount > 0 ? totalAirtimeAmount : (serverStats.totalAirtimeSold || 0)).toLocaleString("en-NG", { minimumFractionDigits: 2 });
 
-        // Update Summary Operational Counters
         document.getElementById("summaryDataCount").innerText = dataCount;
         document.getElementById("summaryDataVolume").innerText = `${Math.round(totalDataVolumeGB * 10) / 10} GB Dispensed`;
         document.getElementById("summaryAirtimeCount").innerText = airtimeCount;
@@ -1351,6 +1379,172 @@
           </div>
         </div>
       `).join("");
+    }
+
+    // USERS DIRECTORY (WITH DELETE PERMISSION & CONFIRMATION)
+    function renderUsers(list) {
+      const feed = document.getElementById("usersListFeed");
+      const filtered = list.filter(u => activeRoleFilter === "all" || String(u.role).toLowerCase() === activeRoleFilter);
+
+      if (!filtered || filtered.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No records found matching current query.</div>`;
+        return;
+      }
+
+      feed.innerHTML = filtered.map(u => {
+        const uid = u._id || u.id;
+        const uName = u.name || `${u.firstName || ''} ${u.surname || ''}`.trim() || 'Subscriber';
+        const uPhone = u.phone || 'N/A';
+        const uEmail = u.email || 'No email';
+        const uRole = String(u.role || 'user').toUpperCase();
+        const uBal = Number(u.walletBalance ?? u.balance ?? 0);
+
+        return `
+          <div class="user-list-item">
+            <div class="user-avatar">${(uName[0] || 'U').toUpperCase()}</div>
+            <div style="flex:1; min-width:0;">
+              <div class="user-name-row">
+                <span class="user-name">${uName}</span>
+                <span class="user-role-tag">${uRole}</span>
+              </div>
+              <div class="user-sub">📞 ${uPhone} • ✉️ ${uEmail}</div>
+              <div style="font-size:10px; color:#94a3b8;">📍 ${u.lga || 'Municipal'} LGA, ${u.state || 'Kano'} State</div>
+            </div>
+            <div class="user-actions-side">
+              <div class="user-balance-val">₦${uBal.toLocaleString()}</div>
+              <button type="button" class="delete-user-icon-btn" title="Delete User Permanently" onclick="promptDeleteUser('${uid}', '${encodeURIComponent(uName)}', '${uRole}')">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function filterUserRole(role) {
+      activeRoleFilter = role;
+      document.querySelectorAll("#roleFilterScroll .filter-badge").forEach(b => {
+        b.classList.toggle("active", b.getAttribute("onclick").includes(role));
+      });
+      renderUsers(usersList);
+    }
+
+    function handleUserSearch(q) {
+      const term = q.toLowerCase().trim();
+      if (!term) { renderUsers(usersList); return; }
+      const matched = usersList.filter(u =>
+        (u.name && u.name.toLowerCase().includes(term)) ||
+        (u.phone && u.phone.includes(term)) ||
+        (u.email && u.email.toLowerCase().includes(term)) ||
+        (u.lga && u.lga.toLowerCase().includes(term)) ||
+        (u.role && u.role.toLowerCase().includes(term))
+      );
+      renderUsers(matched);
+    }
+
+    function renderHierarchyLeaders(list) {
+      const feed = document.getElementById("hierarchyLeadersFeed");
+      const leaders = list.filter(u => ["national_sales_director", "state_manager", "leader", "supervisor", "sm", "nsd"].includes(String(u.role).toLowerCase()));
+
+      if (!leaders || leaders.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding: 24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No leadership cadre assigned currently.</div>`;
+        return;
+      }
+
+      feed.innerHTML = leaders.map(leader => {
+        const lid = leader._id || leader.id;
+        const lName = leader.name || `${leader.firstName || ''} ${leader.surname || ''}`.trim() || 'Leader';
+        const lRole = String(leader.role).toUpperCase();
+
+        return `
+          <div class="user-list-item" style="border-left: 4px solid #0284c7;">
+            <div class="user-avatar">${(lName[0] || 'L').toUpperCase()}</div>
+            <div style="flex:1;">
+              <div class="user-name-row">
+                <span class="user-name">${lName}</span>
+                <span class="user-role-tag">${lRole}</span>
+              </div>
+              <div class="user-sub">📞 ${leader.phone} • 📍 ${leader.state || 'Kano'} ${leader.lga ? '('+leader.lga+' LGA)' : ''}</div>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button class="super-plan-edit-btn" onclick="alert('Viewing hierarchy profile for: ' + '${lName}')">
+                <i class="fa-solid fa-users"></i> Inspect
+              </button>
+              <button type="button" class="delete-user-icon-btn" title="Delete Leader" onclick="promptDeleteUser('${lid}', '${encodeURIComponent(lName)}', '${lRole}')">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // =========================================================================
+    // MODAL NA GOGE USER KAI-TSAYE DAGA DATABASE
+    // =========================================================================
+    function promptDeleteUser(userId, encodedName, role) {
+      const name = decodeURIComponent(encodedName);
+      pendingDeleteUser = { id: userId, name: name, role: role };
+
+      document.getElementById("confirmDeleteUserMsg").innerHTML = `
+        Kuna da tabbacin kuna son goge asusun <strong>${name}</strong> (${role}) gaba ɗaya daga database?<br><br>
+        <span style="color:#dc2626; font-weight:bold;">Wannan zai share bayanan login, wallet, da duk wani abu da ke da alaka da asusun nan take.</span>
+      `;
+
+      openModal("confirmDeleteUserModal");
+    }
+
+    async function executeDeleteUser() {
+      if (!pendingDeleteUser || !pendingDeleteUser.id) return;
+
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token") || localStorage.getItem("adminToken");
+      const btn = document.getElementById("btnExecuteDeleteUser");
+      const originalText = btn.innerText;
+
+      btn.disabled = true;
+      btn.innerText = "DELETING...";
+
+      try {
+        let res = await fetch(`${BASE_URL}/admin/users/${pendingDeleteUser.id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          }
+        });
+
+        if (res.status === 404) {
+          res = await fetch(`${BASE_URL}/superadmin/users/${pendingDeleteUser.id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            }
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && (data.success || data.status === "success")) {
+          alert(`An yi nasarar goge asusun ${pendingDeleteUser.name} daga database! 🗑️`);
+          closeModal("confirmDeleteUserModal");
+          // Sabunta lissafin dashboard nan take ba tare da reload ba
+          usersList = usersList.filter(u => String(u._id || u.id) !== String(pendingDeleteUser.id));
+          renderUsers(usersList);
+          renderHierarchyLeaders(usersList);
+          loadDashboardData();
+        } else {
+          alert(data.message || "Failed to delete user account.");
+        }
+      } catch (err) {
+        alert("Delete Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
+        pendingDeleteUser = null;
+      }
     }
 
     function renderDataPlans(list) {
@@ -1932,77 +2126,6 @@
       } catch (e) {
         alert("Delete error: " + e.message);
       }
-    }
-
-    function renderUsers(list) {
-      const feed = document.getElementById("usersListFeed");
-      const filtered = list.filter(u => activeRoleFilter === "all" || String(u.role).toLowerCase() === activeRoleFilter);
-
-      if (!filtered || filtered.length === 0) {
-        feed.innerHTML = `<div style="text-align:center; padding: 24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No records found matching current query.</div>`;
-        return;
-      }
-
-      feed.innerHTML = filtered.map(u => `
-        <div class="user-list-item">
-          <div class="user-avatar">${(u.name || u.firstName || 'U')[0].toUpperCase()}</div>
-          <div style="flex:1;">
-            <div class="user-name-row">
-              <span class="user-name">${u.name || (u.firstName + ' ' + (u.surname || '')) || 'Subscriber'}</span>
-              <span class="user-role-tag">${String(u.role || 'user').toUpperCase()}</span>
-            </div>
-            <div class="user-sub">${u.phone} • ${u.email || 'No email'}</div>
-            <div style="font-size:10px; color:#94a3b8;">📍 ${u.lga || 'Municipal'} LGA, ${u.state || 'Kano'} State</div>
-          </div>
-          <div class="user-balance-val">₦${Number(u.walletBalance || u.balance || 0).toLocaleString()}</div>
-        </div>
-      `).join("");
-    }
-
-    function filterUserRole(role) {
-      activeRoleFilter = role;
-      document.querySelectorAll("#roleFilterScroll .filter-badge").forEach(b => {
-        b.classList.toggle("active", b.getAttribute("onclick").includes(role));
-      });
-      renderUsers(usersList);
-    }
-
-    function handleUserSearch(q) {
-      const term = q.toLowerCase().trim();
-      if (!term) { renderUsers(usersList); return; }
-      const matched = usersList.filter(u =>
-        (u.name && u.name.toLowerCase().includes(term)) ||
-        (u.phone && u.phone.includes(term)) ||
-        (u.email && u.email.toLowerCase().includes(term)) ||
-        (u.lga && u.lga.toLowerCase().includes(term))
-      );
-      renderUsers(matched);
-    }
-
-    function renderHierarchyLeaders(list) {
-      const feed = document.getElementById("hierarchyLeadersFeed");
-      const leaders = list.filter(u => ["national_sales_director", "state_manager", "leader", "supervisor", "sm", "nsd"].includes(String(u.role).toLowerCase()));
-
-      if (!leaders || leaders.length === 0) {
-        feed.innerHTML = `<div style="text-align:center; padding: 24px; background:#fff; border-radius:12px; border:1px solid #e2e8f0; color:#94a3b8;">No leadership cadre assigned currently.</div>`;
-        return;
-      }
-
-      feed.innerHTML = leaders.map(leader => `
-        <div class="user-list-item" style="border-left: 4px solid #0284c7;">
-          <div class="user-avatar">${(leader.name || leader.firstName || 'L')[0].toUpperCase()}</div>
-          <div style="flex:1;">
-            <div class="user-name-row">
-              <span class="user-name">${leader.name || leader.firstName}</span>
-              <span class="user-role-tag">${String(leader.role).toUpperCase()}</span>
-            </div>
-            <div class="user-sub">📞 ${leader.phone} • 📍 ${leader.state || 'Kano'} ${leader.lga ? '('+leader.lga+' LGA)' : ''}</div>
-          </div>
-          <button class="super-plan-edit-btn" onclick="alert('Viewing hierarchy profile for: ' + '${leader.name || leader.firstName}')">
-            <i class="fa-solid fa-users"></i> Inspect
-          </button>
-        </div>
-      `).join("");
     }
 
     function renderRefunds(list) {
