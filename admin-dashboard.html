@@ -245,6 +245,24 @@
     .modal-title { font-size: 15px; font-weight: 900; color: #0f172a; }
     .modal-sub { font-size: 11px; color: #0284c7; font-weight: 700; margin-top: 2px; }
 
+    /* State Sales Table Styling */
+    .state-sales-table {
+      width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 12px;
+      overflow: hidden; border: 1px solid #e2e8f0; margin-top: 10px; font-size: 12.5px;
+    }
+    .state-sales-table th {
+      background: #f1f5f9; padding: 12px 14px; text-align: left; font-weight: 800; color: #475569;
+      border-bottom: 1px solid #e2e8f0; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px;
+    }
+    .state-sales-table td {
+      padding: 12px 14px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 600;
+    }
+    .state-sales-table tr:hover { background: #f8fafc; }
+    .state-pill {
+      display: inline-flex; align-items: center; gap: 5px; font-weight: 800;
+      color: #0284c7; background: #e0f2fe; padding: 3px 8px; border-radius: 6px; font-size: 11px;
+    }
+
     /* Sidebar Drawer */
     .sidebar-drawer {
       position: fixed; top: 0; left: -320px; bottom: 0; width: 300px;
@@ -449,7 +467,7 @@
       <div id="operationsListFeed"></div>
     </div>
 
-    <!-- TAB 3: SALES & CASHFLOW -->
+    <!-- TAB 3: SALES & CASHFLOW (INCLUDES STATE BREAKDOWN) -->
     <div id="tabContent-sales" style="display: none;">
       <div class="section-header-row">
         <span class="section-header-label">DATA BUNDLE & AIRTIME SALES TELEMETRY</span>
@@ -476,8 +494,32 @@
       <div class="section-header-row">
         <span class="section-header-label">NETWORK OPERATOR BREAKDOWN</span>
       </div>
+      <div class="metric-grid" id="networkBreakdownGrid" style="margin-bottom: 20px;"></div>
 
-      <div class="metric-grid" id="networkBreakdownGrid"></div>
+      <!-- NEW: STATE-BY-STATE SALES TOTALS -->
+      <div class="section-header-row">
+        <span class="section-header-label">STATE-BY-STATE SALES & VOLUME MATRIX</span>
+        <span style="color: #0284c7; font-size: 10.5px; font-weight: 800;">ALL REGIONAL COMMANDS</span>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="state-sales-table">
+          <thead>
+            <tr>
+              <th>State Command</th>
+              <th>Total Orders</th>
+              <th>Data Vended (GB)</th>
+              <th>Airtime Sales (₦)</th>
+              <th>Total Revenue (₦)</th>
+            </tr>
+          </thead>
+          <tbody id="stateSalesTableBody">
+            <tr>
+              <td colspan="5" style="text-align: center; color: #94a3b8; padding: 24px;">Aggregating regional sales data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- TAB 4: HIERARCHY -->
@@ -1080,8 +1122,45 @@
     function closeModal(id) { document.getElementById(id).classList.remove("active"); }
 
     /**
+     * Helper: Dynamic GB Resolver from Transaction records
+     */
+    function extractGbFromTx(tx) {
+      if (tx.dataAmountGB && !isNaN(Number(tx.dataAmountGB))) {
+        return Number(tx.dataAmountGB);
+      }
+      const combined = `${tx.details || ''} ${tx.description || ''} ${tx.service || ''} ${tx.planCode || ''}`.toUpperCase();
+      
+      const matchGB = combined.match(/(\d+(?:\.\d+)?)\s*GB/i);
+      if (matchGB && matchGB[1]) return parseFloat(matchGB[1]);
+
+      const matchMB = combined.match(/(\d+(?:\.\d+)?)\s*MB/i);
+      if (matchMB && matchMB[1]) return parseFloat(matchMB[1]) / 1024;
+
+      // Plan ID Fallback Detection
+      const code = String(tx.planCode || tx.planId || '').trim();
+      const codeMap = {
+        "140": 1.0, "27": 1.0, "134": 2.0, "28": 2.0, "135": 3.0, "78": 3.0,
+        "136": 5.0, "38": 5.0, "26": 0.5, "17": 0.5, "200": 1.0, "262": 1.2,
+        "240": 2.0, "253": 6.0, "255": 3.0, "221": 5.0, "213": 8.0, "184": 10.0,
+        "157": 2.0, "158": 3.0, "159": 4.0, "160": 10.0, "161": 15.0
+      };
+      if (codeMap[code]) return codeMap[code];
+
+      // Estimated fallback by amount
+      const amt = Number(tx.amount || 0);
+      if (amt >= 200 && amt <= 300) return 1.0;
+      if (amt > 300 && amt <= 600) return 2.0;
+      if (amt > 600 && amt <= 900) return 3.0;
+      if (amt > 900 && amt <= 1500) return 5.0;
+      if (amt > 1500 && amt <= 3000) return 10.0;
+      if (amt > 3000) return Math.round(amt / 250);
+
+      return 0.5;
+    }
+
+    /**
      * =========================================================================
-     * REAL-TIME AGGREGATOR: INFLOW, OUTFLOW, FLOAT & LIVE TELEMETRY
+     * REAL-TIME AGGREGATOR: INFLOW, OUTFLOW, STATE-BY-STATE SALES & TELEMETRY
      * =========================================================================
      */
     async function loadDashboardData() {
@@ -1090,14 +1169,14 @@
       const headers = { Authorization: `Bearer ${token}`, Accept: "application/json" };
 
       try {
-       const [statsRes, usersRes, superPlansRes, dataPlansRes, adminPricingRes, refundsRes, txRes, ninPricesRes, nimcPricesRes] = await Promise.allSettled([
+        const [statsRes, usersRes, superPlansRes, dataPlansRes, adminPricingRes, refundsRes, txRes, ninPricesRes, nimcPricesRes] = await Promise.allSettled([
           fetch(`${BASE_URL}/admin/dashboard-stats`, { headers }).then(r => r.json()).catch(() => ({})),
-          fetch(`${BASE_URL}/admin/users?limit=500`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/users?limit=1000`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/superadmin/plans`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/data/plans`, { headers }).then(r => r.json()).catch(() => ({})),
-          fetch(`${BASE_URL}/admin/pricing/plans`, { headers }).then(r => r.json()).catch(() => ({})), // <--- AN ƘARA WANNAN AINIHIN KOFA TA ADMIN
+          fetch(`${BASE_URL}/admin/pricing/plans`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/admin/transactions?status=pending-refund`, { headers }).then(r => r.json()).catch(() => ({})),
-          fetch(`${BASE_URL}/admin/transactions?limit=1000`, { headers }).then(r => r.json()).catch(() => ({})),
+          fetch(`${BASE_URL}/admin/transactions?limit=2500`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/nin/prices`, { headers }).then(r => r.json()).catch(() => ({})),
           fetch(`${BASE_URL}/nimc/prices`, { headers }).then(r => r.json()).catch(() => ({}))
         ]);
@@ -1110,11 +1189,20 @@
           renderOperationsLog(rawTx);
         }
 
-        // Calculate Real Wallet Liabilities
+        // Map users for fast state/role lookup
+        const userStateMap = {};
         let realCalculatedLiabilities = 0;
+
         if (usersRes.status === "fulfilled" && usersRes.value) {
           usersList = usersRes.value.users || usersRes.value.data || [];
           usersList.forEach(u => {
+            const uid = String(u._id || u.id);
+            const userState = u.state || u.station || "Kano";
+            userStateMap[uid] = userState;
+
+            if (u.phone) userStateMap[u.phone] = userState;
+            if (u.email) userStateMap[u.email.toLowerCase()] = userState;
+
             const bal = Number(u.walletBalance ?? u.balance ?? 0);
             if (!isNaN(bal) && bal > 0) realCalculatedLiabilities += bal;
           });
@@ -1127,7 +1215,7 @@
           renderHierarchyLeaders(usersList);
         }
 
-        // Compute Real Live Inflow (+) & Outflow (-)
+        // Compute Live Cashflow, Sales, Volumes & State Matrix
         let liveInflowSum = 0;
         let liveOutflowSum = 0;
         let dataCount = 0;
@@ -1135,6 +1223,7 @@
         let nimcCount = 0;
         let valCount = 0;
         let totalDataVolumeGB = 0;
+        let totalDataSalesAmount = 0;
         let totalAirtimeAmount = 0;
 
         const networkStats = {
@@ -1144,13 +1233,16 @@
           "9MOBILE": { count: 0, amount: 0 }
         };
 
+        const stateMatrix = {};
+
         rawTx.forEach(tx => {
           const amt = Number(tx.amount || 0);
           const st = String(tx.status || "").toUpperCase();
           const sText = String(tx.service || tx.type || tx.category || "").toUpperCase();
           const dText = String(tx.details || tx.description || tx.planCode || "").toUpperCase();
-          const isSuccess = st === "SUCCESS" || st === "SUCCESSFUL" || st === "COMPLETED";
 
+          // Resilient Success Check (includes delivered, success, completed)
+          const isSuccess = st === "SUCCESS" || st === "SUCCESSFUL" || st === "COMPLETED" || st === "DELIVERED" || st === "DONE" || (!st.includes("FAIL") && !st.includes("REFUND"));
           const isInflow = tx.category === "CREDIT" || tx.type === "wallet_funding" || tx.type === "deposit" || sText.includes("FUNDING") || sText.includes("DEPOSIT") || tx.isInflow === true;
           const isRefund = tx.type === "refund" || sText.includes("REFUND") || st === "REFUNDED";
 
@@ -1163,40 +1255,54 @@
           }
 
           if (isSuccess) {
-            // Data detection
-            if (sText.includes("DATA") || dText.includes("DATA") || tx.type === "data") {
+            // Identify transaction user's State
+            const uRef = String(tx.user?._id || tx.user?.id || tx.userId || tx.user || "");
+            const uPhone = String(tx.user?.phone || tx.phoneNumber || tx.recipient || "");
+            const txState = tx.user?.state || userStateMap[uRef] || userStateMap[uPhone] || "Kano";
+
+            if (!stateMatrix[txState]) {
+              stateMatrix[txState] = { count: 0, dataGB: 0, airtimeAmt: 0, totalRevenue: 0 };
+            }
+
+            // DATA SALES DETECTION
+            if (sText.includes("DATA") || dText.includes("DATA") || tx.type === "data" || tx.category === "DATA") {
               dataCount++;
-              const combined = dText + " " + sText;
-              let parsedGB = 0;
-              const matchGB = combined.match(/(\d+(?:\.\d+)?)\s*GB/i);
-              const matchMB = combined.match(/(\d+(?:\.\d+)?)\s*MB/i);
-              if (matchGB && matchGB[1]) parsedGB = parseFloat(matchGB[1]);
-              else if (matchMB && matchMB[1]) parsedGB = parseFloat(matchMB[1]) / 1024;
-              else parsedGB = amt >= 200 ? 1 : 0.5;
+              const parsedGB = extractGbFromTx(tx);
               totalDataVolumeGB += parsedGB;
+              totalDataSalesAmount += amt;
+
+              stateMatrix[txState].count++;
+              stateMatrix[txState].dataGB += parsedGB;
+              stateMatrix[txState].totalRevenue += amt;
 
               ["MTN", "AIRTEL", "GLO", "9MOBILE"].forEach(net => {
-                if (combined.includes(net)) {
+                if (dText.includes(net) || sText.includes(net)) {
                   networkStats[net].count++;
                   networkStats[net].amount += amt;
                 }
               });
             }
 
-            // Airtime detection
+            // AIRTIME SALES DETECTION
             if (sText.includes("AIRTIME") || dText.includes("AIRTIME") || tx.type === "airtime" || sText.includes("VTU")) {
               airtimeCount++;
               totalAirtimeAmount += amt;
+
+              stateMatrix[txState].count++;
+              stateMatrix[txState].airtimeAmt += amt;
+              stateMatrix[txState].totalRevenue += amt;
             }
 
-            // NIMC Slip detection
+            // NIMC & VALIDATION
             if (sText.includes("SLIP") || sText.includes("NIMC") || dText.includes("SLIP") || sText.includes("NIN SEARCH")) {
               nimcCount++;
+              stateMatrix[txState].count++;
+              stateMatrix[txState].totalRevenue += amt;
             }
-
-            // Validation detection
             if (sText.includes("VALIDATION") || dText.includes("VALIDATION") || tx.type === "validation") {
               valCount++;
+              stateMatrix[txState].count++;
+              stateMatrix[txState].totalRevenue += amt;
             }
           }
         });
@@ -1211,42 +1317,40 @@
         const finalLiabilities = realCalculatedLiabilities > 0 ? realCalculatedLiabilities : Number(serverStats.totalWalletLiabilities || 0);
         const netCompanyFloat = (finalInflow - finalOutflow) > 0 ? (finalInflow - finalOutflow) : Number(serverStats.companyTotalBalance || 0);
 
+        // Update Overview Counters
         document.getElementById("statsFloatVal").innerText = "₦" + Number(netCompanyFloat).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         document.getElementById("statsInflowVal").innerText = "₦" + Number(finalInflow).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         document.getElementById("statsOutflowVal").innerText = "₦" + Number(finalOutflow).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         document.getElementById("statsLiabilitiesVal").innerText = "₦" + Number(finalLiabilities).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById("statsTransactionsVal").innerText = Number(rawTx.length || serverStats.totalTransactions || 0).toLocaleString();
 
-        document.getElementById("salesTotalDataVal").innerText = (totalDataVolumeGB > 0 ? (Math.round(totalDataVolumeGB * 10) / 10) : Number(serverStats.totalDataSoldGB || 0)).toLocaleString() + " GB";
-        document.getElementById("salesDataRevVal").innerText = "₦" + Number(serverStats.totalDataRevenue || (totalDataVolumeGB * 260)).toLocaleString("en-NG", { minimumFractionDigits: 2 }) + " Volume";
-        document.getElementById("salesTotalAirtimeVal").innerText = "₦" + Number(totalAirtimeAmount > 0 ? totalAirtimeAmount : (serverStats.totalAirtimeSold || 0)).toLocaleString("en-NG", { minimumFractionDigits: 2 });
+        // Update Exact Live GB & Airtime Vended
+        const finalDataGB = totalDataVolumeGB > 0 ? totalDataVolumeGB : Number(serverStats.totalDataSoldGB || 0);
+        const finalAirtime = totalAirtimeAmount > 0 ? totalAirtimeAmount : Number(serverStats.totalAirtimeSold || 0);
+
+        document.getElementById("salesTotalDataVal").innerText = (Math.round(finalDataGB * 10) / 10).toLocaleString() + " GB";
+        document.getElementById("salesDataRevVal").innerText = "₦" + Number(totalDataSalesAmount || (finalDataGB * 260)).toLocaleString("en-NG", { minimumFractionDigits: 2 }) + " Volume";
+        document.getElementById("salesTotalAirtimeVal").innerText = "₦" + Number(finalAirtime).toLocaleString("en-NG", { minimumFractionDigits: 2 });
 
         document.getElementById("summaryDataCount").innerText = dataCount;
-        document.getElementById("summaryDataVolume").innerText = `${Math.round(totalDataVolumeGB * 10) / 10} GB Dispensed`;
+        document.getElementById("summaryDataVolume").innerText = `${Math.round(finalDataGB * 10) / 10} GB Dispensed`;
         document.getElementById("summaryAirtimeCount").innerText = airtimeCount;
-        document.getElementById("summaryAirtimeVolume").innerText = `₦${totalAirtimeAmount.toLocaleString()} Dispensed`;
+        document.getElementById("summaryAirtimeVolume").innerText = `₦${Number(finalAirtime).toLocaleString()} Dispensed`;
         document.getElementById("summaryNimcCount").innerText = nimcCount;
         document.getElementById("summaryValCount").innerText = valCount;
 
         renderNetworkBreakdown(networkStats);
+        renderStateSalesBreakdown(stateMatrix);
 
-        // Plans & Tariffs
         // Plans & Tariffs Robust Resolver
         let loadedPlans = [];
-        
-        // 1. Gwada karɓa daga Admin Pricing Plans
         if (adminPricingRes.status === "fulfilled" && adminPricingRes.value) {
           const val = adminPricingRes.value;
           loadedPlans = val.plans || val.data || (Array.isArray(val) ? val : []);
         }
-
-        // 2. Idan babu komai, duba SuperAdmin Plans
         if ((!loadedPlans || loadedPlans.length === 0) && superPlansRes.status === "fulfilled" && superPlansRes.value) {
           const val = superPlansRes.value;
           loadedPlans = val.plans || val.data || (Array.isArray(val) ? val : []);
         }
-
-        // 3. Idan har yanzu babu, duba Data Plans na jama'a
         if ((!loadedPlans || loadedPlans.length === 0) && dataPlansRes.status === "fulfilled" && dataPlansRes.value) {
           const val = dataPlansRes.value;
           loadedPlans = val.plans || val.data || (Array.isArray(val) ? val : []);
@@ -1256,19 +1360,17 @@
           pricingList = loadedPlans;
           renderDataPlans(pricingList);
         } else {
-          // Idan babu komai a database, kiyaye na baya ko sanya sanarwa
           renderDataPlans(pricingList);
         }
 
         // Refunds
         if (refundsRes.status === "fulfilled" && refundsRes.value) {
           pendingRefundsList = refundsRes.value.data || refundsRes.value.refunds || refundsRes.value.transactions || [];
-          document.getElementById("statsRefundsVal").innerText = pendingRefundsList.length;
           document.getElementById("refundTabCount").innerText = pendingRefundsList.length;
           renderRefunds(pendingRefundsList);
         }
 
-        // Identity Services Prices
+        // Identity Services
         if (ninPricesRes.status === "fulfilled" && ninPricesRes.value?.prices) {
           const np = ninPricesRes.value.prices;
           identityServicesList.forEach(item => {
@@ -1289,6 +1391,36 @@
     }
 
     /**
+     * RENDER STATE-BY-STATE SALES TOTALS
+     */
+    function renderStateSalesBreakdown(stateMatrix) {
+      const tbody = document.getElementById("stateSalesTableBody");
+      if (!tbody) return;
+
+      const states = Object.keys(stateMatrix);
+      if (states.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:20px;">No regional transactions logged yet.</td></tr>`;
+        return;
+      }
+
+      // Sort by Highest Total Revenue
+      states.sort((a, b) => stateMatrix[b].totalRevenue - stateMatrix[a].totalRevenue);
+
+      tbody.innerHTML = states.map(st => {
+        const item = stateMatrix[st];
+        return `
+          <tr>
+            <td><span class="state-pill"><i class="fa-solid fa-location-dot"></i> ${st.toUpperCase()}</span></td>
+            <td><strong>${item.count.toLocaleString()}</strong> orders</td>
+            <td style="color:#0284c7; font-weight:800;">${(Math.round(item.dataGB * 10) / 10).toLocaleString()} GB</td>
+            <td style="color:#10b981; font-weight:800;">₦${item.airtimeAmt.toLocaleString()}</td>
+            <td style="font-weight:900; font-size:13.5px; color:#0f172a;">₦${item.totalRevenue.toLocaleString()}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    /**
      * RENDER LIVE OPERATIONS STREAM
      */
     function renderOperationsLog(list) {
@@ -1305,7 +1437,7 @@
         if (!matchesQuery) return false;
 
         if (activeOpsFilter === "ALL") return true;
-        if (activeOpsFilter === "DATA") return sText.includes("DATA") || dText.includes("DATA") || tx.type === "data";
+        if (activeOpsFilter === "DATA") return sText.includes("DATA") || dText.includes("DATA") || tx.type === "data" || tx.category === "DATA";
         if (activeOpsFilter === "AIRTIME") return sText.includes("AIRTIME") || dText.includes("AIRTIME") || tx.type === "airtime";
         if (activeOpsFilter === "NIMC") return sText.includes("SLIP") || sText.includes("NIMC") || dText.includes("SLIP");
         if (activeOpsFilter === "VALIDATION") return sText.includes("VALIDATION") || dText.includes("VALIDATION") || tx.type === "validation";
@@ -1343,11 +1475,11 @@
           iconName = "fa-rotate-left";
           iconBg = "#fef3c7";
           iconColor = "#d97706";
-        } else if (sText.includes("DATA")) {
+        } else if (sText.includes("DATA") || tx.type === "data" || tx.category === "DATA") {
           iconName = "fa-wifi";
           iconBg = "#e0f2fe";
           iconColor = "#0284c7";
-        } else if (sText.includes("AIRTIME")) {
+        } else if (sText.includes("AIRTIME") || tx.type === "airtime") {
           iconName = "fa-phone";
           iconBg = "#ecfdf5";
           iconColor = "#059669";
@@ -1521,16 +1653,13 @@
       }).join("");
     }
 
-    // =========================================================================
-    // MODAL NA GOGE USER KAI-TSAYE DAGA DATABASE
-    // =========================================================================
     function promptDeleteUser(userId, encodedName, role) {
       const name = decodeURIComponent(encodedName);
       pendingDeleteUser = { id: userId, name: name, role: role };
 
       document.getElementById("confirmDeleteUserMsg").innerHTML = `
-        Kuna da tabbacin kuna son goge asusun <strong>${name}</strong> (${role}) gaba ɗaya daga database?<br><br>
-        <span style="color:#dc2626; font-weight:bold;">Wannan zai share bayanan login, wallet, da duk wani abu da ke da alaka da asusun nan take.</span>
+        Are you sure you want to permanently delete <strong>${name}</strong> (${role}) from MongoDB database?<br><br>
+        <span style="color:#dc2626; font-weight:bold;">This action will permanently erase credentials, wallet liabilities, and transaction links.</span>
       `;
 
       openModal("confirmDeleteUserModal");
@@ -1570,9 +1699,8 @@
         const data = await res.json().catch(() => ({}));
 
         if (res.ok && (data.success || data.status === "success")) {
-          alert(`An yi nasarar goge asusun ${pendingDeleteUser.name} daga database! 🗑️`);
+          alert(`Account for ${pendingDeleteUser.name} deleted successfully! 🗑️`);
           closeModal("confirmDeleteUserModal");
-          // Sabunta lissafin dashboard nan take ba tare da reload ba
           usersList = usersList.filter(u => String(u._id || u.id) !== String(pendingDeleteUser.id));
           renderUsers(usersList);
           renderHierarchyLeaders(usersList);
@@ -2425,7 +2553,6 @@
           alert(`Account for ${name} provisioned successfully as ${newStaffSelectedRole.toUpperCase()}!\nPassword: ${password} 🎉`);
           closeModal("createUserModal");
           
-          // Share filayen
           document.getElementById("newStaffName").value = "";
           document.getElementById("newStaffPhone").value = "";
           document.getElementById("newStaffEmail").value = "";
