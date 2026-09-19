@@ -884,11 +884,10 @@
         : (state.selectedPlan?.userPrice ?? state.selectedPlan?.price ?? 0);
 
       // Tabbatar da ingantaccen Network ID ga Al-Ihsan ba tare da tabawa MTN ba
-      let assignedNetId = "1";
-      if (netName.toUpperCase() === "AIRTEL") assignedNetId = "4";
-      if (netName.toUpperCase() === "GLO") assignedNetId = "2";
-      if (netName.toUpperCase() === "9MOBILE") assignedNetId = "3";
-
+     let assignedNetId = "1";
+    if (netName.toUpperCase() === "AIRTEL") assignedNetId = "2"; //[cite: 8]
+    if (netName.toUpperCase() === "9MOBILE") assignedNetId = "3"; //[cite: 8]
+    if (netName.toUpperCase() === "GLO") assignedNetId = "4"; //[cite: 8]
       const requestBody = {
         network: netName,
         networkId: state.selectedPlan?.networkId || assignedNetId,
