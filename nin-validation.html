@@ -582,13 +582,14 @@
       ? CONFIG.BASE_URL
       : "https://ayax-data-xpress-server.onrender.com/api/v1";
 
-    // Aligned strictly with Abjiktech error_type specification:
-    // Allowed values: no_record, simbank_validation, modification, photo_error
     const initialValidationTypes = [
-      { id: "no_record", name: "No Record Found", errorType: "no_record", cost: 1300 },
-      { id: "simbank_validation", name: "SIM / Bank Validation", errorType: "simbank_validation", cost: 1300 },
-      { id: "modification", name: "Modification Validation", errorType: "modification", cost: 1700 },
-      { id: "photo_error", name: "Photographic Error", errorType: "photo_error", cost: 1400 }
+      { id: "no_record", name: "No Record Found", cost: 1300 },
+      { id: "sim_val", name: "SIM Validation", cost: 1300 },
+      { id: "vnin_val", name: "vNIN Validation", cost: 1300 },
+      { id: "update_record", name: "Update Records Validation", cost: 1300 },
+      { id: "bank_val", name: "Bank Validation", cost: 1300 },
+      { id: "mod_val", name: "Modification Validation", cost: 1700 },
+      { id: "photo_error", name: "Photographic Error", cost: 1400 },
     ];
 
     let state = {
@@ -753,50 +754,30 @@
 
         const activeItem = state.validationTypes.find(t => t.name === state.selectedType);
         const activeCost = activeItem ? activeItem.cost : 1300;
-        const abjikErrorType = activeItem?.errorType || "no_record";
 
-        const requestBody = {
-          type: abjikErrorType,
-          issueType: abjikErrorType,
-          validationType: abjikErrorType,
-          error_type: abjikErrorType,
-          serviceId: activeItem?.id,
-          nin: nin,
-          pin: pin,
-          transactionPin: pin,
-          amount: activeCost,
-          timestamp: new Date().toISOString(),
-          processingWindow: "48_WORKING_HOURS"
-        };
-
-        // Try primary validation endpoint, fallback to /nin/validate
-        let response = await fetch(`${BASE_URL}/validation/submit`, {
+        const response = await fetch(`${BASE_URL}/nin/validate`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${state.token}`
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify({
+            type: state.selectedType,
+            serviceId: activeItem?.id,
+            nin: nin,
+            pin: pin,
+            transactionPin: pin,
+            amount: activeCost,
+            timestamp: new Date().toISOString(),
+            processingWindow: "48_WORKING_HOURS"
+          })
         });
-
-        if (response.status === 404) {
-          response = await fetch(`${BASE_URL}/nin/validate`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${state.token}`
-            },
-            body: JSON.stringify(requestBody)
-          });
-        }
 
         const result = await response.json();
 
         if (response.ok && (result.success || result.status === 'success')) {
           closePinModal();
-          const ticketId = result.data?.ticketId || result.ticketId || result.reference || "Generated";
-          alert(`Request Submitted 🎉\n\nTicket: ${ticketId}\nYour NIN validation request has been submitted to the Abjiktech clearing queue. Settlement completes within 24-48 working hours.`);
-          
+          alert("Request Submitted 🎉: Your NIN validation request has been queued. Verification will be finalized within 48 working hours.");
           document.getElementById('ninInput').value = '';
           if (state.isAuthorized) toggleConsent();
           if (state.isTimeAgreed) toggleTimeAgreement();
@@ -870,5 +851,7 @@
       }
     }
   </script>
+  <script src="js/config.js"></script>
+  <script src="js/app-bootstrap.js"></script>
 </body>
 </html>
