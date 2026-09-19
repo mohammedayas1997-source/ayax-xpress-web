@@ -867,6 +867,28 @@
   </style>
 </head>
 <body>
+  <!-- FIRST LOGIN PIN SETUP MODAL -->
+<div id="firstLoginPinModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 8, 17, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(8px);">
+  <div style="background: #0b1120; border: 1px solid #1e293b; border-radius: 20px; padding: 28px 22px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.7);">
+    <div style="width: 60px; height: 60px; border-radius: 30px; background: rgba(2, 132, 199, 0.15); color: #00f0ff; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 14px;">
+      <i class="fa-solid fa-lock"></i>
+    </div>
+    <h3 style="color: #f8fafc; font-size: 18px; font-weight: 900; margin-bottom: 6px;">Set Transaction PIN</h3>
+    <p style="color: #94a3b8; font-size: 12px; line-height: 1.5; margin-bottom: 18px;">
+      Welcome! As a new user, you are required to set a secure <strong>4-digit Transaction PIN</strong> to protect your wallet and authorize purchases before proceeding.
+    </p>
+
+    <label style="color: #64748b; font-size: 11px; font-weight: 800; display: block; text-align: left; margin-bottom: 4px;">CREATE 4-DIGIT PIN</label>
+    <input type="password" id="firstPinInput" maxlength="4" placeholder="••••" inputmode="numeric" style="width: 100%; height: 48px; background: #050811; border: 1px solid #1e293b; border-radius: 10px; color: #fff; font-size: 22px; text-align: center; letter-spacing: 8px; margin-bottom: 14px; outline: none;">
+
+    <label style="color: #64748b; font-size: 11px; font-weight: 800; display: block; text-align: left; margin-bottom: 4px;">CONFIRM 4-DIGIT PIN</label>
+    <input type="password" id="confirmFirstPinInput" maxlength="4" placeholder="••••" inputmode="numeric" style="width: 100%; height: 48px; background: #050811; border: 1px solid #1e293b; border-radius: 10px; color: #fff; font-size: 22px; text-align: center; letter-spacing: 8px; margin-bottom: 20px; outline: none;">
+
+    <button type="button" id="btnSubmitFirstPin" onclick="submitFirstLoginPin()" style="width: 100%; height: 48px; background: #0284c7; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer;">
+      SAVE PIN & PROCEED
+    </button>
+  </div>
+</div>
 
   <!-- FLOATING PWA INSTALL PROMPT -->
   <div class="pwa-install-banner" id="pwaInstallBanner">
@@ -1588,6 +1610,76 @@
         btn.innerHTML = originalText;
       }
     }
+
+    // Check if user requires initial PIN setup
+function checkFirstLoginPin(userData, token) {
+  const role = String(userData.role || "").toLowerCase();
+  
+  // Applies strictly to customer and agent roles
+  if ((role === "user" || role === "agent") && userData.isPinSet === false) {
+    document.getElementById("firstLoginPinModal").style.display = "flex";
+    return false;
+  }
+  return true;
+}
+
+// Execute initial PIN setup API request
+async function submitFirstLoginPin() {
+  const pin = document.getElementById("firstPinInput").value.trim();
+  const confirmPin = document.getElementById("confirmFirstPinInput").value.trim();
+  const token = localStorage.getItem("userToken") || localStorage.getItem("token");
+
+  if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+    alert("Please enter a valid 4-digit numeric PIN.");
+    return;
+  }
+
+  if (pin !== confirmPin) {
+    alert("The entered PINs do not match. Please verify and try again.");
+    return;
+  }
+
+  const btn = document.getElementById("btnSubmitFirstPin");
+  btn.disabled = true;
+  btn.innerText = "SAVING PIN...";
+
+  try {
+    const res = await fetch("https://ayax-data-xpress-server.onrender.com/api/v1/user/setup-first-pin", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ pin, confirmPin }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      alert("Transaction PIN configured successfully! Redirecting to your dashboard...");
+      
+      const storedUser = JSON.parse(localStorage.getItem("userData") || "{}");
+      storedUser.isPinSet = true;
+      localStorage.setItem("userData", JSON.stringify(storedUser));
+
+      document.getElementById("firstLoginPinModal").style.display = "none";
+
+      const role = String(storedUser.role || "").toLowerCase();
+      if (role === "agent") {
+        window.location.replace("agent-dashboard.html");
+      } else {
+        window.location.replace("home.html");
+      }
+    } else {
+      alert(data.message || "Failed to configure PIN. Please try again.");
+    }
+  } catch (err) {
+    alert("Error: " + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "SAVE PIN & PROCEED";
+  }
+}
   </script>
 </body>
 </html>
