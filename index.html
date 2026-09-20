@@ -57,7 +57,6 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Top Navy Section */
     .top-navy-wrapper {
       background: linear-gradient(180deg, #061224 0%, #0a1d37 60%, #0c2445 100%);
       color: #ffffff;
@@ -129,8 +128,9 @@
       gap: 10px;
     }
 
+    /* An gyara wannan don ya rika nunawa kai-tsaye */
     .btn-nav-install {
-      display: none;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
       background: #10b981;
@@ -188,7 +188,6 @@
       transform: translateY(-1px);
     }
 
-    /* Hero Section */
     .hero-section {
       padding: 60px 20px 70px 20px;
       text-align: center;
@@ -289,7 +288,6 @@
       border-color: #ffffff;
     }
 
-    /* Core Services Grid */
     .services-container {
       max-width: 1000px;
       margin: 50px auto 40px auto;
@@ -361,7 +359,6 @@
       line-height: 1.6;
     }
 
-    /* Official Contact Section */
     .contact-section-wrapper {
       max-width: 1000px;
       margin: 40px auto;
@@ -426,11 +423,6 @@
       gap: 4px;
     }
 
-    .contact-details a:hover {
-      text-decoration: underline;
-    }
-
-    /* Footer */
     .footer {
       border-top: 1px solid var(--border-light);
       background: #ffffff;
@@ -445,10 +437,6 @@
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.8;
-    }
-
-    .footer-contact-summary strong {
-      color: var(--primary-navy);
     }
 
     .footer-links {
@@ -466,18 +454,12 @@
       text-decoration: none;
     }
 
-    .footer-links a:hover {
-      color: var(--accent-blue);
-      text-decoration: underline;
-    }
-
     .footer-copy {
       font-size: 12px;
       color: #94a3b8;
       margin: 0;
     }
 
-    /* Modal Overlay & Card */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -519,10 +501,6 @@
       font-size: 22px;
       color: #94a3b8;
       cursor: pointer;
-    }
-
-    .close-modal-btn:hover {
-      color: var(--text-dark);
     }
 
     .header-section {
@@ -600,12 +578,6 @@
       transition: all 0.2s;
     }
 
-    .input-container:focus-within {
-      background: #ffffff;
-      border-color: var(--primary-navy);
-      box-shadow: 0 0 0 3px rgba(10, 29, 55, 0.1);
-    }
-
     .input-icon {
       color: #64748b;
       font-size: 15px;
@@ -647,10 +619,6 @@
       text-decoration: none;
     }
 
-    .forgot-btn:hover {
-      text-decoration: underline;
-    }
-
     .login-btn {
       width: 100%;
       height: 48px;
@@ -669,11 +637,6 @@
       transition: all 0.2s;
     }
 
-    .login-btn:hover {
-      background: #0284c7;
-    }
-
-    /* Biometric Login Styles */
     .biometric-divider {
       display: flex;
       align-items: center;
@@ -714,12 +677,6 @@
       font-family: inherit;
     }
 
-    .biometric-login-btn:hover {
-      background: #d1fae5;
-      border-color: #6ee7b7;
-      transform: translateY(-1px);
-    }
-
     .developer-api-btn {
       display: flex;
       align-items: center;
@@ -738,10 +695,6 @@
       transition: all 0.2s;
     }
 
-    .developer-api-btn:hover {
-      background: #e0f2fe;
-    }
-
     .signup-container {
       display: flex;
       justify-content: center;
@@ -756,13 +709,9 @@
       text-decoration: none;
     }
 
-    .signup-text:hover {
-      text-decoration: underline;
-    }
-
     /* Floating PWA Install Banner */
     .pwa-install-banner {
-      display: none;
+      display: flex; /* Yanzu a bude yake ta yadda zai fito nan take */
       position: fixed;
       bottom: 20px;
       left: 50%;
@@ -848,10 +797,6 @@
       transition: all 0.2s;
     }
 
-    .btn-pwa-install:hover {
-      background: #059669;
-    }
-
     .btn-pwa-dismiss {
       background: none;
       border: none;
@@ -859,10 +804,6 @@
       font-size: 18px;
       cursor: pointer;
       padding: 4px;
-    }
-
-    .btn-pwa-dismiss:hover {
-      color: #cbd5e1;
     }
   </style>
 </head>
@@ -960,10 +901,10 @@
           <span>Get Started Now</span>
           <i class="fa-solid fa-arrow-right"></i>
         </button>
-        <a href="signup.html" class="btn-cta-outline">
-          <i class="fa-regular fa-user"></i>
-          <span>Create Free Account</span>
-        </a>
+        <button type="button" class="btn-cta-outline" onclick="triggerPwaInstall()">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+          <span>Install Mobile App</span>
+        </button>
       </div>
     </section>
   </div>
@@ -1010,7 +951,7 @@
     </div>
   </main>
 
-  <!-- OFFICIAL CONTACT & HEADQUARTERS SECTION -->
+  <!-- OFFICIAL CONTACT SECTION -->
   <section class="contact-section-wrapper">
     <div class="section-header">
       <h2 class="section-title">Get in Touch With Us</h2>
@@ -1140,7 +1081,6 @@
           <span>Login to Account</span>
         </button>
 
-        <!-- BIOMETRIC / FINGERPRINT LOGIN BUTTON -->
         <div class="biometric-divider">
           <span>OR QUICK ACCESS</span>
         </div>
@@ -1193,18 +1133,20 @@
     }
 
     /* ============================================================
-       PWA INSTALLATION ENGINE & BANNER TRIGGER
+       PWA INSTALLATION ENGINE & BANNER TRIGGER (OPTIMIZED)
        ============================================================ */
     let deferredPrompt = null;
 
+    // Register Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {
-          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        navigator.serviceWorker.register('./sw.js').catch(() => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
         });
       });
     }
 
+    // Capture Native Browser Install Prompt
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -1217,14 +1159,16 @@
     }
 
     function isInStandaloneMode() {
-      return ('standalone' in window.navigator) && window.navigator.standalone;
+      return (window.matchMedia('(display-mode: standalone)').matches) || 
+             (('standalone' in window.navigator) && window.navigator.standalone);
     }
 
     function showInstallUI() {
-      if (window.matchMedia('(display-mode: standalone)').matches || isInStandaloneMode()) {
-        return;
-      }
-      if (sessionStorage.getItem('pwa_dismissed') === 'true') {
+      if (isInStandaloneMode()) {
+        const banner = document.getElementById('pwaInstallBanner');
+        const navBtn = document.getElementById('btnNavInstall');
+        if (banner) banner.style.display = 'none';
+        if (navBtn) navBtn.style.display = 'none';
         return;
       }
 
@@ -1234,11 +1178,16 @@
       if (navBtn) navBtn.style.display = 'inline-flex';
     }
 
+    // Tabbatar an duba yanayin da zarar shafi ya bude
     window.addEventListener('DOMContentLoaded', () => {
-      if (checkIsIos() && !isInStandaloneMode()) {
-        const sub = document.getElementById('pwaBannerSubtitle');
-        if (sub) sub.textContent = 'Tap "Share" then "Add to Home Screen"';
+      if (isInStandaloneMode()) {
+        dismissPwaBanner();
+      } else {
         showInstallUI();
+        if (checkIsIos()) {
+          const sub = document.getElementById('pwaBannerSubtitle');
+          if (sub) sub.textContent = 'Tap "Share" then "Add to Home Screen"';
+        }
       }
     });
 
@@ -1251,16 +1200,15 @@
         }
         deferredPrompt = null;
       } else if (checkIsIos()) {
-        alert('To install Ayax Xpress on your iPhone/iPad:\n\n1. Tap the Share button (square with arrow up) at the bottom of Safari.\n2. Scroll down and tap "Add to Home Screen".');
+        alert("To install Ayax Xpress on your iPhone/iPad:\n\n1. Tap the Share button (icon with an arrow pointing up) at the bottom.\n2. Scroll down and tap 'Add to Home Screen'.");
       } else {
-        alert('To install:\nTap your browser menu (3 dots at top right) and select "Install app" or "Add to Home screen".');
+        alert("To install this app:\n\n1. Tap your browser menu (the 3 dots at the top-right corner).\n2. Select 'Install app' or 'Add to Home screen'.");
       }
     }
 
     function dismissPwaBanner() {
       const banner = document.getElementById('pwaInstallBanner');
       if (banner) banner.style.display = 'none';
-      sessionStorage.setItem('pwa_dismissed', 'true');
     }
 
     window.addEventListener('appinstalled', () => {
@@ -1315,14 +1263,10 @@
     document.getElementById('identifierInput').addEventListener('input', hideError);
     document.getElementById('passwordInput').addEventListener('input', hideError);
 
-    // =========================================================================
-    // ACCURATE ROUTING ENGINE WITH DIRECT STATE MANAGER OVERRIDE
-    // =========================================================================
     function routeUserByRole(rawRole, rawIdentifier = "") {
       const role = String(rawRole || "").trim().toLowerCase();
       const identifier = String(rawIdentifier).trim().toLowerCase();
 
-      // 1. SuperAdmin Console
       if (
         role === "superadmin" ||
         identifier === "mohammed.ayas@ayaxdata.online" ||
@@ -1332,7 +1276,6 @@
         return;
       }
 
-      // 2. Operations Admin Console
       if (
         role === "admin" ||
         role === "operations_admin" ||
@@ -1344,7 +1287,6 @@
         return;
       }
 
-      // 3. LSD / NSD (National Sales Director / Super Leader)
       if (
         role === "lsd" ||
         role === "nsd" ||
@@ -1357,7 +1299,6 @@
         return;
       }
 
-      // 4. STATE MANAGER / LEADER
       if (
         identifier === "usmanado@ayaxdata.online" ||
         role === "state_manager" ||
@@ -1370,7 +1311,6 @@
         return;
       }
 
-      // 5. FIELD SUPERVISOR
       if (
         role === "supervisor" ||
         role === "field_supervisor" ||
@@ -1381,7 +1321,6 @@
         return;
       }
 
-      // 6. Support Desk
       if (
         role === "support" ||
         role === "customer_service" ||
@@ -1393,13 +1332,9 @@
         return;
       }
 
-      // 7. Retail Agent & Customer Portal (Direct routing to agent-dashboard.html)
       window.location.replace("agent-dashboard.html");
     }
 
-    // =========================================================================
-    // HYBRID BIOMETRIC & FINGERPRINT AUTHENTICATION ENGINE
-    // =========================================================================
     function checkBiometricEnrollmentUI() {
       const bioUser = localStorage.getItem('ayax_biometric_user');
       const input = document.getElementById('identifierInput');
@@ -1469,14 +1404,13 @@
           window.crypto.getRandomValues(challenge);
 
           try {
-            const credential = await navigator.credentials.get({
+            await navigator.credentials.get({
               publicKey: {
                 challenge: challenge,
                 timeout: 60000,
                 userVerification: "preferred"
               }
             });
-            console.log("WebAuthn hardware verification success:", credential);
           } catch (webAuthnErr) {
             if (webAuthnErr.name === 'NotAllowedError') {
               showError("Fingerprint scan was canceled.");
@@ -1484,7 +1418,6 @@
               btn.innerHTML = originalHtml;
               return;
             }
-            console.warn("WebAuthn fallback mode activated:", webAuthnErr.message);
           }
         }
 
@@ -1599,7 +1532,6 @@
             savedPassword: password
           }));
 
-          // First PIN check requirement
           if (!checkFirstLoginPin(completeUserData, token)) {
             closeLoginModal();
             return;
@@ -1617,11 +1549,8 @@
       }
     }
 
-    // Check if user requires initial PIN setup
     function checkFirstLoginPin(userData, token) {
       const role = String(userData.role || "").toLowerCase();
-      
-      // Applies to customer/user and agent roles when PIN is not yet configured
       if ((role === "user" || role === "agent" || role === "customer") && (userData.isPinSet === false || userData.hasTransactionPin === false)) {
         document.getElementById("firstLoginPinModal").style.display = "flex";
         return false;
@@ -1629,7 +1558,6 @@
       return true;
     }
 
-    // Execute initial PIN setup API request
     async function submitFirstLoginPin() {
       const pin = document.getElementById("firstPinInput").value.trim();
       const confirmPin = document.getElementById("confirmFirstPinInput").value.trim();
